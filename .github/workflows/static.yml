@@ -53,7 +53,7 @@
         <aside class="left">
           <div class="avatar">
             <!-- Replace the src with the file in your repo: avatar.jpg or keep this path --><!-- If you prefer, convert your uploaded avatar to base64 and paste here -->
-            <img src="avatar.jpg" alt="avatar" onerror="this.style.display='none'">
+            <img src="./avatar.jpg" alt="avatar" onerror="this.style.display='none'">
           </div>
           <div class="handle">@Slaixed</div>
           <div class="muted">Hail from 2007 — pixel heart, red lights, and loud links.<br>"dreaming in low-res"</div>
@@ -102,7 +102,8 @@
                 <div style="font-size:13px;margin-top:6px">Unknown Track — Unknown Artist</div>
                 <div style="font-size:11px;opacity:.75;margin-top:6px">last.fm / imagined scrobble</div>
               </div>
-              <div style="background:#000;border-radius:8px;padding:10px 16px;box-shadow:0 6px 18px rgba(0,0,0,.6);border:1px solid #330000">Play</div>
+              <audio id="player" src="music.mp3"></audio>
+<div style="background:#000;border-radius:8px;padding:10px 16px;box-shadow:0 6px 18px rgba(0,0,0,.6);border:1px solid #330000;cursor:pointer" onclick="document.getElementById('player').paused ? document.getElementById('player').play() : document.getElementById('player').pause()">Play</div>
             </div>
           </section>
 
