@@ -53,7 +53,7 @@
         <aside class="left">
           <div class="avatar">
             <!-- Replace the src with the file in your repo: avatar.jpg or keep this path --><!-- If you prefer, convert your uploaded avatar to base64 and paste here -->
-            <img src="photo_2025-11-22_18-36-45.jpg" alt="avatar" onerror="this.style.display='none'">
+            <img src="avatar.jpg" alt="avatar" onerror="this.style.display='none'">
           </div>
           <div class="handle">@Slaixed</div>
           <div class="muted">Hail from 2007 — pixel heart, red lights, and loud links.<br>"dreaming in low-res"</div>
