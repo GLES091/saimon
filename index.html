@@ -202,6 +202,63 @@
       height: 100%;
     }
 
+    /* Стили для ликов */
+    .links-section {
+      width: 100%;
+      margin-top: 15px;
+    }
+    
+    .links-title {
+      font-size: 10px;
+      color: #ff8b8b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-align: center;
+      opacity: 0.8;
+    }
+    
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .link-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(51, 0, 0, 0.5);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 10px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .link-item:hover {
+      background: rgba(51, 0, 0, 0.3);
+      border-color: #ff3b3b;
+      transform: translateX(3px);
+    }
+    
+    .link-item i {
+      color: #ff6464;
+      font-size: 10px;
+      min-width: 12px;
+    }
+    
+    .link-item a {
+      color: #ff8b8b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .link-item a:hover {
+      color: #ff3b3b;
+    }
+
     /* Right column */
     .right{
       background:#000;
@@ -556,6 +613,153 @@
       font-weight: bold;
     }
 
+    /* Gallery Styles - ПЕРЕМЕЩЕНО В ОСНОВНОЕ ОКНО */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #330000;
+      background: rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    
+    .gallery-item:hover {
+      border-color: #ff3b3b;
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(255,59,59,0.3);
+    }
+    
+    .gallery-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: all 0.3s ease;
+    }
+    
+    .gallery-item:hover .gallery-img {
+      transform: scale(1.1);
+    }
+    
+    .gallery-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff8b8b;
+      font-size: 12px;
+      text-align: center;
+      padding: 20px;
+      background: rgba(20, 0, 0, 0.5);
+    }
+    
+    .gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.9));
+      padding: 8px;
+      font-size: 10px;
+      text-align: center;
+      color: #ff8b8b;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    /* Modal для просмотра изображений */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 3px solid #ff3b3b;
+      box-shadow: 0 0 50px rgba(255,59,59,0.7);
+      background: #000;
+    }
+    
+    .modal-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #ff3b3b;
+      color: #000;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+    
+    .modal-close:hover {
+      background: #ff6464;
+      transform: rotate(90deg);
+    }
+
+    /* Gallery info box */
+    .gallery-info {
+      background: rgba(20, 0, 0, 0.7);
+      border: 1px solid #330000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    
+    .gallery-info h4 {
+      text-transform: uppercase;
+      color: #ff8b8b;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    
+    .gallery-info p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #ff8b8b;
+    }
+
     footer{
       font-size:11px;
       opacity:.7;
@@ -599,6 +803,10 @@
       .status-grid {
         grid-template-columns: 1fr;
       }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
     }
 
     /* Blinking cursor */
@@ -637,6 +845,14 @@
   </style>
 </head>
 <body>
+  <!-- Модальное окно для изображений -->
+  <div class="modal" id="imageModal">
+    <div class="modal-content">
+      <img class="modal-img" id="modalImage" src="" alt="">
+    </div>
+    <button class="modal-close" id="modalClose">&times;</button>
+  </div>
+
   <div class="container">
     <div class="card">
       <div class="grid">
@@ -653,10 +869,42 @@
             <div class="btn nav-btn" data-target="osint"><i class="fas fa-search"></i> OSINT Tools</div>
             <div class="btn nav-btn" data-target="texts"><i class="fas fa-scroll"></i> Тексты</div>
             <div class="btn nav-btn" data-target="status"><i class="fas fa-terminal"></i> Статус</div>
+            <div class="btn nav-btn" data-target="gallery"><i class="fas fa-images"></i> Галерея</div>
             <div class="btn"><a href="https://t.me/resivert" target="_blank" rel="noopener"><i class="fab fa-telegram"></i> Telegram</a></div>
             <div class="btn"><a href="https://t.me/+HkMh3xMOPkFkYjY6" target="_blank" rel="noopener"><i class="fas fa-broadcast-tower"></i> Канал</a></div>
             <div class="btn"><a href="https://t.me/god_internet" target="_blank" rel="noopener"><i class="fas fa-microphone-alt"></i> Rap Battles</a></div>
             <div class="btn"><a href="https://t.me/Sorrowen" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Texts</a></div>
+          </div>
+
+          <!-- Блок с ликами -->
+          <div class="links-section">
+            <div class="links-title">лики</div>
+            <div class="links-list">
+              <div class="link-item">
+                <i class="fab fa-telegram"></i>
+                <a href="https://t.me/god_internet" target="_blank" rel="noopener">@god_internet</a>
+              </div>
+              <div class="link-item">
+                <i class="fab fa-telegram"></i>
+                <a href="https://t.me/god_onion" target="_blank" rel="noopener">@god_onion</a>
+              </div>
+              <div class="link-item">
+                <i class="fab fa-telegram"></i>
+                <a href="https://t.me/god_ddos" target="_blank" rel="noopener">@god_ddos</a>
+              </div>
+              <div class="link-item">
+                <i class="fab fa-telegram"></i>
+                <a href="https://t.me/god_rap000" target="_blank" rel="noopener">@god_rap000</a>
+              </div>
+              <div class="link-item">
+                <i class="fab fa-telegram"></i>
+                <a href="https://t.me/nercogod" target="_blank" rel="noopener">@nercogod</a>
+              </div>
+              <div class="link-item">
+                <i class="fab fa-telegram"></i>
+                <a href="https://t.me/mxeis" target="_blank" rel="noopener">@mxeis</a>
+              </div>
+            </div>
           </div>
 
           <div style="margin-top:auto;text-align:center;font-size:11px;opacity:.8">
@@ -983,6 +1231,25 @@
             </div>
           </section>
 
+          <!-- Gallery Section - ТЕПЕРЬ В ОСНОВНОМ ОКНЕ -->
+          <section id="gallery" class="glossy">
+            <h3><i class="fas fa-images"></i> Галерея</h3>
+            <p style="margin:0 0 20px 0;font-size:12px;opacity:.85">Мои изображения из папки с сайтом</p>
+            
+            <div class="gallery-grid" id="mainGallery">
+              <!-- Основная галерея будет заполнена JavaScript -->
+            </div>
+            
+            <div class="gallery-info">
+              <h4>Информация о галерее</h4>
+              <p>
+                Изображения загружаются из папки с сайтом. Для добавления своих изображений разместите файлы с названиями:<br>
+                <strong>image1.jpg, image2.jpg, image3.jpg, image4.jpg</strong><br>
+                в той же папке, где находится этот HTML файл.
+              </p>
+            </div>
+          </section>
+
           <footer>
             © resivert — red & black aesthetic 2007 • win xp / anime / internet
           </footer>
@@ -1028,6 +1295,83 @@
         // Show target tool
         document.querySelector(`.${toolId}-tool`).classList.add('active');
       });
+    });
+
+    // Функция для загрузки изображений
+    function loadGalleryImages() {
+      const imageNames = ['image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg'];
+      const mainGallery = document.getElementById('mainGallery');
+      
+      // Очищаем галерею
+      mainGallery.innerHTML = '';
+      
+      imageNames.forEach((imageName, index) => {
+        // Создаем элемент для галереи
+        const galleryItem = document.createElement('div');
+        galleryItem.className = 'gallery-item';
+        galleryItem.dataset.index = index;
+        
+        const galleryImg = document.createElement('img');
+        galleryImg.className = 'gallery-img';
+        galleryImg.src = imageName;
+        galleryImg.alt = `Изображение ${index + 1}`;
+        galleryImg.onerror = function() {
+          // Если изображение не загрузилось, показываем заглушку
+          this.style.display = 'none';
+          const placeholder = document.createElement('div');
+          placeholder.className = 'gallery-placeholder';
+          placeholder.textContent = `Изображение ${index + 1}\nне найдено`;
+          galleryItem.appendChild(placeholder);
+        };
+        
+        const galleryOverlay = document.createElement('div');
+        galleryOverlay.className = 'gallery-overlay';
+        galleryOverlay.textContent = `image${index + 1}.jpg`;
+        
+        galleryItem.appendChild(galleryImg);
+        galleryItem.appendChild(galleryOverlay);
+        
+        // Добавляем обработчик клика для открытия в модальном окне
+        galleryItem.addEventListener('click', () => openImageModal(imageName, index));
+        
+        // Добавляем элемент в галерею
+        mainGallery.appendChild(galleryItem);
+      });
+    }
+
+    // Модальное окно для изображений
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalClose = document.getElementById('modalClose');
+
+    function openImageModal(imageSrc, index) {
+      modalImage.src = imageSrc;
+      modalImage.alt = `Изображение ${index + 1}`;
+      imageModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Отключаем прокрутку страницы
+    }
+
+    modalClose.addEventListener('click', () => {
+      imageModal.style.display = 'none';
+      modalImage.src = '';
+      document.body.style.overflow = 'auto'; // Включаем прокрутку обратно
+    });
+
+    imageModal.addEventListener('click', (e) => {
+      if (e.target === imageModal) {
+        imageModal.style.display = 'none';
+        modalImage.src = '';
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Закрытие модального окна по клавише ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && imageModal.style.display === 'flex') {
+        imageModal.style.display = 'none';
+        modalImage.src = '';
+        document.body.style.overflow = 'auto';
+      }
     });
 
     // Audio player functionality
@@ -1224,6 +1568,7 @@
       updateTime();
       updateUptime();
       updateVisitorCount();
+      loadGalleryImages(); // Загружаем изображения в галерею
       setInterval(updateTime, 60000);
       setInterval(updateUptime, 30000); // Update uptime every 30 seconds
       
