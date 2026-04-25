@@ -782,7 +782,6 @@
   </div><!-- /container -->
 </div><!-- /page-wrap -->
 
-
 <script>
 /* ══════════ ФОН: сакура / звёзды ══════════ */
 const vfxBg   = document.getElementById('vfx-bg');
@@ -933,8 +932,7 @@ setInterval(fetchNeko,30000);
 
 /* ═══════════════════════════════════════════
    🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР
-   = Использует прямые запросы к AniLibria API
-   = без серверной функции.
+   Все запросы через серверный прокси /api/anime
 ════════════════════════════════════════════ */
 const animeSearch = document.getElementById('animeSearch'),
       animeSearchBtn = document.getElementById('animeSearchBtn'),
@@ -949,65 +947,13 @@ const animeSearch = document.getElementById('animeSearch'),
       retryBtn = document.getElementById('retrySearch');
 let artPlayerInstance = null;
 
-// ======= ПРЯМОЕ ОБРАЩЕНИЕ К AniLibria =======
-const ANILIBRIA = 'https://api.anilibria.tv/v3';
-
-async function anilibriaSearch(query) {
-  const url = `${ANILIBRIA}/title/search?search=${encodeURIComponent(query)}`;
-  try {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error('search fail');
-    const data = await r.json();
-    if (Array.isArray(data)) {
-      return data.map(item => ({
-        id: item.id,
-        title: item.names?.ru || item.names?.en || 'Без названия',
-        releaseDate: item.season?.year?.toString() || '?',
-        image: `https://anilibria.tv${item.posters?.original?.url || item.posters?.small?.url || ''}`
-      }));
-    }
-    return [];
-  } catch(e) {
-    console.error('AniLibria search:', e);
-    return []; // возвращаем пустой массив при ошибке
-  }
+// Единая точка входа для всех запросов к нашему прокси
+async function fetchFromApi(action, param) {
+  const res = await fetch(`/api/anime?action=${action}&query=${encodeURIComponent(param)}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
 }
 
-async function anilibriaGetEpisodes(animeId) {
-  const url = `${ANILIBRIA}/title?id=${encodeURIComponent(animeId)}`;
-  try {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error('info fail');
-    const data = await r.json();
-    if (data && data.episodes && data.episodes.length > 0) {
-      return data.episodes.map(ep => ({ id: ep.id, number: ep.episode }));
-    }
-    return [];
-  } catch(e) {
-    console.error('AniLibria episodes:', e);
-    return [];
-  }
-}
-
-async function anilibriaGetVideo(episodeId) {
-  const url = `${ANILIBRIA}/title/episode?id=${encodeURIComponent(episodeId)}`;
-  try {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error('video fail');
-    const data = await r.json();
-    if (data) {
-      // Выбираем качество
-      const hd = data.hls_1080p || data.hls_720p || data.hls_480p || data.hls_360p;
-      return hd || null;
-    }
-    return null;
-  } catch(e) {
-    console.error('AniLibria video:', e);
-    return null;
-  }
-}
-
-// ── JS для кнопок ──
 function showCatalog() {
   catalogView.style.display = 'block';
   playerView.style.display = 'none';
@@ -1025,7 +971,7 @@ function showPlayerView(title) {
 }
 backBtn.addEventListener('click', showCatalog);
 
-// ── ЗАГРУЗКА ТОПА (Jikan) ──
+// Загрузка топа (Jikan)
 async function loadTopAnime() {
   if(animeResults.children.length>0) return;
   animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">✨ Загружаем топ аниме...</p>';
@@ -1037,7 +983,7 @@ async function loadTopAnime() {
     animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка загрузки</p>';
   }
 }
-// ── ПОИСК (Jikan) ──
+// Поиск (Jikan)
 async function searchAnimeCatalog(query) {
   animeResults.innerHTML = `<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем «${query}»...</p>`;
   try {
@@ -1048,7 +994,6 @@ async function searchAnimeCatalog(query) {
     animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка поиска</p>';
   }
 }
-
 function renderAnimeCards(list){
   animeResults.innerHTML = '';
   list.forEach(anime => {
@@ -1064,22 +1009,22 @@ function renderAnimeCards(list){
     `;
     card.addEventListener('click', ()=>{
       showPlayerView(anime.title);
-      searchAnimeOnAnilibria(anime.title); // переименованная функция
+      searchAnimeOnProxy(anime.title); // Ищем через наш API
     });
     animeResults.appendChild(card);
   });
 }
 
-// ПОИСК В ANILIBRIA и показ результатов
-async function searchAnimeOnAnilibria(title){
-  gogoResults.innerHTML = '🔎 Ищем в AniLibria...';
+// Поиск через /api/anime (наш прокси для AniLibria)
+async function searchAnimeOnProxy(title){
+  gogoResults.innerHTML = '🔎 Ищем...';
   retryBtn.style.display='none';
   try {
     const clean = title.replace(/\s*\(\d{4}\)\s*/g,'').trim();
-    const results = await anilibriaSearch(clean);
-    if(results.length){
+    const data = await fetchFromApi('search', clean);
+    if(data.results?.length){
       gogoResults.innerHTML = '';
-      results.slice(0,8).forEach(anime => {
+      data.results.slice(0,8).forEach(anime => {
         const btn = document.createElement('button');
         btn.className = 'btn btn-outline';
         btn.style.textAlign='left';
@@ -1098,24 +1043,24 @@ async function searchAnimeOnAnilibria(title){
     gogoResults.innerHTML = '⚠️ Ошибка сети';
     retryBtn.style.display='inline-block';
   }
-  retryBtn.onclick = ()=> searchAnimeOnAnilibria(title);
+  retryBtn.onclick = ()=> searchAnimeOnProxy(title);
 }
 
 async function loadEpisodes(animeId){
   episodeList.innerHTML = 'Загружаем эпизоды...';
-  const episodes = await anilibriaGetEpisodes(animeId);
-  if(episodes.length){
-    episodeList.innerHTML = '';
-    episodes.slice(0,50).forEach(ep => {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-outline';
-      btn.textContent = `Серия ${ep.number || ''}`;
-      btn.addEventListener('click', ()=> watchEpisode(ep.id));
-      episodeList.appendChild(btn);
-    });
-  } else {
-    episodeList.innerHTML = 'Нет эпизодов';
-  }
+  try {
+    const data = await fetchFromApi('info', animeId);
+    if(data.episodes?.length){
+      episodeList.innerHTML = '';
+      data.episodes.slice(0,50).forEach(ep => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-outline';
+        btn.textContent = `Серия ${ep.number||''}`;
+        btn.addEventListener('click', ()=> watchEpisode(ep.id));
+        episodeList.appendChild(btn);
+      });
+    } else episodeList.innerHTML = 'Нет эпизодов';
+  } catch(e) { episodeList.innerHTML = 'Ошибка загрузки эпизодов'; }
 }
 
 async function watchEpisode(episodeId){
@@ -1129,13 +1074,17 @@ async function watchEpisode(episodeId){
       settings: true,
     });
   }
-  const url = await anilibriaGetVideo(episodeId);
-  if(url){
-    artPlayerInstance.switchUrl(url);
-    artPlayerInstance.play();
-  } else {
-    alert('Видео не доступно');
-  }
+  try {
+    const data = await fetchFromApi('watch', episodeId);
+    if(data.sources?.length){
+      const source = data.sources.find(s => s.type==='hls'||s.quality==='default'||s.quality==='720p') || data.sources[0];
+      const url = source?.file || data.sources[0]?.file;
+      if(url){
+        artPlayerInstance.switchUrl(url);
+        artPlayerInstance.play();
+      } else alert('Видео не доступно');
+    } else alert('Не удалось получить видео');
+  } catch(e) { alert('Ошибка воспроизведения'); }
 }
 
 animeSearchBtn.addEventListener('click', ()=>{
