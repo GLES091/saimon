@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -932,7 +933,7 @@ setInterval(fetchNeko,30000);
 
 /* ═══════════════════════════════════════════
    🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР
-   Все запросы через серверный прокси /api/anime
+   Прямые запросы к AniLibria v3 через CORS-прокси
 ════════════════════════════════════════════ */
 const animeSearch = document.getElementById('animeSearch'),
       animeSearchBtn = document.getElementById('animeSearchBtn'),
@@ -946,18 +947,81 @@ const animeSearch = document.getElementById('animeSearch'),
       playerContainer = document.getElementById('playerContainer'),
       retryBtn = document.getElementById('retrySearch');
 let artPlayerInstance = null;
+let currentHlsInstance = null;
+let episodeUrlMap = {}; // Кэш: номер_серии → HLS URL
 
-// Единая точка входа для всех запросов к нашему прокси
+const ANILIBRIA = 'https://api.anilibria.top/v3';
+const HLS_BASE  = 'https://cache.libria.fun';
+
+// Запрос к AniLibria через CORS-прокси (два варианта для надёжности)
+async function fetchAnilibria(path) {
+  const target = ANILIBRIA + path;
+  const proxies = [
+    `https://corsproxy.io/?url=${encodeURIComponent(target)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
+  ];
+  for (const proxyUrl of proxies) {
+    try {
+      const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+      if (res.ok) return await res.json();
+    } catch (e) { /* пробуем следующий прокси */ }
+  }
+  throw new Error('Все прокси недоступны');
+}
+
+// Единая точка входа (совместима со старым кодом)
 async function fetchFromApi(action, param) {
-  const res = await fetch(`/api/anime?action=${action}&query=${encodeURIComponent(param)}`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
+  if (action === 'search') {
+    const data = await fetchAnilibria(`/title/search?search=${encodeURIComponent(param.trim())}`);
+    const list = Array.isArray(data) ? data : (data.list || []);
+    return {
+      results: list.map(item => ({
+        id: item.id,
+        title: item.names?.ru || item.names?.en || 'Без названия',
+        releaseDate: item.season?.year?.toString() || '?',
+        image: item.posters?.original?.url
+          ? `https://anilibria.top${item.posters.original.url}`
+          : (item.posters?.small?.url ? `https://anilibria.top${item.posters.small.url}` : '')
+      }))
+    };
+  }
+
+  if (action === 'info') {
+    episodeUrlMap = {}; // сбрасываем кэш
+    const data = await fetchAnilibria(`/title?id=${encodeURIComponent(param)}`);
+    // v3: эпизоды в player.list (объект или массив)
+    const epRaw = data?.player?.list || data?.episodes || {};
+    const epArr = Array.isArray(epRaw) ? epRaw : Object.values(epRaw);
+    const episodes = epArr
+      .sort((a, b) => (a.episode || 0) - (b.episode || 0))
+      .map(ep => {
+        const hls = ep.hls || {};
+        const relUrl = hls.fhd || hls.hd || hls.sd || null;
+        if (relUrl) {
+          // URL может быть абсолютным или относительным
+          episodeUrlMap[ep.episode] = relUrl.startsWith('http')
+            ? relUrl
+            : HLS_BASE + relUrl;
+        }
+        return { id: ep.episode, number: ep.episode };
+      });
+    return { episodes };
+  }
+
+  if (action === 'watch') {
+    const url = episodeUrlMap[param];
+    if (url) return { sources: [{ file: url, quality: 'auto', type: 'hls' }] };
+    return { sources: [] };
+  }
+
+  throw new Error('Неверный action');
 }
 
 function showCatalog() {
   catalogView.style.display = 'block';
   playerView.style.display = 'none';
-  if(artPlayerInstance){ artPlayerInstance.destroy(); artPlayerInstance=null; }
+  if (currentHlsInstance) { currentHlsInstance.destroy(); currentHlsInstance = null; }
+  if (artPlayerInstance)  { artPlayerInstance.destroy();  artPlayerInstance = null; }
   playerContainer.style.display = 'none';
 }
 function showPlayerView(title) {
@@ -1065,26 +1129,43 @@ async function loadEpisodes(animeId){
 
 async function watchEpisode(episodeId){
   playerContainer.style.display='block';
-  if(!artPlayerInstance){
-    artPlayerInstance = new Artplayer({
-      container: '#artplayer',
-      url: '',
-      autoSize: true,
-      theme: '#ffb7c5',
-      settings: true,
-    });
-  }
-  try {
-    const data = await fetchFromApi('watch', episodeId);
-    if(data.sources?.length){
-      const source = data.sources.find(s => s.type==='hls'||s.quality==='default'||s.quality==='720p') || data.sources[0];
-      const url = source?.file || data.sources[0]?.file;
-      if(url){
-        artPlayerInstance.switchUrl(url);
-        artPlayerInstance.play();
-      } else alert('Видео не доступно');
-    } else alert('Не удалось получить видео');
-  } catch(e) { alert('Ошибка воспроизведения'); }
+  playerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Уничтожаем старый HLS-инстанс
+  if (currentHlsInstance) { currentHlsInstance.destroy(); currentHlsInstance = null; }
+  if (artPlayerInstance)  { artPlayerInstance.destroy();  artPlayerInstance = null; }
+
+  const data = await fetchFromApi('watch', episodeId);
+  if (!data.sources?.length) { alert('Видео не найдено'); return; }
+  const url = data.sources[0].file;
+  if (!url) { alert('Видео не доступно'); return; }
+
+  artPlayerInstance = new Artplayer({
+    container: '#artplayer',
+    url: url,
+    type: 'm3u8',
+    autoSize: true,
+    autoplay: true,
+    theme: '#ffb7c5',
+    settings: true,
+    customType: {
+      m3u8: function(videoEl, src, art) {
+        if (Hls.isSupported()) {
+          const hls = new Hls({ enableWorker: false });
+          currentHlsInstance = hls;
+          hls.loadSource(src);
+          hls.attachMedia(videoEl);
+          hls.on(Hls.Events.ERROR, (_, d) => {
+            if (d.fatal) art.notice.show('Ошибка потока: ' + d.type);
+          });
+        } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+          videoEl.src = src;
+        } else {
+          art.notice.show('HLS не поддерживается');
+        }
+      }
+    }
+  });
 }
 
 animeSearchBtn.addEventListener('click', ()=>{
