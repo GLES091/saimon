@@ -8,6 +8,8 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"GOD_AE86","alternateName":"resivert","url":"https://t.me/GOD_AE86"}</script>
   <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <!-- ArtPlayer CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -561,6 +563,20 @@
     }
 
     /* ═══════════════════════════════════════
+       ПРОСМОТР АНИМЕ
+    ═══════════════════════════════════════ */
+    #watchResults button {
+      text-align: left;
+      justify-content: flex-start;
+    }
+    #episodeList button {
+      min-width: 70px;
+    }
+    #playerContainer {
+      margin-top: 1.5rem;
+    }
+
+    /* ═══════════════════════════════════════
        НEKO В УГЛУ
     ═══════════════════════════════════════ */
     .neko-wrap {
@@ -637,6 +653,7 @@
       <div class="tab"        data-tab="spammer">✨ Спамер</div>
       <div class="tab"        data-tab="music">🎀 Музыка</div>
       <div class="tab"        data-tab="gallery">🎴 Галерея</div>
+      <div class="tab"        data-tab="watch">▶️ Смотреть</div>
     </nav>
 
     <!-- ╔══ БИО ══╗ -->
@@ -747,6 +764,31 @@
         <div class="gallery-title">🎴 Галерея ✶</div>
         <p class="gallery-sub">4 случайных аниме-картинки через API</p>
         <div id="gallery"></div>
+      </div>
+    </div>
+
+    <!-- ╔══ ПРОСМОТР АНИМЕ ══╗ -->
+    <div class="tab-content" id="tab-watch">
+      <div class="card">
+        <div class="gallery-title">▶️ Смотреть аниме</div>
+        <p class="gallery-sub">Поиск и плеер через GogoAnime (Consumet API)</p>
+
+        <!-- Поиск -->
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+          <input type="text" id="watchSearch" placeholder="Введи название аниме..."
+                 style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
+                        background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
+          <button class="btn btn-primary" id="watchSearchBtn">🔍 Найти</button>
+        </div>
+        <div id="watchResults" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;"></div>
+
+        <!-- Список эпизодов (появится после выбора аниме) -->
+        <div id="episodeList" style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1rem;"></div>
+
+        <!-- Плеер -->
+        <div id="playerContainer" style="display:none; margin-top:1rem;">
+          <div id="artplayer" style="width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden;"></div>
+        </div>
       </div>
     </div>
 
@@ -979,12 +1021,105 @@ async function fetchNeko() {
 document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
 setInterval(fetchNeko, 30000);
+
+/* ── Просмотр аниме (Consumet через наше API) ── */
+const watchSearch = document.getElementById('watchSearch');
+const watchSearchBtn = document.getElementById('watchSearchBtn');
+const watchResults = document.getElementById('watchResults');
+const episodeList = document.getElementById('episodeList');
+const playerContainer = document.getElementById('playerContainer');
+const artplayerDiv = document.getElementById('artplayer');
+let artPlayerInstance = null;
+
+async function fetchFromApi(action, param) {
+  const url = `/api/anime?action=${action}&query=${encodeURIComponent(param)}`;
+  const res = await fetch(url);
+  return await res.json();
+}
+
+watchSearchBtn.addEventListener('click', async () => {
+  const q = watchSearch.value.trim();
+  if (!q) return;
+  watchResults.innerHTML = '✨ Ищем...';
+  try {
+    const data = await fetchFromApi('search', q);
+    if (!data.results || data.results.length === 0) {
+      watchResults.innerHTML = '❌ Ничего не найдено';
+      return;
+    }
+    watchResults.innerHTML = '';
+    data.results.slice(0, 10).forEach(anime => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-outline';
+      btn.style.textAlign = 'left';
+      btn.textContent = `${anime.title} (${anime.releaseDate || '?'})`;
+      btn.addEventListener('click', () => loadEpisodes(anime.id));
+      watchResults.appendChild(btn);
+    });
+  } catch (e) {
+    watchResults.innerHTML = '⚠️ Ошибка загрузки';
+  }
+});
+
+async function loadEpisodes(animeId) {
+  episodeList.innerHTML = 'Загружаем эпизоды...';
+  try {
+    const data = await fetchFromApi('episodes', animeId);
+    if (!data.episodes || data.episodes.length === 0) {
+      episodeList.innerHTML = 'Нет эпизодов';
+      return;
+    }
+    episodeList.innerHTML = '';
+    data.episodes.slice(0, 50).forEach(ep => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-outline';
+      btn.textContent = `Серия ${ep.number}`;
+      btn.addEventListener('click', () => watchEpisode(ep.id));
+      episodeList.appendChild(btn);
+    });
+  } catch (e) {
+    episodeList.innerHTML = 'Ошибка загрузки эпизодов';
+  }
+}
+
+async function watchEpisode(episodeId) {
+  playerContainer.style.display = 'block';
+  if (!artPlayerInstance) {
+    artPlayerInstance = new Artplayer({
+      container: '#artplayer',
+      url: '',
+      autoSize: true,
+      theme: '#ffb7c5',
+      settings: true,
+    });
+  }
+  try {
+    const data = await fetchFromApi('watch', episodeId);
+    if (data.sources && data.sources.length > 0) {
+      const source = data.sources.find(s => s.quality === 'default' || s.quality === '720p' || s.quality === '1080p');
+      const url = source?.url || data.sources[0].url;
+      artPlayerInstance.switchUrl(url);
+      artPlayerInstance.play();
+    } else {
+      alert('Не удалось получить видео');
+    }
+  } catch (e) {
+    alert('Ошибка воспроизведения');
+  }
+}
+
+watchSearch.addEventListener('keypress', e => {
+  if (e.key === 'Enter') watchSearchBtn.click();
+});
 </script>
 
 <!-- ═══════════════════════════════════════════════
      ПОДКЛЮЧЕНИЕ ВНЕШНЕГО СПАМЕРА
 ════════════════════════════════════════════════ -->
 <script src="spammer.js"></script>
+
+<!-- ArtPlayer JS (на всякий случай, если не подгрузился в head) -->
+<script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
 
 </body>
 </html>
