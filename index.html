@@ -8,8 +8,6 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"GOD_AE86","alternateName":"resivert","url":"https://t.me/GOD_AE86"}</script>
   <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  <!-- ArtPlayer CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -35,7 +33,6 @@
       --fb:       'Nunito', sans-serif;
     }
 
-    /* ── СВЕТЛАЯ ТЕМА ── */
     [data-theme="light"] {
       --bg:     #fce8f3;
       --bg2:    #f9d8eb;
@@ -50,7 +47,6 @@
       --pglow:  0 0 24px rgba(155,89,182,0.35);
     }
 
-    /* ── АНИМЕ-РЕЖИМ (поверх любой темы) ── */
     [data-anime="on"] {
       --accent:  #ff4da6;
       --purple:  #bf00ff;
@@ -60,11 +56,7 @@
       --pglow:   0 0 40px rgba(191,0,255,0.55);
     }
 
-    /* ═══════════════════════════════════════
-       БАЗОВЫЕ СБРОСЫ
-    ═══════════════════════════════════════ */
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -76,9 +68,6 @@
       transition: background .5s, color .5s;
     }
 
-    /* ═══════════════════════════════════════
-       ФОНОВЫЙ СЛОЙ — ГРАДИЕНТ-МЕШ
-    ═══════════════════════════════════════ */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -89,16 +78,12 @@
       transition: opacity .5s;
     }
 
-    /* ═══════════════════════════════════════
-       АНИМИРОВАННЫЙ ФОН (сакура / звёзды)
-    ═══════════════════════════════════════ */
     #vfx-bg {
       position: fixed; inset: 0;
       pointer-events: none; z-index: 0;
       overflow: hidden;
     }
 
-    /* Лепесток */
     .petal {
       position: absolute;
       top: -60px;
@@ -115,7 +100,6 @@
       100% { transform: translateY(115vh)  rotate(360deg) translateX(0px);  opacity:0;  }
     }
 
-    /* Падающая звезда */
     .star-vfx {
       position: absolute;
       border-radius: 50%;
@@ -131,9 +115,6 @@
       100% { transform: translateY(115vh) scale(.4); opacity: 0; }
     }
 
-    /* ═══════════════════════════════════════
-       ФИКСИРОВАННЫЕ КНОПКИ (угол)
-    ═══════════════════════════════════════ */
     .fixed-top {
       position: fixed; top: 1rem; right: 1rem;
       display: flex; gap: .55rem; z-index: 200;
@@ -157,9 +138,6 @@
       border-color: var(--accent);
     }
 
-    /* ═══════════════════════════════════════
-       ОСНОВНОЙ LAYOUT
-    ═══════════════════════════════════════ */
     .page-wrap {
       position: relative; z-index: 1;
       display: flex; flex-direction: column; align-items: center;
@@ -173,9 +151,6 @@
       gap: 1.6rem;
     }
 
-    /* ═══════════════════════════════════════
-       ТАБЫ
-    ═══════════════════════════════════════ */
     nav.tabs {
       display: flex; gap: .55rem; flex-wrap: wrap;
       padding: .6rem;
@@ -215,9 +190,6 @@
       to   { opacity:1; transform:translateY(0); }
     }
 
-    /* ═══════════════════════════════════════
-       КАРТОЧКИ
-    ═══════════════════════════════════════ */
     .card {
       background: var(--card);
       border-radius: var(--radius);
@@ -246,9 +218,6 @@
       border-color: var(--accent);
     }
 
-    /* ═══════════════════════════════════════
-       БИО / ПРОФИЛЬ
-    ═══════════════════════════════════════ */
     .profile {
       display: flex; align-items: center;
       gap: 2.5rem; flex-wrap: wrap;
@@ -322,7 +291,6 @@
     }
     .badge:hover { background: rgba(255,183,197,.2); transform:translateY(-2px); }
 
-    /* Цитата */
     .quote-box {
       margin-top: 1rem;
       padding: 1rem 1.2rem;
@@ -358,7 +326,6 @@
     }
     .quote-btn:hover { border-color:var(--accent); color:var(--accent); transform:scale(1.04); }
 
-    /* Соцсети */
     .social-links {
       display:flex; gap:.75rem; margin-top:1rem;
       justify-content:center; flex-wrap:wrap;
@@ -380,9 +347,7 @@
     }
     .social-btn svg { width:20px; height:20px; fill:currentColor; }
 
-    /* ═══════════════════════════════════════
-       СПАМЕР
-    ═══════════════════════════════════════ */
+    /* ── Спамер ── */
     .spammer-title {
       font-family: var(--fh);
       font-size: 1.35rem;
@@ -398,7 +363,6 @@
       grid-template-columns: 1fr 1fr;
       gap: 1rem; margin-bottom:1.5rem;
     }
-
     .field label {
       display:block; font-weight:800;
       color:var(--accent); font-size:.82rem;
@@ -508,9 +472,7 @@
     .log .err  { color:#ff8fa3; }
     .log .info { color:#f5d76e; }
 
-    /* ═══════════════════════════════════════
-       МУЗЫКА
-    ═══════════════════════════════════════ */
+    /* ── Музыка ── */
     .music-wrap { text-align:center; }
     .music-title {
       font-family:var(--fh); font-size:1.5rem;
@@ -537,9 +499,7 @@
       50%    { transform:scale(1.5); opacity:.5; }
     }
 
-    /* ═══════════════════════════════════════
-       ГАЛЕРЕЯ
-    ═══════════════════════════════════════ */
+    /* ── Галерея ── */
     .gallery-title {
       font-family:var(--fh); font-size:1.4rem;
       color:var(--accent); margin-bottom:.4rem;
@@ -562,23 +522,7 @@
       border-color:var(--accent);
     }
 
-    /* ═══════════════════════════════════════
-       ПРОСМОТР АНИМЕ
-    ═══════════════════════════════════════ */
-    #watchResults button {
-      text-align: left;
-      justify-content: flex-start;
-    }
-    #episodeList button {
-      min-width: 70px;
-    }
-    #playerContainer {
-      margin-top: 1.5rem;
-    }
-
-    /* ═══════════════════════════════════════
-       НEKO В УГЛУ
-    ═══════════════════════════════════════ */
+    /* ── НEKO В УГЛУ ── */
     .neko-wrap {
       position:fixed; bottom:1.3rem; right:1.3rem;
       z-index:150; display:flex; flex-direction:column;
@@ -604,9 +548,50 @@
     .neko-corner img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
     .neko-corner:hover img { transform:scale(1.18); }
 
-    /* ═══════════════════════════════════════
-       АДАПТИВ
-    ═══════════════════════════════════════ */
+    /* ── Аниме-карточки (каталог) ── */
+    .anime-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(145px,1fr));
+      gap:1rem;
+      margin-top:1rem;
+    }
+    .anime-card {
+      background: rgba(199,125,255,.06);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: all var(--tr);
+      cursor: pointer;
+    }
+    .anime-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 20px rgba(255,183,197,0.4);
+      border-color: var(--accent);
+    }
+    .anime-card img {
+      width:100%;
+      aspect-ratio: 2/3;
+      object-fit:cover;
+      display:block;
+    }
+    .anime-card .info {
+      padding: 0.6rem;
+    }
+    .anime-card .title {
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .anime-card .meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    /* ── Адаптив ── */
     @media (max-width:660px) {
       .form-grid      { grid-template-columns:1fr; }
       .profile        { flex-direction:column; gap:1.6rem; }
@@ -616,9 +601,9 @@
       .actions        { gap:.5rem; }
       .btn            { font-size:.76rem; padding:.66rem 1.1rem; }
       #gallery        { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
+      .anime-grid     { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
     }
 
-    /* ── Скроллбар ── */
     ::-webkit-scrollbar        { width:6px; }
     ::-webkit-scrollbar-track  { background:var(--bg); }
     ::-webkit-scrollbar-thumb  { background:var(--accent); border-radius:3px; }
@@ -626,16 +611,13 @@
 </head>
 <body>
 
-<!-- ═══════ АНИМИРОВАННЫЙ ФОН ═══════ -->
 <div id="vfx-bg"></div>
 
-<!-- ═══════ УПРАВЛЕНИЕ ВВЕРХУ ═══════ -->
 <div class="fixed-top">
   <button class="icon-btn" id="themeToggle"  title="Сменить тему">🌸</button>
   <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
 </div>
 
-<!-- ═══════ НEKO В УГЛУ ═══════ -->
 <div class="neko-wrap">
   <div class="neko-corner" id="nekoCorner" title="Новый котик!">
     <img id="nekoImg" src="" alt="neko" style="opacity:0; transition: opacity .5s;">
@@ -643,25 +625,21 @@
   <div class="neko-tip">🐱 нажми для котика!</div>
 </div>
 
-<!-- ═══════ ГЛАВНЫЙ КОНТЕНТ ═══════ -->
 <div class="page-wrap">
   <div class="container">
 
-    <!-- ТАБЫ -->
     <nav class="tabs">
       <div class="tab active" data-tab="bio">🌸 Био</div>
       <div class="tab"        data-tab="spammer">✨ Спамер</div>
       <div class="tab"        data-tab="music">🎀 Музыка</div>
       <div class="tab"        data-tab="gallery">🎴 Галерея</div>
-      <div class="tab"        data-tab="watch">▶️ Смотреть</div>
+      <div class="tab"        data-tab="anime">🎌 Аниме</div>
     </nav>
 
-    <!-- ╔══ БИО ══╗ -->
+    <!-- Био -->
     <div class="tab-content active" id="tab-bio">
       <div class="card">
         <div class="profile">
-
-          <!-- Аватарка -->
           <div class="avatar-wrap">
             <div class="avatar">
               <img id="avatarImg" src="" alt="GOD_AE86" style="opacity:0; transition: opacity .6s;">
@@ -669,13 +647,10 @@
             <div class="avatar-ring"></div>
             <div class="avatar-ring2"></div>
           </div>
-
-          <!-- Инфо -->
           <div class="bio-info">
             <div class="bio-name">GOD_AE86</div>
             <div class="bio-handle">@resivert · @GOD_AE86</div>
             <div class="bio-desc">аниме-вайб ✦ тексты ✦ батлы ✦ неко-спамер</div>
-
             <div class="badges">
               <span class="badge">🌸 аниме</span>
               <span class="badge">🎤 батлы</span>
@@ -683,15 +658,11 @@
               <span class="badge">⚡ спамер</span>
               <span class="badge">🚗 AE86</span>
             </div>
-
-            <!-- Цитата аниме -->
             <div class="quote-box">
               <div class="quote-text" id="quoteText">загружаем цитату из аниме…</div>
               <div class="quote-src"  id="quoteSrc"></div>
               <button class="quote-btn" onclick="fetchQuote()">🔄 новая цитата</button>
             </div>
-
-            <!-- Соцсети -->
             <div class="social-links">
               <a href="https://t.me/GOD_AE86" class="social-btn" target="_blank" title="Telegram">
                 <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.46-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.441-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.12.098.153.228.169.321.015.094.034.307.019.474z"/></svg>
@@ -704,12 +675,11 @@
       </div>
     </div>
 
-    <!-- ╔══ СПАМЕР ══╗ -->
+    <!-- Спамер -->
     <div class="tab-content" id="tab-spammer">
       <div class="card">
         <div class="spammer-title">✧ Telegram Spammer ✧</div>
         <p class="subtitle">🌸 аниме-режим · прямые запросы · no‑cors</p>
-
         <div class="form-grid">
           <div class="field">
             <label>📱 Номер телефона</label>
@@ -724,11 +694,9 @@
             <input type="number" id="cycles" value="3" min="0">
           </div>
         </div>
-
         <div class="checkbox-group" id="svcList">
           <span class="cg-title">🎯 Сервисы:</span>
         </div>
-
         <div class="actions">
           <button class="btn btn-primary"  id="startBtn">🌸 Запустить</button>
           <button class="btn btn-outline"  id="stopBtn">⏹ Стоп</button>
@@ -738,13 +706,12 @@
           <button class="btn btn-outline"  id="exportBtn">📋 Экспорт</button>
           <button class="btn btn-outline"  id="importBtn">📂 Импорт</button>
         </div>
-
         <div id="validateOut"></div>
         <div class="log" id="log"></div>
       </div>
     </div>
 
-    <!-- ╔══ МУЗЫКА ══╗ -->
+    <!-- Музыка -->
     <div class="tab-content" id="tab-music">
       <div class="card music-wrap">
         <div class="music-title">🎀 Аниме‑Плеер 🎀</div>
@@ -758,7 +725,7 @@
       </div>
     </div>
 
-    <!-- ╔══ ГАЛЕРЕЯ ══╗ -->
+    <!-- Галерея -->
     <div class="tab-content" id="tab-gallery">
       <div class="card">
         <div class="gallery-title">🎴 Галерея ✶</div>
@@ -767,27 +734,19 @@
       </div>
     </div>
 
-    <!-- ╔══ ПРОСМОТР АНИМЕ ══╗ -->
-    <div class="tab-content" id="tab-watch">
+    <!-- 🎌 Аниме-каталог -->
+    <div class="tab-content" id="tab-anime">
       <div class="card">
-        <div class="gallery-title">▶️ Смотреть аниме</div>
-        <p class="gallery-sub">Поиск и плеер через GogoAnime (Consumet API)</p>
-
-        <!-- Поиск -->
+        <div class="gallery-title">🎌 Аниме-каталог</div>
+        <p class="gallery-sub">Топ популярных + поиск (данные MyAnimeList через Jikan API)</p>
         <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-          <input type="text" id="watchSearch" placeholder="Введи название аниме..."
+          <input type="text" id="animeSearch" placeholder="Название аниме..."
                  style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
                         background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
-          <button class="btn btn-primary" id="watchSearchBtn">🔍 Найти</button>
+          <button class="btn btn-primary" id="animeSearchBtn">🔍 Искать</button>
         </div>
-        <div id="watchResults" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;"></div>
-
-        <!-- Список эпизодов (появится после выбора аниме) -->
-        <div id="episodeList" style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1rem;"></div>
-
-        <!-- Плеер -->
-        <div id="playerContainer" style="display:none; margin-top:1rem;">
-          <div id="artplayer" style="width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden;"></div>
+        <div id="animeResults" class="anime-grid">
+          <!-- карточки появятся здесь -->
         </div>
       </div>
     </div>
@@ -795,10 +754,8 @@
   </div><!-- /container -->
 </div><!-- /page-wrap -->
 
+<!-- Плеер для аниме (ArtPlayer) пока не подключаем, только каталог -->
 
-<!-- ═══════════════════════════════════════════════
-     ЧИСТЫЙ JS: тема, табы, сакура, API
-════════════════════════════════════════════════ -->
 <script>
 /* ── Сакура / звёзды ── */
 const vfxBg   = document.getElementById('vfx-bg');
@@ -870,10 +827,11 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
     if (tab.dataset.tab === 'bio') fetchQuote();
+    if (tab.dataset.tab === 'anime') loadTopAnime();
   });
 });
 
-/* ── Галерея: все картинки через API ── */
+/* ── Галерея через API ── */
 const gallery = document.getElementById('gallery');
 const GALLERY_SIZE = 4;
 
@@ -891,7 +849,6 @@ async function loadGalleryImage(imgElement) {
       }
     }
   } catch (e) {}
-  // fallback
   try {
     const resp = await fetch('https://api.waifu.pics/sfw/waifu');
     if (resp.ok) {
@@ -917,10 +874,9 @@ function buildGallery() {
     loadGalleryImage(img);
   }
 }
-
 buildGallery();
 
-/* ── Waifu.pics: аватар ── */
+/* ── Аватар через API ── */
 const avatarImg = document.getElementById('avatarImg');
 async function fetchWaifuAvatar() {
   const types = ['waifu','neko','shinobu','megumin'];
@@ -950,7 +906,7 @@ async function fetchWaifuAvatar() {
 }
 fetchWaifuAvatar();
 
-/* ── Animechan: цитата ── */
+/* ── Цитата из аниме ── */
 async function fetchQuote() {
   const textEl = document.getElementById('quoteText');
   const srcEl  = document.getElementById('quoteSrc');
@@ -989,7 +945,7 @@ async function fetchQuote() {
 }
 fetchQuote();
 
-/* ── Nekos.life / waifu.pics: котик ── */
+/* ── Нeко ── */
 const nekoImg = document.getElementById('nekoImg');
 async function fetchNeko() {
   nekoImg.style.opacity = '0.3';
@@ -1017,109 +973,79 @@ async function fetchNeko() {
   }
   nekoImg.style.display = 'none';
 }
-
 document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
 setInterval(fetchNeko, 30000);
 
-/* ── Просмотр аниме (Consumet через наше API) ── */
-const watchSearch = document.getElementById('watchSearch');
-const watchSearchBtn = document.getElementById('watchSearchBtn');
-const watchResults = document.getElementById('watchResults');
-const episodeList = document.getElementById('episodeList');
-const playerContainer = document.getElementById('playerContainer');
-const artplayerDiv = document.getElementById('artplayer');
-let artPlayerInstance = null;
+/* ═══════════════════════════════════════════
+   🎌 АНИМЕ-КАТАЛОГ (Jikan API v4)
+════════════════════════════════════════════ */
+const animeSearch = document.getElementById('animeSearch');
+const animeSearchBtn = document.getElementById('animeSearchBtn');
+const animeResults = document.getElementById('animeResults');
 
-async function fetchFromApi(action, param) {
-  const url = `/api/anime?action=${action}&query=${encodeURIComponent(param)}`;
-  const res = await fetch(url);
-  return await res.json();
-}
-
-watchSearchBtn.addEventListener('click', async () => {
-  const q = watchSearch.value.trim();
-  if (!q) return;
-  watchResults.innerHTML = '✨ Ищем...';
+async function loadTopAnime() {
+  if (animeResults.children.length > 0) return; // уже загружено
+  animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">✨ Загружаем топ аниме...</p>';
   try {
-    const data = await fetchFromApi('search', q);
-    if (!data.results || data.results.length === 0) {
-      watchResults.innerHTML = '❌ Ничего не найдено';
-      return;
-    }
-    watchResults.innerHTML = '';
-    data.results.slice(0, 10).forEach(anime => {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-outline';
-      btn.style.textAlign = 'left';
-      btn.textContent = `${anime.title} (${anime.releaseDate || '?'})`;
-      btn.addEventListener('click', () => loadEpisodes(anime.id));
-      watchResults.appendChild(btn);
-    });
-  } catch (e) {
-    watchResults.innerHTML = '⚠️ Ошибка загрузки';
-  }
-});
-
-async function loadEpisodes(animeId) {
-  episodeList.innerHTML = 'Загружаем эпизоды...';
-  try {
-    const data = await fetchFromApi('episodes', animeId);
-    if (!data.episodes || data.episodes.length === 0) {
-      episodeList.innerHTML = 'Нет эпизодов';
-      return;
-    }
-    episodeList.innerHTML = '';
-    data.episodes.slice(0, 50).forEach(ep => {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-outline';
-      btn.textContent = `Серия ${ep.number}`;
-      btn.addEventListener('click', () => watchEpisode(ep.id));
-      episodeList.appendChild(btn);
-    });
-  } catch (e) {
-    episodeList.innerHTML = 'Ошибка загрузки эпизодов';
-  }
-}
-
-async function watchEpisode(episodeId) {
-  playerContainer.style.display = 'block';
-  if (!artPlayerInstance) {
-    artPlayerInstance = new Artplayer({
-      container: '#artplayer',
-      url: '',
-      autoSize: true,
-      theme: '#ffb7c5',
-      settings: true,
-    });
-  }
-  try {
-    const data = await fetchFromApi('watch', episodeId);
-    if (data.sources && data.sources.length > 0) {
-      const source = data.sources.find(s => s.quality === 'default' || s.quality === '720p' || s.quality === '1080p');
-      const url = source?.url || data.sources[0].url;
-      artPlayerInstance.switchUrl(url);
-      artPlayerInstance.play();
+    const resp = await fetch('https://api.jikan.moe/v4/top/anime?limit=20');
+    const data = await resp.json();
+    if (data.data && data.data.length) {
+      renderAnimeCards(data.data);
     } else {
-      alert('Не удалось получить видео');
+      animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
     }
   } catch (e) {
-    alert('Ошибка воспроизведения');
+    animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка загрузки</p>';
   }
 }
 
-watchSearch.addEventListener('keypress', e => {
-  if (e.key === 'Enter') watchSearchBtn.click();
+async function searchAnime(query) {
+  animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем «'+query+'»...</p>';
+  try {
+    const resp = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=20`);
+    const data = await resp.json();
+    if (data.data && data.data.length) {
+      renderAnimeCards(data.data);
+    } else {
+      animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
+    }
+  } catch (e) {
+    animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка поиска</p>';
+  }
+}
+
+function renderAnimeCards(list) {
+  animeResults.innerHTML = '';
+  list.forEach(anime => {
+    const card = document.createElement('div');
+    card.className = 'anime-card';
+    card.innerHTML = `
+      <img src="${anime.images.jpg.image_url}" alt="${anime.title}" loading="lazy"
+           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 2 3%22%3E%3Crect fill=%22%2322133a%22 width=%222%22 height=%223%22/%3E%3C/svg%3E'">
+      <div class="info">
+        <div class="title" title="${anime.title}">${anime.title}</div>
+        <div class="meta">${anime.year || '?'} · ${anime.type || ''}</div>
+      </div>
+    `;
+    card.addEventListener('click', () => window.open(anime.url, '_blank'));
+    animeResults.appendChild(card);
+  });
+}
+
+animeSearchBtn.addEventListener('click', () => {
+  const q = animeSearch.value.trim();
+  if (q) searchAnime(q);
 });
+animeSearch.addEventListener('keypress', e => {
+  if (e.key === 'Enter') animeSearchBtn.click();
+});
+
+// При открытии вкладки "Аниме" загружаем топ, если ещё не загружен
+// (обработчик уже в табах)
 </script>
 
-<!-- ═══════════════════════════════════════════════
-     ПОДКЛЮЧЕНИЕ ВНЕШНЕГО СПАМЕРА
-════════════════════════════════════════════════ -->
 <script src="spammer.js"></script>
-
-<!-- ArtPlayer JS (на всякий случай, если не подгрузился в head) -->
-<script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
 
 </body>
 </html>
