@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GOD_AE86 ✦ аниме-спамер</title>
+  <title>GOD_AE86 ✦ аниме-плеер</title>
   <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и Telegram-спамер.">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"GOD_AE86","alternateName":"resivert","url":"https://t.me/GOD_AE86"}</script>
   <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <!-- ArtPlayer CSS/JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
+  <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -347,7 +350,7 @@
     }
     .social-btn svg { width:20px; height:20px; fill:currentColor; }
 
-    /* ── Спамер ── */
+    /* Спамер */
     .spammer-title {
       font-family: var(--fh);
       font-size: 1.35rem;
@@ -472,7 +475,7 @@
     .log .err  { color:#ff8fa3; }
     .log .info { color:#f5d76e; }
 
-    /* ── Музыка ── */
+    /* Музыка */
     .music-wrap { text-align:center; }
     .music-title {
       font-family:var(--fh); font-size:1.5rem;
@@ -499,7 +502,7 @@
       50%    { transform:scale(1.5); opacity:.5; }
     }
 
-    /* ── Галерея ── */
+    /* Галерея */
     .gallery-title {
       font-family:var(--fh); font-size:1.4rem;
       color:var(--accent); margin-bottom:.4rem;
@@ -522,7 +525,7 @@
       border-color:var(--accent);
     }
 
-    /* ── НEKO В УГЛУ ── */
+    /* НEKO */
     .neko-wrap {
       position:fixed; bottom:1.3rem; right:1.3rem;
       z-index:150; display:flex; flex-direction:column;
@@ -548,7 +551,7 @@
     .neko-corner img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
     .neko-corner:hover img { transform:scale(1.18); }
 
-    /* ── Аниме-карточки (каталог) ── */
+    /* Аниме‑каталог (топ/поиск) */
     .anime-grid {
       display:grid;
       grid-template-columns:repeat(auto-fill, minmax(145px,1fr));
@@ -591,7 +594,23 @@
       margin-top: 0.15rem;
     }
 
-    /* ── Адаптив ── */
+    /* Плеер и управление */
+    .episode-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 1rem 0;
+    }
+    #playerContainer {
+      margin-top: 1rem;
+    }
+    #artplayer {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
     @media (max-width:660px) {
       .form-grid      { grid-template-columns:1fr; }
       .profile        { flex-direction:column; gap:1.6rem; }
@@ -634,6 +653,7 @@
       <div class="tab"        data-tab="music">🎀 Музыка</div>
       <div class="tab"        data-tab="gallery">🎴 Галерея</div>
       <div class="tab"        data-tab="anime">🎌 Аниме</div>
+      <div class="tab"        data-tab="watch">▶️ Смотреть</div>
     </nav>
 
     <!-- Био -->
@@ -734,7 +754,7 @@
       </div>
     </div>
 
-    <!-- 🎌 Аниме-каталог -->
+    <!-- 🎌 Аниме-каталог (топ/поиск) -->
     <div class="tab-content" id="tab-anime">
       <div class="card">
         <div class="gallery-title">🎌 Аниме-каталог</div>
@@ -745,16 +765,31 @@
                         background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
           <button class="btn btn-primary" id="animeSearchBtn">🔍 Искать</button>
         </div>
-        <div id="animeResults" class="anime-grid">
-          <!-- карточки появятся здесь -->
+        <div id="animeResults" class="anime-grid"></div>
+      </div>
+    </div>
+
+    <!-- ▶️ Смотреть (поиск → эпизоды → плеер) -->
+    <div class="tab-content" id="tab-watch">
+      <div class="card">
+        <div class="gallery-title">▶️ Смотреть аниме</div>
+        <p class="gallery-sub">Поиск через GogoAnime (Consumet) — выбери аниме, затем серию</p>
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+          <input type="text" id="watchSearch" placeholder="Название аниме..."
+                 style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
+                        background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
+          <button class="btn btn-primary" id="watchSearchBtn">🔍 Искать</button>
+        </div>
+        <div id="watchResults" style="display:flex; flex-direction:column; gap:0.4rem;"></div>
+        <div id="episodeList" class="episode-list"></div>
+        <div id="playerContainer" style="display:none;">
+          <div id="artplayer"></div>
         </div>
       </div>
     </div>
 
   </div><!-- /container -->
 </div><!-- /page-wrap -->
-
-<!-- Плеер для аниме (ArtPlayer) пока не подключаем, только каталог -->
 
 <script>
 /* ── Сакура / звёзды ── */
@@ -831,7 +866,7 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-/* ── Галерея через API ── */
+/* ── Галерея ── */
 const gallery = document.getElementById('gallery');
 const GALLERY_SIZE = 4;
 
@@ -876,7 +911,7 @@ function buildGallery() {
 }
 buildGallery();
 
-/* ── Аватар через API ── */
+/* ── Аватар ── */
 const avatarImg = document.getElementById('avatarImg');
 async function fetchWaifuAvatar() {
   const types = ['waifu','neko','shinobu','megumin'];
@@ -906,7 +941,7 @@ async function fetchWaifuAvatar() {
 }
 fetchWaifuAvatar();
 
-/* ── Цитата из аниме ── */
+/* ── Цитата ── */
 async function fetchQuote() {
   const textEl = document.getElementById('quoteText');
   const srcEl  = document.getElementById('quoteSrc');
@@ -985,13 +1020,13 @@ const animeSearchBtn = document.getElementById('animeSearchBtn');
 const animeResults = document.getElementById('animeResults');
 
 async function loadTopAnime() {
-  if (animeResults.children.length > 0) return; // уже загружено
+  if (animeResults.children.length > 0) return;
   animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">✨ Загружаем топ аниме...</p>';
   try {
     const resp = await fetch('https://api.jikan.moe/v4/top/anime?limit=20');
     const data = await resp.json();
     if (data.data && data.data.length) {
-      renderAnimeCards(data.data);
+      renderAnimeCards(data.data, animeResults);
     } else {
       animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
     }
@@ -1000,13 +1035,13 @@ async function loadTopAnime() {
   }
 }
 
-async function searchAnime(query) {
+async function searchAnimeCatalog(query) {
   animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем «'+query+'»...</p>';
   try {
     const resp = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=20`);
     const data = await resp.json();
     if (data.data && data.data.length) {
-      renderAnimeCards(data.data);
+      renderAnimeCards(data.data, animeResults);
     } else {
       animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
     }
@@ -1015,8 +1050,8 @@ async function searchAnime(query) {
   }
 }
 
-function renderAnimeCards(list) {
-  animeResults.innerHTML = '';
+function renderAnimeCards(list, container) {
+  container.innerHTML = '';
   list.forEach(anime => {
     const card = document.createElement('div');
     card.className = 'anime-card';
@@ -1029,20 +1064,115 @@ function renderAnimeCards(list) {
       </div>
     `;
     card.addEventListener('click', () => window.open(anime.url, '_blank'));
-    animeResults.appendChild(card);
+    container.appendChild(card);
   });
 }
 
 animeSearchBtn.addEventListener('click', () => {
   const q = animeSearch.value.trim();
-  if (q) searchAnime(q);
+  if (q) searchAnimeCatalog(q);
 });
 animeSearch.addEventListener('keypress', e => {
   if (e.key === 'Enter') animeSearchBtn.click();
 });
 
-// При открытии вкладки "Аниме" загружаем топ, если ещё не загружен
-// (обработчик уже в табах)
+/* ═══════════════════════════════════════════
+   ▶️ ПРОСМОТР АНИМЕ (Consumet через наш API)
+════════════════════════════════════════════ */
+let artPlayerInstance = null;
+
+// Вызов нашей серверной функции
+async function fetchFromApi(action, param) {
+  const url = `/api/anime?action=${action}&query=${encodeURIComponent(param)}`;
+  const res = await fetch(url);
+  return await res.json();
+}
+
+// Поиск
+const watchSearch = document.getElementById('watchSearch');
+const watchSearchBtn = document.getElementById('watchSearchBtn');
+const watchResults = document.getElementById('watchResults');
+const episodeList = document.getElementById('episodeList');
+const playerContainer = document.getElementById('playerContainer');
+const artplayerDiv = document.getElementById('artplayer');
+
+watchSearchBtn.addEventListener('click', async () => {
+  const q = watchSearch.value.trim();
+  if (!q) return;
+  watchResults.innerHTML = '✨ Ищем...';
+  try {
+    const data = await fetchFromApi('search', q);
+    if (!data.results || data.results.length === 0) {
+      watchResults.innerHTML = '❌ Ничего не найдено';
+      return;
+    }
+    watchResults.innerHTML = '';
+    data.results.slice(0, 10).forEach(anime => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-outline';
+      btn.style.textAlign = 'left';
+      btn.textContent = `${anime.title} (${anime.releaseDate || '?'})`;
+      btn.addEventListener('click', () => loadEpisodes(anime.id));
+      watchResults.appendChild(btn);
+    });
+  } catch (e) {
+    watchResults.innerHTML = '⚠️ Ошибка загрузки';
+  }
+});
+
+// Загрузка эпизодов для выбранного аниме
+async function loadEpisodes(animeId) {
+  episodeList.innerHTML = 'Загружаем эпизоды...';
+  try {
+    const data = await fetchFromApi('info', animeId);
+    if (!data.episodes || data.episodes.length === 0) {
+      episodeList.innerHTML = 'Нет эпизодов';
+      return;
+    }
+    episodeList.innerHTML = '';
+    data.episodes.slice(0, 50).forEach(ep => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-outline';
+      btn.textContent = `Серия ${ep.number}`;
+      btn.addEventListener('click', () => watchEpisode(ep.id));
+      episodeList.appendChild(btn);
+    });
+  } catch (e) {
+    episodeList.innerHTML = 'Ошибка загрузки эпизодов';
+  }
+}
+
+// Запуск плеера
+async function watchEpisode(episodeId) {
+  playerContainer.style.display = 'block';
+  if (!artPlayerInstance) {
+    artPlayerInstance = new Artplayer({
+      container: '#artplayer',
+      url: '',
+      autoSize: true,
+      theme: '#ffb7c5',
+      settings: true,
+    });
+  }
+  try {
+    const data = await fetchFromApi('watch', episodeId);
+    if (data.sources && data.sources.length > 0) {
+      const source = data.sources.find(s => s.quality === 'default' || s.quality === '720p' || s.quality === '1080p');
+      const url = source?.url || data.sources[0].url;
+      artPlayerInstance.switchUrl(url);
+      artPlayerInstance.play();
+    } else {
+      alert('Не удалось получить видео');
+    }
+  } catch (e) {
+    alert('Ошибка воспроизведения');
+  }
+}
+
+// Поиск по Enter
+watchSearch.addEventListener('keypress', e => {
+  if (e.key === 'Enter') watchSearchBtn.click();
+});
 </script>
 
 <script src="spammer.js"></script>
