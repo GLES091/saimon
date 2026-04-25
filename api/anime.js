@@ -1,27 +1,24 @@
-// api/anime.js
+// api/anime.js (версия для Vercel с AniLibria API)
 export default async function handler(req, res) {
-  // Разрешаем CORS (на всякий случай)
   res.setHeader('Access-Control-Allow-Origin', '*');
   const { action, query, episodeId } = req.query;
 
-  // Текущий рабочий API (GogoAnime через Consumet)
-  const BASE = 'https://api.consumet.org/anime/gogoanime';
+  const BASE = 'https://api.anilibria.tv/v3';
 
-  // Безопасный fetch с таймаутом
   async function safeFetch(url) {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 8000);
+    const t = setTimeout(() => ctrl.abort(), 10000);
     try {
       const r = await fetch(url, {
         signal: ctrl.signal,
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NetErrror)' }
+        headers: { 'User-Agent': 'GOD_AE86-Player/1.0' }
       });
       clearTimeout(t);
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       return await r.json();
     } catch (e) {
       clearTimeout(t);
-      console.error('[API] Fetch error:', e.message);
+      console.error('[AniLibria API] Fetch error:', e.message);
       return null;
     }
   }
@@ -29,14 +26,15 @@ export default async function handler(req, res) {
   try {
     // ========== ПОИСК ==========
     if (action === 'search' && query) {
-      // Consumet: GET /gogoanime/{query}
-      const data = await safeFetch(`${BASE}/${encodeURIComponent(query.trim())}`);
-      if (data?.results?.length) {
-        const results = data.results.map(r => ({
-          id: r.id,
-          title: r.title,
-          releaseDate: r.releaseDate || '?',
-          image: r.image
+      // AniLibria: POST /title/search
+      const searchUrl = `${BASE}/title/search?search=${encodeURIComponent(query)}`;
+      const data = await safeFetch(searchUrl);
+      if (data && Array.isArray(data)) {
+        const results = data.map(item => ({
+          id: item.id,
+          title: item.names?.ru || item.names?.en || 'Без названия',
+          releaseDate: item.season?.year?.toString() || '?',
+          image: `https://anilibria.tv${item.posters?.original?.url || item.posters?.small?.url || ''}`
         }));
         return res.status(200).json({ results });
       }
@@ -45,12 +43,12 @@ export default async function handler(req, res) {
 
     // ========== ИНФО (эпизоды) ==========
     if (action === 'info' && query) {
-      // Consumet: GET /gogoanime/info/{animeId}
-      const data = await safeFetch(`${BASE}/info/${encodeURIComponent(query)}`);
-      if (data?.episodes?.length) {
+      // AniLibria: GET /title?id=...
+      const data = await safeFetch(`${BASE}/title?id=${encodeURIComponent(query)}`);
+      if (data && data.episodes && data.episodes.length > 0) {
         const episodes = data.episodes.map(ep => ({
           id: ep.id,
-          number: ep.number || ep.episode
+          number: ep.episode
         }));
         return res.status(200).json({ episodes });
       }
@@ -59,10 +57,19 @@ export default async function handler(req, res) {
 
     // ========== ССЫЛКА НА ВИДЕО ==========
     if (action === 'watch' && episodeId) {
-      // Consumet: GET /gogoanime/watch/{episodeId}
-      const data = await safeFetch(`${BASE}/watch/${encodeURIComponent(episodeId)}`);
-      if (data?.sources?.length) {
-        return res.status(200).json({ sources: data.sources });
+      // AniLibria: GET /title/episode?id=...
+      const data = await safeFetch(`${BASE}/title/episode?id=${encodeURIComponent(episodeId)}`);
+      if (data) {
+        // Ищем 1080p или 720p mp4
+        const hdUrl = data.hls_1080p || data.hls_720p || data.hls_480p || data.hls_360p;
+        if (hdUrl) {
+          // AniLibria отдает прямые ссылки на .mp4/.m3u8
+          return res.status(200).json({
+            sources: [
+              { file: hdUrl, quality: hdUrl.includes('1080') ? '1080p' : '720p', type: 'hls' }
+            ]
+          });
+        }
       }
       return res.status(404).json({ error: 'Видео не найдено' });
     }
