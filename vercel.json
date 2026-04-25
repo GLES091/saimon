@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/anime.js": {
+      "maxDuration": 10
+    }
+  }
+}
