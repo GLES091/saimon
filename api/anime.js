@@ -1,18 +1,15 @@
-// api/anime.js – Vercel serverless function (Node.js)
+// api/anime.js — Vercel serverless function
 export default async function handler(req, res) {
-  // Разрешаем всем доменам (на всякий случай)
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  // --- Парсим параметры вручную (не req.query, потому что это не Next.js) ---
+  // Ручной парсинг параметров (не Next.js, поэтому req.query недоступен)
   const url = new URL(req.url, `http://${req.headers.host}`);
   const action = url.searchParams.get('action');
   const query  = url.searchParams.get('query');
-  // Для watch твой фронтенд передаёт episodeId внутри параметра query
   const episodeId = (action === 'watch') ? query : url.searchParams.get('episodeId');
-  const animeId   = (action === 'info') ? query : url.searchParams.get('animeId');
+  const animeId   = (action === 'info')  ? query : url.searchParams.get('animeId');
 
-  // --- Новый рабочий домен AniLibria ---
-  const ANILIBRIA = 'https://api.anilibria.top/v3';
+  const ANILIBRIA = 'https://api.anilibria.top/v3'; // актуальный домен
 
   async function safeFetch(u) {
     const ctrl = new AbortController();
@@ -27,15 +24,17 @@ export default async function handler(req, res) {
       return await r.json();
     } catch (e) {
       clearTimeout(timer);
-      console.error('[AniLibria Proxy] Fetch error:', e.message);
+      console.error('[Proxy] Fetch error:', e.message);
       return null;
     }
   }
 
   try {
-    // ========== ПОИСК ==========
+    // ПОИСК
     if (action === 'search' && query) {
-      const data = await safeFetch(`${ANILIBRIA}/title/search?search=${encodeURIComponent(query.trim())}`);
+      const data = await safeFetch(
+        `${ANILIBRIA}/title/search?search=${encodeURIComponent(query.trim())}`
+      );
       if (Array.isArray(data)) {
         const results = data.map(item => ({
           id: item.id,
@@ -50,10 +49,10 @@ export default async function handler(req, res) {
       return res.status(200).json({ results: [] });
     }
 
-    // ========== ИНФО (эпизоды) ==========
+    // ИНФО (эпизоды)
     if (action === 'info' && animeId) {
       const data = await safeFetch(`${ANILIBRIA}/title?id=${encodeURIComponent(animeId)}`);
-      if (data && data.episodes && data.episodes.length > 0) {
+      if (data?.episodes?.length) {
         const episodes = data.episodes.map(ep => ({
           id: ep.id,
           number: ep.episode
@@ -63,13 +62,15 @@ export default async function handler(req, res) {
       return res.status(200).json({ episodes: [] });
     }
 
-    // ========== ССЫЛКА НА ВИДЕО ==========
+    // ВИДЕО
     if (action === 'watch' && episodeId) {
       const data = await safeFetch(`${ANILIBRIA}/title/episode?id=${encodeURIComponent(episodeId)}`);
       if (data) {
         const hd = data.hls_1080p || data.hls_720p || data.hls_480p || data.hls_360p;
         if (hd) {
-          return res.status(200).json({ sources: [{ file: hd, quality: 'auto', type: 'hls' }] });
+          return res.status(200).json({
+            sources: [{ file: hd, quality: 'auto', type: 'hls' }]
+          });
         }
       }
       return res.status(404).json({ error: 'Видео не найдено' });
