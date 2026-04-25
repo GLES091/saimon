@@ -1,76 +1,58 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   const { action, query, episodeId } = req.query;
+  const BASE = 'https://api.amvstr.me/api/v2';
 
-  const GOGO = 'https://api.consumet.org/anime/gogoanime';
-  const AMV = 'https://api.amvstr.me/api/v2';
-
-  async function safeFetch(url, retries = 1) {
-    for (let i = 0; i <= retries; i++) {
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 7000);
-        const r = await fetch(url, {
-          signal: controller.signal,
-          headers: { 'User-Agent': 'Mozilla/5.0' }
-        });
-        clearTimeout(timeout);
-        return await r.json();
-      } catch (e) {
-        if (i === retries) throw e;
-      }
+  async function safeFetch(url) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+      });
+      clearTimeout(timeout);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timeout);
+      console.error(`Ошибка запроса к ${url}:`, error.message);
+      return null;
     }
   }
 
   try {
     if (action === 'search' && query) {
-      const clean = encodeURIComponent(query);
-      let data = await safeFetch(`${GOGO}/${clean}`, 0);
-      if (data && data.results && data.results.length > 0) {
-        return res.status(200).json({ source: 'gogo', ...data });
-      }
-      const amvData = await safeFetch(`${AMV}/search?q=${clean}&limit=10`, 0);
-      if (amvData && amvData.results && amvData.results.length > 0) {
-        const results = amvData.results.map(item => ({
+      const clean = encodeURIComponent(query.trim());
+      const data = await safeFetch(`${BASE}/search?q=${clean}&limit=12`);
+      if (data?.results?.length) {
+        const results = data.results.map(item => ({
           id: item.id,
-          title: item.title.romaji || item.title.english || item.title.native,
-          releaseDate: item.releaseDate,
-          image: item.coverImage?.large || item.coverImage?.medium,
-          url: item.url
+          title: item.title.romaji || item.title.english || item.title.native || 'Без названия',
+          releaseDate: item.year || item.releaseDate || '?',
+          image: item.coverImage?.large || item.coverImage?.medium || ''
         }));
-        return res.status(200).json({ source: 'amvstrm', results });
+        return res.status(200).json({ results });
       }
       return res.status(200).json({ results: [] });
     }
 
     if (action === 'info' && query) {
-      const id = encodeURIComponent(query);
-      let data = await safeFetch(`${GOGO}/info/${id}`, 0);
-      if (data && data.episodes && data.episodes.length > 0) {
-        return res.status(200).json({ source: 'gogo', ...data });
-      }
-      const amvData = await safeFetch(`${AMV}/anime/${id}`, 0);
-      if (amvData && amvData.episodes && amvData.episodes.length > 0) {
-        return res.status(200).json({ source: 'amvstrm', episodes: amvData.episodes });
-      }
+      const animeId = encodeURIComponent(query);
+      const data = await safeFetch(`${BASE}/anime/${animeId}`);
+      if (data?.episodes?.length) return res.status(200).json({ episodes: data.episodes });
       return res.status(200).json({ episodes: [] });
     }
 
     if (action === 'watch' && episodeId) {
       const epId = encodeURIComponent(episodeId);
-      let data = await safeFetch(`${GOGO}/watch/${epId}`, 0);
-      if (data && data.sources && data.sources.length > 0) {
-        return res.status(200).json({ source: 'gogo', ...data });
-      }
-      const amvData = await safeFetch(`${AMV}/episode/${epId}`, 0);
-      if (amvData && amvData.sources && amvData.sources.length > 0) {
-        return res.status(200).json({ source: 'amvstrm', ...amvData });
-      }
+      const data = await safeFetch(`${BASE}/episode/${epId}`);
+      if (data?.sources?.length) return res.status(200).json({ sources: data.sources });
       return res.status(404).json({ error: 'Видео не найдено' });
     }
 
     return res.status(400).json({ error: 'Неверные параметры' });
   } catch (e) {
-    return res.status(500).json({ error: 'Ошибка сервера', message: e.message });
+    return res.status(500).json({ error: 'Внутренняя ошибка сервера', message: e.message });
   }
 }
