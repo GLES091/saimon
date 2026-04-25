@@ -8,7 +8,6 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"GOD_AE86","alternateName":"resivert","url":"https://t.me/GOD_AE86"}</script>
   <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  <!-- ArtPlayer CSS/JS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
   <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -551,7 +550,7 @@
     .neko-corner img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
     .neko-corner:hover img { transform:scale(1.18); }
 
-    /* Аниме‑каталог (топ/поиск) */
+    /* Аниме‑каталог + плеер */
     .anime-grid {
       display:grid;
       grid-template-columns:repeat(auto-fill, minmax(145px,1fr));
@@ -594,8 +593,13 @@
       margin-top: 0.15rem;
     }
 
-    /* Плеер и управление */
-    .episode-list {
+    .player-view {
+      display: none;
+    }
+    .back-btn {
+      margin-bottom: 1rem;
+    }
+    #episodeList {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
@@ -653,7 +657,6 @@
       <div class="tab"        data-tab="music">🎀 Музыка</div>
       <div class="tab"        data-tab="gallery">🎴 Галерея</div>
       <div class="tab"        data-tab="anime">🎌 Аниме</div>
-      <div class="tab"        data-tab="watch">▶️ Смотреть</div>
     </nav>
 
     <!-- Био -->
@@ -754,36 +757,29 @@
       </div>
     </div>
 
-    <!-- 🎌 Аниме-каталог (топ/поиск) -->
+    <!-- 🎌 Аниме (каталог + плеер) -->
     <div class="tab-content" id="tab-anime">
       <div class="card">
-        <div class="gallery-title">🎌 Аниме-каталог</div>
-        <p class="gallery-sub">Топ популярных + поиск (данные MyAnimeList через Jikan API)</p>
-        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-          <input type="text" id="animeSearch" placeholder="Название аниме..."
-                 style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
-                        background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
-          <button class="btn btn-primary" id="animeSearchBtn">🔍 Искать</button>
+        <div id="catalogView">
+          <div class="gallery-title">🎌 Аниме-каталог</div>
+          <p class="gallery-sub">Топ популярных + поиск (MyAnimeList). Нажми на карточку для просмотра.</p>
+          <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            <input type="text" id="animeSearch" placeholder="Название аниме..."
+                   style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
+                          background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
+            <button class="btn btn-primary" id="animeSearchBtn">🔍 Искать</button>
+          </div>
+          <div id="animeResults" class="anime-grid"></div>
         </div>
-        <div id="animeResults" class="anime-grid"></div>
-      </div>
-    </div>
 
-    <!-- ▶️ Смотреть (поиск → эпизоды → плеер) -->
-    <div class="tab-content" id="tab-watch">
-      <div class="card">
-        <div class="gallery-title">▶️ Смотреть аниме</div>
-        <p class="gallery-sub">Поиск через GogoAnime (Consumet) — выбери аниме, затем серию</p>
-        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-          <input type="text" id="watchSearch" placeholder="Название аниме..."
-                 style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
-                        background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
-          <button class="btn btn-primary" id="watchSearchBtn">🔍 Искать</button>
-        </div>
-        <div id="watchResults" style="display:flex; flex-direction:column; gap:0.4rem;"></div>
-        <div id="episodeList" class="episode-list"></div>
-        <div id="playerContainer" style="display:none;">
-          <div id="artplayer"></div>
+        <div id="playerView" class="player-view">
+          <button class="btn btn-outline back-btn" id="backToCatalog">← Назад к каталогу</button>
+          <div class="gallery-title" id="selectedAnimeTitle"></div>
+          <div id="gogoResults" style="display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem;"></div>
+          <div id="episodeList"></div>
+          <div id="playerContainer" style="display:none;">
+            <div id="artplayer"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1013,12 +1009,52 @@ fetchNeko();
 setInterval(fetchNeko, 30000);
 
 /* ═══════════════════════════════════════════
-   🎌 АНИМЕ-КАТАЛОГ (Jikan API v4)
+   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР
 ════════════════════════════════════════════ */
 const animeSearch = document.getElementById('animeSearch');
 const animeSearchBtn = document.getElementById('animeSearchBtn');
 const animeResults = document.getElementById('animeResults');
+const catalogView = document.getElementById('catalogView');
+const playerView = document.getElementById('playerView');
+const backBtn = document.getElementById('backToCatalog');
+const selectedTitle = document.getElementById('selectedAnimeTitle');
+const gogoResults = document.getElementById('gogoResults');
+const episodeList = document.getElementById('episodeList');
+const playerContainer = document.getElementById('playerContainer');
+const artplayerDiv = document.getElementById('artplayer');
+let artPlayerInstance = null;
 
+// API helper
+async function fetchFromApi(action, param) {
+  const url = `/api/anime?action=${action}&query=${encodeURIComponent(param)}`;
+  const res = await fetch(url);
+  return await res.json();
+}
+
+// Переключение между каталогом и плеером
+function showCatalog() {
+  catalogView.style.display = 'block';
+  playerView.style.display = 'none';
+  // сбросим плеер
+  if (artPlayerInstance) {
+    artPlayerInstance.destroy();
+    artPlayerInstance = null;
+  }
+  document.getElementById('playerContainer').style.display = 'none';
+}
+
+function showPlayerView(title) {
+  catalogView.style.display = 'none';
+  playerView.style.display = 'block';
+  selectedTitle.textContent = title || '';
+  gogoResults.innerHTML = '';
+  episodeList.innerHTML = '';
+  document.getElementById('playerContainer').style.display = 'none';
+}
+
+backBtn.addEventListener('click', showCatalog);
+
+// Загрузка топа аниме (Jikan)
 async function loadTopAnime() {
   if (animeResults.children.length > 0) return;
   animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">✨ Загружаем топ аниме...</p>';
@@ -1026,7 +1062,7 @@ async function loadTopAnime() {
     const resp = await fetch('https://api.jikan.moe/v4/top/anime?limit=20');
     const data = await resp.json();
     if (data.data && data.data.length) {
-      renderAnimeCards(data.data, animeResults);
+      renderAnimeCards(data.data);
     } else {
       animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
     }
@@ -1035,13 +1071,14 @@ async function loadTopAnime() {
   }
 }
 
+// Поиск аниме (Jikan)
 async function searchAnimeCatalog(query) {
   animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем «'+query+'»...</p>';
   try {
     const resp = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=20`);
     const data = await resp.json();
     if (data.data && data.data.length) {
-      renderAnimeCards(data.data, animeResults);
+      renderAnimeCards(data.data);
     } else {
       animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
     }
@@ -1050,8 +1087,9 @@ async function searchAnimeCatalog(query) {
   }
 }
 
-function renderAnimeCards(list, container) {
-  container.innerHTML = '';
+// Отрисовка карточек аниме (из Jikan)
+function renderAnimeCards(list) {
+  animeResults.innerHTML = '';
   list.forEach(anime => {
     const card = document.createElement('div');
     card.className = 'anime-card';
@@ -1063,64 +1101,42 @@ function renderAnimeCards(list, container) {
         <div class="meta">${anime.year || '?'} · ${anime.type || ''}</div>
       </div>
     `;
-    card.addEventListener('click', () => window.open(anime.url, '_blank'));
-    container.appendChild(card);
+    // При клике ищем это аниме через Consumet
+    card.addEventListener('click', () => {
+      showPlayerView(anime.title);
+      searchOnGogo(anime.title);
+    });
+    animeResults.appendChild(card);
   });
 }
 
-animeSearchBtn.addEventListener('click', () => {
-  const q = animeSearch.value.trim();
-  if (q) searchAnimeCatalog(q);
-});
-animeSearch.addEventListener('keypress', e => {
-  if (e.key === 'Enter') animeSearchBtn.click();
-});
-
-/* ═══════════════════════════════════════════
-   ▶️ ПРОСМОТР АНИМЕ (Consumet через наш API)
-════════════════════════════════════════════ */
-let artPlayerInstance = null;
-
-// Вызов нашей серверной функции
-async function fetchFromApi(action, param) {
-  const url = `/api/anime?action=${action}&query=${encodeURIComponent(param)}`;
-  const res = await fetch(url);
-  return await res.json();
-}
-
-// Поиск
-const watchSearch = document.getElementById('watchSearch');
-const watchSearchBtn = document.getElementById('watchSearchBtn');
-const watchResults = document.getElementById('watchResults');
-const episodeList = document.getElementById('episodeList');
-const playerContainer = document.getElementById('playerContainer');
-const artplayerDiv = document.getElementById('artplayer');
-
-watchSearchBtn.addEventListener('click', async () => {
-  const q = watchSearch.value.trim();
-  if (!q) return;
-  watchResults.innerHTML = '✨ Ищем...';
+// Поиск на GogoAnime (через наше API)
+async function searchOnGogo(query) {
+  gogoResults.innerHTML = '🔎 Ищем на GogoAnime...';
   try {
-    const data = await fetchFromApi('search', q);
+    const data = await fetchFromApi('search', query);
     if (!data.results || data.results.length === 0) {
-      watchResults.innerHTML = '❌ Ничего не найдено';
+      gogoResults.innerHTML = '❌ Ничего не найдено на GogoAnime';
       return;
     }
-    watchResults.innerHTML = '';
-    data.results.slice(0, 10).forEach(anime => {
+    gogoResults.innerHTML = '';
+    data.results.slice(0, 8).forEach(anime => {
       const btn = document.createElement('button');
       btn.className = 'btn btn-outline';
       btn.style.textAlign = 'left';
       btn.textContent = `${anime.title} (${anime.releaseDate || '?'})`;
-      btn.addEventListener('click', () => loadEpisodes(anime.id));
-      watchResults.appendChild(btn);
+      btn.addEventListener('click', () => {
+        selectedTitle.textContent = anime.title;
+        loadEpisodes(anime.id);
+      });
+      gogoResults.appendChild(btn);
     });
   } catch (e) {
-    watchResults.innerHTML = '⚠️ Ошибка загрузки';
+    gogoResults.innerHTML = '⚠️ Ошибка поиска';
   }
-});
+}
 
-// Загрузка эпизодов для выбранного аниме
+// Загрузка эпизодов
 async function loadEpisodes(animeId) {
   episodeList.innerHTML = 'Загружаем эпизоды...';
   try {
@@ -1169,9 +1185,13 @@ async function watchEpisode(episodeId) {
   }
 }
 
-// Поиск по Enter
-watchSearch.addEventListener('keypress', e => {
-  if (e.key === 'Enter') watchSearchBtn.click();
+// Обработчики поиска
+animeSearchBtn.addEventListener('click', () => {
+  const q = animeSearch.value.trim();
+  if (q) searchAnimeCatalog(q);
+});
+animeSearch.addEventListener('keypress', e => {
+  if (e.key === 'Enter') animeSearchBtn.click();
 });
 </script>
 
