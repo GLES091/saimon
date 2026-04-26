@@ -433,9 +433,38 @@
     .gallery-sub { color:var(--muted); font-size:.83rem; margin-bottom:1rem; }
     .anime-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 1rem;
-      margin-top: 0.5rem;
+      margin-top: 0.3rem;
+    }
+
+    .anime-card-img-wrap {
+      position: relative;
+    }
+
+    .ep-badge {
+      position: absolute;
+      bottom: 6px; left: 6px;
+      background: rgba(30,10,50,.75);
+      color: var(--accent);
+      font-size: .62rem; font-weight: 800;
+      padding: .15rem .45rem;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,183,197,.25);
+    }
+
+    .anime-type {
+      font-size: .68rem;
+      color: var(--purple);
+      font-weight: 700;
+      margin-top: .1rem;
+    }
+
+    .btn.ep-active {
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: #fff;
+      border-color: transparent;
     }
 
     #gallery {
@@ -622,28 +651,67 @@
 
     <!-- 🎌 Аниме (каталог + плеер) -->
     <div class="tab-content" id="tab-anime">
-      <div class="card">
-        <div id="catalogView">
-          <div class="gallery-title">🎌 Аниме-каталог</div>
-          <p class="gallery-sub">Поиск через мой HiAnime API</p>
-          <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-            <input type="text" id="animeSearch" placeholder="Название аниме..."
-                   style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
-                          background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
-            <button class="btn btn-primary" id="animeSearchBtn">🔍 Искать</button>
+
+      <!-- Каталог -->
+      <div id="catalogView">
+
+        <!-- Строка поиска -->
+        <div class="card" style="padding:1.2rem 1.5rem;">
+          <div style="display:flex; gap:0.5rem;">
+            <input type="text" id="animeSearch" placeholder="🔍 Поиск аниме..."
+                   style="flex:1; padding:0.75rem 1rem; border-radius:14px;
+                          border:1.5px solid var(--border);
+                          background:rgba(199,125,255,.07);
+                          color:var(--text); font-family:var(--fb); font-size:.9rem;
+                          outline:none; transition:border-color .2s;"
+                   onfocus="this.style.borderColor='var(--accent)'"
+                   onblur="this.style.borderColor='var(--border)'">
+            <button class="btn btn-primary" id="animeSearchBtn">Найти</button>
           </div>
-          <div id="animeResults" class="anime-grid"></div>
         </div>
 
-        <div id="playerView" class="player-view">
-          <button class="btn btn-outline back-btn" id="backToCatalog">← Назад к каталогу</button>
-          <div class="gallery-title" id="selectedAnimeTitle"></div>
-          <div id="episodeList"></div>
-          <div id="playerContainer" style="display:none;">
-            <div id="artplayer"></div>
+        <!-- Результаты поиска -->
+        <div id="searchSection" style="display:none;">
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+              <div class="gallery-title" style="margin:0;">🔍 Результаты</div>
+              <button class="btn btn-outline" id="clearSearchBtn" style="padding:.4rem .9rem;font-size:.75rem;">✕ Закрыть</button>
+            </div>
+            <div id="animeResults" class="anime-grid"></div>
           </div>
         </div>
+
+        <!-- Новинки -->
+        <div class="card" id="latestSection">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+            <div class="gallery-title" style="margin:0;">🆕 Свежие серии</div>
+            <span id="latestLoader" style="color:var(--muted);font-size:.8rem;">⏳ Загрузка...</span>
+          </div>
+          <div id="latestGrid" class="anime-grid"></div>
+        </div>
+
+        <!-- Трендовые -->
+        <div class="card" id="trendingSection">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+            <div class="gallery-title" style="margin:0;">🔥 Трендовые</div>
+            <span id="trendingLoader" style="color:var(--muted);font-size:.8rem;">⏳ Загрузка...</span>
+          </div>
+          <div id="trendingGrid" class="anime-grid"></div>
+        </div>
+
+      </div><!-- /catalogView -->
+
+      <!-- Плеер -->
+      <div id="playerView" class="player-view">
+        <div class="card">
+          <button class="btn btn-outline back-btn" id="backToCatalog">← Назад к каталогу</button>
+          <div class="gallery-title" id="selectedAnimeTitle"></div>
+          <p style="color:var(--muted);font-size:.8rem;margin-bottom:.5rem;">Выбери серию для просмотра</p>
+          <div id="episodeList"></div>
+          <div id="playerContainer"></div>
+        </div>
       </div>
+
     </div>
 
     <!-- Музыка -->
@@ -819,160 +887,252 @@ document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
 setInterval(fetchNeko,30000);
 
-/* ═══════════════════════════════════════════
-   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР (исправленный)
-════════════════════════════════════════════ */
-const animeSearch = document.getElementById('animeSearch'),
+/* ═══════════════════════════════════════════════════
+   🎌 АНИМЕ — главная с новинками + поиск + плеер
+═══════════════════════════════════════════════════ */
+
+const PLACEHOLDER_IMG = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="#22133a" width="200" height="280"/><text x="100" y="145" text-anchor="middle" fill="#c77dff" font-size="40">🎌</text></svg>'
+);
+
+const animeSearch    = document.getElementById('animeSearch'),
       animeSearchBtn = document.getElementById('animeSearchBtn'),
-      animeResults = document.getElementById('animeResults'),
-      catalogView = document.getElementById('catalogView'),
-      playerView = document.getElementById('playerView'),
-      backBtn = document.getElementById('backToCatalog'),
-      selectedTitle = document.getElementById('selectedAnimeTitle'),
-      episodeList = document.getElementById('episodeList'),
-      playerContainer = document.getElementById('playerContainer');
+      animeResults   = document.getElementById('animeResults'),
+      searchSection  = document.getElementById('searchSection'),
+      clearSearchBtn = document.getElementById('clearSearchBtn'),
+      catalogView    = document.getElementById('catalogView'),
+      playerView     = document.getElementById('playerView'),
+      backBtn        = document.getElementById('backToCatalog'),
+      selectedTitle  = document.getElementById('selectedAnimeTitle'),
+      episodeList    = document.getElementById('episodeList'),
+      playerContainer= document.getElementById('playerContainer'),
+      latestGrid     = document.getElementById('latestGrid'),
+      trendingGrid   = document.getElementById('trendingGrid'),
+      latestLoader   = document.getElementById('latestLoader'),
+      trendingLoader = document.getElementById('trendingLoader');
+
 let artPlayerInstance = null;
+let homeLoaded = false;
 
-// Исправленная функция запроса к нашему API
-async function fetchFromApi(action, param) {
-  const res = await fetch(`/api/anime?action=${action}&query=${encodeURIComponent(param)}`);
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`API error ${res.status}: ${text.slice(0, 100)}`);
+/* ── API helper ── */
+async function fetchFromApi(action, param = '') {
+  const url = `/api/anime?action=${action}&query=${encodeURIComponent(param)}`;
+  const r = await fetch(url);
+  if (!r.ok) {
+    const t = await r.text().catch(() => '');
+    throw new Error(`API ${r.status}: ${t.slice(0,120)}`);
   }
-  return res.json();
+  return r.json();
 }
 
-function showCatalog() {
-  catalogView.style.display = 'block';
-  playerView.style.display = 'none';
-  if(artPlayerInstance){ artPlayerInstance.destroy(); artPlayerInstance=null; }
-  playerContainer.style.display = 'none';
+/* ── Карточка аниме ── */
+function makeCard(anime, onClick) {
+  const badge = anime.episodes?.sub ? `<div class="ep-badge">SUB ${anime.episodes.sub}</div>` : '';
+  const typeTag = anime.type ? `<div class="anime-type">${anime.type}</div>` : '';
+  const card = document.createElement('div');
+  card.className = 'anime-card';
+  card.innerHTML = `
+    <div class="anime-card-img-wrap">
+      <img src="${anime.image || PLACEHOLDER_IMG}" alt="${anime.title}" loading="lazy"
+           onerror="this.src='${PLACEHOLDER_IMG}'">
+      ${badge}
+    </div>
+    <div class="info">
+      <div class="title" title="${anime.title}">${anime.title}</div>
+      ${typeTag}
+    </div>`;
+  card.addEventListener('click', onClick);
+  return card;
 }
-function showPlayerView(title) {
-  catalogView.style.display = 'none';
-  playerView.style.display = 'block';
-  selectedTitle.textContent = title || '';
-  episodeList.innerHTML = '';
-  playerContainer.style.display = 'none';
-}
-backBtn.addEventListener('click', showCatalog);
 
-async function searchAnimeCatalog(query) {
-  if (!query) {
-    animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Введите название для поиска</p>';
+function renderGrid(grid, list, loaderEl) {
+  if (loaderEl) loaderEl.textContent = '';
+  grid.innerHTML = '';
+  if (!list?.length) {
+    grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;padding:.5rem 0;">Ничего не найдено</p>';
     return;
   }
-  animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем...</p>';
-  try {
-    const data = await fetchFromApi('search', query);
-    if(data.results?.length) {
-      renderAnimeCards(data.results);
-    } else {
-      animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
-    }
-  } catch(e) {
-    console.error(e);
-    animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка поиска</p>';
-  }
-}
-
-function renderAnimeCards(list){
-  animeResults.innerHTML = '';
   list.forEach(anime => {
-    const card = document.createElement('div');
-    card.className = 'anime-card';
-    card.innerHTML = `
-      <img src="${anime.image}" alt="${anime.title}" loading="lazy"
-           onerror="this.src='data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 3"><rect fill="#22133a" width="2" height="3"/></svg>')}'">
-      <div class="info">
-        <div class="title" title="${anime.title}">${anime.title}</div>
-        <div class="meta">ID: ${anime.id}</div>
-      </div>
-    `;
-    card.addEventListener('click', ()=>{
+    if (!anime.id) return;
+    grid.appendChild(makeCard(anime, () => {
       showPlayerView(anime.title);
       loadEpisodes(anime.id);
-    });
-    animeResults.appendChild(card);
+    }));
   });
 }
 
-async function loadEpisodes(animeId){
-  episodeList.innerHTML = 'Загружаем серии...';
+/* ── Главная: новинки и тренды ── */
+async function loadHome() {
+  if (homeLoaded) return;
+  homeLoaded = true;
   try {
-    const data = await fetchFromApi('info', animeId);
-    if(data.episodes?.length){
-      episodeList.innerHTML = '';
-      data.episodes.forEach(ep => {
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-outline';
-        btn.textContent = `Серия ${ep.number}`;
-        btn.addEventListener('click', ()=> watchEpisode(ep.id));
-        episodeList.appendChild(btn);
-      });
-    } else episodeList.innerHTML = 'Серии не найдены';
+    const data = await fetchFromApi('home');
+    renderGrid(latestGrid,   data.latest,   latestLoader);
+    renderGrid(trendingGrid, data.trending, trendingLoader);
   } catch(e) {
-    console.error(e);
-    episodeList.innerHTML = 'Ошибка загрузки серий';
+    console.error('[HOME]', e);
+    latestLoader.textContent  = '⚠ Ошибка загрузки';
+    trendingLoader.textContent= '⚠ Ошибка загрузки';
   }
 }
 
-async function watchEpisode(episodeId){
-  playerContainer.style.display='block';
-  playerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+/* ── Поиск ── */
+async function doSearch(q) {
+  if (!q) return;
+  searchSection.style.display = 'block';
+  animeResults.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">🔍 Ищем «' + q + '»...</p>';
+  searchSection.scrollIntoView({ behavior:'smooth', block:'start' });
+  try {
+    const data = await fetchFromApi('search', q);
+    if (data.results?.length) {
+      renderGrid(animeResults, data.results, null);
+    } else {
+      animeResults.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Ничего не найдено по запросу «' + q + '»</p>';
+    }
+  } catch(e) {
+    console.error('[SEARCH]', e);
+    animeResults.innerHTML = '<p style="color:#ff8fa3;grid-column:1/-1;">❌ Ошибка поиска: ' + e.message + '</p>';
+  }
+}
 
-  playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)">⏳ Загружаем стрим...</div>';
+clearSearchBtn.addEventListener('click', () => {
+  searchSection.style.display = 'none';
+  animeSearch.value = '';
+});
 
-  let url = null, subs = [];
+animeSearchBtn.addEventListener('click', () => doSearch(animeSearch.value.trim()));
+animeSearch.addEventListener('keypress', e => { if(e.key === 'Enter') doSearch(animeSearch.value.trim()); });
+
+/* ── Навигация каталог ↔ плеер ── */
+function showCatalog() {
+  catalogView.style.display = 'block';
+  playerView.style.display  = 'none';
+  if (artPlayerInstance) { try { artPlayerInstance.destroy(); } catch(_){} artPlayerInstance = null; }
+  playerContainer.innerHTML = '';
+}
+
+function showPlayerView(title) {
+  catalogView.style.display = 'none';
+  playerView.style.display  = 'block';
+  selectedTitle.textContent = title || '';
+  episodeList.innerHTML     = '';
+  playerContainer.innerHTML = '';
+  playerView.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+backBtn.addEventListener('click', showCatalog);
+
+/* ── Загрузка серий ── */
+async function loadEpisodes(animeId) {
+  episodeList.innerHTML = '<span style="color:var(--muted);font-size:.85rem;">⏳ Загружаем серии...</span>';
+  try {
+    const data = await fetchFromApi('info', animeId);
+    if (!data.episodes?.length) {
+      episodeList.innerHTML = '<span style="color:var(--muted);">Серии не найдены</span>';
+      return;
+    }
+    episodeList.innerHTML = '';
+    // Группируем по 50 серий если много
+    const eps = data.episodes;
+    if (eps.length > 50) {
+      const chunks = [];
+      for (let i = 0; i < eps.length; i += 50) chunks.push(eps.slice(i, i+50));
+      const sel = document.createElement('div');
+      sel.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.8rem;';
+      chunks.forEach((chunk, ci) => {
+        const b = document.createElement('button');
+        b.className = 'btn btn-outline';
+        b.style.fontSize = '.75rem';
+        b.textContent = `${chunk[0].number}–${chunk[chunk.length-1].number}`;
+        b.addEventListener('click', () => { renderEpisodes(chunk); b.style.background='rgba(255,183,197,.2)'; });
+        sel.appendChild(b);
+      });
+      episodeList.appendChild(sel);
+      renderEpisodes(eps.slice(0, 50));
+    } else {
+      renderEpisodes(eps);
+    }
+  } catch(e) {
+    console.error('[EPISODES]', e);
+    episodeList.innerHTML = '<span style="color:#ff8fa3;">❌ Ошибка загрузки серий</span>';
+  }
+}
+
+function renderEpisodes(eps) {
+  const wrap = episodeList.querySelector('.ep-buttons') || (() => {
+    const d = document.createElement('div');
+    d.className = 'ep-buttons';
+    d.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;';
+    episodeList.appendChild(d);
+    return d;
+  })();
+  wrap.innerHTML = '';
+  eps.forEach(ep => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-outline';
+    btn.style.cssText = 'font-size:.75rem;padding:.45rem .8rem;min-width:52px;';
+    btn.textContent = ep.number;
+    btn.title = ep.title || `Серия ${ep.number}`;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ep-buttons .btn').forEach(b => b.classList.remove('ep-active'));
+      btn.classList.add('ep-active');
+      watchEpisode(ep.id);
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+/* ── Воспроизведение ── */
+async function watchEpisode(episodeId) {
+  playerContainer.innerHTML = '<div style="text-align:center;padding:2.5rem;color:var(--muted);">⏳ Загружаем стрим...</div>';
+  playerContainer.scrollIntoView({ behavior:'smooth', block:'start' });
+
+  let streamUrl = null, subs = [];
   try {
     const data = await fetchFromApi('watch', episodeId);
-    if(data.sources?.length) url = data.sources[0].file;
-    if(data.subtitles?.length) subs = data.subtitles;
-    if(!url) { playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff8fa3">❌ Видео недоступно для этой серии</div>'; return; }
+    if (data.sources?.length) streamUrl = data.sources[0].file;
+    if (data.subtitles?.length) subs = data.subtitles;
   } catch(e) {
-    playerContainer.innerHTML = `<div style="text-align:center;padding:2rem;color:#ff8fa3">❌ Ошибка: ${e.message}</div>`;
+    playerContainer.innerHTML = `<div style="text-align:center;padding:2rem;color:#ff8fa3;">❌ Ошибка: ${e.message}</div>`;
     return;
   }
 
-  playerContainer.innerHTML = '<div id="artplayer" style="width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;"></div>';
+  if (!streamUrl) {
+    playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff8fa3;">❌ Видео недоступно для этой серии</div>';
+    return;
+  }
 
-  if(artPlayerInstance){ try { artPlayerInstance.destroy(); } catch(_){} artPlayerInstance=null; }
+  playerContainer.innerHTML = '<div id="artplayer" style="width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;"></div>';
 
-  // Субтитры для ArtPlayer
-  const subtitleList = subs.map(s => ({ url: s.file, name: s.label, default: s.default }));
+  if (artPlayerInstance) { try { artPlayerInstance.destroy(); } catch(_){} artPlayerInstance = null; }
 
   artPlayerInstance = new Artplayer({
     container: '#artplayer',
-    url: url,
+    url: streamUrl,
     autoplay: true,
     theme: '#ffb7c5',
     settings: true,
     fullscreen: true,
     pip: true,
-    subtitle: subtitleList.length > 0 ? { url: subtitleList[0].url, type: 'vtt', encoding: 'utf-8' } : undefined,
+    ...(subs.length > 0 && { subtitle: { url: subs[0].file, type: 'vtt', encoding: 'utf-8' } }),
     customType: {
-      m3u8: function(video, src) {
+      m3u8(video, src) {
         if (typeof Hls !== 'undefined' && Hls.isSupported()) {
-          const hls = new Hls({ enableWorker: true, lowLatencyMode: false });
+          const hls = new Hls({ enableWorker: true });
           hls.loadSource(src);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
           video.src = src;
-        } else {
-          artPlayerInstance.notice.show('HLS не поддерживается в этом браузере');
         }
       },
     },
-    type: url.includes('.m3u8') ? 'm3u8' : '',
+    type: streamUrl.includes('.m3u8') ? 'm3u8' : '',
   });
 }
 
-animeSearchBtn.addEventListener('click', ()=>{
-  searchAnimeCatalog(animeSearch.value.trim());
-});
-animeSearch.addEventListener('keypress', e => { if(e.key==='Enter') animeSearchBtn.click(); });
+/* ── Автозагрузка при открытии вкладки Аниме ── */
+document.querySelector('[data-tab="anime"]').addEventListener('click', loadHome);
+// Загружаем сразу если вкладка уже активна
+if (document.querySelector('[data-tab="anime"]').classList.contains('active')) loadHome();
 </script>
-</body>
-</html>
