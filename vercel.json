@@ -1,8 +1,7 @@
 {
-  "version": 2,
   "functions": {
     "api/anime.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "nodejs24.x"
     }
   }
 }
