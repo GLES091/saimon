@@ -1,5 +1,6 @@
 // api/anime.js
-const BASE_URL = 'https://dssdsds.vercel.app'; // твой домен API
+// Рабочий публичный API — замени, если хочешь использовать свой
+const BASE_URL = 'https://hianime-api.vercel.app';
 
 async function safeFetch(url) {
   const controller = new AbortController();
@@ -55,7 +56,6 @@ export default async function handler(req, res) {
       const data = await safeFetch(url);
       const episodesRaw = data?.results?.episodes || [];
       const episodes = episodesRaw.map(ep => ({
-        // формируем составной ID для последующих запросов серверов / стрима
         id: `${animeId}?ep=${ep.data_id}`,
         number: ep.episode_no,
       }));
@@ -64,12 +64,11 @@ export default async function handler(req, res) {
 
     // ── ВОСПРОИЗВЕДЕНИЕ (получение ссылки) ──
     if (action === 'watch') {
-      // query = "animeId?ep=epDataId"
       const [animeId, epPart] = query.split('?ep=');
       const epDataId = epPart;
       if (!animeId || !epDataId) return res.status(400).json({ error: 'invalid episode id' });
 
-      // 1. Получаем список серверов
+      // 1. Список серверов
       const servUrl = `${BASE_URL}/api/servers/${encodeURIComponent(animeId)}?ep=${encodeURIComponent(epDataId)}`;
       console.log('[API] GET', servUrl);
       const serversData = await safeFetch(servUrl);
@@ -77,7 +76,7 @@ export default async function handler(req, res) {
       if (servers.length === 0) return res.status(404).json({ error: 'no servers found' });
       const server = servers[0].serverName || servers[0].server_name;
 
-      // 2. Получаем стрим
+      // 2. Стрим
       const streamUrl = `${BASE_URL}/api/stream?id=${encodeURIComponent(query)}&server=${encodeURIComponent(server)}&type=sub`;
       console.log('[API] GET', streamUrl);
       const streamData = await safeFetch(streamUrl);
