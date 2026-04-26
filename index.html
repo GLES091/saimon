@@ -922,50 +922,50 @@ async function watchEpisode(episodeId){
   playerContainer.style.display='block';
   playerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // Показываем индикатор загрузки
   playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)">⏳ Загружаем стрим...</div>';
 
-  let url = null;
+  let url = null, subs = [];
   try {
     const data = await fetchFromApi('watch', episodeId);
     if(data.sources?.length) url = data.sources[0].file;
-    if(!url) { playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff8fa3">❌ Видео недоступно</div>'; return; }
+    if(data.subtitles?.length) subs = data.subtitles;
+    if(!url) { playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff8fa3">❌ Видео недоступно для этой серии</div>'; return; }
   } catch(e) {
-    playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff8fa3">❌ Ошибка воспроизведения</div>';
+    playerContainer.innerHTML = `<div style="text-align:center;padding:2rem;color:#ff8fa3">❌ Ошибка: ${e.message}</div>`;
     return;
   }
 
-  // Пересоздаём контейнер для плеера
   playerContainer.innerHTML = '<div id="artplayer" style="width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;"></div>';
 
   if(artPlayerInstance){ try { artPlayerInstance.destroy(); } catch(_){} artPlayerInstance=null; }
 
-  const isHls = url.includes('.m3u8') || url.includes('m3u8');
+  // Субтитры для ArtPlayer
+  const subtitleList = subs.map(s => ({ url: s.file, name: s.label, default: s.default }));
 
   artPlayerInstance = new Artplayer({
     container: '#artplayer',
-    url: isHls ? '' : url,
-    autoSize: true,
+    url: url,
     autoplay: true,
     theme: '#ffb7c5',
     settings: true,
     fullscreen: true,
     pip: true,
-    ...(isHls && {
-      customType: {
-        m3u8: function(video, url) {
-          if (Hls.isSupported()) {
-            const hls = new Hls({ enableWorker: true });
-            hls.loadSource(url);
-            hls.attachMedia(video);
-          } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = url;
-          }
-        },
+    subtitle: subtitleList.length > 0 ? { url: subtitleList[0].url, type: 'vtt', encoding: 'utf-8' } : undefined,
+    customType: {
+      m3u8: function(video, src) {
+        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+          const hls = new Hls({ enableWorker: true, lowLatencyMode: false });
+          hls.loadSource(src);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = src;
+        } else {
+          artPlayerInstance.notice.show('HLS не поддерживается в этом браузере');
+        }
       },
-      type: 'm3u8',
-      url: url,
-    }),
+    },
+    type: url.includes('.m3u8') ? 'm3u8' : '',
   });
 }
 
