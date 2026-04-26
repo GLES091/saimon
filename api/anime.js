@@ -1,6 +1,5 @@
 // api/anime.js
-// Можно быстро переключиться на свой API, заменив BASE_URL
-const BASE_URL = 'https://aniwatch-api-rouge.vercel.app'; // или твой https://dssdsds.vercel.app
+const BASE_URL = 'https://dssdsds.vercel.app'; // твоё апи
 
 async function safeFetch(url) {
   const controller = new AbortController();
@@ -38,7 +37,9 @@ export default async function handler(req, res) {
       const url = `${BASE_URL}/search?keyword=${encodeURIComponent(query || '')}`;
       console.log('[API] GET', url);
       const data = await safeFetch(url);
-      const results = (Array.isArray(data) ? data : []).map(item => ({
+      // Апи может вернуть { results: [...] } или сразу массив
+      const items = Array.isArray(data) ? data : (data.results || []);
+      const results = items.map(item => ({
         id: item.id,
         title: item.title,
         image: item.image || '',
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
       const url = `${BASE_URL}/episodes/${encodeURIComponent(query)}`;
       console.log('[API] GET', url);
       const data = await safeFetch(url);
-      const episodes = (Array.isArray(data) ? data : []).map(ep => ({
+      const episodes = (Array.isArray(data) ? data : (data.episodes || [])).map(ep => ({
         id: ep.episodeId,
         number: ep.number,
       }));
@@ -58,7 +59,7 @@ export default async function handler(req, res) {
     }
 
     if (action === 'watch') {
-      // Получаем сервера
+      // Сервера
       const servUrl = `${BASE_URL}/servers?id=${encodeURIComponent(query)}`;
       console.log('[API] GET', servUrl);
       const servers = await safeFetch(servUrl);
@@ -67,7 +68,7 @@ export default async function handler(req, res) {
       }
       const server = servers[0].serverName;
 
-      // Получаем стрим
+      // Стрим
       const streamUrl = `${BASE_URL}/stream?id=${encodeURIComponent(query)}&type=sub&server=${encodeURIComponent(server)}`;
       console.log('[API] GET', streamUrl);
       const stream = await safeFetch(streamUrl);
