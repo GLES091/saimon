@@ -753,8 +753,8 @@
     <div class="tab-content" id="tab-anime">
       <div class="card">
         <div id="catalogView">
-          <div class="gallery-title">🎌 Аниме-каталог</div>
-          <p class="gallery-sub">Топ популярных + поиск (MyAnimeList). Нажми на карточку, чтобы перейти к просмотру.</p>
+          <div class="gallery-title">🎌 Аниме-каталог (AnimeGO)</div>
+          <p class="gallery-sub">Ищет через наш сервер-парсер. Нажмите на карточку, чтобы увидеть серии.</p>
           <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
             <input type="text" id="animeSearch" placeholder="Название аниме..."
                    style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
@@ -767,8 +767,6 @@
         <div id="playerView" class="player-view">
           <button class="btn btn-outline back-btn" id="backToCatalog">← Назад к каталогу</button>
           <div class="gallery-title" id="selectedAnimeTitle"></div>
-          <div id="gogoResults" style="display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem;"></div>
-          <button class="btn btn-outline retry-btn" id="retrySearch" style="display:none;">🔄 Попробовать снова</button>
           <div id="episodeList"></div>
           <div id="playerContainer" style="display:none;">
             <div id="artplayer"></div>
@@ -847,7 +845,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
     if (tab.dataset.tab === 'bio') fetchQuote();
-    if (tab.dataset.tab === 'anime') loadTopAnime();
   });
 });
 
@@ -889,7 +886,6 @@ const avatarImg = document.getElementById('avatarImg');
     const r = await fetch(`https://api.waifu.pics/sfw/${t}`);
     if(r.ok){ const d = await r.json(); if(d?.url){ avatarImg.src = d.url; avatarImg.style.opacity='1'; return; } }
   } catch(_){}
-  // fallback
   try {
     const r = await fetch('https://api.waifu.pics/sfw/waifu');
     if(r.ok){ const d = await r.json(); if(d?.url){ avatarImg.src = d.url; avatarImg.style.opacity='1'; } }
@@ -929,7 +925,7 @@ fetchNeko();
 setInterval(fetchNeko,30000);
 
 /* ═══════════════════════════════════════════
-   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР (API animevost)
+   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР (Парсинг AnimeGO)
 ════════════════════════════════════════════ */
 const animeSearch = document.getElementById('animeSearch'),
       animeSearchBtn = document.getElementById('animeSearchBtn'),
@@ -938,10 +934,8 @@ const animeSearch = document.getElementById('animeSearch'),
       playerView = document.getElementById('playerView'),
       backBtn = document.getElementById('backToCatalog'),
       selectedTitle = document.getElementById('selectedAnimeTitle'),
-      gogoResults = document.getElementById('gogoResults'),
       episodeList = document.getElementById('episodeList'),
-      playerContainer = document.getElementById('playerContainer'),
-      retryBtn = document.getElementById('retrySearch');
+      playerContainer = document.getElementById('playerContainer');
 let artPlayerInstance = null;
 
 async function fetchFromApi(action, param) {
@@ -958,107 +952,65 @@ function showPlayerView(title) {
   catalogView.style.display = 'none';
   playerView.style.display = 'block';
   selectedTitle.textContent = title || '';
-  gogoResults.innerHTML = '';
   episodeList.innerHTML = '';
   playerContainer.style.display = 'none';
-  retryBtn.style.display = 'none';
 }
 backBtn.addEventListener('click', showCatalog);
 
-// Загрузка топа (Jikan) — оставлена для удобного поиска
-async function loadTopAnime() {
-  if(animeResults.children.length>0) return;
-  animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">✨ Загружаем топ аниме...</p>';
-  try {
-    const data = await (await fetch('https://api.jikan.moe/v4/top/anime?limit=20')).json();
-    if(data.data?.length) renderAnimeCards(data.data);
-    else animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
-  } catch(e) {
-    animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка загрузки</p>';
-  }
-}
-// Поиск через Jikan
+// Поиск через наш API
 async function searchAnimeCatalog(query) {
-  animeResults.innerHTML = `<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем «${query}»...</p>`;
+  animeResults.innerHTML = `<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем «${query}» на AnimeGO...</p>`;
   try {
-    const data = await (await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=20`)).json();
-    if(data.data?.length) renderAnimeCards(data.data);
-    else animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
+    const data = await fetchFromApi('search', query);
+    if(data.results?.length) {
+      renderAnimeCards(data.results);
+    } else {
+      animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">Ничего не найдено</p>';
+    }
   } catch(e) {
     animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка поиска</p>';
   }
 }
+
 function renderAnimeCards(list){
   animeResults.innerHTML = '';
   list.forEach(anime => {
     const card = document.createElement('div');
     card.className = 'anime-card';
     card.innerHTML = `
-      <img src="${anime.images.jpg.image_url}" alt="${anime.title}" loading="lazy"
+      <img src="${anime.image}" alt="${anime.title}" loading="lazy"
            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 2 3%22%3E%3Crect fill=%22%2322133a%22 width=%222%22 height=%223%22/%3E%3C/svg%3E'">
       <div class="info">
         <div class="title" title="${anime.title}">${anime.title}</div>
-        <div class="meta">${anime.year||'?'} · ${anime.type||''}</div>
       </div>
     `;
     card.addEventListener('click', ()=>{
       showPlayerView(anime.title);
-      searchAnimeOnAmv(anime.title); // ищет через наш API на animevost
+      loadEpisodes(anime.id);
     });
     animeResults.appendChild(card);
   });
 }
 
-// Поиск аниме через наш API (animevost), возвращает URL-идентификаторы
-async function searchAnimeOnAmv(title){
-  gogoResults.innerHTML = '🔎 Ищем на animevost...';
-  retryBtn.style.display='none';
-  try {
-    const clean = title.replace(/\s*\(\d{4}\)\s*/g,'').trim();
-    const data = await fetchFromApi('search', clean);
-    if(data.results?.length){
-      gogoResults.innerHTML = '';
-      data.results.slice(0,8).forEach(anime => {
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-outline';
-        btn.style.textAlign='left';
-        btn.textContent = anime.title; // название как есть с animevost
-        btn.addEventListener('click', ()=>{
-          selectedTitle.textContent = anime.title;
-          loadEpisodes(anime.id); // передаём URL страницы аниме
-        });
-        gogoResults.appendChild(btn);
-      });
-    } else {
-      gogoResults.innerHTML = '❌ Ничего не найдено на animevost.';
-      retryBtn.style.display='inline-block';
-    }
-  } catch(e){
-    gogoResults.innerHTML = '⚠️ Ошибка сети при поиске на animevost';
-    retryBtn.style.display='inline-block';
-  }
-  retryBtn.onclick = ()=> searchAnimeOnAmv(title);
-}
-
-// Загрузка списка серий (animevost)
+// Загрузка списка серий
 async function loadEpisodes(animeId){
   episodeList.innerHTML = 'Загружаем серии...';
   try {
-    const data = await fetchFromApi('info', animeId); // animeId – URL страницы аниме
+    const data = await fetchFromApi('info', animeId);
     if(data.episodes?.length){
       episodeList.innerHTML = '';
-      data.episodes.slice(0,50).forEach(ep => {
+      data.episodes.forEach(ep => {
         const btn = document.createElement('button');
         btn.className = 'btn btn-outline';
-        btn.textContent = ep.number || 'Серия'; // number уже содержит строку (например, "1" или "Серия 1")
-        btn.addEventListener('click', ()=> watchEpisode(ep.id)); // ep.id – URL серии
+        btn.textContent = `Серия ${ep.number}`;
+        btn.addEventListener('click', ()=> watchEpisode(ep.id));
         episodeList.appendChild(btn);
       });
     } else episodeList.innerHTML = 'Серии не найдены';
   } catch(e) { episodeList.innerHTML = 'Ошибка загрузки серий'; }
 }
 
-// Воспроизведение выбранной серии
+// Воспроизведение серии
 async function watchEpisode(episodeId){
   playerContainer.style.display='block';
   if(!artPlayerInstance){
@@ -1071,12 +1023,11 @@ async function watchEpisode(episodeId){
     });
   }
   try {
-    const data = await fetchFromApi('watch', episodeId); // episodeId – URL серии
+    const data = await fetchFromApi('watch', episodeId);
     if(data.sources?.length){
-      const source = data.sources.find(s => s.type==='hls'||s.quality==='default'||s.quality==='720p') || data.sources[0];
-      const url = source?.file || data.sources[0]?.file;
-      if(url){
-        artPlayerInstance.switchUrl(url);
+      const source = data.sources[0];
+      if(source.file){
+        artPlayerInstance.switchUrl(source.file);
         artPlayerInstance.play();
       } else alert('Видео не доступно');
     } else alert('Не удалось получить видео');
