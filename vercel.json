@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/anime.js": {
-      "runtime": "nodejs24.x"
+      "runtime": "nodejs22.x"
     }
   }
 }
