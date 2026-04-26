@@ -1,13 +1,32 @@
 // api/anime.js
-import fetch from 'node-fetch';
+// Используем встроенный fetch (Node.js 18+ на Vercel)
 
-// Твой рабочий HiAnime API
-const BASE = 'https://dssdsds.vercel.app';
+const YOUR_HIANIME_API = 'https://dssdsds.vercel.app'; // твой рабочий парсер
+
+async function safeFetch(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'application/json',
+      },
+    });
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error(`External API ${res.status}`);
+    return res.json();
+  } catch (err) {
+    clearTimeout(timeout);
+    throw err;
+  }
+}
 
 export default async function handler(req, res) {
-  // CORS
+  // CORS и логирование
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  console.log(`[API] Request: action=${req.query.action}, query=${req.query.query}`);
 
   const { action, query } = req.query;
   if (!action) {
@@ -15,13 +34,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ========== ПОИСК ==========
+    // ── ПОИСК ──
     if (action === 'search') {
-      const url = `${BASE}/search?keyword=${encodeURIComponent(query || '')}`;
-      console.log('[API] search =>', url);
-      const apiRes = await fetch(url);
-      if (!apiRes.ok) throw new Error(`HiAnime search error: ${apiRes.status}`);
-      const data = await apiRes.json();
+      const data = await safeFetch(`${YOUR_HIANIME_API}/search?keyword=${encodeURIComponent(query || '')}`);
       const results = (Array.isArray(data) ? data : []).map(item => ({
         id: item.id,
         title: item.title,
@@ -30,13 +45,9 @@ export default async function handler(req, res) {
       return res.status(200).json({ results });
     }
 
-    // ========== ЭПИЗОДЫ ==========
+    // ── ЭПИЗОДЫ ──
     if (action === 'info') {
-      const url = `${BASE}/episodes/${encodeURIComponent(query)}`;
-      console.log('[API] episodes =>', url);
-      const apiRes = await fetch(url);
-      if (!apiRes.ok) throw new Error(`HiAnime episodes error: ${apiRes.status}`);
-      const data = await apiRes.json();
+      const data = await safeFetch(`${YOUR_HIANIME_API}/episodes/${encodeURIComponent(query)}`);
       const episodes = (Array.isArray(data) ? data : []).map(ep => ({
         id: ep.episodeId,
         number: ep.number,
@@ -44,36 +55,23 @@ export default async function handler(req, res) {
       return res.status(200).json({ episodes });
     }
 
-    // ========== ВИДЕО ==========
+    // ── ВИДЕО ──
     if (action === 'watch') {
-      // 1. Сервера
-      const serversUrl = `${BASE}/servers?id=${encodeURIComponent(query)}`;
-      console.log('[API] servers =>', serversUrl);
-      const servRes = await fetch(serversUrl);
-      if (!servRes.ok) throw new Error(`Servers error: ${servRes.status}`);
-      const servers = await servRes.json();
-      if (!Array.isArray(servers) || servers.length === 0) {
+      const servers = await safeFetch(`${YOUR_HIANIME_API}/servers?id=${encodeURIComponent(query)}`);
+      if (!Array.isArray(servers) || !servers.length) {
         return res.status(404).json({ error: 'servers not found' });
       }
       const server = servers[0].serverName;
-
-      // 2. Стрим
-      const streamUrl = `${BASE}/stream?id=${encodeURIComponent(query)}&type=sub&server=${encodeURIComponent(server)}`;
-      console.log('[API] stream =>', streamUrl);
-      const streamRes = await fetch(streamUrl);
-      if (!streamRes.ok) throw new Error(`Stream error: ${streamRes.status}`);
-      const stream = await streamRes.json();
-      if (!stream.link) {
-        return res.status(404).json({ error: 'stream link not found' });
-      }
-      return res.status(200).json({
-        sources: [{ file: stream.link, quality: 'auto', type: 'hls' }],
-      });
+      const stream = await safeFetch(
+        `${YOUR_HIANIME_API}/stream?id=${encodeURIComponent(query)}&type=sub&server=${encodeURIComponent(server)}`
+      );
+      if (!stream.link) return res.status(404).json({ error: 'stream link not found' });
+      return res.status(200).json({ sources: [{ file: stream.link, quality: 'auto', type: 'hls' }] });
     }
 
     return res.status(400).json({ error: 'unknown action' });
   } catch (error) {
-    console.error('[API] FATAL ERROR:', error.message);
+    console.error(`[API] Error: ${error.message}`);
     return res.status(500).json({ error: error.message });
   }
 }
