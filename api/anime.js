@@ -1,13 +1,15 @@
 // api/anime.js
 import * as cheerio from 'cheerio';
 
+// Основной домен источника
+const BASE = 'https://animego.org';
+
 /**
- * Безопасный fetch с таймаутом 8 секунд
+ * Безопасный fetch с таймаутом 8 секунд и "живыми" заголовками
  */
 async function safeFetch(url, options = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
-
   try {
     const res = await fetch(url, {
       ...options,
@@ -16,7 +18,8 @@ async function safeFetch(url, options = {}) {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
         'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Referer': 'https://animevost.org/',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
         ...options.headers,
       },
     });
@@ -29,126 +32,133 @@ async function safeFetch(url, options = {}) {
 }
 
 /**
- * Универсальный ответ API
+ * Вспомогательная функция для отправки JSON-ответов с поддержкой CORS
  */
-function json(res, data, status = 200) {
+function jsonResponse(res, data, status = 200) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
   res.status(status).json(data);
 }
 
-/**
- * Поиск аниме
- */
-async function search(query) {
-  const url = `https://animevost.org/search/?do=search&subaction=search&story=${encodeURIComponent(query)}`;
-  const html = await safeFetch(url).then(r => r.text());
-  const $ = cheerio.load(html);
-
-  const results = [];
-  $('.searchitem').each((i, el) => {
-    const $el = $(el);
-    const title = $el.find('h2').text().trim();
-    const link = $el.find('h2 a').attr('href') || '';
-    const img = $el.find('.searchitem__img img').attr('src') || '';
-    const desc = $el.find('.searchitem__text').text().trim();
-    if (title && link) {
-      results.push({
-        id: link, // используется полный URL как идентификатор
-        title,
-        image: img.startsWith('http') ? img : `https://animevost.org${img}`,
-        description: desc,
-      });
-    }
-  });
-  return results;
-}
-
-/**
- * Получить список серий аниме
- */
-async function getEpisodes(animeUrl) {
-  const html = await safeFetch(animeUrl).then(r => r.text());
-  const $ = cheerio.load(html);
-
-  const episodes = [];
-  // Структура: ul.bx > li > a (ссылка на серию) и span (номер)
-  $('.bx li').each((i, el) => {
-    const $a = $(el).find('a');
-    const epNumber = $(el).find('span').text().trim() || `Серия ${i + 1}`;
-    const epUrl = $a.attr('href') || '';
-    if (epUrl) {
-      episodes.push({
-        id: epUrl, // ссылка на страницу серии
-        number: epNumber,
-      });
-    }
-  });
-  return episodes;
-}
-
-/**
- * Получить прямую ссылку на видео
- */
-async function getVideo(episodeUrl) {
-  const html = await safeFetch(episodeUrl).then(r => r.text());
-  const $ = cheerio.load(html);
-
-  // Ищем плеер: обычно это скрипт с var player = ... или data-config
-  // Вариант 1: плеер на базе js с параметрами
-  let videoUrl = '';
-  const scriptContent = $('script').text();
-  const fileMatch = scriptContent.match(/['"]?(https?:\/\/[^'"]+\.(?:mp4|m3u8))['"]?/);
-  if (fileMatch) {
-    videoUrl = fileMatch[1];
-  } else {
-    // Вариант 2: iframe с плеером
-    const iframe = $('iframe[src*="player"]').attr('src') || $('iframe').attr('src');
-    if (iframe) {
-      // Иногда видео лежит внутри iframe, можно вернуть ссылку на него для клиента
-      videoUrl = iframe;
-    } else {
-      // Вариант 3: data-config атрибут
-      const config = $('[data-config]').attr('data-config');
-      if (config) {
-        try {
-          const parsed = JSON.parse(decodeURIComponent(config));
-          videoUrl = parsed.file || '';
-        } catch {}
-      }
-    }
-  }
-
-  if (!videoUrl) throw new Error('Не удалось извлечь ссылку на видео');
-  return videoUrl;
-}
-
 export default async function handler(req, res) {
-  // CORS уже выставлен в json()
   const { action, query } = req.query;
 
   try {
+    // === ПОИСК АНИМЕ ===
     if (action === 'search' && query) {
-      const results = await search(query);
-      return json(res, { results });
+      const searchUrl = `${BASE}/search/all?q=${encodeURIComponent(query)}`;
+      const html = await safeFetch(searchUrl).then(r => r.text());
+      const $ = cheerio.load(html);
+
+      const results = [];
+      // Парсим карточки аниме из сетки поиска
+      $('.anime-list-item').each((i, el) => {
+        const $el = $(el);
+        const title = $el.find('.anime-list-item__title').text().trim();
+        const link = $el.find('a').attr('href') || '';
+        const img = $el.find('img').attr('src') || '';
+        
+        if (title && link) {
+          results.push({
+            id: link, // Относительная ссылка, например, "/anime/123-nazvanie"
+            title,
+            image: img.startsWith('http') ? img : `${BASE}${img}`,
+          });
+        }
+      });
+      return jsonResponse(res, { results });
     }
 
+    // === ПОЛУЧЕНИЕ СПИСКА СЕРИЙ ===
     if (action === 'info' && query) {
-      // query здесь – это URL аниме (передаётся клиентом после клика)
-      const episodes = await getEpisodes(query);
-      return json(res, { episodes });
+      // query здесь — это URL страницы аниме (например, "/anime/123-nazvanie")
+      const animeUrl = `${BASE}${query}`;
+      const html = await safeFetch(animeUrl).then(r => r.text());
+      const $ = cheerio.load(html);
+      
+      const episodes = [];
+      // Ищем кнопки серий в элементе навигации
+      $('.episode-navigation a').each((i, el) => {
+        const $el = $(el);
+        const epNumber = $el.text().trim();
+        const epLink = $el.attr('href') || '';
+        
+        if (epNumber && epLink) {
+          episodes.push({
+            id: epLink, // Относительная ссылка на серию
+            number: epNumber,
+          });
+        }
+      });
+      
+      // Если структура другая, пробуем альтернативный вариант
+      if (episodes.length === 0) {
+        $('.video-player__episode-list a').each((i, el) => {
+          const $el = $(el);
+          const epNumber = $el.text().trim();
+          const epLink = $el.attr('href') || '';
+          if (epNumber && epLink) {
+            episodes.push({
+              id: epLink,
+              number: epNumber,
+            });
+          }
+        });
+      }
+      
+      return jsonResponse(res, { episodes });
     }
 
+    // === ПОЛУЧЕНИЕ ССЫЛКИ НА ВИДЕО ===
     if (action === 'watch' && query) {
-      const videoUrl = await getVideo(query);
-      return json(res, {
-        sources: [{ file: videoUrl, quality: 'auto', type: videoUrl.includes('.m3u8') ? 'hls' : 'mp4' }],
+      // query здесь — это ссылка на серию (например, "/anime/123-nazvanie/episode/1")
+      const episodeUrl = `${BASE}${query}`;
+      const html = await safeFetch(episodeUrl).then(r => r.text());
+      const $ = cheerio.load(html);
+      
+      // AnimeGO часто встраивает плеер с кодом
+      // Пытаемся найти прямую ссылку на видео в data-атрибутах или скриптах
+      let videoUrl = '';
+      
+      // Ищем в тегах script
+      $('script').each((i, el) => {
+        const scriptContent = $(el).html();
+        if (scriptContent) {
+          // Ищем ссылки на mp4 или m3u8
+          const match = scriptContent.match(/(https?:\/\/[^"'\s]+\.(?:mp4|m3u8)[^"'\s]*)/);
+          if (match) {
+            videoUrl = match[1];
+            return false; // Прерываем цикл
+          }
+        }
+      });
+      
+      if (!videoUrl) {
+        // Если не нашли в скриптах, ищем в плеере kodik или подобном
+        const playerUrl = $('#player-container iframe').attr('src') || '';
+        if (playerUrl) {
+          videoUrl = playerUrl; // Иногда можно вернуть ссылку на iframe, если плеер поддерживает
+        }
+      }
+      
+      if (!videoUrl) {
+        return jsonResponse(res, { error: 'Ссылка на видео не найдена' }, 404);
+      }
+      
+      return jsonResponse(res, {
+        sources: [{
+          file: videoUrl,
+          quality: 'auto',
+          type: videoUrl.includes('.m3u8') ? 'hls' : 'mp4'
+        }]
       });
     }
 
-    return json(res, { error: 'Неверные параметры' }, 400);
+    // Если параметры не соответствуют ожидаемым
+    return jsonResponse(res, { error: 'Неверные параметры запроса' }, 400);
+    
   } catch (error) {
-    console.error('API error:', error);
-    return json(res, { error: 'Ошибка получения данных', details: error.message }, 500);
+    console.error('Ошибка API:', error);
+    return jsonResponse(res, { error: 'Внутренняя ошибка сервера', details: error.message }, 500);
   }
 }
