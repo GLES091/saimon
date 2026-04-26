@@ -1,6 +1,5 @@
 // api/anime.js
-// Укажи свой рабочий домен HiAnime API
-const BASE_URL = 'https://dssdsds.vercel.app'; // твой экземпляр
+const BASE_URL = 'https://dssdsds.vercel.app'; // твой домен API
 
 async function safeFetch(url) {
   const controller = new AbortController();
@@ -34,58 +33,61 @@ export default async function handler(req, res) {
   if (!action) return res.status(400).json({ error: 'action required' });
 
   try {
-    // ======== ПОИСК ========
+    // ── ПОИСК ──
     if (action === 'search') {
-      // Типичный путь: /api/v1/search?q=...
-      const url = `${BASE_URL}/api/v1/search?q=${encodeURIComponent(query || '')}`;
+      const url = `${BASE_URL}/api/search?keyword=${encodeURIComponent(query || '')}`;
       console.log('[API] GET', url);
       const data = await safeFetch(url);
-      // Ответ может быть { results: [...] } или сразу массив
-      const items = Array.isArray(data) ? data : (data.results || []);
+      const items = data?.results || [];
       const results = items.map(item => ({
         id: item.id,
         title: item.title,
-        image: item.image || '',
+        image: item.poster || item.image || '',
       }));
       return res.status(200).json({ results });
     }
 
-    // ======== ИНФОРМАЦИЯ ОБ АНИМЕ (эпизоды) ========
+    // ── ЭПИЗОДЫ (информация об аниме) ──
     if (action === 'info') {
-      // Типичный путь: /api/v1/anime/info?id=...
-      const url = `${BASE_URL}/api/v1/anime/info?id=${encodeURIComponent(query)}`;
+      const animeId = query;
+      const url = `${BASE_URL}/api/episodes/${encodeURIComponent(animeId)}`;
       console.log('[API] GET', url);
       const data = await safeFetch(url);
-      // Может быть { episodes: [...] } или { data: { episodes: [...] } }
-      let episodes = Array.isArray(data) ? data : (data.episodes || (data.data && data.data.episodes) || []);
-      episodes = episodes.map(ep => ({
-        id: ep.episodeId || ep.id,
-        number: ep.number,
+      const episodesRaw = data?.results?.episodes || [];
+      const episodes = episodesRaw.map(ep => ({
+        // формируем составной ID для последующих запросов серверов / стрима
+        id: `${animeId}?ep=${ep.data_id}`,
+        number: ep.episode_no,
       }));
       return res.status(200).json({ episodes });
     }
 
-    // ======== ПОЛУЧЕНИЕ ССЫЛКИ НА ВИДЕО ========
+    // ── ВОСПРОИЗВЕДЕНИЕ (получение ссылки) ──
     if (action === 'watch') {
-      // 1. Получить список серверов
-      const servUrl = `${BASE_URL}/api/v1/episode/servers?episodeId=${encodeURIComponent(query)}`;
+      // query = "animeId?ep=epDataId"
+      const [animeId, epPart] = query.split('?ep=');
+      const epDataId = epPart;
+      if (!animeId || !epDataId) return res.status(400).json({ error: 'invalid episode id' });
+
+      // 1. Получаем список серверов
+      const servUrl = `${BASE_URL}/api/servers/${encodeURIComponent(animeId)}?ep=${encodeURIComponent(epDataId)}`;
       console.log('[API] GET', servUrl);
       const serversData = await safeFetch(servUrl);
-      const servers = Array.isArray(serversData) ? serversData : (serversData.servers || []);
-      if (servers.length === 0) {
-        return res.status(404).json({ error: 'servers not found' });
-      }
-      const server = servers[0].serverName || servers[0].name; // иногда поле name
+      const servers = serversData?.results || [];
+      if (servers.length === 0) return res.status(404).json({ error: 'no servers found' });
+      const server = servers[0].serverName || servers[0].server_name;
 
-      // 2. Получить поток
-      const streamUrl = `${BASE_URL}/api/v1/episode/stream?episodeId=${encodeURIComponent(query)}&server=${encodeURIComponent(server)}`;
+      // 2. Получаем стрим
+      const streamUrl = `${BASE_URL}/api/stream?id=${encodeURIComponent(query)}&server=${encodeURIComponent(server)}&type=sub`;
       console.log('[API] GET', streamUrl);
       const streamData = await safeFetch(streamUrl);
-      const link = streamData.link || (streamData.sources && streamData.sources[0]?.file);
-      if (!link) return res.status(404).json({ error: 'stream link not found' });
+      const streamingLink = streamData?.results?.streamingLink;
+      if (!streamingLink || !streamingLink[0]) return res.status(404).json({ error: 'stream link not found' });
+      const file = streamingLink[0].link?.file;
+      if (!file) return res.status(404).json({ error: 'file link absent' });
 
       return res.status(200).json({
-        sources: [{ file: link, quality: 'auto', type: 'hls' }],
+        sources: [{ file, quality: 'auto', type: 'hls' }],
       });
     }
 
