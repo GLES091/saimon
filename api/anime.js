@@ -1,103 +1,64 @@
-// api/anime.js
-// Укажите URL вашего HiAnime API (без слеша в конце)
-const YOUR_HIANIME_API = 'https://dssdsds.vercel.app'; // например, '/api' может быть частью пути
+// api/anime.js – прокси для твоего HiAnime API
 
-const JIKAN_BASE = 'https://api.jikan.moe/v4';
-
-async function safeFetch(url, options = {}) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
-  try {
-    const res = await fetch(url, {
-      ...options,
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'application/json',
-        ...options.headers,
-      },
-    });
-    clearTimeout(timeout);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    clearTimeout(timeout);
-    throw err;
-  }
-}
-
-function jsonResponse(res, data, status = 200) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
-  res.status(status).json(data);
-}
+const BASE = 'https://dssdsds.vercel.app'; // твой API
 
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
   const { action, query } = req.query;
+  if (!action) return res.status(400).json({ error: 'action required' });
 
   try {
-    // ========== ПОИСК ==========
-    if (action === 'search' && query) {
-      const data = await safeFetch(`${JIKAN_BASE}/anime?q=${encodeURIComponent(query)}&limit=15`);
-      if (!data?.data) return jsonResponse(res, { results: [] });
-
-      const results = data.data.map(anime => ({
-        id: anime.mal_id.toString(),
-        title: anime.title_english || anime.title,
-        image: anime.images.jpg.image_url,
-        year: anime.year,
-        type: anime.type,
+    // Поиск аниме
+    if (action === 'search') {
+      const apiRes = await fetch(`${BASE}/search?keyword=${encodeURIComponent(query || '')}`);
+      const data = await apiRes.json();
+      const results = (Array.isArray(data) ? data : []).map(item => ({
+        id: item.id,
+        title: item.title,
+        image: item.image || '',
       }));
-      return jsonResponse(res, { results });
+      return res.status(200).json({ results });
     }
 
-    // ========== ИНФО (список серий) ==========
-    if (action === 'info' && query) {
-      const malId = query;
-      // Узнаём название по MAL ID
-      const { data: { title_english, title } } = await safeFetch(`${JIKAN_BASE}/anime/${malId}`);
-      const animeTitle = title_english || title;
-
-      // Ищем на HiAnime
-      const searchRes = await safeFetch(`${YOUR_HIANIME_API}/search?keyword=${encodeURIComponent(animeTitle)}`);
-      if (!searchRes?.[0]?.id) return jsonResponse(res, { episodes: [] });
-
-      const hianimeId = searchRes[0].id;
-      const episodesData = await safeFetch(`${YOUR_HIANIME_API}/episodes/${hianimeId}`);
-
-      const episodes = (episodesData || []).map(ep => ({
-        id: ep.episodeId,   // для запроса stream
+    // Получение эпизодов
+    if (action === 'info') {
+      const apiRes = await fetch(`${BASE}/episodes/${encodeURIComponent(query)}`);
+      const data = await apiRes.json();
+      const episodes = (Array.isArray(data) ? data : []).map(ep => ({
+        id: ep.episodeId,
         number: ep.number,
       }));
-      return jsonResponse(res, { episodes });
+      return res.status(200).json({ episodes });
     }
 
-    // ========== ВИДЕО ==========
-    if (action === 'watch' && query) {
-      const episodeId = query;
-      // Получаем сервер
-      const servers = await safeFetch(`${YOUR_HIANIME_API}/servers?id=${episodeId}`);
-      if (!servers?.length) return jsonResponse(res, { error: 'Нет серверов' }, 404);
+    // Получение видео
+    if (action === 'watch') {
+      // 1. Получить сервера
+      const serverRes = await fetch(`${BASE}/servers?id=${encodeURIComponent(query)}`);
+      const servers = await serverRes.json();
+      if (!Array.isArray(servers) || servers.length === 0) {
+        return res.status(404).json({ error: 'servers not found' });
+      }
+      const server = servers[0].serverName;
 
-      const serverName = servers[0].serverName;
-      // Получаем поток (субтитры)
-      const streamData = await safeFetch(
-        `${YOUR_HIANIME_API}/stream?id=${episodeId}&type=sub&server=${serverName}`
+      // 2. Получить стрим
+      const streamRes = await fetch(
+        `${BASE}/stream?id=${encodeURIComponent(query)}&type=sub&server=${encodeURIComponent(server)}`
       );
-      if (!streamData?.link) return jsonResponse(res, { error: 'Ссылка не найдена' }, 404);
+      const stream = await streamRes.json();
+      if (!stream.link) {
+        return res.status(404).json({ error: 'stream link not found' });
+      }
 
-      return jsonResponse(res, {
-        sources: [{
-          file: streamData.link,
-          quality: 'auto',
-          type: 'hls',
-        }],
+      return res.status(200).json({
+        sources: [{ file: stream.link, quality: 'auto', type: 'hls' }],
       });
     }
 
-    return jsonResponse(res, { error: 'Неверные параметры' }, 400);
+    return res.status(400).json({ error: 'unknown action' });
   } catch (error) {
     console.error('API error:', error);
-    return jsonResponse(res, { error: 'Серверная ошибка', details: error.message }, 500);
+    return res.status(500).json({ error: error.message });
   }
 }
