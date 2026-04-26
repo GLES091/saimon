@@ -13,9 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* ═══════════════════════════════════════
-       ПЕРЕМЕННЫЕ — ТЁМНАЯ ТЕМА (дефолт)
-    ═══════════════════════════════════════ */
+    /* ══════════════ ПЕРЕМЕННЫЕ — ТЁМНАЯ ТЕМА (дефолт) ══════════════ */
     :root {
       --bg:       #1a1025;
       --bg2:      #22133a;
@@ -756,7 +754,7 @@
       <div class="card">
         <div id="catalogView">
           <div class="gallery-title">🎌 Аниме-каталог</div>
-          <p class="gallery-sub">Топ популярных + поиск (MyAnimeList). Нажми на карточку, чтобы начать просмотр.</p>
+          <p class="gallery-sub">Топ популярных + поиск (MyAnimeList). Нажми на карточку, чтобы перейти к просмотру.</p>
           <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
             <input type="text" id="animeSearch" placeholder="Название аниме..."
                    style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
@@ -931,8 +929,7 @@ fetchNeko();
 setInterval(fetchNeko,30000);
 
 /* ═══════════════════════════════════════════
-   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР
-   Все запросы через серверный прокси /api/anime
+   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР (API animevost)
 ════════════════════════════════════════════ */
 const animeSearch = document.getElementById('animeSearch'),
       animeSearchBtn = document.getElementById('animeSearchBtn'),
@@ -947,11 +944,8 @@ const animeSearch = document.getElementById('animeSearch'),
       retryBtn = document.getElementById('retrySearch');
 let artPlayerInstance = null;
 
-// Единая точка входа для всех запросов к нашему прокси
 async function fetchFromApi(action, param) {
-  const res = await fetch(`/api/anime?action=${action}&query=${encodeURIComponent(param)}`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
+  return await (await fetch(`/api/anime?action=${action}&query=${encodeURIComponent(param)}`)).json();
 }
 
 function showCatalog() {
@@ -971,7 +965,7 @@ function showPlayerView(title) {
 }
 backBtn.addEventListener('click', showCatalog);
 
-// Загрузка топа (Jikan)
+// Загрузка топа (Jikan) — оставлена для удобного поиска
 async function loadTopAnime() {
   if(animeResults.children.length>0) return;
   animeResults.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">✨ Загружаем топ аниме...</p>';
@@ -983,7 +977,7 @@ async function loadTopAnime() {
     animeResults.innerHTML = '<p style="color:#ff8fa3; grid-column:1/-1;">Ошибка загрузки</p>';
   }
 }
-// Поиск (Jikan)
+// Поиск через Jikan
 async function searchAnimeCatalog(query) {
   animeResults.innerHTML = `<p style="color:var(--muted); grid-column:1/-1;">🔍 Ищем «${query}»...</p>`;
   try {
@@ -1009,85 +1003,62 @@ function renderAnimeCards(list){
     `;
     card.addEventListener('click', ()=>{
       showPlayerView(anime.title);
-      searchAnimeOnProxy(anime.title); // Ищем через наш API
+      searchAnimeOnAmv(anime.title); // ищет через наш API на animevost
     });
     animeResults.appendChild(card);
   });
 }
 
-// Поиск через /api/anime (наш прокси для AniLibria)
-// AniLibria — русская база, поэтому пробуем несколько вариантов запроса
-async function searchAnimeOnProxy(title){
-  gogoResults.innerHTML = '🔎 Ищем в AniLibria...';
+// Поиск аниме через наш API (animevost), возвращает URL-идентификаторы
+async function searchAnimeOnAmv(title){
+  gogoResults.innerHTML = '🔎 Ищем на animevost...';
   retryBtn.style.display='none';
-
-  // Генерируем несколько вариантов поискового запроса
-  function getSearchVariants(t) {
-    const clean = t.replace(/\s*\(\d{4}\)\s*/g,'').trim();
-    const variants = new Set();
-    variants.add(clean);
-    // Только первое слово (работает для коротких тайтлов)
-    const firstWord = clean.split(/\s+/)[0];
-    if (firstWord && firstWord.length > 2) variants.add(firstWord);
-    // Первые два слова
-    const twoWords = clean.split(/\s+/).slice(0,2).join(' ');
-    if (twoWords !== clean && twoWords !== firstWord) variants.add(twoWords);
-    // Убираем "Season X", "Part X" и т.п. из конца
-    const noSeason = clean.replace(/\s*(season|part|cour|arc)\s*\d*/gi,'').trim();
-    if (noSeason && noSeason !== clean) variants.add(noSeason);
-    return [...variants].filter(Boolean);
-  }
-
-  const queries = getSearchVariants(title);
-  let found = false;
-
-  for (const q of queries) {
-    try {
-      gogoResults.innerHTML = `🔎 Пробуем: «${q}»...`;
-      const data = await fetchFromApi('search', q);
-      if (data.results?.length) {
-        found = true;
-        gogoResults.innerHTML = `<small style="color:var(--muted);display:block;margin-bottom:.5rem">Найдено по запросу «${q}» — выбери тайтл:</small>`;
-        data.results.slice(0,8).forEach(anime => {
-          const btn = document.createElement('button');
-          btn.className = 'btn btn-outline';
-          btn.style.cssText = 'text-align:left;display:block;width:100%;margin-bottom:.4rem';
-          btn.textContent = `${anime.title} (${anime.releaseDate||'?'})`;
-          btn.addEventListener('click', ()=>{
-            selectedTitle.textContent = anime.title;
-            loadEpisodes(anime.id);
-          });
-          gogoResults.appendChild(btn);
+  try {
+    const clean = title.replace(/\s*\(\d{4}\)\s*/g,'').trim();
+    const data = await fetchFromApi('search', clean);
+    if(data.results?.length){
+      gogoResults.innerHTML = '';
+      data.results.slice(0,8).forEach(anime => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-outline';
+        btn.style.textAlign='left';
+        btn.textContent = anime.title; // название как есть с animevost
+        btn.addEventListener('click', ()=>{
+          selectedTitle.textContent = anime.title;
+          loadEpisodes(anime.id); // передаём URL страницы аниме
         });
-        break; // нашли — стоп
-      }
-    } catch(e) { /* пробуем следующий вариант */ }
-  }
-
-  if (!found) {
-    gogoResults.innerHTML = '❌ Не найдено в AniLibria. Попробуй ввести название вручную на русском.';
+        gogoResults.appendChild(btn);
+      });
+    } else {
+      gogoResults.innerHTML = '❌ Ничего не найдено на animevost.';
+      retryBtn.style.display='inline-block';
+    }
+  } catch(e){
+    gogoResults.innerHTML = '⚠️ Ошибка сети при поиске на animevost';
     retryBtn.style.display='inline-block';
   }
-  retryBtn.onclick = ()=> searchAnimeOnProxy(title);
+  retryBtn.onclick = ()=> searchAnimeOnAmv(title);
 }
 
+// Загрузка списка серий (animevost)
 async function loadEpisodes(animeId){
-  episodeList.innerHTML = 'Загружаем эпизоды...';
+  episodeList.innerHTML = 'Загружаем серии...';
   try {
-    const data = await fetchFromApi('info', animeId);
+    const data = await fetchFromApi('info', animeId); // animeId – URL страницы аниме
     if(data.episodes?.length){
       episodeList.innerHTML = '';
       data.episodes.slice(0,50).forEach(ep => {
         const btn = document.createElement('button');
         btn.className = 'btn btn-outline';
-        btn.textContent = `Серия ${ep.number||''}`;
-        btn.addEventListener('click', ()=> watchEpisode(ep.id));
+        btn.textContent = ep.number || 'Серия'; // number уже содержит строку (например, "1" или "Серия 1")
+        btn.addEventListener('click', ()=> watchEpisode(ep.id)); // ep.id – URL серии
         episodeList.appendChild(btn);
       });
-    } else episodeList.innerHTML = 'Нет эпизодов';
-  } catch(e) { episodeList.innerHTML = 'Ошибка загрузки эпизодов'; }
+    } else episodeList.innerHTML = 'Серии не найдены';
+  } catch(e) { episodeList.innerHTML = 'Ошибка загрузки серий'; }
 }
 
+// Воспроизведение выбранной серии
 async function watchEpisode(episodeId){
   playerContainer.style.display='block';
   if(!artPlayerInstance){
@@ -1100,7 +1071,7 @@ async function watchEpisode(episodeId){
     });
   }
   try {
-    const data = await fetchFromApi('watch', episodeId);
+    const data = await fetchFromApi('watch', episodeId); // episodeId – URL серии
     if(data.sources?.length){
       const source = data.sources.find(s => s.type==='hls'||s.quality==='default'||s.quality==='720p') || data.sources[0];
       const url = source?.file || data.sources[0]?.file;
