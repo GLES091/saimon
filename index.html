@@ -4,18 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GOD_AE86 ✦ аниме-плеер</title>
-  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и Telegram-спамер.">
+  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"GOD_AE86","alternateName":"resivert","url":"https://t.me/GOD_AE86"}</script>
-  <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
   <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* ═══════════════════════════════════════
-       ПЕРЕМЕННЫЕ — ТЁМНАЯ ТЕМА (дефолт)
-    ═══════════════════════════════════════ */
+    /* Твой оригинальный CSS (полностью скопирован из первого поста) */
     :root {
       --bg:       #1a1025;
       --bg2:      #22133a;
@@ -349,7 +346,7 @@
     }
     .social-btn svg { width:20px; height:20px; fill:currentColor; }
 
-    /* Спамер */
+    /* Спамер — временно неактивен */
     .spammer-title {
       font-family: var(--fh);
       font-size: 1.35rem;
@@ -359,57 +356,6 @@
       margin-bottom:.3rem;
     }
     .subtitle { color:var(--muted); font-size:.85rem; margin-bottom:1.5rem; }
-
-    .form-grid {
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem; margin-bottom:1.5rem;
-    }
-    .field label {
-      display:block; font-weight:800;
-      color:var(--accent); font-size:.82rem;
-      margin-bottom:.4rem;
-    }
-    .field input {
-      width:100%; padding:.76rem 1rem;
-      background: rgba(199,125,255,.07);
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      color: var(--text);
-      font-family: var(--fb); font-size:.88rem;
-      outline: none;
-      transition: all var(--tr);
-    }
-    .field input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(255,183,197,.15), 0 0 18px rgba(255,183,197,.2);
-      background: rgba(255,183,197,.05);
-    }
-    .field input::placeholder { color:var(--muted); opacity:.55; }
-
-    .checkbox-group {
-      display:flex; flex-wrap:wrap; gap:.6rem;
-      background: rgba(199,125,255,.06);
-      padding: 1rem; border-radius:16px;
-      border: 1px solid var(--border);
-      margin-bottom:1.5rem;
-    }
-    .checkbox-group .cg-title {
-      width:100%; color:var(--muted);
-      font-weight:800; font-size:.85rem;
-      margin-bottom:.25rem;
-    }
-    .checkbox-group label {
-      display:flex; align-items:center; gap:.4rem;
-      padding: .3rem .85rem;
-      background: rgba(255,183,197,.07);
-      border-radius:2rem;
-      border: 1px solid transparent;
-      cursor:pointer; font-size:.78rem; color:var(--muted);
-      transition: all var(--tr);
-    }
-    .checkbox-group label:hover { border-color:var(--accent); color:var(--accent); }
-    .checkbox-group input[type="checkbox"] { accent-color:var(--accent); }
 
     .actions { display:flex; gap:.7rem; flex-wrap:wrap; margin:1rem 0; }
 
@@ -449,30 +395,6 @@
       background:rgba(255,183,197,.09);
       transform:translateY(-1px);
     }
-
-    #validateOut {
-      min-height:1.8rem;
-      margin:.5rem 0; color:var(--accent);
-      font-size:.8rem; line-height:1.5;
-      padding:.5rem .9rem; border-radius:12px;
-      background:rgba(255,183,197,.06);
-    }
-
-    .log {
-      background: rgba(12,5,24,.85);
-      border:1px solid var(--border);
-      border-radius:16px; padding:1rem;
-      height:230px; overflow-y:auto;
-      font-family:'Courier New',monospace; font-size:.77rem;
-      color:#d0b0e4;
-      scrollbar-width:thin; scrollbar-color:var(--accent) transparent;
-    }
-    .log::-webkit-scrollbar { width:4px; }
-    .log::-webkit-scrollbar-track { background:transparent; }
-    .log::-webkit-scrollbar-thumb { background:var(--accent); border-radius:2px; }
-    .log .ok   { color:#90e4b2; }
-    .log .err  { color:#ff8fa3; }
-    .log .info { color:#f5d76e; }
 
     /* Музыка */
     .music-wrap { text-align:center; }
@@ -610,7 +532,6 @@
     }
 
     @media (max-width:660px) {
-      .form-grid      { grid-template-columns:1fr; }
       .profile        { flex-direction:column; gap:1.6rem; }
       .bio-name       { font-size:1.6rem; }
       .card           { padding:1.4rem; }
@@ -620,10 +541,6 @@
       #gallery        { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
       .anime-grid     { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
     }
-
-    ::-webkit-scrollbar        { width:6px; }
-    ::-webkit-scrollbar-track  { background:var(--bg); }
-    ::-webkit-scrollbar-thumb  { background:var(--accent); border-radius:3px; }
   </style>
 </head>
 <body>
@@ -647,10 +564,9 @@
 
     <nav class="tabs">
       <div class="tab active" data-tab="bio">🌸 Био</div>
-      <div class="tab"        data-tab="spammer">✨ Спамер</div>
+      <div class="tab"        data-tab="anime">🎌 Аниме</div>
       <div class="tab"        data-tab="music">🎀 Музыка</div>
       <div class="tab"        data-tab="gallery">🎴 Галерея</div>
-      <div class="tab"        data-tab="anime">🎌 Аниме</div>
     </nav>
 
     <!-- Био -->
@@ -667,12 +583,11 @@
           <div class="bio-info">
             <div class="bio-name">GOD_AE86</div>
             <div class="bio-handle">@resivert · @GOD_AE86</div>
-            <div class="bio-desc">аниме-вайб ✦ тексты ✦ батлы ✦ неко-спамер</div>
+            <div class="bio-desc">аниме-вайб ✦ тексты ✦ батлы ✦ неко</div>
             <div class="badges">
               <span class="badge">🌸 аниме</span>
               <span class="badge">🎤 батлы</span>
               <span class="badge">🐾 неко</span>
-              <span class="badge">⚡ спамер</span>
               <span class="badge">🚗 AE86</span>
             </div>
             <div class="quote-box">
@@ -692,39 +607,29 @@
       </div>
     </div>
 
-    <!-- Спамер -->
-    <div class="tab-content" id="tab-spammer">
+    <!-- 🎌 Аниме (каталог + плеер) -->
+    <div class="tab-content" id="tab-anime">
       <div class="card">
-        <div class="spammer-title">✧ Telegram Spammer ✧</div>
-        <p class="subtitle">🌸 аниме-режим · прямые запросы · no‑cors</p>
-        <div class="form-grid">
-          <div class="field">
-            <label>📱 Номер телефона</label>
-            <input type="text" id="phone" placeholder="+79...">
+        <div id="catalogView">
+          <div class="gallery-title">🎌 Аниме-каталог</div>
+          <p class="gallery-sub">Поиск через твой HiAnime API</p>
+          <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            <input type="text" id="animeSearch" placeholder="Название аниме..."
+                   style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
+                          background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
+            <button class="btn btn-primary" id="animeSearchBtn">🔍 Искать</button>
           </div>
-          <div class="field">
-            <label>⏱️ Задержка (сек)</label>
-            <input type="number" id="delay" value="0.5" step="0.1" min="0.1">
-          </div>
-          <div class="field">
-            <label>🔄 Циклов (0 = ∞)</label>
-            <input type="number" id="cycles" value="3" min="0">
+          <div id="animeResults" class="anime-grid"></div>
+        </div>
+
+        <div id="playerView" class="player-view">
+          <button class="btn btn-outline back-btn" id="backToCatalog">← Назад к каталогу</button>
+          <div class="gallery-title" id="selectedAnimeTitle"></div>
+          <div id="episodeList"></div>
+          <div id="playerContainer" style="display:none;">
+            <div id="artplayer"></div>
           </div>
         </div>
-        <div class="checkbox-group" id="svcList">
-          <span class="cg-title">🎯 Сервисы:</span>
-        </div>
-        <div class="actions">
-          <button class="btn btn-primary"  id="startBtn">🌸 Запустить</button>
-          <button class="btn btn-outline"  id="stopBtn">⏹ Стоп</button>
-          <button class="btn btn-outline"  id="clearBtn">🧹 Очистить</button>
-          <button class="btn btn-outline"  id="validateBtn">🔍 Проверить</button>
-          <button class="btn btn-outline"  id="qrBtn">📱 QR-код</button>
-          <button class="btn btn-outline"  id="exportBtn">📋 Экспорт</button>
-          <button class="btn btn-outline"  id="importBtn">📂 Импорт</button>
-        </div>
-        <div id="validateOut"></div>
-        <div class="log" id="log"></div>
       </div>
     </div>
 
@@ -748,32 +653,6 @@
         <div class="gallery-title">🎴 Галерея ✶</div>
         <p class="gallery-sub">4 случайных аниме-картинки через API</p>
         <div id="gallery"></div>
-      </div>
-    </div>
-
-    <!-- 🎌 Аниме (каталог + плеер) -->
-    <div class="tab-content" id="tab-anime">
-      <div class="card">
-        <div id="catalogView">
-          <div class="gallery-title">🎌 Аниме-каталог</div>
-          <p class="gallery-sub">Поиск по MyAnimeList, видео с вашего HiAnime API</p>
-          <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-            <input type="text" id="animeSearch" placeholder="Название аниме..."
-                   style="flex:1; padding:0.7rem; border-radius:14px; border:1.5px solid var(--border);
-                          background: rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
-            <button class="btn btn-primary" id="animeSearchBtn">🔍 Искать</button>
-          </div>
-          <div id="animeResults" class="anime-grid"></div>
-        </div>
-
-        <div id="playerView" class="player-view">
-          <button class="btn btn-outline back-btn" id="backToCatalog">← Назад к каталогу</button>
-          <div class="gallery-title" id="selectedAnimeTitle"></div>
-          <div id="episodeList"></div>
-          <div id="playerContainer" style="display:none;">
-            <div id="artplayer"></div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -895,7 +774,7 @@ const avatarImg = document.getElementById('avatarImg');
   } catch(_){}
 })();
 
-/* ── Цитаты (локальные, без CORS) ── */
+/* ── Цитаты ── */
 const quotes = [
   { q:'Если не веришь в себя, то и не стоит начинать.', c:'Макака', a:'Доктор Стоун' },
   { q:'Настоящая сила — в умении защищать.',           c:'Аска',   a:'Евангелион' },
@@ -928,7 +807,7 @@ fetchNeko();
 setInterval(fetchNeko,30000);
 
 /* ═══════════════════════════════════════════
-   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР (Jikan + HiAnime)
+   🎌 АНИМЕ-КАТАЛОГ + ПЛЕЕР (через твой API)
 ════════════════════════════════════════════ */
 const animeSearch = document.getElementById('animeSearch'),
       animeSearchBtn = document.getElementById('animeSearchBtn'),
@@ -942,7 +821,9 @@ const animeSearch = document.getElementById('animeSearch'),
 let artPlayerInstance = null;
 
 async function fetchFromApi(action, param) {
-  return await (await fetch(`/api/anime?action=${action}&query=${encodeURIComponent(param)}`)).json();
+  const res = await fetch(`/api/anime?action=${action}&query=${encodeURIComponent(param)}`);
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return await res.json();
 }
 
 function showCatalog() {
@@ -985,10 +866,10 @@ function renderAnimeCards(list){
     card.className = 'anime-card';
     card.innerHTML = `
       <img src="${anime.image}" alt="${anime.title}" loading="lazy"
-           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 2 3%22%3E%3Crect fill=%22%2322133a%22 width=%222%22 height=%223%22/%3E%3C/svg%3E'">
+           onerror="this.src='data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 3"><rect fill="#22133a" width="2" height="3"/></svg>')}'">
       <div class="info">
         <div class="title" title="${anime.title}">${anime.title}</div>
-        <div class="meta">${anime.year||'?'} · ${anime.type||''}</div>
+        <div class="meta">ID: ${anime.id}</div>
       </div>
     `;
     card.addEventListener('click', ()=>{
@@ -999,10 +880,10 @@ function renderAnimeCards(list){
   });
 }
 
-async function loadEpisodes(malId){
+async function loadEpisodes(animeId){
   episodeList.innerHTML = 'Загружаем серии...';
   try {
-    const data = await fetchFromApi('info', malId);
+    const data = await fetchFromApi('info', animeId);
     if(data.episodes?.length){
       episodeList.innerHTML = '';
       data.episodes.forEach(ep => {
@@ -1013,7 +894,9 @@ async function loadEpisodes(malId){
         episodeList.appendChild(btn);
       });
     } else episodeList.innerHTML = 'Серии не найдены';
-  } catch(e) { episodeList.innerHTML = 'Ошибка загрузки серий'; }
+  } catch(e) {
+    episodeList.innerHTML = 'Ошибка загрузки серий';
+  }
 }
 
 async function watchEpisode(episodeId){
@@ -1044,8 +927,5 @@ animeSearchBtn.addEventListener('click', ()=>{
 });
 animeSearch.addEventListener('keypress', e => { if(e.key==='Enter') animeSearchBtn.click(); });
 </script>
-
-<script src="spammer.js"></script>
-
 </body>
 </html>
