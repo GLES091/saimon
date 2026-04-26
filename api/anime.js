@@ -1,17 +1,26 @@
-// api/anime.js – прокси для твоего HiAnime API
+// api/anime.js
+import fetch from 'node-fetch';
 
-const BASE = 'https://dssdsds.vercel.app'; // твой API
+// Твой рабочий HiAnime API
+const BASE = 'https://dssdsds.vercel.app';
 
 export default async function handler(req, res) {
+  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const { action, query } = req.query;
-  if (!action) return res.status(400).json({ error: 'action required' });
+  if (!action) {
+    return res.status(400).json({ error: 'action required' });
+  }
 
   try {
-    // Поиск аниме
+    // ========== ПОИСК ==========
     if (action === 'search') {
-      const apiRes = await fetch(`${BASE}/search?keyword=${encodeURIComponent(query || '')}`);
+      const url = `${BASE}/search?keyword=${encodeURIComponent(query || '')}`;
+      console.log('[API] search =>', url);
+      const apiRes = await fetch(url);
+      if (!apiRes.ok) throw new Error(`HiAnime search error: ${apiRes.status}`);
       const data = await apiRes.json();
       const results = (Array.isArray(data) ? data : []).map(item => ({
         id: item.id,
@@ -21,9 +30,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ results });
     }
 
-    // Получение эпизодов
+    // ========== ЭПИЗОДЫ ==========
     if (action === 'info') {
-      const apiRes = await fetch(`${BASE}/episodes/${encodeURIComponent(query)}`);
+      const url = `${BASE}/episodes/${encodeURIComponent(query)}`;
+      console.log('[API] episodes =>', url);
+      const apiRes = await fetch(url);
+      if (!apiRes.ok) throw new Error(`HiAnime episodes error: ${apiRes.status}`);
       const data = await apiRes.json();
       const episodes = (Array.isArray(data) ? data : []).map(ep => ({
         id: ep.episodeId,
@@ -32,25 +44,28 @@ export default async function handler(req, res) {
       return res.status(200).json({ episodes });
     }
 
-    // Получение видео
+    // ========== ВИДЕО ==========
     if (action === 'watch') {
-      // 1. Получить сервера
-      const serverRes = await fetch(`${BASE}/servers?id=${encodeURIComponent(query)}`);
-      const servers = await serverRes.json();
+      // 1. Сервера
+      const serversUrl = `${BASE}/servers?id=${encodeURIComponent(query)}`;
+      console.log('[API] servers =>', serversUrl);
+      const servRes = await fetch(serversUrl);
+      if (!servRes.ok) throw new Error(`Servers error: ${servRes.status}`);
+      const servers = await servRes.json();
       if (!Array.isArray(servers) || servers.length === 0) {
         return res.status(404).json({ error: 'servers not found' });
       }
       const server = servers[0].serverName;
 
-      // 2. Получить стрим
-      const streamRes = await fetch(
-        `${BASE}/stream?id=${encodeURIComponent(query)}&type=sub&server=${encodeURIComponent(server)}`
-      );
+      // 2. Стрим
+      const streamUrl = `${BASE}/stream?id=${encodeURIComponent(query)}&type=sub&server=${encodeURIComponent(server)}`;
+      console.log('[API] stream =>', streamUrl);
+      const streamRes = await fetch(streamUrl);
+      if (!streamRes.ok) throw new Error(`Stream error: ${streamRes.status}`);
       const stream = await streamRes.json();
       if (!stream.link) {
         return res.status(404).json({ error: 'stream link not found' });
       }
-
       return res.status(200).json({
         sources: [{ file: stream.link, quality: 'auto', type: 'hls' }],
       });
@@ -58,7 +73,7 @@ export default async function handler(req, res) {
 
     return res.status(400).json({ error: 'unknown action' });
   } catch (error) {
-    console.error('API error:', error);
+    console.error('[API] FATAL ERROR:', error.message);
     return res.status(500).json({ error: error.message });
   }
 }
