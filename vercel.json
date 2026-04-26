@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/anime", "destination": "/api/anime" }
-  ]
+  "functions": {
+    "api/anime.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
