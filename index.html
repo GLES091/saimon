@@ -348,6 +348,57 @@
     }
     .social-btn svg { width:20px; height:20px; fill:currentColor; }
 
+    /* Спамер */
+    .spammer-title {
+      font-family: var(--fh);
+      font-size: 1.35rem;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:.3rem;
+    }
+    .subtitle { color:var(--muted); font-size:.85rem; margin-bottom:1.5rem; }
+
+    .actions { display:flex; gap:.7rem; flex-wrap:wrap; margin:1rem 0; }
+
+    .btn {
+      border:none; cursor:pointer;
+      font-weight:800; font-family:var(--fb);
+      font-size:.83rem; letter-spacing:.1px;
+      padding: .76rem 1.4rem; border-radius:14px;
+      transition: all var(--tr);
+      position:relative; overflow:hidden;
+    }
+    .btn::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);
+      opacity:0; transition:opacity .2s;
+    }
+    .btn:hover::after { opacity:1; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      color:#fff;
+      box-shadow: 0 4px 22px rgba(255,183,197,.38);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 32px rgba(255,183,197,.55);
+    }
+    .btn-primary:active { transform: scale(.97); }
+
+    .btn-outline {
+      background:transparent;
+      border:1.5px solid var(--border);
+      color:var(--muted);
+    }
+    .btn-outline:hover {
+      border-color:var(--accent); color:var(--accent);
+      background:rgba(255,183,197,.09);
+      transform:translateY(-1px);
+    }
+
+    /* Музыка */
     .music-wrap { text-align:center; }
     .music-title {
       font-family:var(--fh); font-size:1.5rem;
@@ -374,47 +425,12 @@
       50%    { transform:scale(1.5); opacity:.5; }
     }
 
+    /* Галерея */
     .gallery-title {
       font-family:var(--fh); font-size:1.4rem;
       color:var(--accent); margin-bottom:.4rem;
     }
     .gallery-sub { color:var(--muted); font-size:.83rem; margin-bottom:1rem; }
-
-    .anime-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 1rem;
-      margin-top: 0.3rem;
-    }
-
-    .anime-card-img-wrap {
-      position: relative;
-    }
-
-    .ep-badge {
-      position: absolute;
-      bottom: 6px; left: 6px;
-      background: rgba(30,10,50,.75);
-      color: var(--accent);
-      font-size: .62rem; font-weight: 800;
-      padding: .15rem .45rem;
-      border-radius: 6px;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,183,197,.25);
-    }
-
-    .anime-type {
-      font-size: .68rem;
-      color: var(--purple);
-      font-weight: 700;
-      margin-top: .1rem;
-    }
-
-    .btn.ep-active {
-      background: linear-gradient(135deg, var(--accent), var(--purple));
-      color: #fff;
-      border-color: transparent;
-    }
 
     #gallery {
       display:grid;
@@ -433,6 +449,7 @@
       border-color:var(--accent);
     }
 
+    /* НEKO */
     .neko-wrap {
       position:fixed; bottom:1.3rem; right:1.3rem;
       z-index:150; display:flex; flex-direction:column;
@@ -458,56 +475,17 @@
     .neko-corner img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
     .neko-corner:hover img { transform:scale(1.18); }
 
-    .anime-card {
-      background: rgba(199,125,255,.06);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: all var(--tr);
-      cursor: pointer;
-    }
-    .anime-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 20px rgba(255,183,197,0.4);
-      border-color: var(--accent);
-    }
-    .anime-card img {
-      width:100%;
-      aspect-ratio: 2/3;
-      object-fit:cover;
-      display:block;
-    }
-    .anime-card .info {
-      padding: 0.6rem;
-    }
-    .anime-card .title {
-      font-weight: 800;
-      font-size: 0.82rem;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .anime-card .meta {
-      font-size: 0.7rem;
+    /* Спамер-лог */
+    #logContainer {
+      background: rgba(0,0,0,0.25);
+      border-radius: 14px;
+      padding: .8rem;
+      height: 180px;
+      overflow-y: auto;
+      font-size: .78rem;
       color: var(--muted);
-      margin-top: 0.15rem;
-    }
-
-    .player-view { display: none; }
-    .back-btn { margin-bottom: 1rem; }
-    #episodeList {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin: 1rem 0;
-    }
-    #playerContainer { margin-top: 1rem; }
-    #artplayer {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border-radius: 16px;
-      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 1rem;
     }
 
     @media (max-width:660px) {
@@ -518,7 +496,6 @@
       .actions        { gap:.5rem; }
       .btn            { font-size:.76rem; padding:.66rem 1.1rem; }
       #gallery        { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
-      .anime-grid     { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
     }
 
     ::-webkit-scrollbar        { width:6px; }
@@ -547,7 +524,7 @@
 
     <nav class="tabs">
       <div class="tab active" data-tab="bio">🌸 Био</div>
-      <div class="tab"        data-tab="anime">🎌 Аниме</div>
+      <div class="tab"        data-tab="spammer">💬 Спамер</div>
       <div class="tab"        data-tab="music">🎀 Музыка</div>
       <div class="tab"        data-tab="gallery">🎴 Галерея</div>
     </nav>
@@ -590,78 +567,42 @@
       </div>
     </div>
 
-    <!-- 🎌 Аниме (каталог + плеер) -->
-    <div class="tab-content" id="tab-anime">
+    <!-- 💬 Спамер -->
+    <div class="tab-content" id="tab-spammer">
+      <div class="card">
+        <div class="spammer-title">📨 Telegram‑спамер</div>
+        <p class="subtitle">рассылка OAuth‑запросов</p>
 
-      <!-- Каталог -->
-      <div id="catalogView">
-
-        <!-- Строка поиска -->
-        <div class="card" style="padding:1.2rem 1.5rem;">
-          <div style="display:flex; gap:0.5rem;">
-            <input type="text" id="animeSearch" placeholder="🔍 Поиск аниме..."
-                   style="flex:1; padding:0.75rem 1rem; border-radius:14px;
-                          border:1.5px solid var(--border);
-                          background:rgba(199,125,255,.07);
-                          color:var(--text); font-family:var(--fb); font-size:.9rem;
-                          outline:none; transition:border-color .2s;"
-                   onfocus="this.style.borderColor='var(--accent)'"
-                   onblur="this.style.borderColor='var(--border)'">
-            <button class="btn btn-primary" id="animeSearchBtn">Найти</button>
+        <div style="display:flex; flex-wrap:wrap; gap:0.8rem; margin-bottom:1rem;">
+          <div style="flex:1; min-width:160px;">
+            <label style="font-size:.8rem; color:var(--muted);">Номер телефона</label>
+            <input id="phoneInput" type="text" placeholder="+79161234567" style="width:100%; padding:.6rem; border-radius:10px; border:1.5px solid var(--border); background:rgba(199,125,255,.07); color:var(--text); font-family:var(--fb);">
+          </div>
+          <div style="width:80px;">
+            <label style="font-size:.8rem; color:var(--muted);">Задержка</label>
+            <input id="delayInput" type="number" value="0.5" step="0.1" style="width:100%; padding:.6rem; border-radius:10px; border:1.5px solid var(--border); background:rgba(199,125,255,.07); color:var(--text);">
+          </div>
+          <div style="width:80px;">
+            <label style="font-size:.8rem; color:var(--muted);">Циклы</label>
+            <input id="cyclesInput" type="number" value="3" min="1" style="width:100%; padding:.6rem; border-radius:10px; border:1.5px solid var(--border); background:rgba(199,125,255,.07); color:var(--text);">
           </div>
         </div>
 
-        <!-- Результаты поиска -->
-        <div id="searchSection" style="display:none;">
-          <div class="card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-              <div class="gallery-title" style="margin:0;">🔍 Результаты</div>
-              <button class="btn btn-outline" id="clearSearchBtn" style="padding:.4rem .9rem;font-size:.75rem;">✕ Закрыть</button>
-            </div>
-            <div id="animeResults" class="anime-grid"></div>
-          </div>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.8rem;">
+          <button class="btn btn-primary" id="startBtn">▶ Запустить</button>
+          <button class="btn btn-outline" id="stopBtn">⏹ Стоп</button>
+          <button class="btn btn-outline" id="validateBtn">✓ Проверить</button>
+          <button class="btn btn-outline" id="qrBtn">📱 QR</button>
+          <button class="btn btn-outline" id="exportBtn">📤 Экспорт</button>
+          <button class="btn btn-outline" id="importBtn">📥 Импорт</button>
+          <button class="btn btn-outline" id="clearLogBtn">🗑 Очистить лог</button>
         </div>
 
-        <!-- Новинки -->
-        <div class="card" id="latestSection">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
-            <div class="gallery-title" style="margin:0;">🆕 Свежие серии</div>
-            <span id="latestLoader" style="color:var(--muted);font-size:.8rem;">⏳ Загрузка...</span>
-          </div>
-          <div id="latestGrid" class="anime-grid"></div>
-        </div>
+        <div style="margin-bottom:.4rem; font-size:.8rem; color:var(--muted);">Сервисы:</div>
+        <div id="svcList" style="display:flex; flex-wrap:wrap; gap:.3rem 1rem; margin-bottom:1rem;"></div>
 
-        <!-- Трендовые -->
-        <div class="card" id="trendingSection">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
-            <div class="gallery-title" style="margin:0;">🔥 Трендовые</div>
-            <span id="trendingLoader" style="color:var(--muted);font-size:.8rem;">⏳ Загрузка...</span>
-          </div>
-          <div id="trendingGrid" class="anime-grid"></div>
-        </div>
-
-        <!-- Сейчас в эфире (новая секция) -->
-        <div class="card" id="topAiringSection">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
-            <div class="gallery-title" style="margin:0;">📺 Сейчас в эфире</div>
-            <span id="topAiringLoader" style="color:var(--muted);font-size:.8rem;">⏳ Загрузка...</span>
-          </div>
-          <div id="topAiringGrid" class="anime-grid"></div>
-        </div>
-
-      </div><!-- /catalogView -->
-
-      <!-- Плеер -->
-      <div id="playerView" class="player-view">
-        <div class="card">
-          <button class="btn btn-outline back-btn" id="backToCatalog">← Назад к каталогу</button>
-          <div class="gallery-title" id="selectedAnimeTitle"></div>
-          <p style="color:var(--muted);font-size:.8rem;margin-bottom:.5rem;">Выбери серию для просмотра</p>
-          <div id="episodeList"></div>
-          <div id="playerContainer"></div>
-        </div>
+        <div id="logContainer"></div>
       </div>
-
     </div>
 
     <!-- Музыка -->
@@ -757,9 +698,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
     if (tab.dataset.tab === 'bio') fetchQuote();
-    if (tab.dataset.tab === 'anime') {
-      loadHome();
-    }
+    // Для остальных вкладок дополнительных действий не требуется
   });
 });
 
@@ -838,260 +777,9 @@ async function fetchNeko(){
 document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
 setInterval(fetchNeko,30000);
-
-/* ═══════════════════════════════════════════════════
-   🎌 АНИМЕ — главная с новинками + поиск + плеер
-═══════════════════════════════════════════════════ */
-
-const PLACEHOLDER_IMG = 'data:image/svg+xml,' + encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="#22113a" width="200" height="280"/><text x="100" y="145" text-anchor="middle" fill="#c77dff" font-size="40">🎌</text></svg>'
-);
-
-const animeSearch    = document.getElementById('animeSearch'),
-      animeSearchBtn = document.getElementById('animeSearchBtn'),
-      animeResults   = document.getElementById('animeResults'),
-      searchSection  = document.getElementById('searchSection'),
-      clearSearchBtn = document.getElementById('clearSearchBtn'),
-      catalogView    = document.getElementById('catalogView'),
-      playerView     = document.getElementById('playerView'),
-      backBtn        = document.getElementById('backToCatalog'),
-      selectedTitle  = document.getElementById('selectedAnimeTitle'),
-      episodeList    = document.getElementById('episodeList'),
-      playerContainer= document.getElementById('playerContainer'),
-      latestGrid     = document.getElementById('latestGrid'),
-      trendingGrid   = document.getElementById('trendingGrid'),
-      topAiringGrid  = document.getElementById('topAiringGrid'),
-      latestLoader   = document.getElementById('latestLoader'),
-      trendingLoader = document.getElementById('trendingLoader'),
-      topAiringLoader= document.getElementById('topAiringLoader');
-
-let artPlayerInstance = null;
-let homeLoaded = false;
-
-/* ── API helper ── */
-async function fetchFromApi(action, param = '') {
-  const url = `/api/anime?action=${action}&query=${encodeURIComponent(param)}`;
-  const r = await fetch(url);
-  if (!r.ok) {
-    const t = await r.text().catch(() => '');
-    throw new Error(`API ${r.status}: ${t.slice(0,120)}`);
-  }
-  return r.json();
-}
-
-/* ── Карточка аниме ── */
-function makeCard(anime, onClick) {
-  const sub = anime.episodes?.sub ? `SUB ${anime.episodes.sub}` : '';
-  const dub = anime.episodes?.dub ? `DUB ${anime.episodes.dub}` : '';
-  const badgeText = [sub, dub].filter(Boolean).join(' / ');
-  const badge = badgeText ? `<div class="ep-badge">${badgeText}</div>` : '';
-  const typeTag = anime.type ? `<div class="anime-type">${anime.type}</div>` : '';
-  const card = document.createElement('div');
-  card.className = 'anime-card';
-  card.innerHTML = `
-    <div class="anime-card-img-wrap">
-      <img src="${anime.image || PLACEHOLDER_IMG}" alt="${anime.title}" loading="lazy"
-           onerror="this.src='${PLACEHOLDER_IMG}'">
-      ${badge}
-    </div>
-    <div class="info">
-      <div class="title" title="${anime.title}">${anime.title}</div>
-      ${typeTag}
-    </div>`;
-  card.addEventListener('click', onClick);
-  return card;
-}
-
-function renderGrid(grid, list, loaderEl) {
-  if (loaderEl) loaderEl.textContent = '';
-  grid.innerHTML = '';
-  if (!list?.length) {
-    grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;padding:.5rem 0;">Ничего не найдено</p>';
-    return;
-  }
-  list.forEach(anime => {
-    if (!anime.id) return;
-    grid.appendChild(makeCard(anime, () => {
-      showPlayerView(anime.title);
-      loadEpisodes(anime.id);
-    }));
-  });
-}
-
-/* ── Главная: новинки, тренды и эфир ── */
-async function loadHome() {
-  if (homeLoaded) return;
-  homeLoaded = true;
-  try {
-    const data = await fetchFromApi('home');
-    renderGrid(latestGrid,      data.latest,    latestLoader);
-    renderGrid(trendingGrid,    data.trending,  trendingLoader);
-    renderGrid(topAiringGrid,   data.topAiring, topAiringLoader);
-  } catch(e) {
-    console.error('[HOME]', e);
-    latestLoader.textContent     = '⚠ Ошибка загрузки';
-    trendingLoader.textContent   = '⚠ Ошибка загрузки';
-    topAiringLoader.textContent  = '⚠ Ошибка загрузки';
-  }
-}
-
-/* ── Поиск ── */
-async function doSearch(q) {
-  if (!q) return;
-  searchSection.style.display = 'block';
-  animeResults.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">🔍 Ищем «' + q + '»...</p>';
-  searchSection.scrollIntoView({ behavior:'smooth', block:'start' });
-  try {
-    const data = await fetchFromApi('search', q);
-    if (data.results?.length) {
-      renderGrid(animeResults, data.results, null);
-    } else {
-      animeResults.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Ничего не найдено по запросу «' + q + '»</p>';
-    }
-  } catch(e) {
-    console.error('[SEARCH]', e);
-    animeResults.innerHTML = '<p style="color:#ff8fa3;grid-column:1/-1;">❌ Ошибка поиска: ' + e.message + '</p>';
-  }
-}
-
-clearSearchBtn.addEventListener('click', () => {
-  searchSection.style.display = 'none';
-  animeSearch.value = '';
-});
-
-animeSearchBtn.addEventListener('click', () => doSearch(animeSearch.value.trim()));
-animeSearch.addEventListener('keypress', e => { if(e.key === 'Enter') doSearch(animeSearch.value.trim()); });
-
-/* ── Навигация каталог ↔ плеер ── */
-function showCatalog() {
-  catalogView.style.display = 'block';
-  playerView.style.display  = 'none';
-  if (artPlayerInstance) { try { artPlayerInstance.destroy(); } catch(_){} artPlayerInstance = null; }
-  playerContainer.innerHTML = '';
-}
-
-function showPlayerView(title) {
-  catalogView.style.display = 'none';
-  playerView.style.display  = 'block';
-  selectedTitle.textContent = title || '';
-  episodeList.innerHTML     = '';
-  playerContainer.innerHTML = '';
-  playerView.scrollIntoView({ behavior:'smooth', block:'start' });
-}
-
-backBtn.addEventListener('click', showCatalog);
-
-/* ── Загрузка серий ── */
-async function loadEpisodes(animeId) {
-  episodeList.innerHTML = '<span style="color:var(--muted);font-size:.85rem;">⏳ Загружаем серии...</span>';
-  try {
-    const data = await fetchFromApi('info', animeId);
-    if (!data.episodes?.length) {
-      episodeList.innerHTML = '<span style="color:var(--muted);">Серии не найдены</span>';
-      return;
-    }
-    episodeList.innerHTML = '';
-    const eps = data.episodes;
-    if (eps.length > 50) {
-      const chunks = [];
-      for (let i = 0; i < eps.length; i += 50) chunks.push(eps.slice(i, i+50));
-      const sel = document.createElement('div');
-      sel.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.8rem;';
-      chunks.forEach((chunk, ci) => {
-        const b = document.createElement('button');
-        b.className = 'btn btn-outline';
-        b.style.fontSize = '.75rem';
-        b.textContent = `${chunk[0].number}–${chunk[chunk.length-1].number}`;
-        b.addEventListener('click', () => { renderEpisodes(chunk); b.style.background='rgba(255,183,197,.2)'; });
-        sel.appendChild(b);
-      });
-      episodeList.appendChild(sel);
-      renderEpisodes(eps.slice(0, 50));
-    } else {
-      renderEpisodes(eps);
-    }
-  } catch(e) {
-    console.error('[EPISODES]', e);
-    episodeList.innerHTML = '<span style="color:#ff8fa3;">❌ Ошибка загрузки серий</span>';
-  }
-}
-
-function renderEpisodes(eps) {
-  const wrap = episodeList.querySelector('.ep-buttons') || (() => {
-    const d = document.createElement('div');
-    d.className = 'ep-buttons';
-    d.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;';
-    episodeList.appendChild(d);
-    return d;
-  })();
-  wrap.innerHTML = '';
-  eps.forEach(ep => {
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-outline';
-    btn.style.cssText = 'font-size:.75rem;padding:.45rem .8rem;min-width:52px;';
-    btn.textContent = ep.number;
-    btn.title = ep.title || `Серия ${ep.number}`;
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.ep-buttons .btn').forEach(b => b.classList.remove('ep-active'));
-      btn.classList.add('ep-active');
-      watchEpisode(ep.id);
-    });
-    wrap.appendChild(btn);
-  });
-}
-
-/* ── Воспроизведение ── */
-async function watchEpisode(episodeId) {
-  playerContainer.innerHTML = '<div style="text-align:center;padding:2.5rem;color:var(--muted);">⏳ Загружаем стрим...</div>';
-  playerContainer.scrollIntoView({ behavior:'smooth', block:'start' });
-
-  let streamUrl = null, subs = [];
-  try {
-    const data = await fetchFromApi('watch', episodeId);
-    if (data.sources?.length) streamUrl = data.sources[0].file;
-    if (data.subtitles?.length) subs = data.subtitles;
-  } catch(e) {
-    playerContainer.innerHTML = `<div style="text-align:center;padding:2rem;color:#ff8fa3;">❌ Ошибка: ${e.message}</div>`;
-    return;
-  }
-
-  if (!streamUrl) {
-    playerContainer.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff8fa3;">❌ Видео недоступно для этой серии</div>';
-    return;
-  }
-
-  playerContainer.innerHTML = '<div id="artplayer" style="width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;"></div>';
-
-  if (artPlayerInstance) { try { artPlayerInstance.destroy(); } catch(_){} artPlayerInstance = null; }
-
-  artPlayerInstance = new Artplayer({
-    container: '#artplayer',
-    url: streamUrl,
-    autoplay: true,
-    theme: '#ffb7c5',
-    settings: true,
-    fullscreen: true,
-    pip: true,
-    ...(subs.length > 0 && { subtitle: { url: subs[0].file, type: 'vtt', encoding: 'utf-8' } }),
-    customType: {
-      m3u8(video, src) {
-        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
-          const hls = new Hls({ enableWorker: true });
-          hls.loadSource(src);
-          hls.attachMedia(video);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = src;
-        }
-      },
-    },
-    type: streamUrl.includes('.m3u8') ? 'm3u8' : '',
-  });
-}
-
-/* ── Автозагрузка при открытии вкладки Аниме ── */
-document.querySelector('[data-tab="anime"]').addEventListener('click', loadHome);
-if (document.querySelector('[data-tab="anime"]').classList.contains('active')) loadHome();
 </script>
+
+<!-- Подключение спамера -->
+<script src="spammer.js"></script>
 </body>
 </html>
