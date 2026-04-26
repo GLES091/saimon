@@ -1,7 +1,7 @@
-// api/anime.js — HiAnime прокси через api-anime-rouge.vercel.app
-// Документация: https://github.com/abhaythakur71181/Anime-API
+// api/anime.js — прокси для API https://dssdsds.vercel.app/
+// Документация: https://github.com/abhaythakur71181/Anime-API?tab=readme-ov-file#readme
 
-const BASE = 'https://api-anime-rouge.vercel.app/aniwatch';
+const BASE = 'https://dssdsds.vercel.app/api';
 
 async function safeFetch(url) {
   const ctrl = new AbortController();
@@ -13,7 +13,9 @@ async function safeFetch(url) {
     });
     clearTimeout(t);
     if (!r.ok) throw new Error(`Upstream ${r.status} → ${url}`);
-    return r.json();
+    const data = await r.json();
+    if (data && data.success === false) throw new Error(data.message || 'API error');
+    return data;
   } catch(e) { clearTimeout(t); throw e; }
 }
 
@@ -25,42 +27,33 @@ module.exports = async function handler(req, res) {
   console.log(`[API] action=${action} query=${query}`);
 
   try {
-    /* ── ГЛАВНАЯ СТРАНИЦА: новинки + трендовые ── */
+    /* ── ГЛАВНАЯ СТРАНИЦА ── */
     if (action === 'home') {
       const data = await safeFetch(`${BASE}/`);
-      // latestEpisodes и topAiringAnimes — самые свежие
-      const latest  = (data.latestEpisodes     || []).slice(0, 18).map(normalizeAnime);
-      const trending = (data.trendingAnimes    || []).slice(0, 12).map(normalizeAnime);
-      const spotlight = (data.spotlightAnimes  || []).slice(0,  6).map(normalizeAnime);
-      return res.json({ latest, trending, spotlight });
+      if (!data?.results) throw new Error('Некорректный ответ от API');
+      const r = data.results;
+      const latest    = (r.latestEpisode   || []).slice(0, 18).map(normalizeAnime);
+      const trending  = (r.trending        || []).slice(0, 12).map(normalizeAnime);
+      const spotlight = (r.spotlights      || []).slice(0,  6).map(normalizeAnime);
+      const topAiring = (r.topAiring       || []).slice(0, 12).map(normalizeAnime);
+      return res.json({ latest, trending, spotlight, topAiring });
     }
 
     /* ── ПОИСК ── */
     if (action === 'search') {
-      // Пробуем разные пути поиска
-      let results = [];
-      for (const path of [
-        `${BASE}/search?keyword=${encodeURIComponent(query||'')}`,
-        `${BASE}/search?q=${encodeURIComponent(query||'')}`,
-        `${BASE}/q?keyword=${encodeURIComponent(query||'')}`,
-      ]) {
-        try {
-          const d = await safeFetch(path);
-          const arr = d.animes || d.results || d.data || (Array.isArray(d) ? d : []);
-          if (arr.length) { results = arr.map(normalizeAnime); break; }
-        } catch(_) {}
-      }
+      const data = await safeFetch(`${BASE}/search?keyword=${encodeURIComponent(query||'')}`);
+      const arr = Array.isArray(data?.results) ? data.results : [];
+      const results = arr.map(normalizeAnime);
       return res.json({ results });
     }
 
-    /* ── СПИСОК СЕРИЙ ── */
+    /* ── СПИСОК ЭПИЗОДОВ ── */
     if (action === 'info') {
       const data = await safeFetch(`${BASE}/episodes/${encodeURIComponent(query)}`);
-      // Ответ: { episodes: [{ id, episodeId, title, episode_no, number }] }
-      const raw = data.episodes || data.results?.episodes || data.results || [];
+      const raw = data?.results?.episodes || data?.episodes || [];
       const episodes = raw.map((ep, i) => ({
-        id:     ep.episodeId || ep.id || `${query}?ep=${ep.data_id||i}`,
-        number: ep.number || ep.episode_no || (i + 1),
+        id:     ep.id || `${query}?ep=${ep.data_id || i}`,
+        number: ep.episode_no || (i + 1),
         title:  ep.title || ep.jname || '',
       }));
       return res.json({ episodes });
@@ -68,28 +61,46 @@ module.exports = async function handler(req, res) {
 
     /* ── ВОСПРОИЗВЕДЕНИЕ ── */
     if (action === 'watch') {
-      // episodeId = "anime-slug?ep=12345"
       let streamUrl = null, subtitles = [];
 
-      // Формат 1: /episode/sources?animeEpisodeId=...&server=hd-1&category=sub
       for (const cat of ['sub', 'dub']) {
         for (const srv of ['hd-1', 'hd-2', 'megacloud']) {
           if (streamUrl) break;
           try {
-            const url = `${BASE}/episode/sources?animeEpisodeId=${encodeURIComponent(query)}&server=${srv}&category=${cat}`;
+            const url = `${BASE}/stream?id=${encodeURIComponent(query)}&server=${srv}&type=${cat}`;
             console.log('[API] GET', url);
             const d = await safeFetch(url);
-            // { sources: [{ url, isM3U8 }], subtitles: [{ lang, url }] }
-            const src = (d.sources||[])[0];
-            if (src?.url?.startsWith('http')) {
-              streamUrl  = src.url;
-              subtitles  = (d.subtitles || d.tracks || []).map(s => ({
-                file: s.url || s.file, label: s.lang || s.label || 'Sub',
+            const link = d?.results?.streamingLink?.[0]?.link;
+            if (link?.file?.startsWith?.('http')) {
+              streamUrl  = link.file;
+              subtitles  = (d.results.streamingLink[0].tracks || []).map(t => ({
+                file: t.file, label: t.label || 'Sub',
               })).filter(s => s.file);
             }
           } catch(_) {}
         }
         if (streamUrl) break;
+      }
+
+      // Fallback
+      if (!streamUrl) {
+        for (const cat of ['sub', 'dub']) {
+          for (const srv of ['hd-1', 'hd-2', 'megacloud']) {
+            if (streamUrl) break;
+            try {
+              const url = `${BASE}/stream/fallback?id=${encodeURIComponent(query)}&server=${srv}&type=${cat}`;
+              const d = await safeFetch(url);
+              const link = d?.results?.streamingLink?.[0]?.link;
+              if (link?.file?.startsWith?.('http')) {
+                streamUrl  = link.file;
+                subtitles  = (d.results.streamingLink[0].tracks || []).map(t => ({
+                  file: t.file, label: t.label || 'Sub',
+                })).filter(s => s.file);
+              }
+            } catch(_) {}
+          }
+          if (streamUrl) break;
+        }
       }
 
       if (!streamUrl) return res.status(404).json({ error: 'Стрим не найден. Попробуйте другую серию.' });
@@ -110,10 +121,13 @@ module.exports = async function handler(req, res) {
 
 function normalizeAnime(item) {
   return {
-    id:    item.id   || item.animeId || '',
+    id:    item.id   || item.animeId || item.data_id || '',
     title: item.name || item.title   || 'Без названия',
-    image: item.img  || item.poster  || item.image || '',
-    episodes: item.episodes || {},
-    type:  item.category || item.showType || item.type || '',
+    image: item.poster || item.img  || item.image || '',
+    episodes: {
+      sub: item.tvInfo?.sub ?? (item.episodes?.sub ?? undefined),
+      dub: item.tvInfo?.dub ?? (item.episodes?.dub ?? undefined),
+    },
+    type:  item.tvInfo?.showType || item.showType || item.type || '',
   };
 }
