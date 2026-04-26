@@ -1,4 +1,6 @@
-// api/anime.js — HiAnime proxy для Vercel
+// api/anime.js — HiAnime proxy, правильные эндпоинты по документации
+// https://github.com/JustAnimeCore/HiAnime-Api
+
 const BASE_URL = 'https://dssdsds.vercel.app';
 
 async function safeFetch(url) {
@@ -24,123 +26,139 @@ async function safeFetch(url) {
   }
 }
 
-// Вытаскивает HLS-ссылку из любого формата ответа стрима
-function extractStreamUrl(data) {
-  if (!data) return null;
-
-  // Формат 1: { link: '...' }
-  if (typeof data.link === 'string' && data.link.includes('http')) return data.link;
-
-  // Формат 2: { url: '...' }
-  if (typeof data.url === 'string' && data.url.includes('http')) return data.url;
-
-  // Формат 3: { sources: [{ url|file|link: '...' }] }
-  if (Array.isArray(data.sources) && data.sources.length > 0) {
-    const src = data.sources[0];
-    return src.url || src.file || src.link || null;
-  }
-
-  // Формат 4: { data: { sources: [...] } }
-  if (data.data && Array.isArray(data.data.sources) && data.data.sources.length > 0) {
-    const src = data.data.sources[0];
-    return src.url || src.file || src.link || null;
-  }
-
-  // Формат 5: { stream: '...' }
-  if (typeof data.stream === 'string' && data.stream.includes('http')) return data.stream;
-
-  return null;
-}
-
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { action, query } = req.query;
   console.log(`[API] action=${action} query=${query}`);
-
   if (!action) return res.status(400).json({ error: 'action required' });
 
   try {
-    /* ──────── ПОИСК ──────── */
+    /* ──────────────────────────────
+       ПОИСК: /api/search?keyword=...
+       Ответ: { success, results: [{ id, poster, title, ... }] }
+    ────────────────────────────── */
     if (action === 'search') {
-      const url = `${BASE_URL}/search?keyword=${encodeURIComponent(query || '')}`;
+      const url = `${BASE_URL}/api/search?keyword=${encodeURIComponent(query || '')}`;
       console.log('[API] GET', url);
       const data = await safeFetch(url);
 
-      // API может вернуть массив или объект с results
-      const raw = Array.isArray(data) ? data : (data.results || data.data || []);
+      const raw = Array.isArray(data.results) ? data.results : [];
       const results = raw.map(item => ({
-        id:    item.id   || item.animeId   || '',
-        title: item.title || item.name      || 'Без названия',
-        image: item.image || item.poster    || item.img || '',
+        id:    item.id || '',
+        title: item.title || item.japanese_title || 'Без названия',
+        image: item.poster || '',
       })).filter(x => x.id);
 
       return res.status(200).json({ results });
     }
 
-    /* ──────── СЕРИИ ──────── */
+    /* ──────────────────────────────
+       СЕРИИ: /api/episodes/{animeId}
+       Ответ: { success, results: { totalEpisodes, episodes: [{ id, episode_no }] } }
+       episode.id = "anime-slug?ep=12345"
+    ────────────────────────────── */
     if (action === 'info') {
-      const url = `${BASE_URL}/episodes/${encodeURIComponent(query)}`;
+      const url = `${BASE_URL}/api/episodes/${encodeURIComponent(query)}`;
       console.log('[API] GET', url);
       const data = await safeFetch(url);
 
-      const raw = Array.isArray(data) ? data : (data.episodes || data.data || []);
-      const episodes = raw.map((ep, i) => ({
-        id:     ep.episodeId || ep.id || ep.episode_id || String(i + 1),
-        number: ep.number   || ep.episode || ep.num     || (i + 1),
+      const raw = data.results?.episodes || data.results || [];
+      const episodes = (Array.isArray(raw) ? raw : []).map((ep, i) => ({
+        id:     ep.id || `${query}?ep=${ep.data_id || i}`,
+        number: ep.episode_no || ep.number || (i + 1),
       }));
 
       return res.status(200).json({ episodes });
     }
 
-    /* ──────── ВОСПРОИЗВЕДЕНИЕ ──────── */
-    if (action === 'watch') {
-      // Шаг 1: получаем список серверов
-      const servUrl = `${BASE_URL}/servers?id=${encodeURIComponent(query)}`;
-      console.log('[API] GET', servUrl);
-      const servers = await safeFetch(servUrl);
+    /* ──────────────────────────────
+       ПРОСМОТР
+       Шаг 1: GET /api/servers/{episodeFullId}
+         Ответ: { success, results: [{ serverName, type, ... }] }
 
-      const serverList = Array.isArray(servers) ? servers : (servers.servers || servers.data || []);
+       Шаг 2: GET /api/stream?id={episodeFullId}&server={serverName}&type=sub
+         Ответ: { success, results: {
+           streamingLink: [{ link: { file, type }, tracks: [...] }]
+         }}
+    ────────────────────────────── */
+    if (action === 'watch') {
+      const episodeId = query; // формат: "anime-slug?ep=12345"
+
+      // --- Получаем серверы ---
+      const servUrl = `${BASE_URL}/api/servers/${episodeId}`;
+      console.log('[API] GET', servUrl);
+      const serversData = await safeFetch(servUrl);
+      const serverList = Array.isArray(serversData.results) ? serversData.results : [];
+
       if (serverList.length === 0) {
-        return res.status(404).json({ error: 'Серверы не найдены' });
+        return res.status(404).json({ error: 'Серверы не найдены для этой серии' });
       }
 
-      // Шаг 2: пробуем серверы по порядку до первого рабочего
-      const tryServers = serverList.slice(0, 3); // максимум 3 попытки
-      let streamUrl = null;
+      // --- Перебираем серверы, пробуем sub потом dub ---
+      let streamFile = null;
+      let subtitles = [];
 
-      for (const srv of tryServers) {
-        const serverName = srv.serverName || srv.name || srv.server || '';
+      for (const srv of serverList.slice(0, 4)) {
+        const serverName = srv.serverName || srv.server_name || srv.name || '';
         if (!serverName) continue;
 
-        // Пробуем sub и dub
         for (const type of ['sub', 'dub']) {
           try {
-            const sUrl = `${BASE_URL}/stream?id=${encodeURIComponent(query)}&type=${type}&server=${encodeURIComponent(serverName)}`;
-            console.log('[API] GET', sUrl);
-            const stream = await safeFetch(sUrl);
-            streamUrl = extractStreamUrl(stream);
-            if (streamUrl) {
-              console.log('[API] Stream found:', streamUrl.slice(0, 60));
-              break;
+            const streamUrl = `${BASE_URL}/api/stream?id=${encodeURIComponent(episodeId)}&server=${encodeURIComponent(serverName)}&type=${type}`;
+            console.log('[API] GET', streamUrl);
+            const streamData = await safeFetch(streamUrl);
+
+            // results.streamingLink[0].link.file
+            const linkArr = streamData.results?.streamingLink;
+            if (Array.isArray(linkArr) && linkArr.length > 0) {
+              const file = linkArr[0]?.link?.file;
+              if (file && file.startsWith('http')) {
+                streamFile = file;
+                subtitles = linkArr[0]?.tracks || [];
+                console.log('[API] Stream OK:', file.slice(0, 80));
+                break;
+              }
             }
           } catch (e) {
-            console.warn('[API] Server failed:', serverName, type, e.message);
+            console.warn(`[API] ${serverName}/${type} failed:`, e.message);
+          }
+
+          // Резервный fallback эндпоинт
+          if (!streamFile) {
+            try {
+              const fbUrl = `${BASE_URL}/api/stream/fallback?id=${encodeURIComponent(episodeId)}&server=${encodeURIComponent(serverName)}&type=${type}`;
+              console.log('[API] Fallback GET', fbUrl);
+              const fb = await safeFetch(fbUrl);
+              const file = fb.results?.streamingLink?.[0]?.link?.file;
+              if (file && file.startsWith('http')) {
+                streamFile = file;
+                subtitles = fb.results?.streamingLink?.[0]?.tracks || [];
+                console.log('[API] Fallback OK:', file.slice(0, 80));
+                break;
+              }
+            } catch (e) {
+              console.warn('[API] Fallback failed:', e.message);
+            }
           }
         }
-        if (streamUrl) break;
+        if (streamFile) break;
       }
 
-      if (!streamUrl) {
-        return res.status(404).json({ error: 'Стрим не найден. Попробуйте другую серию.' });
+      if (!streamFile) {
+        return res.status(404).json({ error: 'Стрим не найден. Попробуйте другую серию или зайдите позже.' });
       }
+
+      const subs = subtitles
+        .filter(t => t.kind === 'captions' || t.kind === 'subtitles')
+        .map(t => ({ file: t.file, label: t.label || 'Sub', default: !!t.default }));
 
       return res.status(200).json({
-        sources: [{ file: streamUrl, quality: 'auto', type: 'hls' }],
+        sources: [{ file: streamFile, quality: 'auto', type: 'hls' }],
+        subtitles: subs,
       });
     }
 
