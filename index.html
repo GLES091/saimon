@@ -12,9 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* ═══════════════════════════════════════
-       ОРИГИНАЛЬНЫЙ ДИЗАЙН (без изменений)
-    ═══════════════════════════════════════ */
+    /* ═══════════════ ОРИГИНАЛЬНЫЙ ДИЗАЙН ═══════════════ */
     :root {
       --bg:       #1a1025;
       --bg2:      #22133a;
@@ -348,7 +346,7 @@
     }
     .social-btn svg { width:20px; height:20px; fill:currentColor; }
 
-    /* Спамер */
+    /* Спамер (из spammer.js) */
     .spammer-title {
       font-family: var(--fh);
       font-size: 1.35rem;
@@ -398,7 +396,173 @@
       transform:translateY(-1px);
     }
 
-    /* Музыка */
+    /* Attack-режим */
+    .attack-wrapper {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+    .attack-form .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .attack-form .inp-group {
+      flex: 1;
+      min-width: 140px;
+    }
+    .attack-form label {
+      display: block;
+      font-size: .75rem;
+      color: var(--muted);
+      margin-bottom: .3rem;
+    }
+    .attack-form input, .attack-form select {
+      width: 100%;
+      padding: .65rem .9rem;
+      background: rgba(199,125,255,.06);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      color: var(--text);
+      font-family: var(--fb);
+      font-size: .9rem;
+      outline: none;
+      transition: .2s;
+    }
+    .attack-form input:focus, .attack-form select:focus {
+      border-color: var(--accent);
+    }
+    .region-chips {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+    .region-chip {
+      padding: .4rem 1rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .8rem;
+      transition: .2s;
+    }
+    .region-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Attack overlay */
+    .atk-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: var(--bg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn .3s;
+    }
+    .atk-overlay.active { display: flex; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    .atk-timer {
+      font-family: var(--fh);
+      font-size: 3.5rem;
+      color: var(--text);
+      display: flex;
+      align-items: baseline;
+      gap: .2rem;
+    }
+    .atk-timer small {
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+    .atk-progress {
+      width: 80%;
+      height: 6px;
+      background: var(--card2);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .atk-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      width: 0%;
+      transition: width .3s;
+    }
+    .atk-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .atk-stat {
+      text-align: center;
+    }
+    .atk-stat b {
+      font-size: 1.8rem;
+      color: var(--text);
+    }
+    .atk-stat small {
+      font-size: .7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .atk-stop-btn {
+      padding: .8rem 2.5rem;
+      background: rgba(255,107,107,.1);
+      border: 1.5px solid rgba(255,107,107,.3);
+      border-radius: 30px;
+      color: #ff6b6b;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .atk-stop-btn:active { transform: scale(.96); }
+
+    /* История атак */
+    .history-list {
+      margin-top: 1.5rem;
+    }
+    .history-item {
+      background: rgba(199,125,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .8rem 1rem;
+      margin-bottom: .5rem;
+      font-size: .8rem;
+    }
+    .history-item .h-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: .3rem;
+    }
+    .history-item .h-phone {
+      font-weight: 700;
+      color: var(--text);
+    }
+    .history-item .h-region {
+      font-size: .7rem;
+      color: var(--accent);
+    }
+    .history-item .h-stats {
+      display: flex;
+      gap: 1rem;
+      font-size: .75rem;
+      color: var(--muted);
+    }
+    .history-item .h-stats .ok { color: #5ee8a0; }
+    .history-item .h-stats .fail { color: #ff6b6b; }
+
+    /* Галерея, музыка */
     .music-wrap { text-align:center; }
     .music-title {
       font-family:var(--fh); font-size:1.5rem;
@@ -425,7 +589,6 @@
       50%    { transform:scale(1.5); opacity:.5; }
     }
 
-    /* Галерея */
     .gallery-title {
       font-family:var(--fh); font-size:1.4rem;
       color:var(--accent); margin-bottom:.4rem;
@@ -475,19 +638,6 @@
     .neko-corner img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
     .neko-corner:hover img { transform:scale(1.18); }
 
-    /* Спамер-лог */
-    #logContainer {
-      background: rgba(0,0,0,0.25);
-      border-radius: 14px;
-      padding: .8rem;
-      height: 180px;
-      overflow-y: auto;
-      font-size: .78rem;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      margin-top: 1rem;
-    }
-
     @media (max-width:660px) {
       .profile        { flex-direction:column; gap:1.6rem; }
       .bio-name       { font-size:1.6rem; }
@@ -524,7 +674,8 @@
 
     <nav class="tabs">
       <div class="tab active" data-tab="bio">🌸 Био</div>
-      <div class="tab"        data-tab="spammer">💬 Спамер</div>
+      <div class="tab"        data-tab="spammer">💬 Spam</div>
+      <div class="tab"        data-tab="attack">⚡ Attack</div>
       <div class="tab"        data-tab="music">🎀 Музыка</div>
       <div class="tab"        data-tab="gallery">🎴 Галерея</div>
     </nav>
@@ -567,7 +718,7 @@
       </div>
     </div>
 
-    <!-- 💬 Спамер -->
+    <!-- 💬 Spam (old) -->
     <div class="tab-content" id="tab-spammer">
       <div class="card">
         <div class="spammer-title">📨 Telegram‑спамер</div>
@@ -601,7 +752,49 @@
         <div style="margin-bottom:.4rem; font-size:.8rem; color:var(--muted);">Сервисы:</div>
         <div id="svcList" style="display:flex; flex-wrap:wrap; gap:.3rem 1rem; margin-bottom:1rem;"></div>
 
-        <div id="logContainer"></div>
+        <div id="logContainer" style="background: rgba(0,0,0,0.25); border-radius: 14px; padding: .8rem; height: 180px; overflow-y: auto; font-size: .78rem; color: var(--muted); border: 1px solid var(--border);"></div>
+      </div>
+    </div>
+
+    <!-- ⚡ Attack (бывший Celestial) -->
+    <div class="tab-content" id="tab-attack">
+      <div class="attack-wrapper" id="attackFormView">
+        <div class="spammer-title" style="margin-bottom:1rem;">ОАтака</div>
+
+        <div class="region-chips" id="regionChips">
+          <span class="region-chip active" data-r="ru">RU</span>
+          <span class="region-chip" data-r="by">BY</span>
+          <span class="region-chip" data-r="kz">KZ</span>
+        </div>
+
+        <div class="attack-form">
+          <div class="form-row">
+            <div class="inp-group">
+              <label>Номер телефона</label>
+              <input type="tel" id="attackPhone" placeholder="+7XXXXXXXXXX">
+            </div>
+            <div class="inp-group">
+              <label>Длительность (сек)</label>
+              <input type="number" id="attackDur" value="60" min="10">
+            </div>
+            <div class="inp-group">
+              <label>Прокси (ip:port)</label>
+              <input type="text" id="attackProxy" placeholder="ip:port">
+            </div>
+          </div>
+          <label style="display:flex; align-items:center; gap:.5rem; margin-bottom:1.2rem; cursor:pointer; font-size:.85rem; color:var(--muted);">
+            <input type="checkbox" id="attackWebMode" style="accent-color:var(--accent);"> Доп. сервисы (эмуляция браузера)
+          </label>
+          <div style="display:flex; gap:.8rem;">
+            <button class="btn btn-primary" id="attackStartBtn">▶ Запустить атаку</button>
+            <button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button>
+          </div>
+        </div>
+
+        <div class="history-list" id="attackHistory">
+          <div style="font-weight:700; margin-bottom:.5rem; color:var(--accent);">История атак</div>
+          <div id="historyEntries">Нет записей</div>
+        </div>
       </div>
     </div>
 
@@ -628,8 +821,25 @@
       </div>
     </div>
 
-  </div><!-- /container -->
-</div><!-- /page-wrap -->
+  </div>
+</div>
+
+<!-- Оверлей атаки -->
+<div class="atk-overlay" id="atkOverlay">
+  <div style="font-size:1rem; color:var(--accent); margin-bottom:2rem;" id="atkRegionLabel">RU</div>
+  <div class="atk-timer">
+    <span id="atkTimeLeft">60</span><small>s</small>
+  </div>
+  <div class="atk-progress">
+    <div class="atk-progress-fill" id="atkProgressFill"></div>
+  </div>
+  <div class="atk-stats">
+    <div class="atk-stat"><b id="atkTotal">0</b><small>всего</small></div>
+    <div class="atk-stat"><b id="atkSuccess" style="color:#5ee8a0;">0</b><small>успешно</small></div>
+    <div class="atk-stat"><b id="atkFailed" style="color:#ff6b6b;">0</b><small>провал</small></div>
+  </div>
+  <button class="atk-stop-btn" id="atkStopOverlayBtn">⏹ Остановить</button>
+</div>
 
 <script>
 /* ══════════ ФОН: сакура / звёзды ══════════ */
@@ -671,9 +881,9 @@ mkPetals();
 
 /* ── Тема ── */
 const html = document.documentElement;
-const saved = localStorage.getItem('theme') || 'dark';
-html.setAttribute('data-theme', saved);
-document.getElementById('themeToggle').textContent = saved === 'dark' ? '🌸' : '🌙';
+const savedTheme = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', savedTheme);
+document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌸' : '🌙';
 document.getElementById('themeToggle').addEventListener('click', () => {
   const nxt = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', nxt);
@@ -698,11 +908,10 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
     if (tab.dataset.tab === 'bio') fetchQuote();
-    // Для остальных вкладок дополнительных действий не требуется
   });
 });
 
-/* ── Галерея (waifu.pics) ── */
+/* ── Галерея ── */
 const gallery = document.getElementById('gallery');
 async function loadGalleryImage(imgElement) {
   const categories = ['waifu','neko','shinobu','megumin','awoo','cuddle','hug','pat','smile','wave'];
@@ -731,7 +940,7 @@ async function loadGalleryImage(imgElement) {
   }
 })();
 
-/* ── Аватар (waifu.pics) ── */
+/* ── Аватар ── */
 const avatarImg = document.getElementById('avatarImg');
 (async function fetchWaifuAvatar(){
   const types = ['waifu','neko','shinobu','megumin'];
@@ -777,9 +986,127 @@ async function fetchNeko(){
 document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
 setInterval(fetchNeko,30000);
+
+/* ─────────────────────────────────────
+   ATTACK LOGIC (требует Storm API)
+   ───────────────────────────────────── */
+const regionChips = document.querySelectorAll('#regionChips .region-chip');
+let attackRegion = 'ru';
+regionChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    regionChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    attackRegion = chip.dataset.r;
+    document.getElementById('attackPhone').placeholder = ({ru:'+7XXXXXXXXXX',by:'+375XXXXXXXXXX',kz:'+7XXXXXXXXXX'})[attackRegion];
+  });
+});
+
+let attackRunning = false,
+    attackStart = 0,
+    attackDuration = 60,
+    lastOk = 0, lastFail = 0, lastTotal = 0;
+
+function saveAttackHistory(phone, region, dur, ok, fail, total) {
+  let hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
+  hist.unshift({ date: new Date().toLocaleString('ru'), phone, region, dur, ok, fail, total });
+  if (hist.length > 30) hist = hist.slice(0, 30);
+  localStorage.setItem('attack_hist', JSON.stringify(hist));
+}
+
+function renderHistory() {
+  const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
+  const container = document.getElementById('historyEntries');
+  if (!hist.length) {
+    container.innerHTML = '<div style="color:var(--muted);">Нет завершённых атак</div>';
+    return;
+  }
+  container.innerHTML = hist.map(h => `
+    <div class="history-item">
+      <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.region}</span></div>
+      <div class="h-stats">
+        <span class="ok">✓${h.ok}</span>
+        <span class="fail">✗${h.fail}</span>
+        <span>${h.total > 0 ? Math.round(h.ok*100/h.total) : 0}%</span>
+        <span>${h.dur}s</span>
+      </div>
+      <div style="font-size:.7rem; color:var(--text3); margin-top:.2rem;">${h.date}</div>
+    </div>
+  `).join('');
+}
+renderHistory();
+
+function startAttack() {
+  const phone = document.getElementById('attackPhone').value.trim();
+  if (!phone) return alert('Введите номер телефона');
+  const dur = parseInt(document.getElementById('attackDur').value) || 60;
+  const proxy = document.getElementById('attackProxy').value.trim();
+  const web = document.getElementById('attackWebMode').checked;
+
+  if (typeof Storm !== 'undefined' && Storm.start) {
+    let resp;
+    if (web) {
+      resp = JSON.parse(Storm.startWithWeb(phone, attackRegion, String(dur), proxy));
+    } else {
+      resp = JSON.parse(Storm.start(phone, attackRegion, String(dur), proxy));
+    }
+    if (resp.status === 'started') {
+      attackRunning = true;
+      attackStart = Date.now();
+      attackDuration = dur;
+      lastOk = lastFail = lastTotal = 0;
+      document.getElementById('attackStartBtn').style.display = 'none';
+      document.getElementById('attackStopBtn').style.display = '';
+      document.getElementById('atkRegionLabel').textContent = attackRegion.toUpperCase();
+      document.getElementById('atkTimeLeft').textContent = dur;
+      document.getElementById('atkOverlay').classList.add('active');
+    } else if (resp.status === 'error') {
+      alert(resp.message);
+    }
+  } else {
+    alert('Storm API недоступен (только в WebView)');
+  }
+}
+
+function stopAttack() {
+  attackRunning = false;
+  if (typeof Storm !== 'undefined' && Storm.stop) Storm.stop();
+  document.getElementById('atkOverlay').classList.remove('active');
+  document.getElementById('attackStartBtn').style.display = '';
+  document.getElementById('attackStopBtn').style.display = 'none';
+}
+
+document.getElementById('attackStartBtn').addEventListener('click', startAttack);
+document.getElementById('attackStopBtn').addEventListener('click', stopAttack);
+document.getElementById('atkStopOverlayBtn').addEventListener('click', stopAttack);
+
+// Статус-опрос (только если работает Storm)
+setInterval(() => {
+  if (attackRunning && typeof Storm !== 'undefined' && Storm.status) {
+    try {
+      const s = JSON.parse(Storm.status());
+      document.getElementById('atkTotal').textContent = s.total || 0;
+      document.getElementById('atkSuccess').textContent = s.success || 0;
+      document.getElementById('atkFailed').textContent = s.failed || 0;
+      if (s.running) {
+        const elapsed = Math.floor((Date.now() - attackStart) / 1000);
+        const left = attackDuration - elapsed > 0 ? attackDuration - elapsed : 0;
+        document.getElementById('atkTimeLeft').textContent = left;
+        const pct = attackDuration > 0 ? Math.min(100, Math.round((elapsed / attackDuration) * 100)) : 0;
+        document.getElementById('atkProgressFill').style.width = pct + '%';
+        lastOk = s.success || 0;
+        lastFail = s.failed || 0;
+        lastTotal = s.total || 0;
+      } else if (attackRunning) {
+        saveAttackHistory(document.getElementById('attackPhone').value.trim(), attackRegion, attackDuration, lastOk, lastFail, lastTotal);
+        attackRunning = false;
+        stopAttack();
+        renderHistory();
+      }
+    } catch(e) {}
+  }
+}, 200);
 </script>
 
-<!-- Подключение спамера -->
 <script src="spammer.js"></script>
 </body>
 </html>
