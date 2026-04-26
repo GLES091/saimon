@@ -1,171 +1,119 @@
-// api/anime.js — HiAnime proxy, правильные эндпоинты по документации
-// https://github.com/JustAnimeCore/HiAnime-Api
+// api/anime.js — HiAnime прокси через api-anime-rouge.vercel.app
+// Документация: https://github.com/abhaythakur71181/Anime-API
 
-const BASE_URL = 'https://dssdsds.vercel.app';
+const BASE = 'https://api-anime-rouge.vercel.app/aniwatch';
 
 async function safeFetch(url) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 12000);
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 12000);
   try {
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'application/json',
-      },
+    const r = await fetch(url, {
+      signal: ctrl.signal,
+      headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
     });
-    clearTimeout(timeout);
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Upstream ${res.status}: ${text.slice(0, 200)}`);
-    }
-    return res.json();
-  } catch (err) {
-    clearTimeout(timeout);
-    throw err;
-  }
+    clearTimeout(t);
+    if (!r.ok) throw new Error(`Upstream ${r.status} → ${url}`);
+    return r.json();
+  } catch(e) { clearTimeout(t); throw e; }
 }
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { action, query } = req.query;
   console.log(`[API] action=${action} query=${query}`);
-  if (!action) return res.status(400).json({ error: 'action required' });
 
   try {
-    /* ──────────────────────────────
-       ПОИСК: /api/search?keyword=...
-       Ответ: { success, results: [{ id, poster, title, ... }] }
-    ────────────────────────────── */
+    /* ── ГЛАВНАЯ СТРАНИЦА: новинки + трендовые ── */
+    if (action === 'home') {
+      const data = await safeFetch(`${BASE}/`);
+      // latestEpisodes и topAiringAnimes — самые свежие
+      const latest  = (data.latestEpisodes     || []).slice(0, 18).map(normalizeAnime);
+      const trending = (data.trendingAnimes    || []).slice(0, 12).map(normalizeAnime);
+      const spotlight = (data.spotlightAnimes  || []).slice(0,  6).map(normalizeAnime);
+      return res.json({ latest, trending, spotlight });
+    }
+
+    /* ── ПОИСК ── */
     if (action === 'search') {
-      const url = `${BASE_URL}/api/search?keyword=${encodeURIComponent(query || '')}`;
-      console.log('[API] GET', url);
-      const data = await safeFetch(url);
-
-      const raw = Array.isArray(data.results) ? data.results : [];
-      const results = raw.map(item => ({
-        id:    item.id || '',
-        title: item.title || item.japanese_title || 'Без названия',
-        image: item.poster || '',
-      })).filter(x => x.id);
-
-      return res.status(200).json({ results });
+      // Пробуем разные пути поиска
+      let results = [];
+      for (const path of [
+        `${BASE}/search?keyword=${encodeURIComponent(query||'')}`,
+        `${BASE}/search?q=${encodeURIComponent(query||'')}`,
+        `${BASE}/q?keyword=${encodeURIComponent(query||'')}`,
+      ]) {
+        try {
+          const d = await safeFetch(path);
+          const arr = d.animes || d.results || d.data || (Array.isArray(d) ? d : []);
+          if (arr.length) { results = arr.map(normalizeAnime); break; }
+        } catch(_) {}
+      }
+      return res.json({ results });
     }
 
-    /* ──────────────────────────────
-       СЕРИИ: /api/episodes/{animeId}
-       Ответ: { success, results: { totalEpisodes, episodes: [{ id, episode_no }] } }
-       episode.id = "anime-slug?ep=12345"
-    ────────────────────────────── */
+    /* ── СПИСОК СЕРИЙ ── */
     if (action === 'info') {
-      const url = `${BASE_URL}/api/episodes/${encodeURIComponent(query)}`;
-      console.log('[API] GET', url);
-      const data = await safeFetch(url);
-
-      const raw = data.results?.episodes || data.results || [];
-      const episodes = (Array.isArray(raw) ? raw : []).map((ep, i) => ({
-        id:     ep.id || `${query}?ep=${ep.data_id || i}`,
-        number: ep.episode_no || ep.number || (i + 1),
+      const data = await safeFetch(`${BASE}/episodes/${encodeURIComponent(query)}`);
+      // Ответ: { episodes: [{ id, episodeId, title, episode_no, number }] }
+      const raw = data.episodes || data.results?.episodes || data.results || [];
+      const episodes = raw.map((ep, i) => ({
+        id:     ep.episodeId || ep.id || `${query}?ep=${ep.data_id||i}`,
+        number: ep.number || ep.episode_no || (i + 1),
+        title:  ep.title || ep.jname || '',
       }));
-
-      return res.status(200).json({ episodes });
+      return res.json({ episodes });
     }
 
-    /* ──────────────────────────────
-       ПРОСМОТР
-       Шаг 1: GET /api/servers/{episodeFullId}
-         Ответ: { success, results: [{ serverName, type, ... }] }
-
-       Шаг 2: GET /api/stream?id={episodeFullId}&server={serverName}&type=sub
-         Ответ: { success, results: {
-           streamingLink: [{ link: { file, type }, tracks: [...] }]
-         }}
-    ────────────────────────────── */
+    /* ── ВОСПРОИЗВЕДЕНИЕ ── */
     if (action === 'watch') {
-      const episodeId = query; // формат: "anime-slug?ep=12345"
+      // episodeId = "anime-slug?ep=12345"
+      let streamUrl = null, subtitles = [];
 
-      // --- Получаем серверы ---
-      const servUrl = `${BASE_URL}/api/servers/${episodeId}`;
-      console.log('[API] GET', servUrl);
-      const serversData = await safeFetch(servUrl);
-      const serverList = Array.isArray(serversData.results) ? serversData.results : [];
-
-      if (serverList.length === 0) {
-        return res.status(404).json({ error: 'Серверы не найдены для этой серии' });
-      }
-
-      // --- Перебираем серверы, пробуем sub потом dub ---
-      let streamFile = null;
-      let subtitles = [];
-
-      for (const srv of serverList.slice(0, 4)) {
-        const serverName = srv.serverName || srv.server_name || srv.name || '';
-        if (!serverName) continue;
-
-        for (const type of ['sub', 'dub']) {
+      // Формат 1: /episode/sources?animeEpisodeId=...&server=hd-1&category=sub
+      for (const cat of ['sub', 'dub']) {
+        for (const srv of ['hd-1', 'hd-2', 'megacloud']) {
+          if (streamUrl) break;
           try {
-            const streamUrl = `${BASE_URL}/api/stream?id=${encodeURIComponent(episodeId)}&server=${encodeURIComponent(serverName)}&type=${type}`;
-            console.log('[API] GET', streamUrl);
-            const streamData = await safeFetch(streamUrl);
-
-            // results.streamingLink[0].link.file
-            const linkArr = streamData.results?.streamingLink;
-            if (Array.isArray(linkArr) && linkArr.length > 0) {
-              const file = linkArr[0]?.link?.file;
-              if (file && file.startsWith('http')) {
-                streamFile = file;
-                subtitles = linkArr[0]?.tracks || [];
-                console.log('[API] Stream OK:', file.slice(0, 80));
-                break;
-              }
+            const url = `${BASE}/episode/sources?animeEpisodeId=${encodeURIComponent(query)}&server=${srv}&category=${cat}`;
+            console.log('[API] GET', url);
+            const d = await safeFetch(url);
+            // { sources: [{ url, isM3U8 }], subtitles: [{ lang, url }] }
+            const src = (d.sources||[])[0];
+            if (src?.url?.startsWith('http')) {
+              streamUrl  = src.url;
+              subtitles  = (d.subtitles || d.tracks || []).map(s => ({
+                file: s.url || s.file, label: s.lang || s.label || 'Sub',
+              })).filter(s => s.file);
             }
-          } catch (e) {
-            console.warn(`[API] ${serverName}/${type} failed:`, e.message);
-          }
-
-          // Резервный fallback эндпоинт
-          if (!streamFile) {
-            try {
-              const fbUrl = `${BASE_URL}/api/stream/fallback?id=${encodeURIComponent(episodeId)}&server=${encodeURIComponent(serverName)}&type=${type}`;
-              console.log('[API] Fallback GET', fbUrl);
-              const fb = await safeFetch(fbUrl);
-              const file = fb.results?.streamingLink?.[0]?.link?.file;
-              if (file && file.startsWith('http')) {
-                streamFile = file;
-                subtitles = fb.results?.streamingLink?.[0]?.tracks || [];
-                console.log('[API] Fallback OK:', file.slice(0, 80));
-                break;
-              }
-            } catch (e) {
-              console.warn('[API] Fallback failed:', e.message);
-            }
-          }
+          } catch(_) {}
         }
-        if (streamFile) break;
+        if (streamUrl) break;
       }
 
-      if (!streamFile) {
-        return res.status(404).json({ error: 'Стрим не найден. Попробуйте другую серию или зайдите позже.' });
-      }
+      if (!streamUrl) return res.status(404).json({ error: 'Стрим не найден. Попробуйте другую серию.' });
 
-      const subs = subtitles
-        .filter(t => t.kind === 'captions' || t.kind === 'subtitles')
-        .map(t => ({ file: t.file, label: t.label || 'Sub', default: !!t.default }));
-
-      return res.status(200).json({
-        sources: [{ file: streamFile, quality: 'auto', type: 'hls' }],
-        subtitles: subs,
+      return res.json({
+        sources: [{ file: streamUrl, quality: 'auto', type: 'hls' }],
+        subtitles,
       });
     }
 
-    return res.status(400).json({ error: 'Неизвестный action' });
+    return res.status(400).json({ error: 'unknown action' });
 
-  } catch (error) {
-    console.error('[API] Error:', error.message);
-    return res.status(500).json({ error: error.message });
+  } catch(err) {
+    console.error('[API]', err.message);
+    return res.status(500).json({ error: err.message });
   }
 };
+
+function normalizeAnime(item) {
+  return {
+    id:    item.id   || item.animeId || '',
+    title: item.name || item.title   || 'Без названия',
+    image: item.img  || item.poster  || item.image || '',
+    episodes: item.episodes || {},
+    type:  item.category || item.showType || item.type || '',
+  };
+}
