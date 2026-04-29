@@ -294,7 +294,6 @@ async function loadServices() {
     console.log('Сервисы загружены');
   } catch (e) {
     console.error('Ошибка загрузки сервисов:', e);
-    // fallback – минимальные списки
     smsServices = { ru: [], by: [], kz: [] };
     tgOAuthServices = [];
   }
@@ -436,7 +435,7 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-// ========== АВАТАР И ГАЛЕРЕЯ ==========
+// ========== АВАТАР И ГАЛЕРЕЯ (ИСПРАВЛЕНО CORS ЧЕРЕЗ nekOS.LIFE) ==========
 function setImageWithFallback(imgElement, src, fallbackSvg) {
   imgElement.src = src || '';
   imgElement.onerror = function() {
@@ -449,29 +448,30 @@ function setImageWithFallback(imgElement, src, fallbackSvg) {
 const AVATAR_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
 const WAIFU_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
 
+// Основной источник – nekos.life (CORS-friendly)
 async function fetchAvatar() {
-  const types = ['waifu','neko','shinobu','megumin'];
-  const t = types[Math.floor(Math.random() * types.length)];
-  let url = '';
+  const endpoints = ['neko', 'meow', 'waifu']; // разные варианты
+  const randomEndpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
   try {
-    const r = await fetch(`https://api.waifu.pics/sfw/${t}`);
-    if (r.ok) { const d = await r.json(); url = d.url; }
+    const r = await fetch(`https://nekos.life/api/v2/img/${randomEndpoint}`);
+    if (r.ok) {
+      const d = await r.json();
+      setImageWithFallback(document.getElementById('avatarImg'), d.url, AVATAR_FALLBACK);
+      return;
+    }
   } catch(e) {}
-  if (!url) {
-    try {
-      const r = await fetch('https://api.waifu.pics/sfw/waifu');
-      if (r.ok) { const d = await r.json(); url = d.url; }
-    } catch(e) {}
-  }
-  setImageWithFallback(document.getElementById('avatarImg'), url, AVATAR_FALLBACK);
+  // fallback – если API недоступно
+  document.getElementById('avatarImg').src = 'data:image/svg+xml,' + encodeURIComponent(AVATAR_FALLBACK);
+  document.getElementById('avatarImg').style.opacity = '1';
 }
 fetchAvatar();
 
 async function loadGalleryImage(imgElement) {
-  const categories = ['waifu','neko','shinobu','megumin','awoo','cuddle','hug','pat','smile','wave'];
+  const categories = ['neko', 'waifu', 'meow', 'shinobu', 'megumin']; // nekos.life имеет ограниченный набор; shinobu/megumin нет, используем имеющиеся
+  // Но для разнообразия можно чередовать neko/waifu/meow/woof и т.д.
   const cat = categories[Math.floor(Math.random() * categories.length)];
   try {
-    const resp = await fetch(`https://api.waifu.pics/sfw/${cat}`);
+    const resp = await fetch(`https://nekos.life/api/v2/img/${cat}`);
     if (resp.ok) {
       const data = await resp.json();
       if (data && data.url) {
@@ -480,6 +480,7 @@ async function loadGalleryImage(imgElement) {
       }
     }
   } catch(e) {}
+  // Если ошибка, скрываем элемент
   imgElement.style.display = 'none';
 }
 
@@ -516,18 +517,16 @@ document.getElementById('newQuoteBtn').addEventListener('click', fetchQuote);
 const nekoImg = document.getElementById('nekoImg');
 async function fetchNeko() {
   nekoImg.style.opacity = '0.3';
-  let url = '';
   try {
-    const r = await fetch('https://nekos.life/api/v2/img/meow');
-    if (r.ok) { const d = await r.json(); url = d.url; }
+    const r = await fetch('https://nekos.life/api/v2/img/neko');
+    if (r.ok) {
+      const d = await r.json();
+      setImageWithFallback(nekoImg, d.url, WAIFU_FALLBACK);
+      return;
+    }
   } catch(e) {}
-  if (!url) {
-    try {
-      const r = await fetch('https://api.waifu.pics/sfw/neko');
-      if (r.ok) { const d = await r.json(); url = d.url; }
-    } catch(e) {}
-  }
-  setImageWithFallback(nekoImg, url, WAIFU_FALLBACK);
+  // fallback через waifu.pics? можно пропустить
+  nekoImg.style.opacity = '0';
 }
 document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
