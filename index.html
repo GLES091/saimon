@@ -9,88 +9,179 @@
     :root{--bg:#1a1025;--bg2:#22133a;--card:rgba(34,18,58,0.88);--text:#f2deff;--muted:#c9a8e2;--accent:#ffb7c5;--purple:#c77dff;--teal:#a8edea;--border:rgba(199,125,255,0.22);--shadow:0 4px 40px rgba(255,183,197,0.16);--glow:0 0 28px rgba(255,183,197,0.42);--pglow:0 0 28px rgba(199,125,255,0.4);--radius:22px;--tr:0.32s cubic-bezier(.4,0,.2,1);--fh:'Comic Sans MS','Chalkboard SE','Marker Felt',cursive;--fb:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
     [data-theme="light"]{--bg:#fce8f3;--bg2:#f9d8eb;--card:rgba(255,245,252,0.93);--text:#3a1a2e;--muted:#7a4a68;--accent:#e05a82;--purple:#9b59b6;--border:rgba(224,90,130,0.22);--shadow:0 4px 30px rgba(224,90,130,0.13);--glow:0 0 24px rgba(224,90,130,0.38);--pglow:0 0 24px rgba(155,89,182,0.35)}
     [data-anime="on"]{--accent:#ff4da6;--purple:#bf00ff;--border:rgba(191,0,255,0.32);--shadow:0 4px 50px rgba(255,77,166,0.3);--glow:0 0 40px rgba(255,77,166,0.6);--pglow:0 0 40px rgba(191,0,255,0.55)}
-    /* ===== VERGIL FULL THEME ===== */
+    /* ===== VERGIL FULL THEME — ENHANCED ===== */
+    @keyframes vergilPulse{
+      0%,100%{border-left-color:rgba(26,79,255,.7);box-shadow:0 4px 44px rgba(26,79,255,.14),0 0 40px rgba(26,79,255,.75)}
+      50%{border-left-color:#1a4fff;box-shadow:0 4px 44px rgba(26,79,255,.22),0 0 70px rgba(26,79,255,1),inset 0 0 80px rgba(26,79,255,.06)}
+    }
+    @keyframes vergilScanline{
+      0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}
+    }
+    @keyframes vergilCornerFlicker{
+      0%,95%,100%{opacity:.55}97%{opacity:.15}
+    }
+    @keyframes vergilTextGlow{
+      0%,100%{filter:drop-shadow(0 0 8px rgba(26,79,255,.6)) drop-shadow(0 0 20px rgba(26,79,255,.3))}
+      50%{filter:drop-shadow(0 0 14px rgba(26,79,255,.9)) drop-shadow(0 0 40px rgba(26,79,255,.5))}
+    }
     [data-vergil="on"]{
-      --bg:#03030d;--bg2:#05051a;--card:rgba(5,7,25,0.97);
-      --text:#ccd0f5;--muted:#5a60a0;
+      --bg:#02020c;--bg2:#04041a;--card:rgba(4,5,22,0.97);
+      --text:#c8ceee;--muted:#4a52a0;
       --accent:#1a4fff;--purple:#7a8cff;--teal:#a0aaff;
-      --border:rgba(26,79,255,0.32);
+      --border:rgba(26,79,255,0.28);
       --shadow:0 4px 44px rgba(26,79,255,0.14);
       --glow:0 0 40px rgba(26,79,255,0.75);
       --pglow:0 0 40px rgba(122,140,255,0.55);
-      --radius:8px;
+      --radius:4px;
       --fh:'Georgia','Palatino Linotype','Book Antiqua',serif;
       --fb:'Georgia','Palatino Linotype',serif;
     }
     [data-vergil="on"] body{background:var(--bg)}
+    /* Фон — сетка + угловые свечения */
     [data-vergil="on"] body::before{
       background:
-        radial-gradient(ellipse 70% 50% at 0% 0%,rgba(26,79,255,.1) 0%,transparent 55%),
-        radial-gradient(ellipse 50% 60% at 100% 100%,rgba(26,79,255,.08) 0%,transparent 55%),
-        repeating-linear-gradient(90deg,rgba(26,79,255,.013) 0px,rgba(26,79,255,.013) 1px,transparent 1px,transparent 80px),
-        repeating-linear-gradient(0deg,rgba(26,79,255,.013) 0px,rgba(26,79,255,.013) 1px,transparent 1px,transparent 80px)
+        radial-gradient(ellipse 80% 55% at 0% 0%,rgba(26,79,255,.13) 0%,transparent 55%),
+        radial-gradient(ellipse 60% 65% at 100% 100%,rgba(26,79,255,.1) 0%,transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%,rgba(26,79,255,.03) 0%,transparent 70%),
+        repeating-linear-gradient(90deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px),
+        repeating-linear-gradient(0deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px)
     }
+    /* Сканлайн */
+    [data-vergil="on"] body::after{
+      content:'';position:fixed;inset:0;z-index:2;pointer-events:none;
+      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,18,.07) 3px,rgba(0,0,18,.07) 4px);
+    }
+    /* Движущийся луч сканера */
+    [data-vergil="on"] #vergil-scanbeam{
+      display:block!important;position:fixed;left:0;right:0;height:2px;z-index:3;pointer-events:none;
+      background:linear-gradient(90deg,transparent 0%,rgba(26,79,255,.0) 10%,rgba(26,79,255,.35) 50%,rgba(26,79,255,.0) 90%,transparent 100%);
+      animation:vergilScanline 7s linear infinite;box-shadow:0 0 12px 2px rgba(26,79,255,.4);
+    }
+    /* Карточки — угловой срез + анимация пульса */
     [data-vergil="on"] .card{
-      border-radius:4px;
-      border-left:3px solid rgba(26,79,255,.7);
-      border-top:1px solid rgba(26,79,255,.2);
-      border-right:1px solid rgba(26,79,255,.1);
-      border-bottom:1px solid rgba(26,79,255,.05);
+      border-radius:0;
+      border-left:2px solid rgba(26,79,255,.8);
+      border-top:1px solid rgba(26,79,255,.25);
+      border-right:1px solid rgba(26,79,255,.08);
+      border-bottom:1px solid rgba(26,79,255,.04);
+      clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+      animation:vergilPulse 4s ease-in-out infinite;
+      position:relative;
     }
-    [data-vergil="on"] .card:hover{box-shadow:var(--glow),inset 0 0 60px rgba(26,79,255,.04)}
+    /* Водяной знак V */
+    [data-vergil="on"] .card::after{
+      content:'V';position:absolute;right:-10px;bottom:-50px;
+      font-size:220px;font-family:'Georgia',serif;font-weight:900;font-style:italic;
+      color:rgba(26,79,255,.032);pointer-events:none;line-height:1;z-index:0;
+      letter-spacing:-.02em;user-select:none;
+    }
+    /* Угловые декоры карточки */
+    [data-vergil="on"] .card::before{
+      content:'';position:absolute;top:0;left:0;width:18px;height:18px;
+      background:transparent;border:none;pointer-events:none;
+      box-shadow:inset 1px 1px 0 rgba(26,79,255,.6);
+      animation:vergilCornerFlicker 6s ease-in-out infinite;
+    }
+    [data-vergil="on"] .card:hover{
+      border-left-color:#1a4fff;
+      box-shadow:0 0 50px rgba(26,79,255,.9),0 0 120px rgba(26,79,255,.25),inset 0 0 80px rgba(26,79,255,.05);
+    }
+    /* Аватар — квадратный, двойное кольцо */
     [data-vergil="on"] .avatar{
-      border-radius:4px;
-      border:2px solid rgba(26,79,255,.8);
-      box-shadow:0 0 0 1px rgba(26,79,255,.3),0 0 50px rgba(26,79,255,.6),0 0 100px rgba(26,79,255,.25);
+      border-radius:0;
+      border:2px solid rgba(26,79,255,.9);
+      box-shadow:0 0 0 1px rgba(26,79,255,.4),0 0 55px rgba(26,79,255,.7),0 0 110px rgba(26,79,255,.3);
+      clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     }
-    [data-vergil="on"] .avatar:hover{transform:scale(1.04);border-radius:4px}
+    [data-vergil="on"] .avatar:hover{transform:scale(1.04) rotate(1deg);border-radius:0}
     [data-vergil="on"] .avatar-ring{
-      border-radius:4px;border:1px solid rgba(26,79,255,.5);
-      border-style:solid;animation:spin 8s linear infinite;inset:-6px;
+      border-radius:0;border:1px solid rgba(26,79,255,.5);
+      border-style:solid;animation:spin 9s linear infinite;inset:-6px;
+      clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
     }
     [data-vergil="on"] .avatar-ring2{
-      border-radius:4px;border:1px solid rgba(122,140,255,.25);
-      border-style:solid;inset:-14px;animation:spin 20s linear infinite;
+      border-radius:0;border:1px solid rgba(122,140,255,.2);
+      border-style:dashed;inset:-16px;animation:spin 22s linear infinite reverse;
     }
-    [data-vergil="on"] .tab{border-radius:0;font-family:var(--fh);letter-spacing:.1em;font-size:.68rem}
+    /* Имя профиля */
+    [data-vergil="on"] .bio-name{
+      font-family:'Georgia',serif;letter-spacing:.22em;text-transform:uppercase;font-style:italic;
+      animation:vergilTextGlow 3s ease-in-out infinite;
+    }
+    [data-vergil="on"] .bio-handle{color:#4a6aff;letter-spacing:.1em;font-size:.88rem}
+    [data-vergil="on"] .bio-desc{letter-spacing:.06em;font-size:.85rem;color:#4a52a0}
+    /* Табы */
+    [data-vergil="on"] .tab{border-radius:0;font-family:'Georgia',serif;letter-spacing:.14em;font-size:.66rem;text-transform:uppercase}
     [data-vergil="on"] .tab.active,[data-vergil="on"] .tab:hover{
-      background:linear-gradient(180deg,rgba(26,79,255,.3) 0%,rgba(26,79,255,.12) 100%);
-      box-shadow:inset 0 -2px 0 #1a4fff,0 0 14px rgba(26,79,255,.4);
-      color:#a0b0ff;border-radius:0;
+      background:linear-gradient(180deg,rgba(26,79,255,.28) 0%,rgba(26,79,255,.08) 100%);
+      box-shadow:inset 0 -2px 0 #1a4fff,0 0 18px rgba(26,79,255,.45);
+      color:#8099ff;border-radius:0;letter-spacing:.16em;
     }
-    [data-vergil="on"] nav.tabs{border-radius:0;border-bottom:1px solid rgba(26,79,255,.4)}
+    [data-vergil="on"] nav.tabs{border-radius:0;border-bottom:1px solid rgba(26,79,255,.4);border-top:1px solid rgba(26,79,255,.15)}
+    /* Бейджи */
     [data-vergil="on"] .badge{
-      background:rgba(26,79,255,.1);border:1px solid rgba(26,79,255,.35);
-      border-radius:2px;color:#7a8cff;letter-spacing:.08em;
+      background:rgba(26,79,255,.08);border:1px solid rgba(26,79,255,.4);
+      border-radius:0;color:#7a8cff;letter-spacing:.1em;font-size:.68rem;text-transform:uppercase;
+      clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
     }
-    [data-vergil="on"] .badge:hover{background:rgba(26,79,255,.2)}
+    [data-vergil="on"] .badge:hover{background:rgba(26,79,255,.2);box-shadow:0 0 12px rgba(26,79,255,.4)}
+    /* Цитата */
     [data-vergil="on"] .quote-box{
-      background:rgba(26,79,255,.06);border-left:3px solid #1a4fff;
-      border-radius:0;
+      background:rgba(26,79,255,.05);border-left:2px solid #1a4fff;
+      border-bottom:1px solid rgba(26,79,255,.15);
+      border-radius:0;padding-left:1.2rem;
     }
-    [data-vergil="on"] .quote-box::before{color:#1a4fff}
-    [data-vergil="on"] .btn{border-radius:2px;letter-spacing:.08em}
+    [data-vergil="on"] .quote-box::before{color:#1a4fff;font-size:2.5rem;opacity:.5}
+    [data-vergil="on"] .quote-text{font-style:italic;letter-spacing:.04em}
+    /* Кнопки */
+    [data-vergil="on"] .btn{border-radius:0;letter-spacing:.1em;text-transform:uppercase;font-size:.75rem;
+      clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+    }
     [data-vergil="on"] .btn-primary{
-      background:linear-gradient(135deg,#0d2ecc 0%,#1a4fff 50%,#4060ff 100%);
-      box-shadow:0 0 22px rgba(26,79,255,.5),inset 0 1px 0 rgba(255,255,255,.12);
+      background:linear-gradient(135deg,#0d2bcc 0%,#1a4fff 55%,#3a5fff 100%);
+      box-shadow:0 0 26px rgba(26,79,255,.6),inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.3);
     }
-    [data-vergil="on"] .btn-outline{border-color:rgba(26,79,255,.4);border-radius:2px}
-    [data-vergil="on"] .icon-btn{border-radius:2px}
+    [data-vergil="on"] .btn-primary:hover{box-shadow:0 0 45px rgba(26,79,255,.9),inset 0 1px 0 rgba(255,255,255,.15)}
+    [data-vergil="on"] .btn-outline{border-color:rgba(26,79,255,.45);border-radius:0;color:#5a70cc}
+    [data-vergil="on"] .btn-outline:hover{border-color:#1a4fff;color:#8099ff;box-shadow:0 0 16px rgba(26,79,255,.5)}
+    /* Icon кнопки */
+    [data-vergil="on"] .icon-btn{border-radius:0;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
     [data-vergil="on"] #vergilBtn{
-      box-shadow:0 0 20px rgba(26,79,255,.7),inset 0 0 12px rgba(26,79,255,.2);
-      border-color:rgba(26,79,255,.8);color:#7a8cff;
+      box-shadow:0 0 24px rgba(26,79,255,.8),inset 0 0 16px rgba(26,79,255,.25);
+      border-color:rgba(26,79,255,.9);color:#8099ff;
+      animation:vergilTextGlow 2s ease-in-out infinite;
     }
-    [data-vergil="on"] .social-btn{border-radius:2px;background:rgba(26,79,255,.07)}
-    [data-vergil="on"] .social-btn:hover{background:rgba(26,79,255,.18);border-color:#1a4fff;color:#7a8cff;box-shadow:0 0 18px rgba(26,79,255,.55)}
-    [data-vergil="on"] .neko-corner{border-radius:4px;border-color:#1a4fff;box-shadow:0 0 22px rgba(26,79,255,.5)}
-    [data-vergil="on"] .neko-corner:hover{box-shadow:0 0 38px rgba(26,79,255,.75)}
-    [data-vergil="on"] .region-chip.active{background:#1a4fff;border-color:#1a4fff}
-    [data-vergil="on"] .inp-group input:focus,[data-vergil="on"] .inp-group select:focus{border-color:#1a4fff;box-shadow:0 0 0 2px rgba(26,79,255,.2)}
-    [data-vergil="on"] ::-webkit-scrollbar-thumb{background:#1a4fff}
-    [data-vergil="on"] audio{accent-color:#1a4fff}
-    [data-vergil="on"] .attack-title{background:linear-gradient(135deg,#7a8cff,#1a4fff);-webkit-background-clip:text;background-clip:text}
-    [data-vergil="on"] #gallery img:hover{box-shadow:0 0 24px rgba(26,79,255,.6);border-color:#1a4fff}
-    [data-vergil="on"] .neko-tip{color:#7a8cff;border-color:rgba(26,79,255,.3)}
+    /* Соц-кнопки */
+    [data-vergil="on"] .social-btn{border-radius:0;background:rgba(26,79,255,.06);clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
+    [data-vergil="on"] .social-btn:hover{background:rgba(26,79,255,.2);border-color:#1a4fff;color:#7a8cff;box-shadow:0 0 22px rgba(26,79,255,.65)}
+    /* Неко */
+    [data-vergil="on"] .neko-corner{border-radius:0;border-color:#1a4fff;box-shadow:0 0 26px rgba(26,79,255,.6);
+      clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+    [data-vergil="on"] .neko-corner:hover{box-shadow:0 0 44px rgba(26,79,255,.9)}
+    [data-vergil="on"] .neko-tip{color:#7a8cff;border-color:rgba(26,79,255,.3);border-radius:0;letter-spacing:.08em;font-size:.6rem;text-transform:uppercase}
+    /* Регион чипы */
+    [data-vergil="on"] .region-chip{border-radius:0;letter-spacing:.08em;font-size:.72rem;text-transform:uppercase}
+    [data-vergil="on"] .region-chip.active{background:#1a4fff;border-color:#1a4fff;box-shadow:0 0 14px rgba(26,79,255,.7)}
+    /* Инпуты */
+    [data-vergil="on"] .inp-group input,.inp-group select{border-radius:0}
+    [data-vergil="on"] .inp-group input:focus,[data-vergil="on"] .inp-group select:focus{border-color:#1a4fff;box-shadow:0 0 0 1px rgba(26,79,255,.35),0 0 12px rgba(26,79,255,.2)}
+    /* Скроллбар */
+    [data-vergil="on"] ::-webkit-scrollbar-thumb{background:#1a4fff;border-radius:0}
+    [data-vergil="on"] audio{accent-color:#1a4fff;border-radius:0}
+    [data-vergil="on"] .attack-title{background:linear-gradient(135deg,#8099ff,#1a4fff);-webkit-background-clip:text;background-clip:text;letter-spacing:.12em;text-transform:uppercase}
+    /* Галерея */
+    [data-vergil="on"] #gallery img{border-radius:0;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+    [data-vergil="on"] #gallery img:hover{box-shadow:0 0 28px rgba(26,79,255,.7);border-color:#1a4fff;transform:scale(1.06) rotate(-.5deg)}
+    /* Музыкальная секция */
+    [data-vergil="on"] .music-title{color:#1a4fff;letter-spacing:.18em;text-transform:uppercase;font-family:'Georgia',serif;font-style:italic;animation:vergilTextGlow 3s ease-in-out infinite}
+    [data-vergil="on"] .music-sub{letter-spacing:.06em;text-transform:uppercase;font-size:.72rem}
+    /* История */
+    [data-vergil="on"] .history-item{border-radius:0;border-color:rgba(26,79,255,.2);border-left:2px solid rgba(26,79,255,.5);background:rgba(26,79,255,.03)}
+    /* IP таблица */
+    [data-vergil="on"] .ip-check-table td{border-color:rgba(26,79,255,.12)}
+    /* Shimmer отключить — не в стиле Вергилия */
+    [data-vergil="on"] .card::before{animation:none;background:none}
+    #vergil-scanbeam{display:none}
     *,::before,::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
     body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .5s,color .5s}
     body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 10% 10%,rgba(199,125,255,.14) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 90% 85%,rgba(255,183,197,.12) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 55% 50%,rgba(168,237,234,.05) 0%,transparent 60%)}
@@ -196,6 +287,7 @@
 </head>
 <body>
 <canvas id="vfx-canvas"></canvas>
+<div id="vergil-scanbeam"></div>
 <div class="fixed-top">
   <button class="icon-btn" id="themeToggle" title="Сменить тему">🌸</button>
   <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
@@ -279,7 +371,7 @@
       </div>
     </div>
 
-    <div class="tab-content" id="tab-ip"><div class="card"><div class="attack-title">🔍 Проверка безопасности IP</div><table class="ip-check-table"><tbody id="ipTableBody"><tr><td>Загрузка...</td><td>⏳</td></tr></tbody></table><button class="btn btn-outline" id="refreshIpBtn">🔄 Обновить проверку</button></div></div>
+    <div class="tab-content" id="tab-ip"><div class="card"><div class="attack-title">🔍 Проверка безопасности IP</div><table class="ip-check-table"><tbody id="ipTableBody"><tr><td>Загрузка...</td><td>⏳</td></tr></tbody><td><button class="btn btn-outline" id="refreshIpBtn">🔄 Обновить проверку</button></div></div>
 
     <div class="tab-content" id="tab-music"><div class="card music-wrap"><div class="music-title">🎀 Аниме‑Плеер 🎀</div><div class="music-sub">загрузи <code>track.mp3</code> в папку с сайтом</div><audio controls id="audioPlayer"><source src="track.mp3" type="audio/mpeg"></audio><div class="now-playing"><span></span> сейчас играет: неко-бит ♪</div><div id="audioFallback" style="display:none;">⚠️ Файл track.mp3 не найден</div></div></div>
 
@@ -288,7 +380,26 @@
 </div>
 
 <script>
-  // ========== ОБЩИЕ ФУНКЦИИ (БЕЗ ПЕРЕЗАПИСИ VERGIL) ==========
+  // ========== ЗАЩИТА ДОСТУПА К ВКЛАДКЕ ATTACK ==========
+  const ATTACK_PASS = "gossslavstan";
+  function isAttackUnlocked() {
+    return sessionStorage.getItem("attackUnlocked") === "true";
+  }
+  function setAttackUnlocked(val) {
+    sessionStorage.setItem("attackUnlocked", val);
+  }
+  function requestAttackPassword() {
+    const pwd = prompt("🔐 Введите пароль для доступа к панели Attack:");
+    if (pwd === ATTACK_PASS) {
+      setAttackUnlocked(true);
+      return true;
+    } else {
+      alert("❌ Неверный пароль. Доступ запрещён.");
+      return false;
+    }
+  }
+
+  // ========== ОБЩИЕ ФУНКЦИИ ==========
   let smsServices = { ru: [], by: [], kz: [] };
   let tgOAuthServices = [];
   async function loadServices() { try { const resp = await fetch('services.json'); if(resp.ok){ const data = await resp.json(); smsServices = data.sms || { ru: [], by: [], kz: [] }; tgOAuthServices = data.tgOAuth || []; populateTgList(); } } catch(e) { console.error(e); } }
@@ -301,12 +412,112 @@
   window.addEventListener('resize', resizeCanvas); resizeCanvas();
   function initPetals(count=22){ petals=[]; for(let i=0;i<count;i++) petals.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:8+Math.random()*11, speed:0.5+Math.random()*1.5, rotation:Math.random()*Math.PI*2, rotSpeed:(Math.random()-0.5)*0.05, opacity:0.42+Math.random()*0.45 }); }
   function initStars(count=38){ stars=[]; for(let i=0;i<count;i++) stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:2+Math.random()*5, speed:1+Math.random()*2, opacity:0, life:0, maxLife:80+Math.random()*60 }); }
-  function createSlash(){ let angle=-0.25+Math.random()*0.5, length=50+Math.random()*140; return { x:Math.random()*canvas.width, y:-length+Math.random()*canvas.height*0.4, length, angle, speed:5+Math.random()*7, life:0, maxLife:16+Math.random()*18, width:0.7+Math.random()*1.8, color:Math.random()>0.45?'#1a4fff':'#7a8cff' }; }
-  function initSlashes(count=22){ slashes=[]; for(let i=0;i<count;i++) slashes.push(createSlash()); }
-  function drawPetals(){ petals.forEach(p=>{ p.y+=p.speed; p.rotation+=p.rotSpeed; if(p.y>canvas.height+60){ p.y=-60; p.x=Math.random()*canvas.width; } ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rotation); ctx.globalAlpha=p.opacity; ctx.fillStyle='#ffcfd9'; ctx.beginPath(); ctx.moveTo(0,0); ctx.bezierCurveTo(p.size, -p.size/2, p.size, p.size/2, 0, p.size); ctx.bezierCurveTo(-p.size, p.size/2, -p.size, -p.size/2, 0,0); ctx.fill(); ctx.restore(); }); }
-  function drawStars(){ stars.forEach(s=>{ s.y+=s.speed; s.life++; s.opacity=Math.sin((s.life/s.maxLife)*Math.PI); if(s.life>=s.maxLife){ s.y=-20; s.x=Math.random()*canvas.width; s.life=0; } ctx.save(); ctx.globalAlpha=s.opacity; ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(); ctx.shadowBlur=6; ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
-  function drawSlashes(){ slashes.forEach(s=>{ s.life++; s.y+=s.speed; let t=s.life/s.maxLife; let opacity=t<0.25?t/0.25:1-(t-0.25)/0.75; if(s.life>=s.maxLife||s.y>canvas.height+s.length){ Object.assign(s, createSlash()); s.y=-s.length; return; } let dx=Math.sin(s.angle)*s.length, dy=Math.cos(s.angle)*s.length; ctx.save(); ctx.globalAlpha=opacity*0.7; ctx.strokeStyle=s.color; ctx.lineWidth=s.width; ctx.shadowBlur=12; ctx.beginPath(); ctx.moveTo(s.x-dx/2,s.y-dy/2); ctx.lineTo(s.x+dx/2,s.y+dy/2); ctx.stroke(); ctx.globalAlpha=opacity*0.35; ctx.lineWidth=s.width*0.5; ctx.stroke(); ctx.restore(); }); }
-  function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); if(vfxMode==='petals') drawPetals(); else if(vfxMode==='stars') drawStars(); else if(vfxMode==='slashes') drawSlashes(); animationId=requestAnimationFrame(animate); }
+  const _r   = (a,b) => a + Math.random()*(b-a);
+  const _eo3 = t => 1-(1-t)**3;
+  const _eo5 = t => 1-(1-t)**5;
+  const _PALS = [
+    { core:'#ffffff', mid:'#5878ff', out:'rgba(26,79,255,',  outRgb:'26,79,255'  },
+    { core:'#dde5ff', mid:'#3a58ff', out:'rgba(18,55,240,',  outRgb:'18,55,240'  },
+    { core:'#eef1ff', mid:'#8899ff', out:'rgba(110,135,255,',outRgb:'110,135,255'},
+  ];
+  function _resetSlash(s, delay) {
+    const p   = _PALS[Math.random()*3|0];
+    const ang = _r(Math.PI/6, Math.PI/3) * (Math.random()>.5?1:-1);
+    s.x    = _r(.07,.93)*canvas.width;
+    s.y    = _r(.07,.93)*canvas.height;
+    s.cos  = Math.cos(ang);  s.sin = Math.sin(ang);
+    s.len  = _r(80,240);     s.w   = _r(.8,2.4);
+    s.p    = p;
+    s.dbl  = Math.random()>.7;
+    s.gap  = s.dbl ? _r(5,14) : 0;
+    s.dMs  = _r(55,150);
+    s.hMs  = _r(100,360);
+    s.fMs  = _r(160,420);
+    s.tot  = s.dMs+s.hMs+s.fMs;
+    s.t    = -(delay??_r(0,2600));
+    return s;
+  }
+  function initSlashes(n=24){ slashes=Array.from({length:n},()=>_resetSlash({})); }
+  function drawPetals(){ for(const p of petals){ p.y+=p.speed; p.rotation+=p.rotSpeed; if(p.y>canvas.height+60){p.y=-60;p.x=Math.random()*canvas.width;} ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation);ctx.globalAlpha=p.opacity;ctx.fillStyle='#ffcfd9';ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(p.size,-p.size/2,p.size,p.size/2,0,p.size);ctx.bezierCurveTo(-p.size,p.size/2,-p.size,-p.size/2,0,0);ctx.fill();ctx.restore();} }
+  function drawStars(){ const ac=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(); for(const s of stars){s.y+=s.speed;s.life++;s.opacity=Math.sin((s.life/s.maxLife)*Math.PI);if(s.life>=s.maxLife){s.y=-20;s.x=Math.random()*canvas.width;s.life=0;} ctx.globalAlpha=s.opacity;ctx.fillStyle=ac;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(s.x,s.y,s.size,0,6.28);ctx.fill();} ctx.shadowBlur=0;ctx.globalAlpha=1; }
+  function drawSlashes(dt){
+    ctx.globalCompositeOperation='source-over';
+    ctx.globalAlpha=1;
+    ctx.fillStyle='rgba(2,2,12,.45)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.globalCompositeOperation='screen';
+    ctx.lineCap='round';
+    for(const s of slashes){
+      s.t+=dt;
+      if(s.t<0) continue;
+      if(s.t>=s.tot){ _resetSlash(s); continue; }
+      let prog, opa;
+      if(s.t<s.dMs){ prog=_eo3(s.t/s.dMs); opa=prog; }
+      else if(s.t<s.dMs+s.hMs){ prog=1; opa=1; }
+      else { prog=1; opa=_eo5(1-(s.t-s.dMs-s.hMs)/s.fMs); }
+      if(opa<.005) continue;
+      const half=s.len*.5*prog;
+      const {x,y,cos,sin,w,p,dbl,gap}=s;
+      const offs=dbl?[-gap*.5,gap*.5]:[0];
+      for(const off of offs){
+        const nx=-sin*off, ny=cos*off;
+        const x1=x-cos*half+nx, y1=y-sin*half+ny;
+        const x2=x+cos*half+nx, y2=y+sin*half+ny;
+        ctx.globalAlpha=opa*.10;
+        ctx.strokeStyle=p.out+'1)';
+        ctx.lineWidth=w*16;
+        ctx.shadowBlur=0;
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+        ctx.globalAlpha=opa*.38;
+        ctx.strokeStyle=p.mid;
+        ctx.lineWidth=w*4.5;
+        ctx.shadowBlur=14;
+        ctx.shadowColor=p.out+'.6)';
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+        ctx.globalAlpha=opa*.95;
+        ctx.strokeStyle=p.core;
+        ctx.lineWidth=w*.85;
+        ctx.shadowBlur=5;
+        ctx.shadowColor=p.mid;
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+      }
+      if(prog<1){
+        const tip=1-prog;
+        const tx=x+cos*half, ty=y+sin*half;
+        ctx.shadowColor=p.out+'1)';
+        ctx.fillStyle='#ffffff';
+        ctx.shadowBlur=26;
+        ctx.globalAlpha=opa*tip*.95;
+        ctx.beginPath();ctx.arc(tx,ty,w*3,0,6.28);ctx.fill();
+        for(let i=1;i<=3;i++){
+          ctx.globalAlpha=opa*tip*(.42-i*.1);
+          ctx.beginPath();
+          ctx.arc(tx-cos*i*8+_r(-3,3),ty-sin*i*8+_r(-3,3),w*(1.3-i*.28),0,6.28);
+          ctx.fill();
+        }
+      }
+      if(s.t<s.dMs*.12){
+        const ft=1-s.t/(s.dMs*.12);
+        ctx.shadowBlur=35;
+        ctx.shadowColor=p.out+'1)';
+        ctx.fillStyle='#b8ccff';
+        ctx.globalAlpha=opa*ft*.7;
+        ctx.beginPath();ctx.arc(x,y,w*5,0,6.28);ctx.fill();
+      }
+    }
+    ctx.globalCompositeOperation='source-over';
+    ctx.shadowBlur=0;
+    ctx.globalAlpha=1;
+  }
+  let _lastT=0;
+  function animate(now=0){
+    const dt=Math.min(now-_lastT,50); _lastT=now;
+    if(vfxMode!=='slashes') ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(vfxMode==='petals') drawPetals();
+    else if(vfxMode==='stars') drawStars();
+    else drawSlashes(dt);
+    animationId=requestAnimationFrame(animate);
+  }
   initPetals(); initStars(); animate();
 
   // тема и режимы
@@ -317,20 +528,15 @@
   document.getElementById('themeToggle').addEventListener('click',()=>{ let nxt=html.getAttribute('data-theme')==='dark'?'light':'dark'; html.setAttribute('data-theme',nxt); localStorage.setItem('theme',nxt); document.getElementById('themeToggle').textContent=nxt==='dark'?'🌸':'🌙'; });
   let animeOn=false; document.getElementById('animeModeBtn').addEventListener('click',()=>{ animeOn=!animeOn; html.setAttribute('data-anime',animeOn?'on':'off'); document.getElementById('animeModeBtn').textContent=animeOn?'💫':'✨'; if(animeOn){ vergilOn=false; html.setAttribute('data-vergil','off'); document.getElementById('vergilBtn').textContent='🗡️'; vfxMode='stars'; initStars(); }else{ vfxMode='petals'; initPetals(); } });
   
-  // VERGIL: сохраняем оригинал now-playing, но не трогаем данные юзера
+  // VERGIL: скрываем now-playing, не трогаем данные
   let vergilOn = false;
-  let originalNowPlayingDisplay = null;
-  
   function applyVergilContent() {
-    // только визуальные эффекты + скрываем информацию о треке (now-playing)
     const np = document.querySelector('.now-playing');
     if(np && !np._origDisplaySaved) {
       np._origDisplaySaved = window.getComputedStyle(np).display;
       np.style.display = 'none';
     } else if(np) np.style.display = 'none';
-    // ничего не меняем в био, каналах, имени, аватарке, цитатах и музыке
   }
-  
   function restoreOriginalContent() {
     const np = document.querySelector('.now-playing');
     if(np && np._origDisplaySaved) {
@@ -338,23 +544,36 @@
       delete np._origDisplaySaved;
     } else if(np) np.style.display = '';
   }
-  
   document.getElementById('vergilBtn').addEventListener('click', () => {
     vergilOn = !vergilOn;
-    const flashDiv = document.createElement('div');
-    flashDiv.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;background:linear-gradient(135deg,transparent 40%,rgba(26,79,255,.18) 50%,transparent 60%);animation:jcut .5s ease-out forwards';
     const style = document.createElement('style');
-    style.textContent = '@keyframes jcut{0%{opacity:0;transform:translateX(-100%)}30%{opacity:1}60%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(100%)}}';
-    document.head.appendChild(style);
-    document.body.appendChild(flashDiv);
-    setTimeout(() => { flashDiv.remove(); style.remove(); }, 600);
-    
+    if(vergilOn){
+      style.textContent = `
+        @keyframes jcut{0%{opacity:0;clip-path:polygon(0 50%,0 50%,0 50%,0 50%)}15%{opacity:1;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}80%{opacity:.8}100%{opacity:0;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}}
+        @keyframes glitch1{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+        @keyframes jcut2{0%{opacity:0;transform:skewX(-20deg) translateX(-200%)}25%{opacity:1;transform:skewX(-10deg) translateX(0)}75%{opacity:.6;transform:skewX(-8deg) translateX(30%)}100%{opacity:0;transform:skewX(0deg) translateX(200%)}}
+      `;
+      document.head.appendChild(style);
+      const f1 = document.createElement('div');
+      f1.style.cssText = 'position:fixed;inset:0;z-index:9998;pointer-events:none;background:rgba(26,79,255,.06);animation:jcut .7s ease-out forwards';
+      const f2 = document.createElement('div');
+      f2.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(26,79,255,.55) 49%,rgba(122,140,255,.8) 50%,rgba(26,79,255,.55) 51%,transparent 70%);animation:jcut2 .55s ease-out forwards';
+      document.body.style.animation='glitch1 .4s ease-out';
+      document.body.appendChild(f1); document.body.appendChild(f2);
+      setTimeout(()=>{ f1.remove(); f2.remove(); document.body.style.animation=''; style.remove(); }, 750);
+    } else {
+      style.textContent = '@keyframes jfade{0%{opacity:.5}100%{opacity:0}}';
+      document.head.appendChild(style);
+      const f = document.createElement('div');
+      f.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;background:rgba(26,79,255,.08);animation:jfade .4s ease-out forwards';
+      document.body.appendChild(f);
+      setTimeout(()=>{ f.remove(); style.remove(); }, 450);
+    }
     html.setAttribute('data-vergil', vergilOn ? 'on' : 'off');
     document.getElementById('vergilBtn').textContent = vergilOn ? '⚔️' : '🗡️';
-    
     if (vergilOn) {
       animeOn = false; html.setAttribute('data-anime','off'); document.getElementById('animeModeBtn').textContent='✨';
-      vfxMode = 'slashes'; initSlashes();
+      vfxMode = 'slashes'; initSlashes(30);
       applyVergilContent();
     } else {
       vfxMode = 'petals'; initPetals();
@@ -362,7 +581,7 @@
     }
   });
   
-  // ========== ОСТАЛЬНЫЕ МОДУЛИ: АВАТАР, ГАЛЕРЕЯ, ЦИТАТЫ, НЕКО ==========
+  // ========== АВАТАР, ГАЛЕРЕЯ, ЦИТАТЫ, НЕКО ==========
   function setImageWithFallback(img, src, fallbackSvg) { img.src=src||''; img.onerror=()=>{ if(fallbackSvg) img.src='data:image/svg+xml,'+encodeURIComponent(fallbackSvg); img.style.opacity='1'; }; img.onload=()=>img.style.opacity='1'; }
   const AVATAR_FALLBACK=`<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 155 155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>`;
   const WAIFU_FALLBACK=`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>`;
@@ -381,10 +600,58 @@
   document.getElementById('nekoCorner').addEventListener('click', fetchNeko); fetchNeko(); setInterval(fetchNeko,30000);
   document.getElementById('audioPlayer').addEventListener('error',()=>{ document.getElementById('audioFallback').style.display='block'; });
   
-  // Табы
-  document.querySelectorAll('.tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.getElementById('tab-'+tab.dataset.tab).classList.add('active'); if(tab.dataset.tab==='bio') fetchQuote(); if(tab.dataset.tab==='attack') renderHistory(); if(tab.dataset.tab==='ip') runIpCheck(); }); });
+  // ========== ТАБЫ С ЗАЩИТОЙ ATTACK ==========
+  const tabs = document.querySelectorAll('.tab');
+  const tabContents = {
+    bio: document.getElementById('tab-bio'),
+    attack: document.getElementById('tab-attack'),
+    ip: document.getElementById('tab-ip'),
+    music: document.getElementById('tab-music'),
+    gallery: document.getElementById('tab-gallery')
+  };
+  function activateTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+    Object.values(tabContents).forEach(c => c.classList.remove('active'));
+    if(tabContents[tabId]) tabContents[tabId].classList.add('active');
+    if(tabId === 'attack') renderHistory();
+    if(tabId === 'ip') runIpCheck();
+    if(tabId === 'bio') fetchQuote();
+  }
+  function protectAttack(callback) {
+    if(isAttackUnlocked()) {
+      callback(true);
+    } else {
+      const ok = requestAttackPassword();
+      callback(ok);
+    }
+  }
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      const tabId = tab.dataset.tab;
+      if(tabId === 'attack') {
+        e.preventDefault();
+        protectAttack((granted) => {
+          if(granted) activateTab('attack');
+          else {
+            // остаёмся на текущей активной вкладке
+            const activeNow = document.querySelector('.tab.active').dataset.tab;
+            if(activeNow !== 'attack') activateTab(activeNow);
+          }
+        });
+      } else {
+        activateTab(tabId);
+      }
+    });
+  });
+  // если по каким-то причинам активна вкладка attack при загрузке (например, localStorage)
+  if(document.querySelector('.tab.active').dataset.tab === 'attack') {
+    if(!isAttackUnlocked()) {
+      protectAttack((ok) => { if(!ok) activateTab('bio'); });
+    }
+  }
   
-  // ========== ЛОГИКА АТАКИ (без изменений) ==========
+  // ========== ЛОГИКА АТАКИ ==========
   let attackRunning=false, attackAbortController=null, stats={total:0,success:0,failed:0}, startTime=null;
   function formatPhone(phone,type){ let clean=phone.replace(/\D/g,''); if(type==='wp') return '+'+clean; if(type==='nc') return clean.slice(1); if(type==='cp') return clean.slice(1,4); return '+'+clean; }
   function applyPlaceholders(template,phone){ return template.replace(/\{(\w+)\}/g,(_,key)=>{ if(key==='rand_name') return 'Иван'; if(key==='rand_surname') return 'Петров'; if(key==='rand_email') return 'user@mail.ru'; if(key==='rand_hex32') return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; if(key==='rand_days') return '5'; if(key==='rand_int100_999') return '500'; if(key==='rand_hex26') return 'abcdefabcdefabcdefabcdef'; return formatPhone(phone,key); }); }
@@ -409,10 +676,9 @@
   document.getElementById('clearHistoryBtn').onclick=()=>{ localStorage.removeItem('attack_hist'); renderHistory(); };
   document.querySelectorAll('#regionChips .region-chip').forEach(chip=>{ chip.onclick=()=>{ document.querySelectorAll('#regionChips .region-chip').forEach(c=>c.classList.remove('active')); chip.classList.add('active'); }; });
   function renderHistory(){ let hist=JSON.parse(localStorage.getItem('attack_hist')||'[]'); let container=document.getElementById('historyEntries'); if(!hist.length){ container.innerHTML='<div style="color:var(--muted)">Нет завершённых атак</div>'; return; } container.innerHTML=hist.map(h=>`<div class="history-item"><div class="h-top"><span class="h-phone">${h.phone}</span><span class="h-region">${h.type}</span></div><div class="h-stats"><span class="ok">✓${h.success}</span><span class="fail">✗${h.failed}</span><span>${h.total?Math.round(h.success*100/h.total):0}%</span></div><div style="font-size:.7rem;">${h.date}</div></div>`).join(''); }
-  renderHistory();
   
   // IP проверка
-  async function runIpCheck(){ let tbody=document.getElementById('ipTableBody'); tbody.innerHTML='<tr><td>Загрузка...</td><td>⏳</td></tr>'; try{ let r=await fetch('https://ipapi.co/json/'); if(!r.ok)throw new Error(); let d=await r.json(); let rows=[['IP-адрес',d.ip],['Страна',d.country_name],['Город',d.city],['Провайдер',d.org],['ASN',d.asn],['Прокси',d.proxy?'Да':'Нет'],['Хостинг',d.hosting?'Да':'Нет']]; let webrtcLeak=null; if(window.RTCPeerConnection) try{ webrtcLeak=await new Promise(resolve=>{ let pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]}); pc.createDataChannel(''); pc.createOffer().then(offer=>pc.setLocalDescription(offer)); pc.onicecandidate=e=>{ if(e.candidate){ let parts=e.candidate.candidate.split(' '),ip=parts[4]; if(ip&&ip!=='0.0.0.0'&&!ip.startsWith('192.168')&&!ip.startsWith('10.')&&!ip.startsWith('172.')){ resolve(ip); pc.close(); } } else{ resolve(null); pc.close(); } }; setTimeout(()=>{ resolve(null); pc.close(); },3000); }); }catch(e){} rows.push(['WebRTC утечка',webrtcLeak?`Да (${webrtcLeak})`:'Нет']); tbody.innerHTML=rows.map(([l,v])=>`<tr><td>${l}</td><td class="${v==='Да'?'warn':''}">${v}</td></tr>`).join(''); }catch(e){ tbody.innerHTML='<tr><td colspan="2" class="bad">Ошибка проверки</td></tr>'; } }
+  async function runIpCheck(){ let tbody=document.getElementById('ipTableBody'); tbody.innerHTML='<tr><td>Загрузка...</td><td>⏳</td></tr>'; try{ let r=await fetch('https://ipapi.co/json/'); if(!r.ok)throw new Error(); let d=await r.json(); let rows=[['IP-адрес',d.ip],['Страна',d.country_name],['Город',d.city],['Провайдер',d.org],['ASN',d.asn],['Прокси',d.proxy?'Да':'Нет'],['Хостинг',d.hosting?'Да':'Нет']]; let webrtcLeak=null; if(window.RTCPeerConnection) try{ webrtcLeak=await new Promise(resolve=>{ let pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]}); pc.createDataChannel(''); pc.createOffer().then(offer=>pc.setLocalDescription(offer)); pc.onicecandidate=e=>{ if(e.candidate){ let parts=e.candidate.candidate.split(' '),ip=parts[4]; if(ip&&ip!=='0.0.0.0'&&!ip.startsWith('192.168')&&!ip.startsWith('10.')&&!ip.startsWith('172.')){ resolve(ip); pc.close(); } } else{ resolve(null); pc.close(); } }; setTimeout(()=>{ resolve(null); pc.close(); },3000); }); }catch(e){} rows.push(['WebRTC утечка',webrtcLeak?`Да (${webrtcLeak})`:'Нет']); tbody.innerHTML=rows.map(([l,v])=>`<tr><td>${l}</td><td class="${v==='Да'?'warn':''}">${v}</td></tr>`).join(''); }catch(e){ tbody.innerHTML='<tr><td colspan="2" class="bad">Ошибка проверки</td></td>'; } }
   document.getElementById('refreshIpBtn').onclick=runIpCheck; if(document.getElementById('tab-ip').classList.contains('active')) runIpCheck();
   
   // админ панель
