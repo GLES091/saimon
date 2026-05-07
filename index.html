@@ -37,7 +37,6 @@
       --fb:'Georgia','Palatino Linotype',serif;
     }
     [data-vergil="on"] body{background:var(--bg)}
-    /* Фон — сетка + угловые свечения */
     [data-vergil="on"] body::before{
       background:
         radial-gradient(ellipse 80% 55% at 0% 0%,rgba(26,79,255,.13) 0%,transparent 55%),
@@ -46,18 +45,15 @@
         repeating-linear-gradient(90deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px),
         repeating-linear-gradient(0deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px)
     }
-    /* Сканлайн */
     [data-vergil="on"] body::after{
       content:'';position:fixed;inset:0;z-index:2;pointer-events:none;
       background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,18,.07) 3px,rgba(0,0,18,.07) 4px);
     }
-    /* Движущийся луч сканера */
     [data-vergil="on"] #vergil-scanbeam{
       display:block!important;position:fixed;left:0;right:0;height:2px;z-index:3;pointer-events:none;
       background:linear-gradient(90deg,transparent 0%,rgba(26,79,255,.0) 10%,rgba(26,79,255,.35) 50%,rgba(26,79,255,.0) 90%,transparent 100%);
       animation:vergilScanline 7s linear infinite;box-shadow:0 0 12px 2px rgba(26,79,255,.4);
     }
-    /* Карточки — угловой срез + анимация пульса */
     [data-vergil="on"] .card{
       border-radius:0;
       border-left:2px solid rgba(26,79,255,.8);
@@ -68,14 +64,12 @@
       animation:vergilPulse 4s ease-in-out infinite;
       position:relative;
     }
-    /* Водяной знак V */
     [data-vergil="on"] .card::after{
       content:'V';position:absolute;right:-10px;bottom:-50px;
       font-size:220px;font-family:'Georgia',serif;font-weight:900;font-style:italic;
       color:rgba(26,79,255,.032);pointer-events:none;line-height:1;z-index:0;
       letter-spacing:-.02em;user-select:none;
     }
-    /* Угловые декоры карточки */
     [data-vergil="on"] .card::before{
       content:'';position:absolute;top:0;left:0;width:18px;height:18px;
       background:transparent;border:none;pointer-events:none;
@@ -86,7 +80,6 @@
       border-left-color:#1a4fff;
       box-shadow:0 0 50px rgba(26,79,255,.9),0 0 120px rgba(26,79,255,.25),inset 0 0 80px rgba(26,79,255,.05);
     }
-    /* Аватар — квадратный, двойное кольцо */
     [data-vergil="on"] .avatar{
       border-radius:0;
       border:2px solid rgba(26,79,255,.9);
@@ -103,14 +96,12 @@
       border-radius:0;border:1px solid rgba(122,140,255,.2);
       border-style:dashed;inset:-16px;animation:spin 22s linear infinite reverse;
     }
-    /* Имя профиля */
     [data-vergil="on"] .bio-name{
       font-family:'Georgia',serif;letter-spacing:.22em;text-transform:uppercase;font-style:italic;
       animation:vergilTextGlow 3s ease-in-out infinite;
     }
     [data-vergil="on"] .bio-handle{color:#4a6aff;letter-spacing:.1em;font-size:.88rem}
     [data-vergil="on"] .bio-desc{letter-spacing:.06em;font-size:.85rem;color:#4a52a0}
-    /* Табы */
     [data-vergil="on"] .tab{border-radius:0;font-family:'Georgia',serif;letter-spacing:.14em;font-size:.66rem;text-transform:uppercase}
     [data-vergil="on"] .tab.active,[data-vergil="on"] .tab:hover{
       background:linear-gradient(180deg,rgba(26,79,255,.28) 0%,rgba(26,79,255,.08) 100%);
@@ -118,14 +109,12 @@
       color:#8099ff;border-radius:0;letter-spacing:.16em;
     }
     [data-vergil="on"] nav.tabs{border-radius:0;border-bottom:1px solid rgba(26,79,255,.4);border-top:1px solid rgba(26,79,255,.15)}
-    /* Бейджи */
     [data-vergil="on"] .badge{
       background:rgba(26,79,255,.08);border:1px solid rgba(26,79,255,.4);
       border-radius:0;color:#7a8cff;letter-spacing:.1em;font-size:.68rem;text-transform:uppercase;
       clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
     }
     [data-vergil="on"] .badge:hover{background:rgba(26,79,255,.2);box-shadow:0 0 12px rgba(26,79,255,.4)}
-    /* Цитата */
     [data-vergil="on"] .quote-box{
       background:rgba(26,79,255,.05);border-left:2px solid #1a4fff;
       border-bottom:1px solid rgba(26,79,255,.15);
@@ -133,7 +122,6 @@
     }
     [data-vergil="on"] .quote-box::before{color:#1a4fff;font-size:2.5rem;opacity:.5}
     [data-vergil="on"] .quote-text{font-style:italic;letter-spacing:.04em}
-    /* Кнопки */
     [data-vergil="on"] .btn{border-radius:0;letter-spacing:.1em;text-transform:uppercase;font-size:.75rem;
       clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
     }
@@ -144,42 +132,31 @@
     [data-vergil="on"] .btn-primary:hover{box-shadow:0 0 45px rgba(26,79,255,.9),inset 0 1px 0 rgba(255,255,255,.15)}
     [data-vergil="on"] .btn-outline{border-color:rgba(26,79,255,.45);border-radius:0;color:#5a70cc}
     [data-vergil="on"] .btn-outline:hover{border-color:#1a4fff;color:#8099ff;box-shadow:0 0 16px rgba(26,79,255,.5)}
-    /* Icon кнопки */
     [data-vergil="on"] .icon-btn{border-radius:0;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
     [data-vergil="on"] #vergilBtn{
       box-shadow:0 0 24px rgba(26,79,255,.8),inset 0 0 16px rgba(26,79,255,.25);
       border-color:rgba(26,79,255,.9);color:#8099ff;
       animation:vergilTextGlow 2s ease-in-out infinite;
     }
-    /* Соц-кнопки */
     [data-vergil="on"] .social-btn{border-radius:0;background:rgba(26,79,255,.06);clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
     [data-vergil="on"] .social-btn:hover{background:rgba(26,79,255,.2);border-color:#1a4fff;color:#7a8cff;box-shadow:0 0 22px rgba(26,79,255,.65)}
-    /* Неко */
     [data-vergil="on"] .neko-corner{border-radius:0;border-color:#1a4fff;box-shadow:0 0 26px rgba(26,79,255,.6);
       clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
     [data-vergil="on"] .neko-corner:hover{box-shadow:0 0 44px rgba(26,79,255,.9)}
     [data-vergil="on"] .neko-tip{color:#7a8cff;border-color:rgba(26,79,255,.3);border-radius:0;letter-spacing:.08em;font-size:.6rem;text-transform:uppercase}
-    /* Регион чипы */
     [data-vergil="on"] .region-chip{border-radius:0;letter-spacing:.08em;font-size:.72rem;text-transform:uppercase}
     [data-vergil="on"] .region-chip.active{background:#1a4fff;border-color:#1a4fff;box-shadow:0 0 14px rgba(26,79,255,.7)}
-    /* Инпуты */
     [data-vergil="on"] .inp-group input,.inp-group select{border-radius:0}
     [data-vergil="on"] .inp-group input:focus,[data-vergil="on"] .inp-group select:focus{border-color:#1a4fff;box-shadow:0 0 0 1px rgba(26,79,255,.35),0 0 12px rgba(26,79,255,.2)}
-    /* Скроллбар */
     [data-vergil="on"] ::-webkit-scrollbar-thumb{background:#1a4fff;border-radius:0}
     [data-vergil="on"] audio{accent-color:#1a4fff;border-radius:0}
     [data-vergil="on"] .attack-title{background:linear-gradient(135deg,#8099ff,#1a4fff);-webkit-background-clip:text;background-clip:text;letter-spacing:.12em;text-transform:uppercase}
-    /* Галерея */
     [data-vergil="on"] #gallery img{border-radius:0;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
     [data-vergil="on"] #gallery img:hover{box-shadow:0 0 28px rgba(26,79,255,.7);border-color:#1a4fff;transform:scale(1.06) rotate(-.5deg)}
-    /* Музыкальная секция */
     [data-vergil="on"] .music-title{color:#1a4fff;letter-spacing:.18em;text-transform:uppercase;font-family:'Georgia',serif;font-style:italic;animation:vergilTextGlow 3s ease-in-out infinite}
     [data-vergil="on"] .music-sub{letter-spacing:.06em;text-transform:uppercase;font-size:.72rem}
-    /* История */
     [data-vergil="on"] .history-item{border-radius:0;border-color:rgba(26,79,255,.2);border-left:2px solid rgba(26,79,255,.5);background:rgba(26,79,255,.03)}
-    /* IP таблица */
     [data-vergil="on"] .ip-check-table td{border-color:rgba(26,79,255,.12)}
-    /* Shimmer отключить — не в стиле Вергилия */
     [data-vergil="on"] .card::before{animation:none;background:none}
     #vergil-scanbeam{display:none}
     *,::before,::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
@@ -281,6 +258,13 @@
     .neko-corner:hover+.neko-tip{opacity:1}
     .neko-corner img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
     .neko-corner:hover img{transform:scale(1.18)}
+    .global-notify{position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+    .notification{background:var(--card);border:1px solid var(--border);padding:0.5rem 1.2rem;border-radius:20px;backdrop-filter:blur(10px);box-shadow:var(--shadow);color:var(--text);font-size:0.85rem;animation:fadeSlide 0.3s ease}
+    .notification.error{border-color:#ff6b6b;color:#ff6b6b}
+    /* OSINT output */
+    .osint-result{background:rgba(0,0,0,0.15);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:0.8rem;font-family:monospace;font-size:0.82rem;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto;color:var(--text);}
+    .osint-result.error{color:#ff6b6b;border-color:#ff6b6b;}
+    .osint-result.loading{opacity:0.6;}
     @media (max-width:660px){.profile{flex-direction:column;gap:1.6rem}.bio-name{font-size:1.6rem}.card{padding:1.4rem}.avatar{width:125px;height:125px}.btn{font-size:.76rem;padding:.66rem 1.1rem}#gallery{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
     ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
   </style>
@@ -299,6 +283,7 @@
   </div>
   <div class="neko-tip">🐱 нажми для котика!</div>
 </div>
+<div id="global-notify" class="global-notify"></div>
 <div class="page-wrap">
   <div class="container">
     <nav class="tabs">
@@ -307,6 +292,7 @@
       <div class="tab" data-tab="ip">🔍 IP</div>
       <div class="tab" data-tab="music">🎀 Музыка</div>
       <div class="tab" data-tab="gallery">🎴 Галерея</div>
+      <div class="tab" data-tab="osint">🕵️ OSINT</div>
     </nav>
 
     <!-- Био -->
@@ -361,40 +347,151 @@
           <div class="inp-group"><label>Длительность (сек)</label><input type="number" id="attackDuration" value="60" min="10"></div>
           <div class="inp-group"><label>Одновременных запросов</label><input type="number" id="concurrency" value="10" min="1" max="20"></div>
         </div>
-        <div style="display:flex; gap:1rem; margin-bottom:1rem;"><label style="display:flex; align-items:center; gap:.3rem;"><input type="checkbox" id="enableSms" checked> SMS</label><label style="display:flex; align-items:center; gap:.3rem;"><input type="checkbox" id="enableTg"> Telegram OAuth</label></div>
+        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+          <label style="display:flex; align-items:center; gap:.3rem;"><input type="checkbox" id="enableSms" checked> SMS</label>
+          <label style="display:flex; align-items:center; gap:.3rem;"><input type="checkbox" id="enableTg"> Telegram OAuth</label>
+        </div>
         <div id="tgServiceList" style="display:none;"></div>
-        <div style="display:flex; gap:1rem; flex-wrap:wrap;"><button class="btn btn-primary" id="attackStartBtn">▶ Запустить</button><button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button><button class="btn btn-outline" id="qrBtn">📱 QR</button><button class="btn btn-outline" id="exportBtn">📤 Экспорт</button><button class="btn btn-outline" id="importBtn">📥 Импорт</button><button class="btn btn-outline" id="clearHistoryBtn">🗑 Сброс истории</button></div>
-        <div class="stats-panel"><div class="stat-item"><b id="totalCount">0</b><small> всего</small></div><div class="stat-item"><b id="successCount" style="color:#5ee8a0;">0</b><small> успешно</small></div><div class="stat-item"><b id="failCount" style="color:#ff6b6b;">0</b><small> ошибок</small></div></div>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="attackStartBtn">▶ Запустить</button>
+          <button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button>
+          <button class="btn btn-outline" id="qrBtn">📱 QR</button>
+          <button class="btn btn-outline" id="exportBtn">📤 Экспорт</button>
+          <button class="btn btn-outline" id="importBtn">📥 Импорт</button>
+          <button class="btn btn-outline" id="clearHistoryBtn">🗑 Сброс истории</button>
+        </div>
+        <div class="stats-panel">
+          <div class="stat-item"><b id="totalCount">0</b><small> всего</small></div>
+          <div class="stat-item"><b id="successCount" style="color:#5ee8a0;">0</b><small> успешно</small></div>
+          <div class="stat-item"><b id="failCount" style="color:#ff6b6b;">0</b><small> ошибок</small></div>
+        </div>
         <div class="log-container" id="attackLog"></div>
-        <div class="admin-panel" id="adminPanel"><div class="attack-title">🔑 Админ-панель</div><div style="display:flex; gap:.5rem; margin-bottom:1rem;"><input type="text" id="banIpInput" placeholder="IP-адрес"><button class="btn btn-outline" id="addBanBtn">Забанить</button><button class="btn btn-outline" id="clearBanBtn">Очистить</button></div><div id="banList"></div><p style="font-size:.7rem;">Текущий IP: <span id="adminCurrentIp">...</span></p></div>
-        <div class="history-list"><div style="font-weight:700; margin-bottom:.5rem;">История атак</div><div id="historyEntries">Нет записей</div></div>
+        <div class="admin-panel" id="adminPanel">
+          <div class="attack-title">🔑 Админ-панель</div>
+          <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
+            <input type="text" id="banIpInput" placeholder="IP-адрес">
+            <button class="btn btn-outline" id="addBanBtn">Забанить</button>
+            <button class="btn btn-outline" id="clearBanBtn">Очистить</button>
+          </div>
+          <div id="banList"></div>
+          <p style="font-size:.7rem;">Текущий IP: <span id="adminCurrentIp">...</span></p>
+        </div>
+        <div class="history-list">
+          <div style="font-weight:700; margin-bottom:.5rem;">История атак</div>
+          <div id="historyEntries">Нет записей</div>
+        </div>
       </div>
     </div>
 
-    <div class="tab-content" id="tab-ip"><div class="card"><div class="attack-title">🔍 Проверка безопасности IP</div><table class="ip-check-table"><tbody id="ipTableBody"><tr><td>Загрузка...</td><td>⏳</td></tr></tbody><td><button class="btn btn-outline" id="refreshIpBtn">🔄 Обновить проверку</button></div></div>
+    <!-- IP -->
+    <div class="tab-content" id="tab-ip">
+      <div class="card">
+        <div class="attack-title">🔍 Проверка безопасности IP</div>
+        <table class="ip-check-table">
+          <tbody id="ipTableBody">
+            <tr><td>Загрузка...</td><td>⏳</td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-outline" id="refreshIpBtn" style="margin-top:0.8rem;">🔄 Обновить проверку</button>
+      </div>
+    </div>
 
-    <div class="tab-content" id="tab-music"><div class="card music-wrap"><div class="music-title">🎀 Аниме‑Плеер 🎀</div><div class="music-sub">загрузи <code>track.mp3</code> в папку с сайтом</div><audio controls id="audioPlayer"><source src="track.mp3" type="audio/mpeg"></audio><div class="now-playing"><span></span> сейчас играет: неко-бит ♪</div><div id="audioFallback" style="display:none;">⚠️ Файл track.mp3 не найден</div></div></div>
+    <!-- Музыка -->
+    <div class="tab-content" id="tab-music">
+      <div class="card music-wrap">
+        <div class="music-title">🎀 Аниме‑Плеер 🎀</div>
+        <div class="music-sub">загрузи <code>track.mp3</code> в папку с сайтом</div>
+        <audio controls id="audioPlayer">
+          <source src="track.mp3" type="audio/mpeg">
+        </audio>
+        <div class="now-playing"><span></span> сейчас играет: неко-бит ♪</div>
+        <div id="audioFallback" style="display:none;">⚠️ Файл track.mp3 не найден</div>
+      </div>
+    </div>
 
-    <div class="tab-content" id="tab-gallery"><div class="card"><div class="gallery-title">🎴 Галерея ✶</div><p class="gallery-sub">4 случайных аниме-картинки через API</p><div id="gallery"></div></div></div>
+    <!-- Галерея -->
+    <div class="tab-content" id="tab-gallery">
+      <div class="card">
+        <div class="gallery-title">🎴 Галерея ✶</div>
+        <p class="gallery-sub">4 случайных аниме-картинки через API</p>
+        <div id="gallery"></div>
+      </div>
+    </div>
+
+    <!-- OSINT (полностью интерактивная) -->
+    <div class="tab-content" id="tab-osint">
+      <div class="card">
+        <div class="attack-title">🕵️ Интерактивный OSINT</div>
+        
+        <!-- Универсальный ввод -->
+        <div class="form-row">
+          <div class="inp-group">
+            <label>Цель (IP, домен, email, никнейм)</label>
+            <input type="text" id="osintTarget" placeholder="8.8.8.8 / example.com / user@mail.ru">
+          </div>
+          <div class="inp-group">
+            <label>Тип разведки</label>
+            <select id="osintType">
+              <option value="ip">IP информация</option>
+              <option value="whois">Whois домена</option>
+              <option value="dns">DNS-записи (A/AAAA/MX)</option>
+              <option value="username">Поиск никнейма</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="osintRunBtn">🔎 Запустить</button>
+          <button class="btn btn-outline" id="osintClearBtn">🗑 Очистить</button>
+        </div>
+        
+        <!-- Блок вывода результата -->
+        <div id="osintResult" class="osint-result" style="display:none;"></div>
+        
+        <!-- Google Dorking (отдельно) -->
+        <div style="margin-top:2rem; border-top:1px solid var(--border); padding-top:1.5rem;">
+          <div class="attack-title" style="font-size:1.1rem;">🔎 Google Dorking</div>
+          <input type="text" id="dorkInput" placeholder="inurl:admin site:example.com" style="width:100%; padding:.65rem .9rem; border-radius:14px; border:1.5px solid var(--border); background:rgba(199,125,255,.06); color:var(--text); margin-bottom:0.5rem;">
+          <div style="display:flex; gap:.5rem;">
+            <select id="searchEngine" style="padding:.4rem .8rem; border-radius:10px; border:1.5px solid var(--border); background:rgba(199,125,255,.06); color:var(--text);">
+              <option value="google">Google</option>
+              <option value="bing">Bing</option>
+            </select>
+            <button id="searchDorkBtn" class="btn btn-primary">🔍 Искать</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
   // ========== ЗАЩИТА ДОСТУПА К ВКЛАДКЕ ATTACK ==========
   const ATTACK_PASS = "gossslavstan";
+  let passwordRequestPending = false;
   function isAttackUnlocked() {
     return sessionStorage.getItem("attackUnlocked") === "true";
   }
   function setAttackUnlocked(val) {
     sessionStorage.setItem("attackUnlocked", val);
   }
+  function showGlobalNotification(msg, type) {
+    const container = document.getElementById('global-notify');
+    const div = document.createElement('div');
+    div.className = `notification ${type || ''}`;
+    div.textContent = msg;
+    container.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
+  }
   function requestAttackPassword() {
+    if (passwordRequestPending) return false;
+    passwordRequestPending = true;
     const pwd = prompt("🔐 Введите пароль для доступа к панели Attack:");
+    passwordRequestPending = false;
     if (pwd === ATTACK_PASS) {
       setAttackUnlocked(true);
       return true;
     } else {
-      alert("❌ Неверный пароль. Доступ запрещён.");
+      showGlobalNotification("❌ Неверный пароль. Доступ запрещён.", "error");
       return false;
     }
   }
@@ -528,7 +625,7 @@
   document.getElementById('themeToggle').addEventListener('click',()=>{ let nxt=html.getAttribute('data-theme')==='dark'?'light':'dark'; html.setAttribute('data-theme',nxt); localStorage.setItem('theme',nxt); document.getElementById('themeToggle').textContent=nxt==='dark'?'🌸':'🌙'; });
   let animeOn=false; document.getElementById('animeModeBtn').addEventListener('click',()=>{ animeOn=!animeOn; html.setAttribute('data-anime',animeOn?'on':'off'); document.getElementById('animeModeBtn').textContent=animeOn?'💫':'✨'; if(animeOn){ vergilOn=false; html.setAttribute('data-vergil','off'); document.getElementById('vergilBtn').textContent='🗡️'; vfxMode='stars'; initStars(); }else{ vfxMode='petals'; initPetals(); } });
   
-  // VERGIL: скрываем now-playing, не трогаем данные
+  // VERGIL
   let vergilOn = false;
   function applyVergilContent() {
     const np = document.querySelector('.now-playing');
@@ -607,16 +704,21 @@
     attack: document.getElementById('tab-attack'),
     ip: document.getElementById('tab-ip'),
     music: document.getElementById('tab-music'),
-    gallery: document.getElementById('tab-gallery')
+    gallery: document.getElementById('tab-gallery'),
+    osint: document.getElementById('tab-osint')
   };
   function activateTab(tabId) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
-    Object.values(tabContents).forEach(c => c.classList.remove('active'));
-    if(tabContents[tabId]) tabContents[tabId].classList.add('active');
-    if(tabId === 'attack') renderHistory();
-    if(tabId === 'ip') runIpCheck();
-    if(tabId === 'bio') fetchQuote();
+    Object.values(tabContents).forEach(c => c?.classList.remove('active'));
+    const tabBtn = document.querySelector(`.tab[data-tab="${tabId}"]`);
+    if (tabBtn) tabBtn.classList.add('active');
+    const content = tabContents[tabId];
+    if (content) {
+      content.classList.add('active');
+      if(tabId === 'attack') renderHistory();
+      if(tabId === 'ip') runIpCheck();
+      if(tabId === 'bio') fetchQuote();
+    }
   }
   function protectAttack(callback) {
     if(isAttackUnlocked()) {
@@ -629,14 +731,15 @@
   tabs.forEach(tab => {
     tab.addEventListener('click', (e) => {
       const tabId = tab.dataset.tab;
+      if (!tabId) return;
       if(tabId === 'attack') {
         e.preventDefault();
+        if (passwordRequestPending) return;
         protectAttack((granted) => {
           if(granted) activateTab('attack');
           else {
-            // остаёмся на текущей активной вкладке
-            const activeNow = document.querySelector('.tab.active').dataset.tab;
-            if(activeNow !== 'attack') activateTab(activeNow);
+            const activeNow = document.querySelector('.tab.active')?.dataset?.tab;
+            if(activeNow && activeNow !== 'attack') activateTab(activeNow);
           }
         });
       } else {
@@ -644,11 +747,8 @@
       }
     });
   });
-  // если по каким-то причинам активна вкладка attack при загрузке (например, localStorage)
-  if(document.querySelector('.tab.active').dataset.tab === 'attack') {
-    if(!isAttackUnlocked()) {
-      protectAttack((ok) => { if(!ok) activateTab('bio'); });
-    }
+  if(document.querySelector('.tab.active')?.dataset?.tab === 'attack' && !isAttackUnlocked()) {
+    protectAttack((ok) => { if(!ok) activateTab('bio'); });
   }
   
   // ========== ЛОГИКА АТАКИ ==========
@@ -690,6 +790,108 @@
   document.getElementById('clearBanBtn').onclick=()=>{ saveBannedIps([]); updateAdminPanel(); };
   (async function checkBan(){ if(window.location.protocol==='file:')return; let ip=await getCurrentIp(); if(getBannedIps().includes(ip)) document.body.innerHTML=`<div style="display:flex; align-items:center; justify-content:center; height:100vh;"><div style="text-align:center; padding:2rem; background:var(--card); border-radius:var(--radius);"><h1 style="color:var(--accent);">🚫 Доступ запрещён</h1><p>Ваш IP (${ip}) заблокирован</p></div></div>`; })();
   loadServices();
+
+  // ===== ОБРАБОТЧИК OSINT =====
+  const osintResultEl = document.getElementById('osintResult');
+  function showOsintResult(text, isError = false) {
+    osintResultEl.style.display = 'block';
+    osintResultEl.textContent = text;
+    osintResultEl.className = 'osint-result' + (isError ? ' error' : '');
+  }
+  function clearOsintResult() {
+    osintResultEl.style.display = 'none';
+    osintResultEl.textContent = '';
+  }
+  document.getElementById('osintClearBtn').addEventListener('click', clearOsintResult);
+
+  document.getElementById('osintRunBtn').addEventListener('click', async () => {
+    const target = document.getElementById('osintTarget').value.trim();
+    const type = document.getElementById('osintType').value;
+    if (!target) return showGlobalNotification('Введите цель', 'error');
+    
+    showOsintResult('Загрузка...', false);
+    osintResultEl.classList.add('loading');
+    try {
+      let result = '';
+      switch(type) {
+        case 'ip':
+          result = await lookupIP(target);
+          break;
+        case 'whois':
+          result = await lookupWhois(target);
+          break;
+        case 'dns':
+          result = await lookupDNS(target);
+          break;
+        case 'username':
+          // для никнейма просто открываем whatsmyname.app
+          window.open(`https://whatsmyname.app/?q=${encodeURIComponent(target)}`, '_blank');
+          result = `Открыта страница поиска никнейма "${target}" на whatsmyname.app`;
+          break;
+        default:
+          result = 'Неизвестный тип разведки';
+      }
+      showOsintResult(result);
+    } catch (err) {
+      showOsintResult(`Ошибка: ${err.message}`, true);
+    } finally {
+      osintResultEl.classList.remove('loading');
+    }
+  });
+
+  async function lookupIP(ip) {
+    const resp = await fetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
+    if (!resp.ok) throw new Error('IP API недоступен');
+    const data = await resp.json();
+    if (data.error) throw new Error(data.reason || 'Неверный IP');
+    return `IP: ${data.ip}
+Страна: ${data.country_name} (${data.country_code})
+Регион: ${data.region}
+Город: ${data.city}
+Провайдер: ${data.org}
+ASN: ${data.asn}
+Прокси: ${data.proxy ? 'Да' : 'Нет'}
+Хостинг: ${data.hosting ? 'Да' : 'Нет'}`;
+  }
+
+  async function lookupWhois(domain) {
+    // используем hackertarget whois API (возвращает текст)
+    const resp = await fetch(`https://api.hackertarget.com/whois/?q=${encodeURIComponent(domain)}`);
+    if (!resp.ok) throw new Error('Whois API недоступен');
+    const text = await resp.text();
+    if (text.startsWith('error')) throw new Error(text);
+    return text;
+  }
+
+  async function lookupDNS(domain) {
+    // Google DNS API
+    const types = ['A', 'AAAA', 'MX'];
+    let output = '';
+    for (const t of types) {
+      const resp = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=${t}`);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      if (data.Answer) {
+        output += `;; ${t} записи для ${domain}\n`;
+        data.Answer.forEach(ans => {
+          output += `${ans.name}  ${ans.TTL}  IN  ${t}  ${ans.data}\n`;
+        });
+        output += '\n';
+      }
+    }
+    return output || 'Записи не найдены';
+  }
+
+  // Дорк-поиск
+  document.getElementById('searchDorkBtn').addEventListener('click', () => {
+    const dork = document.getElementById('dorkInput').value.trim();
+    const engine = document.getElementById('searchEngine').value;
+    if (!dork) return showGlobalNotification('Введите дорк', 'error');
+    let url = '';
+    if (engine === 'google') url = `https://www.google.com/search?q=${encodeURIComponent(dork)}`;
+    else if (engine === 'bing') url = `https://www.bing.com/search?q=${encodeURIComponent(dork)}`;
+    window.open(url, '_blank');
+  });
 </script>
 </body>
 </html>
