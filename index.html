@@ -1,493 +1,945 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1a0a2e">
-  <title>GOD_AE86 ✦ Аниме Гача Эстетика</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>GOD_AE86 ✦ аниме-гача</title>
+  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, гача, неко API и OSINT.">
+  <link rel="manifest" id="manifest-link">
   <style>
+    /* ========== ОСНОВНЫЕ ПЕРЕМЕННЫЕ ========== */
     :root {
-      --bg: #0a0a14;
-      --surface: rgba(18, 12, 35, 0.7);
-      --surface2: rgba(30, 25, 55, 0.8);
-      --text: #f0e6ff;
-      --text2: #b0a0d0;
-      --accent: #ff6eb4;
-      --accent2: #c44dff;
-      --accent3: #00e5ff;
-      --gold: #ffd700;
-      --rare: #8bc34a;
-      --epic: #ab47bc;
-      --legendary: #ff9100;
-      --glass: rgba(18, 12, 35, 0.65);
-      --glass-border: rgba(255, 110, 180, 0.25);
-      --shadow: 0 20px 50px rgba(0,0,0,0.7);
-      --radius: 20px;
-      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-      --transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      --bg: #11091a; --bg2: #22133a; --card: rgba(30, 15, 45, 0.65);
+      --text: #f2deff; --muted: #c9a8e2; --accent: #ffb7c5; --purple: #c77dff;
+      --teal: #a8edea; --border: rgba(199,125,255,0.25);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3); --glow: 0 0 28px rgba(255,183,197,0.5);
+      --pglow: 0 0 28px rgba(199,125,255,0.5); --radius: 24px;
+      --tr: 0.35s cubic-bezier(.4,0,.2,1);
+      --fh: 'Comic Sans MS','Chalkboard SE','Marker Felt',cursive;
+      --fb: system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     }
-    .theme-light {
-      --bg: #f5f0ff; --surface: rgba(255,255,255,0.7); --surface2: rgba(240,232,255,0.85);
-      --text: #2a1a3a; --text2: #5a4a6a; --glass-border: rgba(180,130,220,0.3);
+    [data-theme="light"] {
+      --bg: #fdf5f9; --bg2: #f9d8eb; --card: rgba(255, 255, 255, 0.75); --text: #3a1a2e; --muted: #7a4a68;
+      --accent: #e05a82; --purple: #9b59b6; --border: rgba(224,90,130,0.25);
+      --shadow: 0 8px 32px rgba(224,90,130,0.15); --glow: 0 0 24px rgba(224,90,130,0.4);
+      --pglow: 0 0 24px rgba(155,89,182,0.4);
     }
-    .theme-anime {
-      --bg: #1a0a1e; --surface: rgba(30,15,40,0.75); --surface2: rgba(40,22,55,0.8);
-      --text: #ffe0f0; --text2: #e0b0d0; --accent: #ff80c0; --accent2: #ff50b0; --accent3: #ffb0d0;
-      --glass-border: rgba(255,130,180,0.35);
-    }
-    .theme-vergil {
-      --bg: #000810; --surface: rgba(0,15,30,0.8); --surface2: rgba(0,20,40,0.85);
-      --text: #c0e0ff; --text2: #80b0d0; --accent: #0099ff; --accent2: #0066cc; --accent3: #00ccff;
-      --glass-border: rgba(0,150,255,0.35);
-    }
-    .theme-saya {
-      --bg: #0a0000; --surface: rgba(20,0,5,0.8); --surface2: rgba(35,5,15,0.85);
-      --text: #ffcccc; --text2: #cc8888; --accent: #ff2244; --accent2: #cc0033; --accent3: #ff4466;
-      --glass-border: rgba(255,30,50,0.4);
+    [data-anime="on"] {
+      --accent: #ff4da6; --purple: #bf00ff; --border: rgba(191,0,255,0.35);
+      --shadow: 0 8px 32px rgba(255,77,166,0.3); --glow: 0 0 40px rgba(255,77,166,0.65);
+      --pglow: 0 0 40px rgba(191,0,255,0.6);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: var(--font); background: var(--bg); color: var(--text);
-      min-height: 100vh; overflow-x: hidden;
-      transition: background var(--transition), color var(--transition);
+    /* ===== VERGIL ===== */
+    @keyframes vergilPulse { 0%,100%{border-left-color:rgba(26,79,255,.7);box-shadow:0 4px 44px rgba(26,79,255,.14),0 0 40px rgba(26,79,255,.75)} 50%{border-left-color:#1a4fff;box-shadow:0 4px 44px rgba(26,79,255,.22),0 0 70px rgba(26,79,255,1),inset 0 0 80px rgba(26,79,255,.06)} }
+    @keyframes vergilScanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+    @keyframes vergilCornerFlicker { 0%,95%,100%{opacity:.55} 97%{opacity:.15} }
+    @keyframes vergilTextGlow { 0%,100%{filter:drop-shadow(0 0 8px rgba(26,79,255,.6)) drop-shadow(0 0 20px rgba(26,79,255,.3))} 50%{filter:drop-shadow(0 0 14px rgba(26,79,255,.9)) drop-shadow(0 0 40px rgba(26,79,255,.5))} }
+    [data-vergil="on"] {
+      --bg:#02020c; --bg2:#04041a; --card:rgba(4,5,22,0.85); --text:#c8ceee; --muted:#4a52a0;
+      --accent:#1a4fff; --purple:#7a8cff; --teal:#a0aaff; --border:rgba(26,79,255,0.35);
+      --shadow:0 8px 32px rgba(26,79,255,0.2); --glow:0 0 40px rgba(26,79,255,0.8);
+      --pglow:0 0 40px rgba(122,140,255,0.6); --radius:4px;
+      --fh:'Georgia','Palatino Linotype','Book Antiqua',serif; --fb:'Georgia','Palatino Linotype',serif;
     }
-    canvas#bgCanvas {
-      position: fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events: none; opacity: 0.8;
+    [data-vergil="on"] body { background:var(--bg); }
+    [data-vergil="on"] body::before {
+      background:radial-gradient(ellipse 80% 55% at 0% 0%,rgba(26,79,255,.13) 0%,transparent 55%),
+      radial-gradient(ellipse 60% 65% at 100% 100%,rgba(26,79,255,.1) 0%,transparent 55%),
+      radial-gradient(ellipse 40% 40% at 50% 50%,rgba(26,79,255,.03) 0%,transparent 70%),
+      repeating-linear-gradient(90deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px),
+      repeating-linear-gradient(0deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px);
     }
-    .app-container {
-      position: relative; z-index: 1; max-width: 960px; margin: 0 auto;
-      padding: 20px; display: flex; flex-direction: column; gap: 24px; height: 100vh;
+    [data-vergil="on"] body::after {
+      content:''; position:fixed; inset:0; z-index:2; pointer-events:none;
+      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,18,.07) 3px,rgba(0,0,18,.07) 4px);
     }
-    /* header */
-    .header {
-      text-align: center; padding: 15px 10px 0;
+    [data-vergil="on"] #vergil-scanbeam {
+      display:block!important; position:fixed; left:0; right:0; height:2px; z-index:3; pointer-events:none;
+      background:linear-gradient(90deg,transparent 0%,rgba(26,79,255,.0) 10%,rgba(26,79,255,.35) 50%,rgba(26,79,255,.0) 90%,transparent 100%);
+      animation:vergilScanline 7s linear infinite; box-shadow:0 0 12px 2px rgba(26,79,255,.4);
     }
-    .logo-text {
-      font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; letter-spacing: 4px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      filter: drop-shadow(0 0 25px var(--accent2)); animation: logoGlow 3s ease-in-out infinite;
+    [data-vergil="on"] .card{
+      border-radius:0; border-left:2px solid rgba(26,79,255,.8); border-top:1px solid rgba(26,79,255,.25);
+      border-right:1px solid rgba(26,79,255,.08); border-bottom:1px solid rgba(26,79,255,.04);
+      clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+      animation:vergilPulse 4s ease-in-out infinite; backdrop-filter:blur(10px);
     }
-    @keyframes logoGlow {
-      0%,100% { filter: drop-shadow(0 0 25px var(--accent2)); }
-      50% { filter: drop-shadow(0 0 55px var(--accent)); }
+    [data-vergil="on"] .card::before{ content:''; position:absolute; top:0; left:0; width:18px; height:18px; box-shadow:inset 1px 1px 0 rgba(26,79,255,.6); animation:vergilCornerFlicker 6s ease-in-out infinite; }
+    [data-vergil="on"] .card:hover{ border-left-color:#1a4fff; box-shadow:0 0 50px rgba(26,79,255,.9),0 0 120px rgba(26,79,255,.25),inset 0 0 80px rgba(26,79,255,.05); }
+    [data-vergil="on"] .avatar{ border-radius:0; border:2px solid rgba(26,79,255,.9); box-shadow:0 0 0 1px rgba(26,79,255,.4),0 0 55px rgba(26,79,255,.7),0 0 110px rgba(26,79,255,.3); clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
+    [data-vergil="on"] .btn-primary{ background:linear-gradient(135deg,#0d2bcc 0%,#1a4fff 55%,#3a5fff 100%); }
+
+    /* ===== SAYA NO UTA ===== */
+    @keyframes sayaFleshPulse { 0%,100%{background-position:0% 0%;opacity:0.25} 50%{background-position:2% 3%;opacity:0.4} }
+    @keyframes sayaTextGlitch { 0%,100%{text-shadow:1px 0 0 rgba(255,0,0,0.7),-1px 0 0 rgba(0,255,0,0.5)} 50%{text-shadow:-2px 1px 0 rgba(255,0,0,0.9),2px -1px 0 rgba(0,255,0,0.7)} }
+    [data-saya="on"] {
+      --bg:#0a0404; --bg2:#140808; --card:rgba(20,8,8,0.85); --text:#e0c0c0; --muted:#8a5a5a;
+      --accent:#c0392b; --purple:#7b2d3b; --teal:#4a2a2a; --border:rgba(192,57,43,0.35);
+      --shadow:0 8px 30px rgba(192,57,43,0.2); --glow:0 0 30px rgba(192,57,43,0.5);
+      --radius:6px; --fh:'Courier New','Times New Roman',serif; --fb:'Times New Roman','Georgia',serif;
     }
-    .subtitle { font-size: 0.9rem; letter-spacing: 5px; color: var(--text2); margin-top: 4px; }
-    .theme-switcher {
-      display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap;
+    [data-saya="on"] body::before{
+      background:radial-gradient(circle at 20% 30%,rgba(139,0,0,0.25) 0%,transparent 60%),
+      radial-gradient(circle at 80% 70%,rgba(100,0,0,0.2) 0%,transparent 50%),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" /></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.08"/></svg>');
+      animation:sayaFleshPulse 8s ease-in-out infinite;
     }
-    .theme-btn {
-      width: 44px; height: 44px; border-radius: 50%; border: 2px solid transparent;
-      cursor: pointer; transition: all var(--transition); font-size: 1.3rem;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--surface2); color: var(--text); backdrop-filter: blur(8px);
+    [data-saya="on"] .card{
+      border-radius:6px 30px 10px 20px; border:1px solid rgba(139,0,0,0.5);
+      box-shadow:inset 0 0 60px rgba(139,0,0,0.2),0 4px 30px rgba(100,0,0,0.5); backdrop-filter:blur(8px);
     }
-    .theme-btn.active {
-      border-color: var(--accent); box-shadow: 0 0 25px var(--accent);
-      background: var(--accent); color: #000; transform: scale(1.1);
+
+    /* ===== ПЛАВНЫЕ ПЕРЕХОДЫ ===== */
+    body, .card, .tab, .btn, .avatar, .badge, .neko-corner, .social-btn, .icon-btn {
+      transition: all var(--tr), background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease, border-radius 0.5s ease;
     }
-    /* tabs */
-    .tab-nav {
-      display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
-      background: var(--surface); backdrop-filter: blur(16px);
-      border-radius: 60px; padding: 6px; margin: 10px 0;
-      border: 1px solid var(--glass-border); box-shadow: var(--shadow);
-    }
-    .tab-btn {
-      padding: 12px 18px; border-radius: 60px; border: none; cursor: pointer;
-      font-weight: 600; font-size: 0.95rem; background: transparent; color: var(--text2);
-      transition: all var(--transition); display: flex; align-items: center; gap: 6px;
-    }
-    .tab-btn.active {
-      background: var(--accent); color: #000; box-shadow: 0 8px 20px rgba(196,77,255,0.5);
-      transform: scale(1.02);
-    }
-    .tab-content {
-      background: var(--surface); backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border); border-radius: var(--radius);
-      padding: 24px; box-shadow: var(--shadow); flex: 1; overflow-y: auto;
-      position: relative;
-    }
-    .tab-pane { display: none; }
-    .tab-pane.active { display: block; animation: fadeUp 0.4s ease; }
-    @keyframes fadeUp { from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
-    /* cards inside */
-    .card { background: var(--surface2); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-    .btn {
-      padding: 12px 22px; border-radius: 60px; border: none; cursor: pointer;
-      font-weight: 700; font-size: 0.9rem; letter-spacing: 1px;
-      transition: all var(--transition); background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: #fff; box-shadow: 0 6px 18px rgba(196,77,255,0.4); text-transform: uppercase;
-    }
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(255,110,180,0.6); }
-    .btn.secondary { background: var(--surface2); color: var(--text); box-shadow: none; border: 1px solid var(--glass-border); }
-    .btn.danger { background: linear-gradient(135deg, #ff1744, #ff5252); }
-    .crystals { background: var(--surface2); padding: 8px 16px; border-radius: 60px; font-weight: 700; color: var(--accent3); }
-    .gacha-result { min-height: 200px; background: var(--surface2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 16px 0; overflow: hidden; }
-    .gacha-result img { max-width: 100%; max-height: 300px; border-radius: 12px; animation: fadeIn 0.5s; }
-    .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; }
-    .inventory-item { aspect-ratio: 1; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-    .inventory-item:hover { border-color: var(--accent); transform: scale(1.1); }
-    .inventory-item img { width:100%; height:100%; object-fit: cover; }
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-    .gallery-grid img { width:100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
-    .gallery-grid img:hover { transform: scale(1.05); border-color: var(--accent); box-shadow: 0 10px 30px rgba(255,110,180,0.5); }
-    .neko-float {
-      position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; border-radius: 50%;
-      cursor: pointer; z-index: 100; overflow: hidden; border: 3px solid var(--accent);
-      box-shadow: 0 0 35px rgba(255,110,180,0.6); animation: float 4s ease-in-out infinite;
-      background: var(--surface);
-    }
-    .neko-float img { width:100%; height:100%; object-fit: cover; }
-    .neko-float:hover { transform: scale(1.2); box-shadow: 0 0 60px rgba(255,110,180,1); }
-    @keyframes float { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-15px); } }
-    .player-visualizer { display: flex; align-items: flex-end; gap: 3px; height: 50px; background: var(--surface2); border-radius: 25px; padding: 8px; }
-    .bar { flex:1; background: linear-gradient(to top, var(--accent), var(--accent2)); border-radius: 2px 2px 0 0; transition: height 0.08s; }
-    .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:1000; justify-content:center; align-items:center; }
-    .lightbox.active { display:flex; } .lightbox img { max-width:90%; max-height:85vh; border-radius:20px; }
-    .toast { padding: 12px 20px; border-radius: 60px; background: var(--surface); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); color: var(--text); font-weight:600; }
-    @media (max-width: 600px) {
-      .tab-btn { padding: 10px 14px; font-size: 0.8rem; }
-      .neko-float { width: 50px; height: 50px; bottom: 20px; right: 20px; }
+
+    /* ===== WebGL фон ===== */
+    #webgl-canvas { position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.6; display:none; }
+    [data-webgl="on"] #webgl-canvas { display:block; }
+    #vfx-canvas { position:fixed; inset:0; pointer-events:none; z-index:0; }
+
+    /* ===== ОБЩИЕ ===== */
+    *,::before,::after{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{ font-family:var(--fb); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; transition:background .8s,color .8s; }
+    body::before{ content:''; position:fixed; inset:0; z-index:-2; pointer-events:none;
+      background:radial-gradient(ellipse 60% 55% at 10% 10%,rgba(199,125,255,.12) 0%,transparent 60%),
+      radial-gradient(ellipse 50% 45% at 90% 85%,rgba(255,183,197,.1) 0%,transparent 55%); }
+    .fixed-top{ position:fixed; top:1.5rem; right:1.5rem; display:flex; gap:.6rem; z-index:200; }
+    .icon-btn{ width:48px; height:48px; border-radius:50%; background:var(--card); border:1.5px solid var(--border); cursor:pointer; font-size:1.3rem; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); color:var(--text); }
+    .icon-btn:hover{ transform:scale(1.15) rotate(10deg); box-shadow:var(--glow); border-color:var(--accent); }
+    
+    .page-wrap{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:3rem 1rem 5rem; min-height:100vh; }
+    .container{ width:100%; max-width:960px; display:flex; flex-direction:column; gap:1.8rem; }
+    nav.tabs{ display:flex; gap:.6rem; flex-wrap:wrap; padding:.7rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:var(--shadow); }
+    .tab{ flex:1; min-width:80px; background:transparent; border:none; padding:.75rem 1.2rem; border-radius:calc(var(--radius) - 6px); cursor:pointer; font-weight:800; font-family:var(--fh); font-size:.8rem; letter-spacing:.5px; color:var(--muted); transition:all var(--tr); white-space:nowrap; text-align:center; text-transform:uppercase; }
+    .tab.active,.tab:hover{ background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%); color:#fff; box-shadow:0 0 24px rgba(255,183,197,.5); transform:translateY(-2px); }
+    .tab-content{ display:none; }
+    .tab-content.active{ display:block; animation:fadeSlide .5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeSlide{ from{ opacity:0; transform:translateY(20px); } to{ opacity:1; transform:translateY(0); } }
+    
+    .card{ background:var(--card); border-radius:var(--radius); padding:2.5rem; box-shadow:var(--shadow); border:1px solid var(--border); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); position:relative; overflow:hidden; }
+    .card::before{ content:''; position:absolute; top:-50%; left:-60%; width:40%; height:200%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent); transform:rotate(20deg); animation:shimmer 6s infinite; pointer-events:none; }
+    @keyframes shimmer{ 0%{ left:-60%; } 100%{ left:160%; } }
+    .card:hover{ box-shadow:var(--glow),var(--shadow); border-color:var(--accent); }
+    
+    /* ===== BIO ===== */
+    .profile{ display:flex; align-items:center; gap:3rem; flex-wrap:wrap; justify-content:center; }
+    .avatar-wrap{ position:relative; flex-shrink:0; }
+    .avatar{ width:160px; height:160px; border-radius:50%; overflow:hidden; border:3px solid transparent; background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,var(--accent),var(--purple)) border-box; box-shadow:0 0 0 6px rgba(199,125,255,.15),0 0 45px rgba(255,183,197,.6),0 0 90px rgba(199,125,255,.3); transition:all .4s; }
+    .avatar:hover{ transform:rotate(8deg) scale(1.08); box-shadow:0 0 0 6px rgba(199,125,255,.25),0 0 65px rgba(255,183,197,.8); }
+    .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .avatar-ring{ position:absolute; inset:-10px; border-radius:50%; border:2px dashed var(--purple); opacity:.6; pointer-events:none; animation:spin 12s linear infinite; }
+    .avatar-ring2{ position:absolute; inset:-20px; border-radius:50%; border:1px dotted var(--accent); opacity:.4; pointer-events:none; animation:spin 20s linear infinite reverse; }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+    .bio-info{ text-align:center; flex:1; min-width:250px; }
+    .bio-name{ font-family:var(--fh); font-size:2.4rem; line-height:1.2; background:linear-gradient(135deg,var(--accent) 20%,var(--purple) 80%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:.5rem; filter:drop-shadow(0 0 15px rgba(255,183,197,.4)); }
+    .bio-handle{ color:var(--purple); font-size:1rem; font-weight:700; margin-bottom:.5rem; }
+    .bio-desc{ color:var(--muted); font-size:.95rem; line-height:1.6; margin-bottom:1.2rem; }
+    .badges{ display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center; margin-bottom:1rem; }
+    .badge{ display:inline-block; padding:.3rem 1rem; border-radius:2rem; background:rgba(255,183,197,.1); border:1px solid rgba(255,183,197,.25); color:var(--accent); font-size:.8rem; font-weight:700; transition:all var(--tr); }
+    .badge:hover{ background:rgba(255,183,197,.25); transform:translateY(-3px); box-shadow:0 5px 15px rgba(255,183,197,.3); }
+    .quote-box{ margin-top:1.2rem; padding:1.2rem 1.5rem; background:rgba(199,125,255,.08); border-left:4px solid var(--purple); border-radius:0 16px 16px 0; text-align:left; position:relative; }
+    .quote-box::before{ content:'❝'; font-size:2.5rem; color:var(--purple); opacity:.3; position:absolute; top:-10px; left:10px; line-height:1; }
+    .quote-text{ font-style:italic; color:var(--muted); font-size:.9rem; line-height:1.6; padding-left:.5rem; }
+    .quote-src{ color:var(--accent); font-weight:700; font-size:.8rem; margin-top:.6rem; text-align:right; }
+    .quote-btn{ margin-top:.8rem; background:transparent; border:1px solid var(--border); color:var(--muted); border-radius:2rem; padding:.4rem 1.2rem; cursor:pointer; font-size:.8rem; font-family:var(--fb); transition:all var(--tr); }
+    .quote-btn:hover{ border-color:var(--accent); color:var(--accent); transform:scale(1.05); background:rgba(255,183,197,.1); }
+    .social-links{ display:flex; gap:1rem; margin-top:1.5rem; justify-content:center; flex-wrap:wrap; }
+    .social-btn{ display:inline-flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; border:1.5px solid var(--border); color:var(--muted); background:rgba(199,125,255,.08); transition:all var(--tr); text-decoration:none; font-size:1.2rem; }
+    .social-btn:hover{ border-color:var(--accent); color:var(--accent); background:rgba(255,183,197,.15); transform:translateY(-5px) scale(1.1); box-shadow:0 0 20px rgba(255,183,197,.5); }
+    .social-btn svg{ width:22px; height:22px; fill:currentColor; }
+    
+    /* ===== UI ELEMENTS ===== */
+    .section-title{ font-family:var(--fh); font-size:1.6rem; background:linear-gradient(135deg,var(--accent),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:1.5rem; text-align:center; }
+    .btn{ border:none; cursor:pointer; font-weight:800; font-family:var(--fb); font-size:.9rem; letter-spacing:.5px; padding:.8rem 1.6rem; border-radius:16px; transition:all var(--tr); position:relative; overflow:hidden; }
+    .btn::after{ content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.2),transparent); opacity:0; transition:opacity .2s; }
+    .btn:hover::after{ opacity:1; }
+    .btn-primary{ background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%); color:#fff; box-shadow:0 4px 22px rgba(255,183,197,.4); }
+    .btn-primary:hover{ transform:translateY(-3px) scale(1.05); box-shadow:0 8px 30px rgba(255,183,197,.6); }
+    .btn-primary:active{ transform:scale(.95); }
+    .btn-outline{ background:transparent; border:1.5px solid var(--border); color:var(--muted); }
+    .btn-outline:hover{ border-color:var(--accent); color:var(--accent); background:rgba(255,183,197,.1); transform:translateY(-2px); box-shadow:0 4px 15px rgba(255,183,197,.2); }
+    .inp-group{ display:flex; flex-direction:column; gap:.4rem; margin-bottom:1rem; width:100%; }
+    .inp-group label{ font-size:.8rem; color:var(--muted); font-weight:600; }
+    .inp-group input,.inp-group select{ width:100%; padding:.8rem 1rem; background:rgba(199,125,255,.08); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-family:var(--fb); font-size:.95rem; outline:none; transition:.3s; backdrop-filter:blur(5px); }
+    .inp-group input:focus,.inp-group select:focus{ border-color:var(--accent); box-shadow:0 0 15px rgba(255,183,197,.3); background:rgba(199,125,255,.12); }
+
+    /* ===== GACHA SYSTEM ===== */
+    .gacha-stats { display:flex; justify-content:center; align-items:center; gap:1rem; margin-bottom:1.5rem; font-size:1.1rem; font-weight:bold; background:rgba(0,0,0,0.2); padding:0.8rem; border-radius:16px; border:1px solid var(--border); }
+    .gems-count { color: #5ee8a0; text-shadow: 0 0 10px rgba(94, 232, 160, 0.5); }
+    .gacha-stage { width:100%; height:300px; display:flex; justify-content:center; align-items:center; background:rgba(0,0,0,0.3); border-radius:16px; border:2px dashed var(--border); margin-bottom:1.5rem; position:relative; overflow:hidden; }
+    .gacha-result-card { width:200px; height:280px; border-radius:16px; object-fit:cover; display:none; animation:popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes popIn { 0%{ transform:scale(0) rotate(-20deg); opacity:0;} 100%{ transform:scale(1) rotate(0); opacity:1;} }
+    @keyframes rarityPulse { 0%,100%{ box-shadow:0 0 20px var(--r-color); } 50%{ box-shadow:0 0 50px var(--r-color), inset 0 0 20px var(--r-color); } }
+    .gacha-loading { font-size: 3rem; animation: spin 1s linear infinite; display:none; }
+    .inventory-title { font-family:var(--fh); font-size:1.3rem; margin:2rem 0 1rem; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:0.5rem; }
+    .inventory-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:1rem; max-height:400px; overflow-y:auto; padding-right:0.5rem; }
+    .inventory-item { position:relative; aspect-ratio:3/4; border-radius:12px; overflow:hidden; cursor:pointer; transition:transform 0.2s; border:2px solid var(--r-color); }
+    .inventory-item:hover { transform:scale(1.05) translateY(-5px); }
+    .inventory-item img { width:100%; height:100%; object-fit:cover; }
+    .item-count { position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.8); padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; }
+    
+    /* Gacha Rarities */
+    .rarity-common { --r-color: #a0a0a0; border: 3px solid var(--r-color); }
+    .rarity-rare { --r-color: #3a86ff; border: 3px solid var(--r-color); animation: rarityPulse 3s infinite; }
+    .rarity-epic { --r-color: #c77dff; border: 3px solid var(--r-color); animation: rarityPulse 2s infinite; }
+    .rarity-legendary { --r-color: #ffbe0b; border: 4px solid var(--r-color); animation: rarityPulse 1s infinite; }
+
+    /* ===== ГАЛЕРЕЯ ===== */
+    .gallery-controls { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; justify-content:center; }
+    #gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1.2rem; }
+    #gallery img{ width:100%; aspect-ratio:1; object-fit:cover; border-radius:16px; border:2px solid transparent; transition:all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor:pointer; background:rgba(0,0,0,0.2); }
+    #gallery img:hover{ transform:scale(1.08) rotate(2deg); box-shadow:0 10px 30px rgba(255,183,197,.5); border-color:var(--accent); z-index:2; position:relative; }
+    .load-more-wrap { display:flex; justify-content:center; margin-top:2rem; }
+
+    /* ===== OSINT & IP ===== */
+    .ip-check-table{ width:100%; border-collapse:collapse; margin-top:1rem; background:rgba(0,0,0,0.2); border-radius:12px; overflow:hidden; }
+    .ip-check-table td{ padding:0.8rem 1rem; border-bottom:1px solid var(--border); font-size:0.9rem; }
+    .ip-check-table tr:last-child td { border-bottom:none; }
+    .ip-check-table td:first-child{ color:var(--muted); width:40%; font-weight:600; }
+    .ip-check-table td:last-child{ font-weight:700; color:var(--text); }
+    .osint-result{ background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:14px; padding:1.2rem; margin-top:1rem; font-family:monospace; font-size:0.9rem; white-space:pre-wrap; word-break:break-word; max-height:350px; overflow-y:auto; box-shadow:inset 0 4px 15px rgba(0,0,0,0.5); }
+    .osint-copy-btn{ background:var(--card); border:1px solid var(--accent); color:var(--accent); border-radius:10px; padding:.4rem .8rem; cursor:pointer; font-size:.8rem; transition:0.2s; }
+    .osint-copy-btn:hover { background:var(--accent); color:#fff; }
+
+    /* ===== МУЗЫКА ===== */
+    .music-wrap{ text-align:center; padding:2rem 0; }
+    .music-title{ font-family:var(--fh); font-size:1.8rem; color:var(--accent); margin-bottom:.5rem; text-shadow:0 0 15px rgba(255,183,197,0.5); }
+    .music-sub{ color:var(--muted); font-size:.95rem; margin-bottom:2rem; }
+    audio{ width:100%; max-width:500px; border-radius:20px; accent-color:var(--accent); outline:none; }
+    audio::-webkit-media-controls-panel { background: rgba(255, 255, 255, 0.8); }
+    .now-playing{ margin-top:1.5rem; font-size:.9rem; color:var(--muted); display:flex; align-items:center; justify-content:center; gap:.6rem; }
+    .now-playing span{ width:10px; height:10px; border-radius:50%; background:var(--accent); display:inline-block; animation:pulseNow 1.6s ease-in-out infinite; box-shadow:0 0 10px var(--accent); }
+    @keyframes pulseNow{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.5); opacity:.5; } }
+
+    /* ===== NEKO CORNER ===== */
+    .neko-wrap{ position:fixed; bottom:1.5rem; right:1.5rem; z-index:150; display:flex; flex-direction:column; align-items:center; gap:.5rem; }
+    .neko-tip{ background:var(--card); border:1px solid var(--border); color:var(--accent); font-size:.75rem; padding:.4rem .8rem; border-radius:2rem; backdrop-filter:blur(10px); pointer-events:none; opacity:0; transition:opacity .3s; white-space:nowrap; box-shadow:var(--shadow); font-weight:bold; }
+    .neko-corner{ width:80px; height:80px; border-radius:50%; border:3px solid var(--accent); overflow:hidden; box-shadow:0 0 25px rgba(255,183,197,.6); cursor:pointer; transition:all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275); background:var(--bg2); }
+    .neko-corner:hover{ transform:scale(1.15) rotate(-5deg); box-shadow:0 0 40px rgba(255,183,197,.8); }
+    .neko-corner:hover+.neko-tip{ opacity:1; transform:translateY(-5px); }
+    .neko-corner img{ width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+    .neko-corner:hover img{ transform:scale(1.2); }
+
+    /* ===== NOTIFICATIONS ===== */
+    .global-notify{ position:fixed; top:1.5rem; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:.6rem; pointer-events:none; }
+    .notification{ background:var(--card); border:1px solid var(--border); padding:0.8rem 1.5rem; border-radius:20px; backdrop-filter:blur(16px); box-shadow:var(--shadow); color:var(--text); font-size:0.95rem; font-weight:600; animation:fadeSlide 0.3s ease; text-align:center; }
+    .notification.success{ border-color:#5ee8a0; color:#5ee8a0; box-shadow:0 4px 20px rgba(94,232,160,0.3); }
+    .notification.error{ border-color:#ff6b6b; color:#ff6b6b; box-shadow:0 4px 20px rgba(255,107,107,0.3); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width:768px){ 
+      .profile{ flex-direction:column; gap:1.5rem; } 
+      .bio-name{ font-size:2rem; } 
+      .card{ padding:1.5rem; } 
+      .avatar{ width:130px; height:130px; } 
+      .btn{ font-size:.85rem; padding:.7rem 1.2rem; } 
+      #gallery{ grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:0.8rem; }
+      .fixed-top{ top: 1rem; right: 1rem; gap: 0.4rem; }
+      .icon-btn { width: 40px; height: 40px; font-size: 1rem; }
+      nav.tabs { justify-content: center; }
+      .tab { min-width: auto; padding: 0.6rem 0.8rem; font-size: 0.75rem; }
     }
   </style>
 </head>
-<body class="theme-anime">
-<canvas id="bgCanvas"></canvas>
-<div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:2000; display:flex; flex-direction:column; gap:10px;"></div>
-<div class="lightbox" id="lightbox"><span style="position:absolute;top:20px;right:30px;font-size:3rem;color:#fff;cursor:pointer;" onclick="this.parentElement.classList.remove('active')">&times;</span><img src="" alt=""></div>
-<div class="neko-float" id="nekoFloat"><img src="" alt="neko" id="nekoImg"></div>
+<body>
+<canvas id="vfx-canvas"></canvas>
+<canvas id="webgl-canvas"></canvas>
+<div id="vergil-scanbeam"></div>
+<div class="fixed-top">
+  <button class="icon-btn" id="themeToggle" title="Сменить тему">🌸</button>
+  <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
+  <button class="icon-btn" id="vergilBtn" title="Вергилий">🗡️</button>
+  <button class="icon-btn" id="sayaBtn" title="Сая но Ута">🧠</button>
+</div>
+<div class="neko-wrap">
+  <div class="neko-corner" id="nekoCorner"><img id="nekoImg" alt="neko" loading="lazy" style="opacity:0;"></div>
+  <div class="neko-tip">🐾 Погладить!</div>
+</div>
+<div id="global-notify" class="global-notify"></div>
+<div class="page-wrap">
+  <div class="container">
+    <nav class="tabs">
+      <div class="tab active" data-tab="bio">🌸 Био</div>
+      <div class="tab" data-tab="gacha">🎲 Гача</div>
+      <div class="tab" data-tab="gallery">🎴 Галерея</div>
+      <div class="tab" data-tab="ip">🔍 Мой IP</div>
+      <div class="tab" data-tab="osint">🕵️ OSINT</div>
+      <div class="tab" data-tab="music">🎀 Плеер</div>
+    </nav>
 
-<div class="app-container">
-  <header class="header">
-    <div class="logo-text">GOD_AE86 ✦</div>
-    <p class="subtitle">アニメ ✦ ガチャ ✦ エステティック</p>
-    <div class="theme-switcher" id="themeSwitcher">
-      <button class="theme-btn active" data-theme="anime">🌸</button>
-      <button class="theme-btn" data-theme="light">🌙</button>
-      <button class="theme-btn" data-theme="vergil">⚔️</button>
-      <button class="theme-btn" data-theme="saya">🧠</button>
-    </div>
-  </header>
-
-  <!-- TAB NAVIGATION -->
-  <div class="tab-nav" id="tabNav">
-    <button class="tab-btn active" data-tab="gacha">🎲 Гача</button>
-    <button class="tab-btn" data-tab="gallery">🎴 Галерея</button>
-    <button class="tab-btn" data-tab="osint">🕵️ OSINT</button>
-    <button class="tab-btn" data-tab="player">🎀 Плеер</button>
-    <button class="tab-btn" data-tab="quotes">💬 Цитаты</button>
-    <button class="tab-btn" data-tab="ip">🔍 IP</button>
-  </div>
-
-  <!-- TAB CONTENT -->
-  <div class="tab-content">
-    <!-- Гача -->
-    <div class="tab-pane active" id="tab-gacha">
+    <div class="tab-content active" id="tab-bio">
       <div class="card">
-        <h2>🎲 Аниме-гача</h2>
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <span class="crystals">💎 <span id="crystalCount">0</span></span>
-          <button class="btn secondary" id="dailyBtn" onclick="claimDaily()">Собрать дейлик +500 💎</button>
-        </div>
-        <div class="gacha-result" id="gachaResult"><p>Нажми «Крутить» за 100 💎</p></div>
-        <button class="btn" id="rollBtn" onclick="rollGacha()" style="width:100%;">🎰 Крутить (100 💎)</button>
-        <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
-          <span>Инвентарь (<span id="invCount">0</span>)</span>
-          <button class="btn danger" style="padding:8px 16px;" onclick="clearInventory()">Очистить</button>
-        </div>
-        <div class="inventory-grid" id="inventoryGrid"></div>
-      </div>
-    </div>
-    <!-- Галерея -->
-    <div class="tab-pane" id="tab-gallery">
-      <div class="card">
-        <h2>🎴 Бесконечная галерея</h2>
-        <div id="galleryControls" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;"></div>
-        <div class="gallery-grid" id="galleryGrid"></div>
-        <button class="btn" style="width:100%; margin-top:14px;" id="loadMoreGallery">Загрузить ещё ⬇️</button>
-      </div>
-    </div>
-    <!-- OSINT -->
-    <div class="tab-pane" id="tab-osint">
-      <div class="card">
-        <h2>🕵️ OSINT-инструменты</h2>
-        <select id="osintType" style="width:100%; padding:12px; border-radius:60px; background:var(--surface2); color:var(--text); border:1px solid var(--glass-border); margin-bottom:10px;">
-          <option value="ip">IP информация</option>
-          <option value="whois">Whois домена</option>
-          <option value="dns">DNS-записи (A)</option>
-          <option value="nickname">Поиск по никнейму</option>
-          <option value="dork">Google Dorking</option>
-        </select>
-        <input type="text" id="osintQuery" placeholder="IP, домен, ник или дорк..." style="width:100%; padding:12px; border-radius:60px; background:var(--surface2); color:var(--text); border:1px solid var(--glass-border); margin-bottom:12px;">
-        <button class="btn" style="width:100%;" onclick="runOSINT()">Выполнить 🚀</button>
-        <div id="osintResult" style="display:none; margin-top:12px; font-family:var(--font-mono); background:var(--surface2); padding:16px; border-radius:14px; max-height:250px; overflow:auto; white-space:pre-wrap;"></div>
-        <button class="btn secondary" id="copyOsintBtn" style="width:100%; margin-top:8px; display:none;" onclick="copyOSINT()">Скопировать 📋</button>
-      </div>
-    </div>
-    <!-- Плеер -->
-    <div class="tab-pane" id="tab-player">
-      <div class="card">
-        <h2>🎀 Музыкальный плеер</h2>
-        <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
-          <div class="player-visualizer" id="visualizer" style="flex:1; min-width:200px;"></div>
-          <div style="display:flex; gap:10px;">
-            <button class="btn" id="playBtn" onclick="togglePlay()">▶️ Играть</button>
-            <input type="file" accept="audio/*" id="audioFileInput" style="display:none;" onchange="loadAudioFile(event)">
-            <button class="btn secondary" onclick="document.getElementById('audioFileInput').click()">📁 Загрузить</button>
+        <div class="profile">
+          <div class="avatar-wrap">
+            <div class="avatar"><img id="avatarImg" src="" alt="GOD_AE86" loading="lazy" style="opacity:0;"></div>
+            <div class="avatar-ring"></div>
+            <div class="avatar-ring2"></div>
+          </div>
+          <div class="bio-info">
+            <div class="bio-name">GOD_AE86</div>
+            <div class="bio-handle">@resivert · @GOD_AE86</div>
+            <div class="bio-desc">Аниме ✦ Гача ✦ Эстетика ✦ Web Разработка</div>
+            <div class="badges">
+              <span class="badge">🌸 Weeb</span>
+              <span class="badge">🎲 Gacha Player</span>
+              <span class="badge">🐾 Neko Lover</span>
+              <span class="badge">🚗 AE86 Drift</span>
+            </div>
+            <div class="quote-box">
+              <div class="quote-text" id="quoteText">Загружаем мудрость…</div>
+              <div class="quote-src" id="quoteSrc"></div>
+              <button class="quote-btn" id="newQuoteBtn">🔄 Следующая цитата</button>
+            </div>
+            <div class="social-links">
+              <a href="https://t.me/GOD_AE86" class="social-btn" target="_blank" title="Telegram"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.46-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.441-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.12.098.153.228.169.321.015.094.034.307.019.474z"/></svg></a>
+              <a href="https://t.me/+lseqUuDD40c0N2Ni" class="social-btn" target="_blank" title="Канал">👥</a>
+              <a href="https://t.me/god_internet" class="social-btn" target="_blank" title="Ещё">📡</a>
+            </div>
           </div>
         </div>
-        <p id="playerStatus" style="margin-top:10px; color:var(--text2);">Файл не загружен.</p>
       </div>
     </div>
-    <!-- Цитаты -->
-    <div class="tab-pane" id="tab-quotes">
+
+    <div class="tab-content" id="tab-gacha">
       <div class="card">
-        <h2>💬 Цитаты из аниме</h2>
-        <div id="quoteBox" style="font-style:italic; font-size:1.1rem; padding:16px; background:var(--surface2); border-radius:12px; border-left:4px solid var(--accent); min-height:80px;">Загрузка...</div>
-        <button class="btn" style="margin-top:12px; width:100%;" onclick="nextQuote()">Следующая цитата ✨</button>
+        <div class="section-title">🎲 Аниме Гача</div>
+        <div class="gacha-stats">
+          Кристаллы: <span id="gemsCount" class="gems-count">1000</span> 💎
+        </div>
+        
+        <div class="gacha-stage" id="gachaStage">
+          <div id="gachaInitText" style="color:var(--muted); font-size:1.2rem; text-align:center;">
+            Испытай удачу!<br><small>Вытяни редкую вайфу или неко</small>
+          </div>
+          <div id="gachaLoading" class="gacha-loading">✨</div>
+          <img id="gachaResultImg" class="gacha-result-card" src="" alt="result">
+        </div>
+        
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="pullGachaBtn">Крутить (100 💎)</button>
+          <button class="btn btn-outline" id="freeGemsBtn">Собрать дейлик (+500 💎)</button>
+        </div>
+
+        <div class="inventory-title">🎒 Инвентарь <span style="font-size:0.8rem; float:right; cursor:pointer;" id="clearInvBtn">🗑 Очистить</span></div>
+        <div class="inventory-grid" id="inventoryGrid">
+          </div>
       </div>
     </div>
-    <!-- IP -->
-    <div class="tab-pane" id="tab-ip">
+
+    <div class="tab-content" id="tab-gallery">
       <div class="card">
-        <h2>🔍 Мой IP</h2>
-        <div id="ipDisplay" style="font-family:var(--font-mono); background:var(--surface2); padding:16px; border-radius:14px; white-space:pre-wrap;">Загрузка...</div>
-        <button class="btn" style="margin-top:10px;" onclick="fetchIP()">Обновить 🔄</button>
+        <div class="section-title">🎴 Бесконечная Галерея</div>
+        <div class="gallery-controls">
+          <div class="inp-group" style="width: auto; margin:0;">
+            <select id="galleryCategory">
+              <option value="waifu">Вайфу (Waifu)</option>
+              <option value="neko">Неко (Neko)</option>
+              <option value="shinobu">Шинобу</option>
+              <option value="megumin">Мегумин</option>
+              <option value="dance">Танцы (Dance)</option>
+              <option value="cuddle">Обнимашки</option>
+              <option value="smug">Ухмылка (Smug)</option>
+            </select>
+          </div>
+          <button class="btn btn-outline" id="refreshGalleryBtn">🔄 Обновить</button>
+        </div>
+        <div id="gallery"></div>
+        <div class="load-more-wrap">
+          <button class="btn btn-primary" id="loadMoreGalleryBtn">⬇ Загрузить еще</button>
+        </div>
       </div>
     </div>
+
+    <div class="tab-content" id="tab-ip">
+      <div class="card">
+        <div class="section-title">🔍 Информация о твоем IP</div>
+        <table class="ip-check-table">
+          <tbody id="ipTableBody">
+            <tr><td colspan="2" style="text-align:center;">Загрузка данных... ⏳</td></tr>
+          </tbody>
+        </table>
+        <div style="text-align:center; margin-top:1.5rem;">
+          <button class="btn btn-outline" id="refreshIpBtn">🔄 Обновить проверку</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-osint">
+      <div class="card">
+        <div class="section-title">🕵️ Инструменты Разведки (OSINT)</div>
+        <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+          <div class="inp-group" style="flex:2; min-width:200px;">
+            <label>Цель (IP, домен, email, никнейм)</label>
+            <input type="text" id="osintTarget" placeholder="8.8.8.8 / example.com / user@mail.ru">
+          </div>
+          <div class="inp-group" style="flex:1; min-width:150px;">
+            <label>Тип разведки</label>
+            <select id="osintType">
+              <option value="ip">IP информация</option>
+              <option value="whois">Whois домена</option>
+              <option value="dns">DNS-записи</option>
+              <option value="username">Поиск никнейма</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="osintRunBtn">🔎 Выполнить запрос</button>
+          <button class="btn btn-outline" id="osintClearBtn">🗑 Очистить экран</button>
+        </div>
+        
+        <div id="osintResult" class="osint-result" style="display:none;"></div>
+        <div id="osintCopyTarget" style="display:none; margin-top:0.8rem; text-align:right;">
+          <button class="osint-copy-btn" id="osintCopyBtn">📋 Копировать результат</button>
+        </div>
+
+        <div style="margin-top:2.5rem; border-top:1px solid var(--border); padding-top:1.5rem;">
+          <h3 style="font-family:var(--fh); color:var(--accent); margin-bottom:1rem;">🔎 Быстрый Google Dorking</h3>
+          <div class="inp-group">
+            <input type="text" id="dorkInput" placeholder="Например: inurl:admin site:example.com">
+          </div>
+          <div style="display:flex; gap:1rem;">
+            <select id="searchEngine" style="padding:0.6rem 1rem; border-radius:12px; border:1.5px solid var(--border); background:rgba(199,125,255,.08); color:var(--text); outline:none;">
+              <option value="google">Google</option>
+              <option value="bing">Bing</option>
+              <option value="duck">DuckDuckGo</option>
+            </select>
+            <button id="searchDorkBtn" class="btn btn-primary">Искать в сети</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-music">
+      <div class="card music-wrap">
+        <div class="music-title">🎀 Локальный Плеер 🎀</div>
+        <div class="music-sub">Положи файл <code>track.mp3</code> в папку с сайтом</div>
+        <audio controls id="audioPlayer"><source src="track.mp3" type="audio/mpeg"></audio>
+        <div class="now-playing"><span></span> сейчас играет: твой лучший трек ♪</div>
+        <div id="audioFallback" style="display:none; color:#ff6b6b; margin-top:1rem; font-weight:bold;">⚠️ Файл track.mp3 не найден! Загрузи его на сервер.</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script>
-  (function() {
-    // Canvas & VFX
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d');
-    let vfxType = 'petals'; 
-    let particles = [];
-    function resizeCanvas() { canvas.width = innerWidth; canvas.height = innerHeight; }
-    window.addEventListener('resize', resizeCanvas); resizeCanvas();
-    function initCanvasVFX() {
-      const theme = STATE.theme;
-      vfxType = theme === 'anime' ? 'petals' : theme === 'light' ? 'stars' : theme === 'vergil' ? 'slashes' : 'blood';
-      particles = [];
-      for (let i=0; i<55; i++) createParticle();
-    }
-    function createParticle() {
-      const p = { x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*5+2, speedX: (Math.random()-0.5)*1.8, speedY: Math.random()*2.2+0.6, opacity: Math.random()*0.7+0.3, rotation: Math.random()*Math.PI*2, rotSpeed: (Math.random()-0.5)*0.06 };
-      if (vfxType==='petals') p.color = `hsl(${330+Math.random()*30}, 80%, 70%)`;
-      else if (vfxType==='stars') p.color = `hsl(${45+Math.random()*20}, 90%, 80%)`;
-      else if (vfxType==='slashes') { p.color = `hsl(${200+Math.random()*30}, 100%, 65%)`; p.speedY=0; p.speedX=(Math.random()-0.5)*7; }
-      else p.color = `hsl(${0+Math.random()*10}, 90%, 45%)`;
-      particles.push(p);
-    }
-    function animateCanvas() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p => {
-        p.x += p.speedX; p.y += p.speedY; p.rotation += p.rotSpeed;
-        if (p.y > canvas.height+20) { p.y=-20; p.x=Math.random()*canvas.width; }
-        if (p.x > canvas.width+20) p.x=-20; if (p.x<-20) p.x=canvas.width+20;
-        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rotation); ctx.globalAlpha=p.opacity; ctx.fillStyle=p.color;
-        if (vfxType==='petals') { ctx.beginPath(); ctx.ellipse(0,0,p.size,p.size*0.5,0,0,Math.PI*2); ctx.fill(); }
-        else if (vfxType==='slashes') ctx.fillRect(-p.size*1.5, -1.5, p.size*3, 3);
-        else { ctx.beginPath(); ctx.arc(0,0,p.size,0,Math.PI*2); ctx.fill(); }
-        ctx.restore();
-      });
-      if (particles.length<60) createParticle(); if(particles.length>65) particles.splice(0,5);
-      requestAnimationFrame(animateCanvas);
-    }
-    initCanvasVFX(); animateCanvas();
+  'use strict';
+  
+  // ===== Утилиты =====
+  const notify = (msg, type = 'success') => {
+    const c = document.getElementById('global-notify');
+    const d = document.createElement('div');
+    d.className = `notification ${type}`;
+    d.textContent = msg;
+    c.appendChild(d);
+    setTimeout(() => {
+      d.style.opacity = '0';
+      d.style.transform = 'translateY(-20px)';
+      setTimeout(() => d.remove(), 300);
+    }, 2500);
+  };
 
-    // STATE
-    const STATE = {
-      crystals: parseInt(localStorage.getItem('gacha_crystals')||'500'),
-      inventory: JSON.parse(localStorage.getItem('gacha_inventory')||'[]'),
-      lastDaily: localStorage.getItem('gacha_lastDaily')||'',
-      theme: localStorage.getItem('theme')||'anime',
-      galleryCat: 'waifu',
-      galleryPage: {waifu:1,neko:1,shinobu:1,megumin:1,dance:1,cuddle:1,smug:1},
-      audioCtx:null, audioSource:null, isPlaying:false, analyser:null, animationId:null,
-      activeTab: localStorage.getItem('activeTab')||'gacha'
+  function setImg(img, src, fallback) {
+    img.src = src || '';
+    img.onerror = () => {
+      if (fallback) img.src = 'data:image/svg+xml,' + encodeURIComponent(fallback);
+      img.style.opacity = '1';
     };
-    function saveState() {
-      localStorage.setItem('gacha_crystals', STATE.crystals);
-      localStorage.setItem('gacha_inventory', JSON.stringify(STATE.inventory));
-      localStorage.setItem('gacha_lastDaily', STATE.lastDaily);
-      localStorage.setItem('theme', STATE.theme);
-      localStorage.setItem('activeTab', STATE.activeTab);
+    img.onload = () => img.style.opacity = '1';
+  }
+
+  // ===== Базовые SVG заглушки =====
+  const AVATAR_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect fill="#22133a" width="160" height="160"/><text x="80" y="90" text-anchor="middle" fill="#c77dff" font-size="40">★</text></svg>';
+  const WAIFU_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="110" text-anchor="middle" fill="#ffb7c5" font-size="40">🌸</text></svg>';
+
+  // ===== VFX Canvas (Эффекты фона) =====
+  const canvas = document.getElementById('vfx-canvas');
+  const ctx = canvas.getContext('2d');
+  let vfxMode = 'petals', lastT = 0, animId;
+  let petals = [], stars = [], slashes = [], sayaDrops = [];
+  
+  function randomRange(a,b){ return a+Math.random()*(b-a); }
+  const easeCubic = t => 1 - Math.pow(1-t,3);
+  const easeQuint = t => 1 - Math.pow(1-t,5);
+  
+  function initPetals(n=25) { petals = Array.from({length:n}, ()=>({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:10+Math.random()*12, speed:0.8+Math.random()*1.5, rot:Math.random()*Math.PI*2, rotS:(Math.random()-0.5)*0.06, op:0.4+Math.random()*0.5 })); }
+  function initStars(n=45) { stars = Array.from({length:n}, ()=>({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:2+Math.random()*6, speed:1.5+Math.random()*2.5, op:0, life:0, maxLife:70+Math.random()*60 })); }
+  function initSlashes(n=30) { slashes = Array.from({length:n}, ()=>{ const p = [{core:'#ffffff',mid:'#5878ff',out:'rgba(26,79,255,'},{core:'#dde5ff',mid:'#3a58ff',out:'rgba(18,55,240,'},{core:'#eef1ff',mid:'#8899ff',out:'rgba(110,135,255,'}][Math.random()*3|0]; const a = randomRange(Math.PI/6,Math.PI/3)*(Math.random()>.5?1:-1); return { x:randomRange(.05,.95)*canvas.width, y:randomRange(.05,.95)*canvas.height, cos:Math.cos(a), sin:Math.sin(a), len:randomRange(90,260), w:randomRange(1,2.5), p, dbl:Math.random()>.7, gap:Math.random()>.7?randomRange(6,16):0, dMs:randomRange(50,140), hMs:randomRange(100,300), fMs:randomRange(150,400), t:-(Math.random()*2500) }; }); }
+  function initSayaDrops(n=60) { sayaDrops = Array.from({length:n}, ()=>({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, s:3+Math.random()*7, sp:2.5+Math.random()*4.5, op:0.4+Math.random()*0.5, delay:Math.random()*4000, active:false })); }
+  
+  function drawPetals() {
+    for (const p of petals) {
+      p.y += p.speed; p.rot += p.rotS;
+      if (p.y > canvas.height+60) { p.y = -60; p.x = Math.random()*canvas.width; }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.globalAlpha = p.op;
+      ctx.fillStyle = '#ffcfd9'; ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.bezierCurveTo(p.size,-p.size/2, p.size,p.size/2, 0,p.size);
+      ctx.bezierCurveTo(-p.size,p.size/2, -p.size,-p.size/2, 0,0);
+      ctx.fill(); ctx.restore();
     }
-
-    // Toast
-    function showToast(msg, type='info') {
-      const c = document.getElementById('toastContainer');
-      const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
-      if(type==='success') t.style.borderColor='#8bc34a';
-      if(type==='error') t.style.borderColor='#ff1744';
-      c.appendChild(t); setTimeout(()=>t.remove(), 3000);
+  }
+  
+  function drawStars() {
+    const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    for (const s of stars) {
+      s.y += s.speed; s.life++;
+      s.op = Math.sin((s.life/s.maxLife)*Math.PI);
+      if (s.life >= s.maxLife) { s.y = -20; s.x = Math.random()*canvas.width; s.life = 0; }
+      ctx.globalAlpha = s.op; ctx.fillStyle = ac; ctx.shadowBlur = 10; ctx.shadowColor = ac;
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill();
     }
-
-    // Theme
-    function applyTheme(theme) {
-      document.body.className = ''; if(theme!=='anime') document.body.classList.add('theme-'+theme); else document.body.classList.add('theme-anime');
-      STATE.theme=theme; saveState();
-      document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active', b.dataset.theme===theme));
-      initCanvasVFX();
+    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  }
+  
+  function drawSlashes(dt) {
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    ctx.fillStyle = 'rgba(2,2,12,.5)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.globalCompositeOperation = 'screen'; ctx.lineCap = 'round';
+    for (const s of slashes) {
+      s.t += dt; if (s.t < 0) continue;
+      const total = s.dMs + s.hMs + s.fMs;
+      if (s.t >= total) { Object.assign(s, slashes[Math.floor(Math.random()*slashes.length)]); continue; }
+      let prog=0, op=0;
+      if (s.t < s.dMs) { prog = easeCubic(s.t/s.dMs); op = prog; }
+      else if (s.t < s.dMs + s.hMs) { prog = 1; op = 1; }
+      else { prog = 1; op = easeQuint(1-(s.t-s.dMs-s.hMs)/s.fMs); }
+      if (op < 0.005) continue;
+      const half = s.len*0.5*prog;
+      const {x,y,cos,sin,w,dbl,gap,p} = s;
+      const offs = dbl ? [-gap/2, gap/2] : [0];
+      for (const off of offs) {
+        const nx = -sin*off, ny = cos*off;
+        const x1 = x - cos*half + nx, y1 = y - sin*half + ny;
+        const x2 = x + cos*half + nx, y2 = y + sin*half + ny;
+        ctx.globalAlpha = op*0.15; ctx.strokeStyle = p.out+'1)'; ctx.lineWidth = w*18; ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+        ctx.globalAlpha = op*0.45; ctx.strokeStyle = p.mid; ctx.lineWidth = w*5; ctx.shadowBlur = 15; ctx.shadowColor = p.out+'.8)';
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+        ctx.globalAlpha = op*0.95; ctx.strokeStyle = p.core; ctx.lineWidth = w*1; ctx.shadowBlur = 6; ctx.shadowColor = p.mid;
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      }
     }
-    document.getElementById('themeSwitcher').addEventListener('click', e=>{
-      const btn = e.target.closest('.theme-btn'); if(btn) applyTheme(btn.dataset.theme);
-    });
-    applyTheme(STATE.theme);
-
-    // Tabs
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-      const pane = document.getElementById('tab-'+tabId);
-      if(pane) pane.classList.add('active');
-      const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
-      if(btn) btn.classList.add('active');
-      STATE.activeTab = tabId; saveState();
-      if(tabId==='gallery' && document.getElementById('galleryGrid').children.length===0) loadGallery('waifu',1);
-      if(tabId==='ip') fetchIP();
+    ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  }
+  
+  function drawSayaDrops(now) {
+    for (const d of sayaDrops) {
+      if (!d.active && now > d.delay) { d.active = true; d.y = -10; d.x = Math.random()*canvas.width; }
+      if (!d.active) continue;
+      d.y += d.sp;
+      if (d.y > canvas.height+20) { d.active = false; d.delay = now + Math.random()*2500; continue; }
+      ctx.globalAlpha = d.op; ctx.fillStyle = '#8b0000'; ctx.shadowBlur = 10; ctx.shadowColor = '#ff0000';
+      ctx.beginPath(); ctx.ellipse(d.x,d.y,d.s*0.7,d.s*1.2,0,0,Math.PI*2); ctx.fill();
     }
-    document.getElementById('tabNav').addEventListener('click', e=>{
-      const btn = e.target.closest('.tab-btn'); if(!btn) return;
-      switchTab(btn.dataset.tab);
-    });
-    switchTab(STATE.activeTab);
+    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  }
+  
+  function animate(now=0) {
+    const dt = Math.min(now-lastT,50); lastT=now;
+    if (vfxMode!=='slashes' && vfxMode!=='saya') ctx.clearRect(0,0,canvas.width,canvas.height);
+    if (vfxMode==='petals') drawPetals();
+    else if (vfxMode==='stars') drawStars();
+    else if (vfxMode==='slashes') drawSlashes(dt);
+    else if (vfxMode==='saya') { ctx.clearRect(0,0,canvas.width,canvas.height); drawSayaDrops(now); }
+    animId = requestAnimationFrame(animate);
+  }
+  
+  function setVfx(m) {
+    vfxMode=m;
+    if (m==='petals') initPetals();
+    else if (m==='stars') initStars();
+    else if (m==='slashes') initSlashes(35);
+    else if (m==='saya') initSayaDrops(60);
+  }
+  window.addEventListener('resize', ()=>{ canvas.width=innerWidth; canvas.height=innerHeight; });
+  canvas.width = innerWidth; canvas.height = innerHeight;
 
-    // Gacha
-    function updateCrystals() { document.getElementById('crystalCount').textContent=STATE.crystals; document.getElementById('rollBtn').disabled=STATE.crystals<100; saveState(); }
-    function updateInventory() {
-      const grid=document.getElementById('inventoryGrid'); document.getElementById('invCount').textContent=STATE.inventory.length;
-      grid.innerHTML = STATE.inventory.slice(-30).map(item=>`<div class="inventory-item"><img src="${item.url}" loading="lazy"></div>`).join('');
+  // ===== WebGL Фон =====
+  (function setupWebGL() {
+    const glCanvas = document.getElementById('webgl-canvas');
+    const gl = glCanvas.getContext('webgl', { alpha: true });
+    if (!gl) return;
+    glCanvas.width = innerWidth; glCanvas.height = innerHeight;
+    const vs = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vs, 'attribute vec2 p; void main(){ gl_Position = vec4(p,0,1); }');
+    gl.compileShader(vs);
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, 'precision highp float; uniform float t; uniform vec2 r; void main(){ vec2 uv=gl_FragCoord.xy/r; float d=sin(uv.x*8.0+t)*cos(uv.y*8.0+t)*0.15; gl_FragColor=vec4(vec3(0.15,0.05,0.2)+d,0.25); }');
+    gl.compileShader(fs);
+    const program = gl.createProgram();
+    gl.attachShader(program, vs); gl.attachShader(program, fs); gl.linkProgram(program); gl.useProgram(program);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    let glT = 0;
+    function render() {
+      glCanvas.width = innerWidth; glCanvas.height = innerHeight;
+      gl.viewport(0,0,glCanvas.width,glCanvas.height);
+      gl.uniform1f(gl.getUniformLocation(program,'t'), glT+=0.008);
+      gl.uniform2f(gl.getUniformLocation(program,'r'), glCanvas.width, glCanvas.height);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      requestAnimationFrame(render);
     }
-    window.rollGacha = ()=>{
-      if(STATE.crystals<100) return showToast('Недостаточно кристаллов','error');
-      STATE.crystals-=100; updateCrystals();
-      const r=Math.random()*100, cat=r<60?'waifu':r<90?'neko':r<99?'shinobu':'megumin';
-      const rarity=r<60?'Обычная':r<90?'Редкая':r<99?'Эпическая':'Легендарная';
-      document.getElementById('gachaResult').innerHTML='<p>Крутим...</p>';
-      fetch(`https://api.waifu.pics/sfw/${cat}`).then(r=>r.json()).then(data=>{
-        STATE.inventory.push({url:data.url, rarity});
-        updateInventory();
-        document.getElementById('gachaResult').innerHTML=`<img src="${data.url}"><span style="position:absolute; top:10px; right:10px; background:${rarity==='Легендарная'?'#ffd700':rarity==='Эпическая'?'#ab47bc':rarity==='Редкая'?'#8bc34a':'#666'}; padding:4px 14px; border-radius:60px;">${rarity}</span>`;
-        if(rarity==='Легендарная') showToast('🎉 ЛЕГЕНДАРНАЯ!');
-      }).catch(()=>{ showToast('Ошибка (CORS). Запустите через сервер.','error'); STATE.crystals+=100; updateCrystals(); });
-    };
-    window.claimDaily = ()=>{
-      const today=new Date().toDateString();
-      if(STATE.lastDaily===today) return showToast('Уже собрано','error');
-      STATE.lastDaily=today; STATE.crystals+=500; updateCrystals(); showToast('+500 💎','success');
-    };
-    window.clearInventory = ()=>{ STATE.inventory=[]; updateInventory(); document.getElementById('gachaResult').innerHTML='<p>Нажми «Крутить»</p>'; };
-    updateCrystals(); updateInventory();
-
-    // Gallery
-    const galleryCats = ['waifu','neko','shinobu','megumin','dance','cuddle','smug'];
-    const galleryControls = document.getElementById('galleryControls');
-    galleryControls.innerHTML = galleryCats.map(c=>`<button class="btn secondary" data-cat="${c}">${c.charAt(0).toUpperCase()+c.slice(1)}</button>`).join('');
-    galleryControls.addEventListener('click', e=>{
-      const btn=e.target.closest('button'); if(!btn||!btn.dataset.cat) return;
-      document.querySelectorAll('#galleryControls .btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-      STATE.galleryCat=btn.dataset.cat; loadGallery(STATE.galleryCat,1);
-    });
-    function loadGallery(cat, page, append=false) {
-      const grid=document.getElementById('galleryGrid');
-      if(!append) grid.innerHTML='<p>Загрузка...</p>';
-      const promises = Array.from({length:8}, ()=>fetch(`https://api.waifu.pics/sfw/${cat}`).then(r=>r.json()).then(d=>d.url));
-      Promise.all(promises).then(urls=>{
-        const html = urls.map(u=>`<img src="${u}" onclick="openLightbox('${u}')" loading="lazy">`).join('');
-        if(append) grid.innerHTML+=html; else grid.innerHTML=html;
-        STATE.galleryPage[cat]=page;
-      }).catch(()=>{ if(!append) grid.innerHTML='<p style="color:#ff5252;">Ошибка загрузки. Нужен http-сервер.</p>'; });
-    }
-    document.getElementById('loadMoreGallery').addEventListener('click', ()=>{
-      STATE.galleryPage[STATE.galleryCat]=(STATE.galleryPage[STATE.galleryCat]||1)+1;
-      loadGallery(STATE.galleryCat, STATE.galleryPage[STATE.galleryCat], true);
-    });
-    window.openLightbox = url => { const lb=document.getElementById('lightbox'); lb.querySelector('img').src=url; lb.classList.add('active'); };
-    document.querySelector('#galleryControls .btn[data-cat="waifu"]')?.classList.add('active');
-
-    // IP
-    window.fetchIP = ()=>{
-      document.getElementById('ipDisplay').textContent='Загрузка...';
-      fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
-        document.getElementById('ipDisplay').textContent = `IP: ${d.ip}\nСтрана: ${d.country_name}\nГород: ${d.city}\nПровайдер: ${d.org}`;
-      }).catch(()=> document.getElementById('ipDisplay').textContent='Ошибка. Возможно, нужен http-сервер.');
-    };
-
-    // OSINT
-    window.runOSINT = ()=>{
-      const type=document.getElementById('osintType').value, query=document.getElementById('osintQuery').value.trim();
-      const res=document.getElementById('osintResult'), copy=document.getElementById('copyOsintBtn');
-      res.style.display='block'; copy.style.display='block'; res.textContent='Выполнение...';
-      if(!query && type!=='nickname') { res.textContent='Введите запрос'; return; }
-      if(type==='nickname') { window.open(`https://whatsmyname.app/?q=${encodeURIComponent(query||'test')}`, '_blank'); res.textContent='Открыт whatsmyname.app'; return; }
-      if(type==='dork') { res.innerHTML = `Поиск: <a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank">Google</a> | <a href="https://duckduckgo.com/?q=${encodeURIComponent(query)}" target="_blank">DuckDuckGo</a>`; return; }
-      let url = type==='ip'?`https://ipapi.co/${query}/json/`: type==='whois'?`https://api.hackertarget.com/whois/?q=${query}`:`https://dns.google/resolve?name=${query}&type=A`;
-      fetch(url).then(r=>r.text()).then(t=>{ try{ res.textContent=JSON.stringify(JSON.parse(t),null,2); }catch{ res.textContent=t; } }).catch(e=>res.textContent='Ошибка: '+e.message);
-    };
-    window.copyOSINT = ()=>{ const t=document.getElementById('osintResult').textContent; navigator.clipboard.writeText(t).then(()=>showToast('Скопировано!')).catch(()=>showToast('Ошибка')); };
-
-    // Player
-    function initAudio() { if(!STATE.audioCtx){ STATE.audioCtx=new (window.AudioContext||window.webkitAudioContext)(); STATE.analyser=STATE.audioCtx.createAnalyser(); STATE.analyser.fftSize=64; STATE.analyser.connect(STATE.audioCtx.destination); } }
-    window.loadAudioFile = e=>{
-      const file=e.target.files[0]; if(!file) return; initAudio();
-      const reader=new FileReader();
-      reader.onload=ev=>STATE.audioCtx.decodeAudioData(ev.target.result, buffer=>{
-        if(STATE.audioSource) STATE.audioSource.disconnect();
-        STATE.audioSource=STATE.audioCtx.createBufferSource(); STATE.audioSource.buffer=buffer;
-        STATE.audioSource.connect(STATE.analyser); STATE.audioSource.loop=true;
-        document.getElementById('playerStatus').textContent=`Готово: ${file.name}`;
-      });
-      reader.readAsArrayBuffer(file);
-    };
-    window.togglePlay = ()=>{
-      if(!STATE.audioSource) return showToast('Загрузите аудио','error');
-      if(STATE.isPlaying){ STATE.audioSource.stop(); STATE.audioSource=STATE.audioCtx.createBufferSource(); STATE.audioSource.buffer=STATE.audioSource.buffer; STATE.audioSource.connect(STATE.analyser); STATE.audioSource.start(0); }
-      else { STATE.audioSource.start(0); STATE.isPlaying=true; }
-      document.getElementById('playBtn').textContent=STATE.isPlaying?'⏸️ Пауза':'▶️ Играть';
-      if(!STATE.animationId) visualize();
-    };
-    function visualize(){
-      const bars = document.querySelectorAll('#visualizer .bar');
-      if(!bars.length) { const v=document.getElementById('visualizer'); for(let i=0;i<16;i++){ const b=document.createElement('div'); b.className='bar'; b.style.height='10%'; v.appendChild(b); } }
-      const data = new Uint8Array(STATE.analyser.frequencyBinCount);
-      function update(){ STATE.analyser.getByteFrequencyData(data); document.querySelectorAll('#visualizer .bar').forEach((b,i)=>{ b.style.height=Math.max(3,(data[i%data.length]/255)*100)+'%'; }); STATE.animationId=requestAnimationFrame(update); }
-      update();
-    }
-    (function(){ const v=document.getElementById('visualizer'); for(let i=0;i<16;i++){ const b=document.createElement('div'); b.className='bar'; b.style.height='10%'; v.appendChild(b); } })();
-
-    // Quotes
-    const quotes = [
-      {text:'«Даже если я потеряю память, моё тело будет помнить тебя.»', char:'— Эльза, Re:Zero'},
-      {text:'«Мир не идеален. Но он существует и борется за то, чтобы стать лучше.»', char:'— Рой Мустанг'},
-      {text:'«Лучше умереть стоя, чем жить на коленях.»', char:'— Спайк Шпигель'},
-      {text:'«Если у тебя есть причина жить, ты сможешь вынести почти всё.»', char:'— Канеки Кен'},
-      {text:'«Сила — это не просто физическая мощь. Это воля идти до конца.»', char:'— Гатс'}
-    ];
-    let qi=0;
-    window.nextQuote = ()=>{ qi=(qi+1)%quotes.length; const q=quotes[qi]; document.getElementById('quoteBox').innerHTML=`${q.text}<br><small style="opacity:0.7;">${q.char}</small>`; };
-    nextQuote();
-
-    // Neko
-    function fetchNeko() { fetch('https://api.waifu.pics/sfw/neko').then(r=>r.json()).then(d=>{ document.getElementById('nekoImg').src=d.url; }).catch(()=>{}); }
-    document.getElementById('nekoFloat').addEventListener('click', ()=>{ fetchNeko(); showToast('Мяу! 🐾'); });
-    fetchNeko(); setInterval(fetchNeko, 45000);
-
-    // PWA
-    const link = document.createElement('link'); link.rel='manifest';
-    link.href = 'data:application/json;base64,' + btoa(JSON.stringify({name:'GOD_AE86 ✦',short_name:'GOD_AE86',start_url:'.',display:'standalone',background_color:'#1a0a2e',theme_color:'#ff6eb4'}));
-    document.head.appendChild(link);
-    if('serviceWorker' in navigator) {
-      const sw = new Blob([`self.addEventListener('install',e=>e.waitUntil(caches.open('v1').then(c=>c.addAll(['/'])).then(()=>self.skipWaiting()))); self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`],{type:'application/javascript'});
-      navigator.serviceWorker.register(URL.createObjectURL(sw)).catch(()=>{});
-    }
+    requestAnimationFrame(render);
   })();
+
+  // ===== Переключение тем =====
+  let animeOn=false, vergilOn=false, sayaOn=false;
+  function toggleAnime(v) {
+    animeOn=v; document.documentElement.setAttribute('data-anime', v?'on':'off');
+    document.getElementById('animeModeBtn').textContent = v?'💫':'✨';
+    if(v){ if(vergilOn) toggleVergil(false); if(sayaOn) toggleSaya(false); setVfx('stars'); }
+    else setVfx('petals');
+  }
+  function toggleVergil(v) {
+    vergilOn=v; document.documentElement.setAttribute('data-vergil', v?'on':'off');
+    document.getElementById('vergilBtn').textContent = v?'⚔️':'🗡️';
+    if(v){ if(animeOn) toggleAnime(false); if(sayaOn) toggleSaya(false); setVfx('slashes'); }
+    else setVfx('petals');
+  }
+  function toggleSaya(v) {
+    sayaOn=v; document.documentElement.setAttribute('data-saya', v?'on':'off');
+    document.getElementById('sayaBtn').textContent = '🧠';
+    if(v){ if(animeOn) toggleAnime(false); if(vergilOn) toggleVergil(false); setVfx('saya'); }
+    else setVfx('petals');
+  }
+  
+  document.getElementById('themeToggle').addEventListener('click', ()=>{
+    const next = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    document.getElementById('themeToggle').textContent = next==='dark'?'🌸':'🌙';
+  });
+  document.getElementById('animeModeBtn').addEventListener('click', ()=>toggleAnime(!animeOn));
+  document.getElementById('vergilBtn').addEventListener('click', ()=>toggleVergil(!vergilOn));
+  document.getElementById('sayaBtn').addEventListener('click', ()=>toggleSaya(!sayaOn));
+  
+  const savedTheme = localStorage.getItem('theme')||'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeToggle').textContent = savedTheme==='dark'?'🌸':'🌙';
+
+  // ===== Базовые функции Био =====
+  async function fetchAvatar() {
+    const img = document.getElementById('avatarImg');
+    try { 
+      const r = await fetch('https://api.waifu.pics/sfw/neko'); 
+      if(r.ok){ const d = await r.json(); setImg(img, d.url, AVATAR_SVG); return; } 
+    } catch(e){}
+    setImg(img, '', AVATAR_SVG);
+  }
+
+  const quotes = [ 
+    {q:'Сломить можно лишь того, кто сдался.',c:'Макака',a:'Доктор Стоун'},
+    {q:'Тот, кто не может пожертвовать ничем, не сможет ничего изменить.',c:'Армин',a:'Атака Титанов'},
+    {q:'Если ты не можешь делать великие дела, делай малые, но с величием.',c:'Широ',a:'Нет игры - нет жизни'},
+    {q:'Даже в самой глубокой тьме можно найти лучик света.',c:'Тандзиро',a:'Клинок, рассекающий демонов'},
+    {q:'Люди, которые не могут отбросить прошлое, не имеют будущего.',c:'Гинтоки',a:'Гинтама'}
+  ];
+  function fetchQuote(){ 
+    const f=quotes[Math.random()*quotes.length|0]; 
+    document.getElementById('quoteText').textContent=`"${f.q}"`; 
+    document.getElementById('quoteSrc').textContent=`— ${f.c} · ${f.a}`; 
+  }
+  document.getElementById('newQuoteBtn').addEventListener('click',fetchQuote);
+
+  const nekoImg=document.getElementById('nekoImg');
+  async function fetchNekoCorner(){
+    nekoImg.style.opacity='0';
+    try{ 
+      const r=await fetch('https://api.waifu.pics/sfw/neko'); 
+      if(r.ok){ const d=await r.json(); setImg(nekoImg,d.url,WAIFU_SVG); return; } 
+    }catch(e){}
+  }
+  document.getElementById('nekoCorner').addEventListener('click', ()=>{
+    fetchNekoCorner();
+    notify('Мяу! 🐾');
+  });
+  setInterval(fetchNekoCorner, 45000);
+
+  // ===== Табы =====
+  const tabs = { 
+    bio: document.getElementById('tab-bio'), 
+    gacha: document.getElementById('tab-gacha'), 
+    gallery: document.getElementById('tab-gallery'),
+    ip: document.getElementById('tab-ip'), 
+    osint: document.getElementById('tab-osint'),
+    music: document.getElementById('tab-music') 
+  };
+  
+  function activateTab(id) {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    Object.values(tabs).forEach(c=>c.classList.remove('active'));
+    document.querySelector(`.tab[data-tab="${id}"]`)?.classList.add('active');
+    tabs[id]?.classList.add('active');
+    
+    if(id==='ip') runIpCheck();
+    if(id==='bio') fetchQuote();
+    if(id==='gallery' && document.getElementById('gallery').children.length === 0) renderGalleryItems(8);
+  }
+  
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{ activateTab(tab.dataset.tab); });
+  });
+
+  // ===== ГАЧА МЕХАНИКА =====
+  let gems = parseInt(localStorage.getItem('gacha_gems')) || 1000;
+  let inventory = JSON.parse(localStorage.getItem('gacha_inventory')) || [];
+  
+  const gachaRarities = [
+    { name: 'Обычная', id: 'common', chance: 60, cost: 0, cat: ['smile', 'wave', 'poke', 'highfive'] },
+    { name: 'Редкая', id: 'rare', chance: 30, cost: 50, cat: ['neko', 'awoo', 'dance', 'smug'] },
+    { name: 'Эпическая', id: 'epic', chance: 9, cost: 200, cat: ['waifu', 'megumin', 'cuddle'] },
+    { name: 'Легендарная', id: 'legendary', chance: 1, cost: 1000, cat: ['shinobu'] }
+  ];
+
+  function updateGems() {
+    document.getElementById('gemsCount').textContent = gems;
+    localStorage.setItem('gacha_gems', gems);
+  }
+
+  function getRarity() {
+    const rand = Math.random() * 100;
+    let acc = 0;
+    for (const r of gachaRarities) {
+      acc += r.chance;
+      if (rand <= acc) return r;
+    }
+    return gachaRarities[0];
+  }
+
+  async function pullGacha() {
+    if (gems < 100) return notify('❌ Недостаточно кристаллов!', 'error');
+    
+    gems -= 100;
+    updateGems();
+    
+    const stage = document.getElementById('gachaStage');
+    const initText = document.getElementById('gachaInitText');
+    const loading = document.getElementById('gachaLoading');
+    const resultImg = document.getElementById('gachaResultImg');
+    const btn = document.getElementById('pullGachaBtn');
+    
+    btn.disabled = true;
+    initText.style.display = 'none';
+    resultImg.style.display = 'none';
+    loading.style.display = 'block';
+    
+    const rarity = getRarity();
+    const category = rarity.cat[Math.floor(Math.random() * rarity.cat.length)];
+    
+    try {
+      const res = await fetch(`https://api.waifu.pics/sfw/${category}`);
+      const data = await res.json();
+      
+      loading.style.display = 'none';
+      resultImg.src = data.url;
+      resultImg.className = `gacha-result-card rarity-${rarity.id}`;
+      resultImg.style.display = 'block';
+      
+      // Добавляем в инвентарь
+      const existing = inventory.find(i => i.url === data.url);
+      if (existing) {
+        existing.count++;
+      } else {
+        inventory.unshift({ url: data.url, rarity: rarity.id, name: rarity.name, count: 1 });
+      }
+      localStorage.setItem('gacha_inventory', JSON.stringify(inventory));
+      renderInventory();
+      
+      notify(`Выпало: ${rarity.name}! 🎉`, rarity.id === 'legendary' || rarity.id === 'epic' ? 'success' : '');
+      
+    } catch (e) {
+      loading.style.display = 'none';
+      initText.style.display = 'block';
+      notify('Ошибка соединения с API!', 'error');
+      gems += 100; // Возврат
+      updateGems();
+    }
+    
+    btn.disabled = false;
+  }
+
+  function renderInventory() {
+    const grid = document.getElementById('inventoryGrid');
+    if (inventory.length === 0) {
+      grid.innerHTML = '<div style="color:var(--muted); grid-column:1/-1;">Пусто. Покрути гачу!</div>';
+      return;
+    }
+    
+    grid.innerHTML = inventory.map(item => `
+      <div class="inventory-item rarity-${item.rarity}" title="${item.name}">
+        <img src="${item.url}" loading="lazy">
+        ${item.count > 1 ? `<div class="item-count">x${item.count}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('pullGachaBtn').addEventListener('click', pullGacha);
+  
+  document.getElementById('freeGemsBtn').addEventListener('click', () => {
+    const lastDaily = localStorage.getItem('gacha_daily');
+    const now = new Date().toDateString();
+    if (lastDaily === now) {
+      return notify('❌ Дейлик уже собран сегодня!', 'error');
+    }
+    gems += 500;
+    updateGems();
+    localStorage.setItem('gacha_daily', now);
+    notify('Получено 500 💎!', 'success');
+  });
+
+  document.getElementById('clearInvBtn').addEventListener('click', () => {
+    if(confirm('Точно очистить инвентарь?')) {
+      inventory = [];
+      localStorage.removeItem('gacha_inventory');
+      renderInventory();
+      notify('Инвентарь очищен');
+    }
+  });
+
+  // ===== ГАЛЕРЕЯ МЕХАНИКА =====
+  async function renderGalleryItems(count = 8) {
+    const g = document.getElementById('gallery');
+    const category = document.getElementById('galleryCategory').value;
+    const btn = document.getElementById('loadMoreGalleryBtn');
+    
+    btn.textContent = 'Загрузка...';
+    btn.disabled = true;
+
+    for(let i=0; i<count; i++){ 
+      const img = document.createElement('img'); 
+      img.loading = 'lazy'; 
+      img.style.opacity = '0.3'; 
+      g.appendChild(img); 
+      
+      try {
+        const r = await fetch(`https://api.waifu.pics/sfw/${category}`);
+        if(r.ok) {
+          const d = await r.json();
+          setImg(img, d.url, WAIFU_SVG);
+        } else {
+          img.style.display = 'none';
+        }
+      } catch(e) {
+        img.style.display = 'none';
+      }
+    }
+    
+    btn.textContent = '⬇ Загрузить еще';
+    btn.disabled = false;
+  }
+
+  document.getElementById('refreshGalleryBtn').addEventListener('click', () => {
+    document.getElementById('gallery').innerHTML = '';
+    renderGalleryItems(8);
+  });
+  
+  document.getElementById('loadMoreGalleryBtn').addEventListener('click', () => {
+    renderGalleryItems(8);
+  });
+
+  // ===== IP Check =====
+  async function runIpCheck(){
+    const tbody = document.getElementById('ipTableBody');
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Поиск данных... 📡</td></tr>';
+    try {
+      const r = await fetch('https://ipapi.co/json/');
+      const d = await r.json();
+      tbody.innerHTML = `
+        <tr><td>IP Адрес</td><td>${d.ip || 'Неизвестно'}</td></tr>
+        <tr><td>Страна</td><td>${d.country_name || '-'}</td></tr>
+        <tr><td>Город</td><td>${d.city || '-'}</td></tr>
+        <tr><td>Провайдер</td><td>${d.org || '-'}</td></tr>
+      `;
+    } catch(e){ 
+      tbody.innerHTML = '<tr><td colspan="2" style="color:#ff6b6b; text-align:center;">Не удалось получить данные (Блокировщик рекламы или ошибка сети)</td></tr>'; 
+    }
+  }
+  document.getElementById('refreshIpBtn').addEventListener('click',runIpCheck);
+
+  // ===== OSINT =====
+  const osintRes = document.getElementById('osintResult');
+  let lastOsint = '';
+  
+  function showOsint(text, isErr){
+    osintRes.style.display='block';
+    osintRes.textContent=text;
+    osintRes.style.color = isErr ? '#ff6b6b' : 'inherit';
+    document.getElementById('osintCopyTarget').style.display='block';
+    lastOsint = text;
+  }
+  
+  document.getElementById('osintClearBtn').addEventListener('click',()=>{ 
+    osintRes.style.display='none'; 
+    document.getElementById('osintCopyTarget').style.display='none'; 
+    document.getElementById('osintTarget').value = '';
+  });
+  
+  document.getElementById('osintCopyBtn').addEventListener('click',()=> {
+    navigator.clipboard.writeText(lastOsint).then(()=>notify('Скопировано в буфер!'));
+  });
+  
+  async function lookupIP(ip){ const r=await fetch(`https://ipapi.co/${ip}/json/`); const d=await r.json(); return JSON.stringify(d, null, 2); }
+  async function lookupWhois(d){ const r=await fetch(`https://api.hackertarget.com/whois/?q=${d}`); return r.text(); }
+  async function lookupDNS(d){ const r=await fetch(`https://dns.google/resolve?name=${d}&type=A`); const data=await r.json(); return JSON.stringify(data.Answer || data, null, 2); }
+  
+  document.getElementById('osintRunBtn').addEventListener('click', async ()=>{
+    const target = document.getElementById('osintTarget').value.trim();
+    const type = document.getElementById('osintType').value;
+    if(!target) return notify('Введите цель!', 'error');
+    
+    showOsint('Выполнение запроса... ⏳');
+    let res='';
+    try{
+      if(type==='ip') res=await lookupIP(target);
+      else if(type==='whois') res=await lookupWhois(target);
+      else if(type==='dns') res=await lookupDNS(target);
+      else if(type==='username'){ 
+        window.open(`https://whatsmyname.app/?q=${target}`); 
+        res='Открыта внешняя база данных WhatsMyName для поиска по никнеймам.'; 
+      }
+    } catch(e){ res='Ошибка выполнения: ' + e.message; }
+    
+    showOsint(res, res.includes('Ошибка'));
+  });
+
+  document.getElementById('searchDorkBtn').addEventListener('click',()=>{
+    const dork = document.getElementById('dorkInput').value.trim();
+    if(!dork) return notify('Введите запрос!', 'error');
+    const eng = document.getElementById('searchEngine').value;
+    if(eng === 'google') window.open(`https://google.com/search?q=${encodeURIComponent(dork)}`);
+    else if(eng === 'bing') window.open(`https://bing.com/search?q=${encodeURIComponent(dork)}`);
+    else window.open(`https://duckduckgo.com/?q=${encodeURIComponent(dork)}`);
+  });
+
+  // ===== МУЗЫКА =====
+  document.getElementById('audioPlayer').addEventListener('error',()=>{ 
+    document.getElementById('audioFallback').style.display='block'; 
+  });
+
+  // ===== PWA =====
+  if ('serviceWorker' in navigator) {
+    const sw = `self.addEventListener('install',e=>self.skipWaiting()); self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'text/javascript'}))).catch(()=>{});
+  }
+  const manifest = {name:'GOD_AE86',short_name:'AE86',start_url:'.',display:'standalone',background_color:'#11091a',theme_color:'#ffb7c5'};
+  document.getElementById('manifest-link').href = URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
+
+  // ===== ЗАПУСК =====
+  updateGems();
+  renderInventory();
+  setVfx('petals'); 
+  lastT=performance.now(); 
+  requestAnimationFrame(animate);
+  fetchAvatar(); 
+  fetchQuote(); 
+  fetchNekoCorner();
 </script>
 </body>
 </html>
