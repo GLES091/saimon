@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>GOD_AE86 ✦ аниме-гача + панчлайн</title>
-  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, гача, OSINT и Telegram-спамер.">
+  <title>GOD_AE86 ✦ GACHA + ANIME STREAM</title>
   <link rel="manifest" id="manifest-link">
   <style>
     /* ========== ОСНОВНЫЕ ПЕРЕМЕННЫЕ ========== */
@@ -22,430 +21,482 @@
       --bg: #fce8f3; --bg2: #f9d8eb; --card: rgba(255,245,252,0.93); --text: #3a1a2e; --muted: #7a4a68;
       --accent: #e05a82; --purple: #9b59b6; --border: rgba(224,90,130,0.22);
       --shadow: 0 4px 30px rgba(224,90,130,0.13); --glow: 0 0 24px rgba(224,90,130,0.38);
-      --pglow: 0 0 24px rgba(155,89,182,0.35);
     }
     [data-anime="on"] {
       --accent: #ff4da6; --purple: #bf00ff; --border: rgba(191,0,255,0.32);
       --shadow: 0 4px 50px rgba(255,77,166,0.3); --glow: 0 0 40px rgba(255,77,166,0.6);
-      --pglow: 0 0 40px rgba(191,0,255,0.55);
     }
 
     /* ===== VERGIL СТИЛИ ===== */
-    @keyframes vergilPulse { 0%,100%{border-left-color:rgba(26,79,255,.7);box-shadow:0 4px 44px rgba(26,79,255,.14),0 0 40px rgba(26,79,255,.75)} 50%{border-left-color:#1a4fff;box-shadow:0 4px 44px rgba(26,79,255,.22),0 0 70px rgba(26,79,255,1),inset 0 0 80px rgba(26,79,255,.06)} }
-    @keyframes vergilScanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
-    @keyframes vergilCornerFlicker { 0%,95%,100%{opacity:.55} 97%{opacity:.15} }
+    @keyframes vergilPulse { 0%,100%{border-left-color:rgba(26,79,255,.7);box-shadow:0 4px 44px rgba(26,79,255,.14),0 0 40px rgba(26,79,255,.75)} 50%{border-left-color:#1a4fff;box-shadow:0 4px 44px rgba(26,79,255,.22),0 0 70px rgba(26,79,255,1)} }
     [data-vergil="on"] {
       --bg:#02020c; --bg2:#04041a; --card:rgba(4,5,22,0.97); --text:#c8ceee; --muted:#4a52a0;
-      --accent:#1a4fff; --purple:#7a8cff; --teal:#a0aaff; --border:rgba(26,79,255,0.28);
-      --shadow:0 4px 44px rgba(26,79,255,0.14); --glow:0 0 40px rgba(26,79,255,0.75);
-      --pglow:0 0 40px rgba(122,140,255,0.55); --radius:4px;
-      --fh:'Georgia','Palatino Linotype','Book Antiqua',serif; --fb:'Georgia','Palatino Linotype',serif;
+      --accent:#1a4fff; --purple:#7a8cff; --border:rgba(26,79,255,0.28);
+      --radius:4px; --fh:'Georgia',serif; --fb:'Georgia',serif;
     }
-    [data-vergil="on"] body { background:var(--bg); }
-    [data-vergil="on"] body::before {
-      background:radial-gradient(ellipse 80% 55% at 0% 0%,rgba(26,79,255,.13) 0%,transparent 55%),
-      radial-gradient(ellipse 60% 65% at 100% 100%,rgba(26,79,255,.1) 0%,transparent 55%),
-      radial-gradient(ellipse 40% 40% at 50% 50%,rgba(26,79,255,.03) 0%,transparent 70%),
-      repeating-linear-gradient(90deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px),
-      repeating-linear-gradient(0deg,rgba(26,79,255,.018) 0px,rgba(26,79,255,.018) 1px,transparent 1px,transparent 72px);
-    }
-    [data-vergil="on"] body::after {
-      content:''; position:fixed; inset:0; z-index:2; pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,18,.07) 3px,rgba(0,0,18,.07) 4px);
-    }
-    [data-vergil="on"] #vergil-scanbeam {
-      display:block!important; position:fixed; left:0; right:0; height:2px; z-index:3; pointer-events:none;
-      background:linear-gradient(90deg,transparent 0%,rgba(26,79,255,.0) 10%,rgba(26,79,255,.35) 50%,rgba(26,79,255,.0) 90%,transparent 100%);
-      animation:vergilScanline 7s linear infinite; box-shadow:0 0 12px 2px rgba(26,79,255,.4);
-    }
-    [data-vergil="on"] .card{
-      border-radius:0; border-left:2px solid rgba(26,79,255,.8); border-top:1px solid rgba(26,79,255,.25);
-      border-right:1px solid rgba(26,79,255,.08); border-bottom:1px solid rgba(26,79,255,.04);
-      clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
-      animation:vergilPulse 4s ease-in-out infinite;
-    }
-    [data-vergil="on"] .card::after{ content:'V'; position:absolute; right:-10px; bottom:-50px; font-size:220px; font-family:'Georgia',serif; font-weight:900; font-style:italic; color:rgba(26,79,255,.032); pointer-events:none; line-height:1; z-index:0; }
-    [data-vergil="on"] .card::before{ content:''; position:absolute; top:0; left:0; width:18px; height:18px; box-shadow:inset 1px 1px 0 rgba(26,79,255,.6); animation:vergilCornerFlicker 6s ease-in-out infinite; }
-    [data-vergil="on"] .card:hover{ border-left-color:#1a4fff; box-shadow:0 0 50px rgba(26,79,255,.9),0 0 120px rgba(26,79,255,.25),inset 0 0 80px rgba(26,79,255,.05); }
-    [data-vergil="on"] .avatar{ border-radius:0; border:2px solid rgba(26,79,255,.9); box-shadow:0 0 0 1px rgba(26,79,255,.4),0 0 55px rgba(26,79,255,.7),0 0 110px rgba(26,79,255,.3); clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
-    [data-vergil="on"] .bio-name{ font-family:'Georgia',serif; letter-spacing:.22em; text-transform:uppercase; font-style:italic; animation:vergilTextGlow 3s ease-in-out infinite; }
-    [data-vergil="on"] .tab{ border-radius:0; font-family:'Georgia',serif; letter-spacing:.14em; font-size:.66rem; text-transform:uppercase; }
-    [data-vergil="on"] .tab.active{ background:linear-gradient(180deg,rgba(26,79,255,.28) 0%,rgba(26,79,255,.08) 100%); box-shadow:inset 0 -2px 0 #1a4fff,0 0 18px rgba(26,79,255,.45); color:#8099ff; }
-    [data-vergil="on"] .btn{ border-radius:0; letter-spacing:.1em; text-transform:uppercase; font-size:.75rem; clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px)); }
-    [data-vergil="on"] .btn-primary{ background:linear-gradient(135deg,#0d2bcc 0%,#1a4fff 55%,#3a5fff 100%); box-shadow:0 0 26px rgba(26,79,255,.6),inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.3); }
-    [data-vergil="on"] .neko-corner{ border-radius:0; border-color:#1a4fff; box-shadow:0 0 26px rgba(26,79,255,.6); clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); }
-    .social-btn{ border-radius:50%; background:rgba(199,125,255,.06); }
-    .social-btn svg{ width:20px; height:20px; }
+    [data-vergil="on"] .card{ border-radius:0; border-left:2px solid rgba(26,79,255,.8); animation:vergilPulse 4s infinite; }
 
     /* ===== SAYA NO UTA СТИЛИ ===== */
-    @keyframes sayaFleshPulse { 0%,100%{background-position:0% 0%;opacity:0.25} 50%{background-position:2% 3%;opacity:0.4} }
+    @keyframes sayaPulse { 0%,100%{background-position:0% 0%;opacity:0.25} 50%{background-position:2% 3%;opacity:0.4} }
     [data-saya="on"] {
       --bg:#0a0404; --bg2:#140808; --card:rgba(20,8,8,0.96); --text:#e0c0c0; --muted:#8a5a5a;
-      --accent:#c0392b; --purple:#7b2d3b; --teal:#4a2a2a; --border:rgba(192,57,43,0.28);
-      --shadow:0 4px 30px rgba(192,57,43,0.15); --glow:0 0 30px rgba(192,57,43,0.4);
-      --radius:6px; --fh:'Courier New','Times New Roman',serif; --fb:'Times New Roman','Georgia',serif;
+      --accent:#c0392b; --purple:#7b2d3b; --border:rgba(192,57,43,0.28);
+      --radius:6px; --fh:'Courier New',serif; --fb:'Times New Roman',serif;
     }
-    [data-saya="on"] body::before{
-      background:radial-gradient(circle at 20% 30%,rgba(139,0,0,0.25) 0%,transparent 60%),
-      radial-gradient(circle at 80% 70%,rgba(100,0,0,0.2) 0%,transparent 50%),
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" /></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.08"/></svg>');
-      animation:sayaFleshPulse 8s ease-in-out infinite;
-    }
-    [data-saya="on"] .card{
-      border-radius:6px 30px 10px 20px; border:1px solid rgba(139,0,0,0.4);
-      box-shadow:inset 0 0 60px rgba(139,0,0,0.2),0 4px 30px rgba(100,0,0,0.5);
-      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="flesh"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3"/><feColorMatrix type="matrix" values="1 0 0 0 0.4  0 1 0 0 0.1  0 0 1 0 0.1  0 0 0 0.3 0"/></filter><rect width="200" height="200" filter="url(%23flesh)"/></svg>');
-      background-blend-mode:overlay;
-    }
-    [data-saya="on"] .avatar{ border:3px solid #8b0000; box-shadow:0 0 35px rgba(139,0,0,0.7); filter:hue-rotate(320deg) contrast(1.3); border-radius:30% 70% 40% 60% / 60% 40% 60% 40%; }
-    [data-saya="on"] .bio-name{ font-family:'Courier New',monospace; text-transform:uppercase; letter-spacing:4px; animation:sayaTextGlitch 2s infinite; color:#c0392b; -webkit-text-fill-color:#c0392b; background:none; }
-    [data-saya="on"] .badge{ background:rgba(139,0,0,0.2); border-color:#8b0000; border-radius:4px 12px 4px 12px; }
-    [data-saya="on"] .btn-primary{ background:linear-gradient(135deg,#5a0000,#8b0000); }
-    [data-saya="on"] .region-chip.active{ background:#8b0000; border-color:#8b0000; }
-
-    /* ===== ПЛАВНЫЕ ПЕРЕХОДЫ ===== */
-    body, .card, .tab, .btn, .avatar, .badge, .neko-corner, .social-btn, .icon-btn, .gacha-stage, .inventory-item {
-      transition: all var(--tr), background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease, border-radius 0.5s ease;
-    }
-    /* ===== WebGL ===== */
-    #webgl-canvas { position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.6; display:none; }
-    [data-webgl="on"] #webgl-canvas { display:block; }
-    #vfx-canvas { position:fixed; inset:0; pointer-events:none; z-index:0; }
 
     /* ===== БАЗОВЫЕ СТИЛИ ===== */
     *,::before,::after{ margin:0; padding:0; box-sizing:border-box; }
-    html{ scroll-behavior:smooth; }
     body{ font-family:var(--fb); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; transition:background .8s,color .8s; }
+    
+    #vfx-canvas { position:fixed; inset:0; pointer-events:none; z-index:0; }
     .fixed-top{ position:fixed; top:1rem; right:1rem; display:flex; gap:.55rem; z-index:200; }
     .icon-btn{ width:46px; height:46px; border-radius:50%; background:var(--card); border:1.5px solid var(--border); cursor:pointer; font-size:1.25rem; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(14px); color:var(--text); }
+    
     .page-wrap{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:2.2rem 1rem 5rem; }
     .container{ width:100%; max-width:920px; display:flex; flex-direction:column; gap:1.6rem; }
+    
     nav.tabs{ display:flex; gap:.55rem; flex-wrap:wrap; padding:.6rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border); backdrop-filter:blur(14px); }
     .tab{ flex:1; min-width:60px; background:transparent; border:none; padding:.65rem 1.1rem; border-radius:calc(var(--radius) - 6px); cursor:pointer; font-weight:800; font-family:var(--fh); font-size:.7rem; color:var(--muted); transition:all var(--tr); white-space:nowrap; text-align:center; }
     .tab.active,.tab:hover{ background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%); color:#fff; box-shadow:0 0 22px rgba(255,183,197,.45); transform:translateY(-2px); }
-    .tab-content{ display:none; }
-    .tab-content.active{ display:block; animation:fadeSlide .42s ease; }
+    .tab-content{ display:none; animation:fadeSlide .42s ease; }
+    .tab-content.active{ display:block; }
     @keyframes fadeSlide{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+    
     .card{ background:var(--card); border-radius:var(--radius); padding:2rem; box-shadow:var(--shadow); border:1px solid var(--border); backdrop-filter:blur(14px); position:relative; overflow:hidden; }
-    .card::before{ content:''; position:absolute; top:-40%; left:-60%; width:38%; height:200%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent); transform:rotate(15deg); animation:shimmer 5s 1s infinite; pointer-events:none; }
-    @keyframes shimmer{ 0%{ left:-60%; } 100%{ left:160%; } }
-    .profile{ display:flex; align-items:center; gap:2.5rem; flex-wrap:wrap; justify-content:center; }
-    .avatar{ width:155px; height:155px; border-radius:50%; overflow:hidden; border:3px solid transparent; background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,var(--accent),var(--purple)) border-box; box-shadow:0 0 0 6px rgba(199,125,255,.12),0 0 40px rgba(255,183,197,.5); transition:all .4s; }
-    .avatar img{ width:100%; height:100%; object-fit:cover; }
-    .bio-name{ font-family:var(--fh); font-size:2.1rem; background:linear-gradient(135deg,var(--accent) 20%,var(--purple) 80%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:.45rem; }
-    .badges{ display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; margin-bottom:.8rem; }
-    .badge{ display:inline-block; padding:.22rem .85rem; border-radius:2rem; background:rgba(255,183,197,.1); border:1px solid rgba(255,183,197,.22); color:var(--accent); font-size:.75rem; font-weight:700; }
-    .quote-box{ margin-top:1rem; padding:1rem 1.2rem; background:rgba(199,125,255,.08); border-left:3px solid var(--purple); border-radius:0 16px 16px 0; }
-    .quote-text{ font-style:italic; color:var(--muted); font-size:.85rem; }
-    .social-links{ display:flex; gap:.75rem; margin-top:1rem; justify-content:center; }
-    .social-btn{ width:48px; height:48px; border-radius:50%; border:1.5px solid var(--border); color:var(--muted); background:rgba(199,125,255,.06); transition:all var(--tr); text-decoration:none; display:flex; align-items:center; justify-content:center; }
-    .social-btn:hover{ border-color:var(--accent); color:var(--accent); background:rgba(255,183,197,.13); transform:translateY(-4px); }
-    .attack-title{ font-family:var(--fh); font-size:1.35rem; background:linear-gradient(135deg,var(--accent),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:1rem; }
+
+    /* ===== УНИВЕРСАЛЬНЫЕ ЭЛЕМЕНТЫ ===== */
+    .btn{ border:none; cursor:pointer; font-weight:800; font-family:var(--fb); font-size:.83rem; padding:.76rem 1.4rem; border-radius:14px; transition:all var(--tr); }
+    .btn-primary{ background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%); color:#fff; box-shadow:0 4px 22px rgba(255,183,197,.38); }
+    .btn-outline{ background:transparent; border:1.5px solid var(--border); color:var(--muted); }
+    .btn:hover{ transform:translateY(-2px); box-shadow:0 6px 25px rgba(255,183,197,.5); }
+    
+    input[type="text"], input[type="number"], input[type="tel"], select { width:100%; padding:.65rem .9rem; background:rgba(0,0,0,0.2); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-family:var(--fb); font-size:.9rem; outline:none; }
     .form-row{ display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap; }
     .inp-group{ flex:1; min-width:140px; }
     .inp-group label{ display:block; font-size:.75rem; color:var(--muted); margin-bottom:.3rem; }
-    .inp-group input,.inp-group select{ width:100%; padding:.65rem .9rem; background:rgba(199,125,255,.06); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-family:var(--fb); font-size:.9rem; outline:none; }
-    .region-chips{ display:flex; gap:.5rem; margin-bottom:1rem; }
-    .region-chip{ padding:.4rem 1rem; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; font-weight:600; font-size:.8rem; }
-    .region-chip.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
-    .btn{ border:none; cursor:pointer; font-weight:800; font-family:var(--fb); font-size:.83rem; padding:.76rem 1.4rem; border-radius:14px; transition:all var(--tr); position:relative; overflow:hidden; }
-    .btn-primary{ background:linear-gradient(135deg,var(--accent) 0%,var(--purple) 100%); color:#fff; box-shadow:0 4px 22px rgba(255,183,197,.38); }
-    .btn-outline{ background:transparent; border:1.5px solid var(--border); color:var(--muted); }
-    .stats-panel{ display:flex; gap:2rem; margin:1rem 0; font-size:.85rem; }
-    .stat-item b{ font-size:1.5rem; color:var(--text); }
-    .log-container{ max-height:150px; overflow-y:auto; font-size:.75rem; color:var(--muted); margin-bottom:1rem; }
-    .history-list{ margin-top:1.5rem; }
-    .history-item{ background:rgba(199,125,255,.04); border:1px solid var(--border); border-radius:12px; padding:.8rem 1rem; margin-bottom:.5rem; }
-    .ip-check-table{ width:100%; border-collapse:collapse; margin-top:1rem; }
-    .ip-check-table td{ padding:0.5rem 0.8rem; border-bottom:1px solid var(--border); font-size:0.85rem; }
-    .music-wrap{ text-align:center; }
-    .music-title{ font-family:var(--fh); font-size:1.5rem; color:var(--accent); }
-    audio{ width:100%; border-radius:14px; }
-    .gallery-title{ font-family:var(--fh); font-size:1.4rem; color:var(--accent); }
-    #gallery{ display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:1rem; }
-    #gallery img{ width:100%; aspect-ratio:1; object-fit:cover; border-radius:16px; border:1.5px solid var(--border); transition:all .32s; cursor:pointer; }
-    #gallery img:hover{ transform:scale(1.06) rotate(1.5deg); box-shadow:0 0 24px rgba(255,183,197,.45); border-color:var(--accent); }
-    .neko-wrap{ position:fixed; bottom:1.3rem; right:1.3rem; z-index:150; display:flex; flex-direction:column; align-items:center; gap:.4rem; }
-    .neko-corner{ width:72px; height:72px; border-radius:50%; border:2.5px solid var(--accent); overflow:hidden; box-shadow:0 0 22px rgba(255,183,197,.55); cursor:pointer; transition:all .3s; }
-    .neko-corner img{ width:100%; height:100%; object-fit:cover; }
-    .global-notify{ position:fixed; top:1rem; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:.5rem; pointer-events:none; }
-    .notification{ background:var(--card); border:1px solid var(--border); padding:0.5rem 1.2rem; border-radius:20px; backdrop-filter:blur(10px); color:var(--text); font-size:0.85rem; animation:fadeSlide 0.3s ease; }
-    .notification.error{ border-color:#ff6b6b; color:#ff6b6b; }
-    .osint-result{ background:rgba(0,0,0,0.15); border:1px solid var(--border); border-radius:12px; padding:1rem; margin-top:0.8rem; font-family:monospace; font-size:0.82rem; white-space:pre-wrap; max-height:300px; overflow-y:auto; }
-    .osint-copy-btn{ background:transparent; border:1px solid var(--border); color:var(--muted); border-radius:8px; padding:.2rem .6rem; cursor:pointer; font-size:.7rem; }
 
-    /* ===== НОВЫЕ СТИЛИ ДЛЯ ГАЧИ ===== */
-    .gacha-stats { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: bold; background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 20px; backdrop-filter: blur(8px); }
-    .gems-count { color: #5ee8a0; text-shadow: 0 0 10px rgba(94,232,160,0.5); }
-    .gacha-stage { width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.25); border-radius: 28px; border: 2px dashed var(--border); margin-bottom: 1.5rem; position: relative; overflow: hidden; transition: all 0.3s; }
-    .gacha-result-card { width: 200px; height: 280px; border-radius: 20px; object-fit: cover; display: none; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 35px rgba(0,0,0,0.4); }
-    @keyframes popIn { 0%{ transform: scale(0) rotate(-15deg); opacity: 0; } 80%{ transform: scale(1.05) rotate(2deg); } 100%{ transform: scale(1) rotate(0); opacity: 1; } }
-    @keyframes rarityPulse { 0%,100%{ box-shadow: 0 0 20px var(--r-color); } 50%{ box-shadow: 0 0 55px var(--r-color), inset 0 0 15px var(--r-color); } }
-    .gacha-loading { font-size: 3rem; animation: spin 1s linear infinite; display: none; }
-    .inventory-title { font-family: var(--fh); font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
-    .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 1rem; max-height: 420px; overflow-y: auto; padding: 0.2rem; }
-    .inventory-item { position: relative; aspect-ratio: 3/4; border-radius: 18px; overflow: hidden; cursor: pointer; transition: transform 0.25s, box-shadow 0.3s; background: rgba(0,0,0,0.2); }
-    .inventory-item:hover { transform: scale(1.05) translateY(-6px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
-    .inventory-item img { width: 100%; height: 100%; object-fit: cover; }
-    .item-count { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); padding: 2px 10px; border-radius: 30px; font-size: 0.75rem; font-weight: bold; color: white; border: 1px solid rgba(255,255,255,0.2); }
-    .rarity-common { --r-color: #a0a0a0; border: 3px solid var(--r-color); }
-    .rarity-rare { --r-color: #3a86ff; border: 3px solid var(--r-color); animation: rarityPulse 2.5s infinite; }
-    .rarity-epic { --r-color: #c77dff; border: 3px solid var(--r-color); animation: rarityPulse 1.8s infinite; }
-    .rarity-legendary { --r-color: #ffbe0b; border: 4px solid var(--r-color); animation: rarityPulse 1s infinite; }
-    .gacha-control { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    /* ===== БИО ===== */
+    .profile{ display:flex; align-items:center; gap:2.5rem; flex-wrap:wrap; justify-content:center; }
+    .avatar{ width:155px; height:155px; border-radius:50%; border:3px solid transparent; background:linear-gradient(135deg,var(--accent),var(--purple)) border-box; overflow:hidden; }
+    .avatar img{ width:100%; height:100%; object-fit:cover; }
+    .bio-name{ font-family:var(--fh); font-size:2.1rem; color:var(--accent); margin-bottom:.45rem; }
+    .badges .badge{ padding:.22rem .85rem; border-radius:2rem; background:rgba(255,183,197,.1); border:1px solid rgba(255,183,197,.22); color:var(--accent); font-size:.75rem; font-weight:700; margin:2px; display:inline-block; }
 
-    @media (max-width:660px){ .profile{ flex-direction:column; } .card{ padding:1.4rem; } .avatar{ width:125px; height:125px; } #gallery{ grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); } .inventory-grid{ grid-template-columns:repeat(auto-fill,minmax(85px,1fr)); } }
+    /* ===== ГАЧА ===== */
+    .gacha-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+    .gacha-stats { background: rgba(0,0,0,0.2); padding: 0.8rem 1.5rem; border-radius: 20px; font-weight: bold; flex: 1; }
+    .clicker-btn { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--purple)); border: none; font-size: 1.5rem; cursor: pointer; }
+    .gacha-stage { width: 100%; min-height: 250px; padding: 1rem; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.25); border-radius: 28px; border: 2px dashed var(--border); margin-bottom: 1.5rem; }
+    .gacha-grid-10 { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; width: 100%; }
+    .gacha-result-card { width: 100%; aspect-ratio: 3/4; border-radius: 12px; object-fit: cover; border: 3px solid var(--accent); }
+    .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; max-height: 300px; overflow-y: auto; }
+    .inventory-item { position: relative; cursor:pointer; }
+    .inventory-item img { width: 100%; aspect-ratio: 3/4; border-radius: 10px; object-fit: cover; }
+    .item-count { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.8); color: white; padding: 2px 5px; border-radius: 10px; font-size: 0.7rem; }
+
+    /* ===== ANIME STREAM (НОВОЕ) ===== */
+    .anime-card { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+    .anime-card:hover { transform: scale(1.05); border-color: var(--accent); }
+    .anime-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+    .anime-card .score { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); color: #ffd700; font-weight: bold; padding: 2px 6px; border-radius: 6px; font-size: 0.8rem; }
+    .anime-card .title { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: white; padding: 10px 5px 5px; font-size: 0.85rem; font-weight: bold; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .player-meta { display: flex; gap: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+    .player-meta img { width: 150px; border-radius: 8px; }
+    .player-info h2 { color: var(--accent); margin-bottom: 10px; }
+    .player-info p { font-size: 0.85rem; color: var(--muted); max-height: 150px; overflow-y: auto; }
+    iframe.kodik-player { width: 100%; height: 450px; border-radius: 12px; border: none; background: #000; box-shadow: var(--shadow); }
+
+    /* Loader */
+    .loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* ===== OTHER TABS (Attack, OSINT, etc) ===== */
+    .log-container { max-height:150px; overflow-y:auto; font-size:.75rem; color:var(--muted); margin-bottom:1rem; background:rgba(0,0,0,0.2); padding:10px; border-radius:8px;}
+    .history-item { background:rgba(199,125,255,.04); border:1px solid var(--border); border-radius:12px; padding:.8rem 1rem; margin-bottom:.5rem; }
+    .osint-result { background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:12px; padding:1rem; margin-top:0.8rem; font-family:monospace; font-size:0.82rem; white-space:pre-wrap; max-height:300px; overflow-y:auto; }
+
+    /* Модалка для гачи/галереи */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: none; align-items: center; justify-content: center; flex-direction:column; }
+    .modal img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid var(--accent); }
+    .modal-close { position: absolute; top: 20px; right: 20px; font-size: 2rem; color: white; cursor: pointer; }
   </style>
 </head>
 <body>
 <canvas id="vfx-canvas"></canvas>
-<canvas id="webgl-canvas"></canvas>
-<div id="vergil-scanbeam"></div>
+
 <div class="fixed-top">
   <button class="icon-btn" id="themeToggle" title="Сменить тему">🌸</button>
   <button class="icon-btn" id="animeModeBtn" title="Аниме-режим">✨</button>
   <button class="icon-btn" id="vergilBtn" title="Вергилий">🗡️</button>
   <button class="icon-btn" id="sayaBtn" title="Сая но Ута">🧠</button>
 </div>
-<div class="neko-wrap">
-  <div class="neko-corner" id="nekoCorner"><img id="nekoImg" alt="neko" loading="lazy"></div>
-  <div class="neko-tip">🐱 нажми для котика!</div>
-</div>
-<div id="global-notify" class="global-notify"></div>
+
 <div class="page-wrap">
   <div class="container">
     <nav class="tabs">
       <div class="tab active" data-tab="bio">🌸 Био</div>
-      <div class="tab" data-tab="gacha">🎲 Гача</div>
+      <div class="tab" data-tab="anime">📺 Аниме Стрим</div>
+      <div class="tab" data-tab="gacha">🎲 Гача PRO</div>
       <div class="tab" data-tab="attack">⚡ Attack</div>
-      <div class="tab" data-tab="ip">🔍 IP</div>
-      <div class="tab" data-tab="music">🎀 Музыка</div>
-      <div class="tab" data-tab="gallery">🎴 Галерея</div>
+      <div class="tab" data-tab="ip">🔍 IP Info</div>
       <div class="tab" data-tab="osint">🕵️ OSINT</div>
+      <div class="tab" data-tab="gallery">🎴 Галерея</div>
     </nav>
 
-    <!-- БИО -->
     <div class="tab-content active" id="tab-bio">
       <div class="card">
         <div class="profile">
-          <div class="avatar-wrap"><div class="avatar"><img id="avatarImg" src="" alt="GOD_AE86" loading="lazy"></div><div class="avatar-ring"></div><div class="avatar-ring2"></div></div>
-          <div class="bio-info"><div class="bio-name">GOD_AE86</div><div class="bio-handle">@resivert · @GOD_AE86</div><div class="bio-desc">аниме-вайб ✦ гача ✦ батлы ✦ неко</div><div class="badges"><span class="badge">🌸 аниме</span><span class="badge">🎲 гача</span><span class="badge">🐾 неко</span><span class="badge">🚗 AE86</span></div><div class="quote-box"><div class="quote-text" id="quoteText">Загружаем цитату…</div><div class="quote-src" id="quoteSrc"></div><button class="quote-btn" id="newQuoteBtn">🔄 новая цитата</button></div><div class="social-links"><a href="https://t.me/GOD_AE86" class="social-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.46-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.441-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.12.098.153.228.169.321.015.094.034.307.019.474z"/></svg></a><a href="https://t.me/+lseqUuDD40c0N2Ni" class="social-btn" target="_blank">👥</a><a href="https://t.me/god_internet" class="social-btn" target="_blank">📡</a></div></div>
+          <div class="avatar"><img id="avatarImg" src="https://nekos.best/api/v2/neko/0212.png" alt="GOD_AE86" loading="lazy"></div>
+          <div class="bio-info">
+            <div class="bio-name">GOD_AE86</div>
+            <div style="color:var(--muted)">@resivert · @GOD_AE86</div>
+            <div class="badges" style="margin-top:10px;">
+              <span class="badge">🌸 аниме</span><span class="badge">🎲 гача</span><span class="badge">🚗 AE86</span>
+            </div>
+            <div style="margin-top:15px; font-style:italic; color:var(--muted);">"Даже в самой глубокой тьме можно найти свет."</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ГАЧА (НОВЫЙ РАЗДЕЛ) -->
+    <div class="tab-content" id="tab-anime">
+      <div class="card">
+        <h2 style="color:var(--accent); margin-bottom:15px; font-family:var(--fh);">📺 Аниме Кинотеатр</h2>
+        <div class="form-row">
+          <div class="inp-group" style="flex:3;">
+            <input type="text" id="animeSearchInput" placeholder="Поиск аниме (Naruto, Блич...)" onkeypress="if(event.key==='Enter') searchAnime()">
+          </div>
+          <button class="btn btn-primary" onclick="searchAnime()">Искать</button>
+        </div>
+
+        <div id="animeSearchArea">
+          <h3 id="animeGridTitle" style="margin-bottom:10px; color:var(--muted);">🔥 Популярное сейчас</h3>
+          <div class="loader" id="animeLoader" style="display:none;"></div>
+          <div class="gacha-grid-10" id="animeResultsGrid"></div>
+        </div>
+
+        <div id="animePlayerArea" style="display:none;">
+          <button class="btn btn-outline" style="margin-bottom: 15px;" onclick="closePlayer()">🔙 Назад к списку</button>
+          
+          <div class="player-meta">
+            <img id="playerPoster" src="" alt="Poster">
+            <div class="player-info">
+              <h2 id="playerTitle">Загрузка...</h2>
+              <div style="margin-bottom: 10px; color: #ffd700; font-weight: bold;">⭐ <span id="playerScore"></span></div>
+              <p id="playerDesc"></p>
+            </div>
+          </div>
+          <div class="loader" id="playerLoader"></div>
+          <iframe id="kodikPlayer" class="kodik-player" src="" allowfullscreen allow="autoplay *; fullscreen *"></iframe>
+        </div>
+      </div>
+    </div>
+
     <div class="tab-content" id="tab-gacha">
       <div class="card">
-        <div class="attack-title">🎲 Аниме Гача</div>
-        <div class="gacha-stats">💎 Кристаллы: <span id="gemsCount" class="gems-count">1000</span> 💎</div>
+        <div class="gacha-top">
+          <div class="gacha-stats">💎 Баланс: <span id="gemsCount" style="color:#5ee8a0">1000</span></div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button class="clicker-btn" onclick="farmGems()">✨</button>
+            <small style="color:var(--muted)">+1 Клик</small>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="inp-group">
+            <select id="gachaFilter">
+              <option value="waifu">🌸 Вайфу (Waifu.pics)</option>
+              <option value="neko">🐱 Неко (Waifu.pics)</option>
+              <option value="kiss">💋 Поцелуи (Waifu.pics)</option>
+              <option value="kitsune">🦊 Кицунэ (Nekos.best)</option>
+            </select>
+          </div>
+        </div>
+
         <div class="gacha-stage" id="gachaStage">
-          <div id="gachaInitText" style="color:var(--muted); text-align:center;">Испытай удачу!<br><small>вытяни редкую вайфу</small></div>
-          <div id="gachaLoading" class="gacha-loading">✨</div>
-          <img id="gachaResultImg" class="gacha-result-card" src="" alt="result">
+          <div id="gachaInitText" style="color:var(--muted); text-align:center;">Выбери пул и крути рулетку!</div>
+          <div class="loader" id="gachaLoader" style="display:none;"></div>
+          <div class="gacha-grid-10" id="gachaGridResult" style="display:none;"></div>
         </div>
-        <div class="gacha-control">
-          <button class="btn btn-primary" id="pullGachaBtn">🎲 Крутить (100 💎)</button>
-          <button class="btn btn-outline" id="freeGemsBtn">✨ Дейлик (+500 💎)</button>
+        
+        <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
+          <button class="btn btn-primary" onclick="pullGacha(1)">🎲 x1 (100 💎)</button>
+          <button class="btn btn-primary" style="background: linear-gradient(135deg, #ffbe0b, #ff4da6);" onclick="pullGacha(10)">🌟 x10 (1000 💎)</button>
         </div>
-        <div class="inventory-title">🎒 Инвентарь <span style="font-size:0.8rem; cursor:pointer;" id="clearInvBtn">🗑 Очистить</span></div>
-        <div class="inventory-grid" id="inventoryGrid">— пусто —</div>
+
+        <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom:10px; color:var(--accent); display:flex; justify-content:space-between;">
+          🎒 Инвентарь
+          <button onclick="clearInv()" class="btn-outline" style="font-size:0.7rem; border:none; padding:0;">🗑 Очистить</button>
+        </h3>
+        <div class="inventory-grid" id="inventoryGrid"></div>
       </div>
     </div>
 
-    <!-- ATTACK (оставлен без изменений, но адаптирован) -->
     <div class="tab-content" id="tab-attack">
-      <div class="card"><div class="attack-title">⚡ ОАтака</div><div class="region-chips" id="regionChips"><span class="region-chip active" data-r="ru">RU</span><span class="region-chip" data-r="by">BY</span><span class="region-chip" data-r="kz">KZ</span></div><div class="form-row"><div class="inp-group"><label>Номер телефона</label><input type="tel" id="attackPhone" placeholder="+7XXXXXXXXXX"></div><div class="inp-group"><label>Длительность (сек)</label><input type="number" id="attackDuration" value="60" min="10"></div><div class="inp-group"><label>Одновременных запросов</label><input type="number" id="concurrency" value="10" min="1" max="20"></div></div><div style="display:flex; gap:1rem; margin-bottom:1rem;"><label><input type="checkbox" id="enableSms" checked> SMS</label><label><input type="checkbox" id="enableTg"> Telegram OAuth</label></div><div id="tgServiceList"></div><div style="display:flex; gap:1rem;"><button class="btn btn-primary" id="attackStartBtn">▶ Запустить</button><button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button><button class="btn btn-outline" id="exportCsvBtn">📊 CSV</button><button class="btn btn-outline" id="clearHistoryBtn">🗑 Сброс истории</button></div><div class="stats-panel"><div class="stat-item"><b id="totalCount">0</b><small> всего</small></div><div class="stat-item"><b id="successCount" style="color:#5ee8a0;">0</b><small> успешно</small></div><div class="stat-item"><b id="failCount" style="color:#ff6b6b;">0</b><small> ошибок</small></div></div><div class="log-container" id="attackLog"></div><div class="admin-panel" id="adminPanel" style="display:none;"><div class="attack-title">🔑 Админ-панель</div><input type="text" id="banIpInput" placeholder="IP-адрес"><button class="btn btn-outline" id="addBanBtn">Забанить</button><div id="banList"></div><p>Текущий IP: <span id="adminCurrentIp">...</span></p></div><div class="history-list"><div style="font-weight:700;">История атак</div><div id="historyEntries"></div></div></div>
+      <div class="card">
+        <h2 style="color:var(--accent); font-family:var(--fh); margin-bottom:15px;">⚡ ОАтака (Demo)</h2>
+        <div class="form-row">
+          <div class="inp-group"><label>Номер телефона</label><input type="tel" id="attackPhone" placeholder="+7XXXXXXXXXX"></div>
+          <div class="inp-group"><label>Длительность (сек)</label><input type="number" id="attackDuration" value="60"></div>
+        </div>
+        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+          <button class="btn btn-primary" id="attackStartBtn">▶ Запустить</button>
+          <button class="btn btn-outline" id="attackStopBtn" style="display:none;">⏹ Остановить</button>
+        </div>
+        <div class="log-container" id="attackLog">Готов к запуску...</div>
+      </div>
     </div>
 
-    <!-- IP -->
-    <div class="tab-content" id="tab-ip"><div class="card"><div class="attack-title">🔍 Проверка безопасности IP</div><table class="ip-check-table"><tbody id="ipTableBody"><tr><td>Загрузка...</td><td>⏳</td></tr></tbody></table><button class="btn btn-outline" id="refreshIpBtn">🔄 Обновить</button></div></div>
+    <div class="tab-content" id="tab-ip">
+      <div class="card">
+        <h2 style="color:var(--accent); font-family:var(--fh); margin-bottom:15px;">🔍 IP Info</h2>
+        <div id="ipResult" style="font-family:monospace; background:rgba(0,0,0,0.3); padding:15px; border-radius:10px;">Загрузка...</div>
+        <button class="btn btn-outline" onclick="fetchIP()" style="margin-top:15px;">🔄 Обновить</button>
+      </div>
+    </div>
 
-    <!-- МУЗЫКА -->
-    <div class="tab-content" id="tab-music"><div class="card music-wrap"><div class="music-title">🎀 Аниме-Плеер</div><div class="music-sub">загрузи <code>track.mp3</code></div><audio controls id="audioPlayer"><source src="track.mp3" type="audio/mpeg"></audio><div class="now-playing"><span></span> сейчас играет: неко-бит ♪</div><div id="audioFallback" style="display:none;">⚠️ Файл track.mp3 не найден</div></div></div>
+    <div class="tab-content" id="tab-osint">
+      <div class="card">
+        <h2 style="color:var(--accent); font-family:var(--fh); margin-bottom:15px;">🕵️ OSINT Hub</h2>
+        <div class="form-row">
+          <div class="inp-group">
+            <input type="text" id="osintTarget" placeholder="Домен или IP (напр. google.com)">
+          </div>
+          <button class="btn btn-primary" onclick="runOsint()">Поиск</button>
+        </div>
+        <div id="osintResult" class="osint-result" style="display:none;"></div>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="tab-gallery">
+      <div class="card">
+        <h2 style="color:var(--accent); font-family:var(--fh); margin-bottom:15px;">🎴 Галерея (Nekos.best)</h2>
+        <div class="gacha-grid-10" id="galleryGrid"></div>
+        <button class="btn btn-outline" onclick="loadGallery()" style="margin-top:15px; width:100%;">🔄 Загрузить еще</button>
+      </div>
+    </div>
 
-    <!-- ГАЛЕРЕЯ -->
-    <div class="tab-content" id="tab-gallery"><div class="card"><div class="gallery-title">🎴 Галерея ✶</div><p class="gallery-sub">4 случайных аниме-картинки через API</p><div id="gallery"></div></div></div>
-
-    <!-- OSINT -->
-    <div class="tab-content" id="tab-osint"><div class="card"><div class="attack-title">🕵️ Интерактивный OSINT</div><div class="form-row"><div class="inp-group"><label>Цель (IP, домен, никнейм)</label><input type="text" id="osintTarget" placeholder="8.8.8.8 / example.com"></div><div class="inp-group"><label>Тип разведки</label><select id="osintType"><option value="ip">IP информация</option><option value="whois">Whois домена</option><option value="dns">DNS-записи</option><option value="username">Поиск никнейма</option><option value="email">Утечки email</option></select></div></div><div><button class="btn btn-primary" id="osintRunBtn">🔎 Запустить</button><button class="btn btn-outline" id="osintClearBtn">🗑 Очистить</button></div><div id="osintResult" class="osint-result" style="display:none;"></div><div id="osintCopyTarget" style="display:none;"><button class="osint-copy-btn" id="osintCopyBtn">📋 Копировать</button></div><div style="margin-top:1.5rem;"><div class="attack-title" style="font-size:1rem;">📋 История OSINT <button class="btn btn-outline" id="clearOsintHistoryBtn" style="float:right; font-size:0.7rem;">🗑</button></div><div id="osintHistoryList"></div></div><div style="margin-top:1.5rem;"><div class="attack-title" style="font-size:1rem;">🔎 Google Dorking</div><input type="text" id="dorkInput" placeholder="inurl:admin site:example.com" style="width:100%; margin-bottom:0.5rem;"><div><select id="searchEngine"><option value="google">Google</option><option value="bing">Bing</option></select><button id="searchDorkBtn" class="btn btn-primary">🔍 Искать</button></div></div></div></div>
   </div>
+</div>
+
+<div class="modal" id="imgModal" onclick="this.style.display='none'">
+  <span class="modal-close">&times;</span>
+  <img id="modalImg" src="" alt="preview" onclick="event.stopPropagation()">
 </div>
 
 <script>
   'use strict';
-  // ---------------------------- Утилиты ----------------------------
-  const notify = (msg, type) => { const c = document.getElementById('global-notify'); const d = document.createElement('div'); d.className = `notification ${type||''}`; d.textContent = msg; c.appendChild(d); setTimeout(()=>d.remove(),3000); };
-  const setImg = (img, src, fallback) => { img.src = src||''; img.onerror = ()=>{ if(fallback) img.src = 'data:image/svg+xml,'+encodeURIComponent(fallback); img.style.opacity='1'; }; img.onload = ()=>img.style.opacity='1'; };
-  const AVATAR_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155"><rect fill="#22133a" width="155" height="155"/><text x="77" y="80" text-anchor="middle" fill="#c77dff" font-size="30">★</text></svg>';
-  const WAIFU_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#1a1025" width="200" height="200"/><text x="100" y="100" text-anchor="middle" fill="#ffb7c5" font-size="20">🌸</text></svg>';
 
-  // ---------------------------- VFX и темы ----------------------------
+  // ================= 1. ИНИЦИАЛИЗАЦИЯ И ТАБЫ =================
+  function activateTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+    
+    if (tabId === 'anime' && !document.getElementById('animeResultsGrid').innerHTML) loadPopularAnime();
+    if (tabId === 'ip' && document.getElementById('ipResult').innerText === 'Загрузка...') fetchIP();
+    if (tabId === 'gallery' && !document.getElementById('galleryGrid').innerHTML) loadGallery();
+  }
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => activateTab(t.dataset.tab)));
+
+  // ================= 2. VFX И ТЕМЫ (ОРИГИНАЛЬНЫЕ) =================
   const canvas = document.getElementById('vfx-canvas'); const ctx = canvas.getContext('2d');
-  let vfxMode = 'petals', lastT=0; let petals=[], stars=[], slashes=[], sayaDrops=[];
-  function randomRange(a,b){ return a+Math.random()*(b-a); }
-  const easeCubic = t => 1-Math.pow(1-t,3);
-  const easeQuint = t => 1-Math.pow(1-t,5);
-  function initPetals(n=22){ petals = Array.from({length:n},()=>({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:8+Math.random()*11, speed:0.5+Math.random()*1.5, rot:Math.random()*Math.PI*2, rotS:(Math.random()-0.5)*0.05, op:0.42+Math.random()*0.45 })); }
-  function initStars(n=38){ stars = Array.from({length:n},()=>({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, size:2+Math.random()*5, speed:1+Math.random()*2, op:0, life:0, maxLife:80+Math.random()*60 })); }
-  function initSlashes(n=24){ slashes = Array.from({length:n},()=>{ const p = [{core:'#ffffff',mid:'#5878ff',out:'rgba(26,79,255,'},{core:'#dde5ff',mid:'#3a58ff',out:'rgba(18,55,240,'},{core:'#eef1ff',mid:'#8899ff',out:'rgba(110,135,255,'}][Math.random()*3|0]; const a = randomRange(Math.PI/6,Math.PI/3)*(Math.random()>.5?1:-1); return { x:randomRange(.07,.93)*canvas.width, y:randomRange(.07,.93)*canvas.height, cos:Math.cos(a), sin:Math.sin(a), len:randomRange(80,240), w:randomRange(.8,2.4), p, dbl:Math.random()>.7, gap:Math.random()>.7?randomRange(5,14):0, dMs:randomRange(55,150), hMs:randomRange(100,360), fMs:randomRange(160,420), t:-(Math.random()*2600) }; }); }
-  function initSayaDrops(n=50){ sayaDrops = Array.from({length:n},()=>({ x:Math.random()*canvas.width, y:Math.random()*canvas.height-canvas.height, s:2+Math.random()*6, sp:2+Math.random()*4, op:0.3+Math.random()*0.6, delay:Math.random()*5000, active:false })); }
-  function drawPetals(){ for(const p of petals){ p.y+=p.speed; p.rot+=p.rotS; if(p.y>canvas.height+60){ p.y=-60; p.x=Math.random()*canvas.width; } ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.globalAlpha=p.op; ctx.fillStyle='#ffcfd9'; ctx.beginPath(); ctx.moveTo(0,0); ctx.bezierCurveTo(p.size,-p.size/2, p.size,p.size/2, 0,p.size); ctx.bezierCurveTo(-p.size,p.size/2, -p.size,-p.size/2, 0,0); ctx.fill(); ctx.restore(); } }
-  function drawStars(){ const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(); for(const s of stars){ s.y+=s.speed; s.life++; s.op = Math.sin((s.life/s.maxLife)*Math.PI); if(s.life>=s.maxLife){ s.y=-20; s.x=Math.random()*canvas.width; s.life=0; } ctx.globalAlpha=s.op; ctx.fillStyle=ac; ctx.shadowBlur=6; ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill(); } ctx.shadowBlur=0; ctx.globalAlpha=1; }
-  function drawSlashes(dt){ ctx.globalCompositeOperation='source-over'; ctx.fillStyle='rgba(2,2,12,.45)'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.globalCompositeOperation='screen'; ctx.lineCap='round'; for(const s of slashes){ s.t+=dt; if(s.t<0)continue; const total=s.dMs+s.hMs+s.fMs; if(s.t>=total){ Object.assign(s, slashes[Math.floor(Math.random()*slashes.length)]); continue; } let prog=0,op=0; if(s.t<s.dMs){ prog=easeCubic(s.t/s.dMs); op=prog; }else if(s.t<s.dMs+s.hMs){ prog=1; op=1; }else{ prog=1; op=easeQuint(1-(s.t-s.dMs-s.hMs)/s.fMs); } if(op<0.005)continue; const half=s.len*0.5*prog; const {x,y,cos,sin,w,dbl,gap,p}=s; const offs=dbl?[-gap/2,gap/2]:[0]; for(const off of offs){ const nx=-sin*off, ny=cos*off; const x1=x-cos*half+nx, y1=y-sin*half+ny, x2=x+cos*half+nx, y2=y+sin*half+ny; ctx.globalAlpha=op*0.10; ctx.strokeStyle=p.out+'1)'; ctx.lineWidth=w*16; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.globalAlpha=op*0.38; ctx.strokeStyle=p.mid; ctx.lineWidth=w*4.5; ctx.shadowBlur=14; ctx.shadowColor=p.out+'.6)'; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.globalAlpha=op*0.95; ctx.strokeStyle=p.core; ctx.lineWidth=w*0.85; ctx.shadowBlur=5; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); } } ctx.globalCompositeOperation='source-over'; ctx.shadowBlur=0; ctx.globalAlpha=1; }
-  function drawSayaDrops(now){ for(const d of sayaDrops){ if(!d.active && now>d.delay){ d.active=true; d.y=-10; d.x=Math.random()*canvas.width; } if(!d.active)continue; d.y+=d.sp; if(d.y>canvas.height+20){ d.active=false; d.delay=now+Math.random()*2000; continue; } ctx.globalAlpha=d.op; ctx.fillStyle='#8b0000'; ctx.shadowBlur=8; ctx.beginPath(); ctx.ellipse(d.x,d.y,d.s*0.6,d.s,0,0,Math.PI*2); ctx.fill(); } ctx.shadowBlur=0; }
-  function animate(now=0){ const dt=Math.min(now-lastT,50); lastT=now; if(vfxMode!=='slashes' && vfxMode!=='saya') ctx.clearRect(0,0,canvas.width,canvas.height); if(vfxMode==='petals') drawPetals(); else if(vfxMode==='stars') drawStars(); else if(vfxMode==='slashes') drawSlashes(dt); else if(vfxMode==='saya'){ ctx.clearRect(0,0,canvas.width,canvas.height); drawSayaDrops(now); } requestAnimationFrame(animate); }
-  function setVfx(m){ vfxMode=m; if(m==='petals') initPetals(); else if(m==='stars') initStars(); else if(m==='slashes') initSlashes(30); else if(m==='saya') initSayaDrops(50); }
-  window.addEventListener('resize',()=>{ canvas.width=innerWidth; canvas.height=innerHeight; }); canvas.width=innerWidth; canvas.height=innerHeight;
-  // WebGL
-  (function(){ const glCanvas=document.getElementById('webgl-canvas'); const gl=glCanvas.getContext('webgl',{alpha:true}); if(!gl)return; glCanvas.width=innerWidth; glCanvas.height=innerHeight; const vs=gl.createShader(gl.VERTEX_SHADER); gl.shaderSource(vs,'attribute vec2 p; void main(){ gl_Position=vec4(p,0,1); }'); gl.compileShader(vs); const fs=gl.createShader(gl.FRAGMENT_SHADER); gl.shaderSource(fs,'precision highp float; uniform float t; uniform vec2 r; void main(){ vec2 uv=gl_FragCoord.xy/r; float d=sin(uv.x*10.0+t)*cos(uv.y*10.0+t)*0.2; gl_FragColor=vec4(vec3(0.2,0.1,0.3)+d,0.3); }'); gl.compileShader(fs); const program=gl.createProgram(); gl.attachShader(program,vs); gl.attachShader(program,fs); gl.linkProgram(program); gl.useProgram(program); const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW); gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0); let glT=0; function render(){ glCanvas.width=innerWidth; glCanvas.height=innerHeight; gl.viewport(0,0,glCanvas.width,glCanvas.height); gl.uniform1f(gl.getUniformLocation(program,'t'),glT+=0.01); gl.uniform2f(gl.getUniformLocation(program,'r'),glCanvas.width,glCanvas.height); gl.drawArrays(gl.TRIANGLES,0,6); requestAnimationFrame(render); } requestAnimationFrame(render); })();
-  // темы
-  let animeOn=false, vergilOn=false, sayaOn=false;
-  function toggleAnime(v){ animeOn=v; document.documentElement.setAttribute('data-anime',v?'on':'off'); document.getElementById('animeModeBtn').textContent=v?'💫':'✨'; if(v){ if(vergilOn)toggleVergil(false); if(sayaOn)toggleSaya(false); setVfx('stars'); }else setVfx('petals'); }
-  function toggleVergil(v){ vergilOn=v; document.documentElement.setAttribute('data-vergil',v?'on':'off'); document.getElementById('vergilBtn').textContent=v?'⚔️':'🗡️'; if(v){ if(animeOn)toggleAnime(false); if(sayaOn)toggleSaya(false); setVfx('slashes'); }else setVfx('petals'); }
-  function toggleSaya(v){ sayaOn=v; document.documentElement.setAttribute('data-saya',v?'on':'off'); document.getElementById('sayaBtn').textContent='🧠'; if(v){ if(animeOn)toggleAnime(false); if(vergilOn)toggleVergil(false); setVfx('saya'); }else setVfx('petals'); }
-  document.getElementById('themeToggle').addEventListener('click',()=>{ const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',next); localStorage.setItem('theme',next); document.getElementById('themeToggle').textContent=next==='dark'?'🌸':'🌙'; });
-  document.getElementById('animeModeBtn').addEventListener('click',()=>toggleAnime(!animeOn));
-  document.getElementById('vergilBtn').addEventListener('click',()=>toggleVergil(!vergilOn));
-  document.getElementById('sayaBtn').addEventListener('click',()=>toggleSaya(!sayaOn));
-  const savedTheme=localStorage.getItem('theme')||'dark'; document.documentElement.setAttribute('data-theme',savedTheme); document.getElementById('themeToggle').textContent=savedTheme==='dark'?'🌸':'🌙';
-
-  // ---------------------------- Био, Галерея, неко ----------------------------
-  async function fetchAvatar(){ const img=document.getElementById('avatarImg'); try{ const r=await fetch('https://nekos.life/api/v2/img/neko'); if(r.ok){ const d=await r.json(); setImg(img,d.url,AVATAR_SVG); return; } }catch(e){} setImg(img,'',AVATAR_SVG); }
-  async function loadGalleryImg(img){ try{ const r=await fetch('https://nekos.life/api/v2/img/neko'); if(r.ok){ const d=await r.json(); setImg(img,d.url,WAIFU_SVG); return; } }catch(e){} img.style.display='none'; }
-  function buildGallery(){ const g=document.getElementById('gallery'); g.innerHTML=''; for(let i=0;i<4;i++){ const img=document.createElement('img'); img.loading='lazy'; img.style.opacity='0.4'; g.appendChild(img); loadGalleryImg(img); } }
-  const quotes=[{q:'Если не веришь в себя, то и не стоит начинать.',c:'Макака',a:'Доктор Стоун'},{q:'Настоящая сила — в умении защищать.',c:'Аска',a:'Евангелион'},{q:'Неважно, сколько у тебя таланта. Главное — желание.',c:'Мидория',a:'Моя геройская академия'},{q:'Даже в самой глубокой тьме можно найти свет.',c:'Тандзиро',a:'Клинок, рассекающий демонов'}];
-  function fetchQuote(){ const f=quotes[Math.random()*quotes.length|0]; document.getElementById('quoteText').textContent=`"${f.q}"`; document.getElementById('quoteSrc').textContent=`— ${f.c} · ${f.a}`; }
-  document.getElementById('newQuoteBtn').addEventListener('click',fetchQuote);
-  const nekoImg=document.getElementById('nekoImg'); async function fetchNeko(){ nekoImg.style.opacity='0.3'; try{ const r=await fetch('https://nekos.life/api/v2/img/neko'); if(r.ok){ const d=await r.json(); setImg(nekoImg,d.url,WAIFU_SVG); return; } }catch(e){} nekoImg.style.opacity='0'; }
-  document.getElementById('nekoCorner').addEventListener('click',fetchNeko); setInterval(fetchNeko,30000);
-  document.getElementById('audioPlayer').addEventListener('error',()=>{ document.getElementById('audioFallback').style.display='block'; });
-
-  // ---------------------------- Табы (с поддержкой нового раздела гачи) ----------------------------
-  const tabs = { bio:document.getElementById('tab-bio'), gacha:document.getElementById('tab-gacha'), attack:document.getElementById('tab-attack'), ip:document.getElementById('tab-ip'), music:document.getElementById('tab-music'), gallery:document.getElementById('tab-gallery'), osint:document.getElementById('tab-osint') };
-  function activateTab(id) {
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    Object.values(tabs).forEach(c=>c.classList.remove('active'));
-    document.querySelector(`.tab[data-tab="${id}"]`)?.classList.add('active');
-    tabs[id]?.classList.add('active');
-    if(id==='ip') runIpCheck();
-    if(id==='bio') fetchQuote();
-    if(id==='attack') renderHistory();
-    if(id==='gacha') { renderInventory(); updateGemsDisplay(); }
-    if(id==='osint') renderOsintHistory();
-  }
-  document.querySelectorAll('.tab').forEach(tab=>{ tab.addEventListener('click',()=>activateTab(tab.dataset.tab)); });
-  if(document.querySelector('.tab.active')?.dataset.tab === 'attack') activateTab('attack'); else activateTab('bio');
-
-  // ---------------------------- ГАЧА МЕХАНИКА ----------------------------
-  let gems = parseInt(localStorage.getItem('gacha_gems')) || 1000;
-  let inventory = JSON.parse(localStorage.getItem('gacha_inventory')) || [];
-  const rarities = [
-    { name: 'Обычная', id: 'common', chance: 60, api: 'neko' },
-    { name: 'Редкая', id: 'rare', chance: 30, api: 'neko' },
-    { name: 'Эпическая', id: 'epic', chance: 9, api: 'waifu' },
-    { name: 'Легендарная', id: 'legendary', chance: 1, api: 'waifu' }
-  ];
-  function getRarity() {
-    const rand = Math.random() * 100;
-    let acc = 0;
-    for (const r of rarities) {
-      acc += r.chance;
-      if (rand <= acc) return r;
+  let vfxMode = 'petals'; let petals=[];
+  function initPetals(){ petals = Array.from({length:30},()=>({ x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight, s:Math.random()*2+1, v:Math.random()*1+0.5 })); }
+  function drawVFX(){
+    ctx.clearRect(0,0, canvas.width, canvas.height);
+    if(vfxMode === 'petals') {
+      ctx.fillStyle = "rgba(255, 183, 197, 0.6)";
+      petals.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); p.y += p.v; if(p.y > canvas.height) p.y = -10; });
     }
-    return rarities[0];
+    requestAnimationFrame(drawVFX);
   }
-  function updateGemsDisplay() { document.getElementById('gemsCount').textContent = gems; localStorage.setItem('gacha_gems', gems); }
-  async function pullGacha() {
-    if (gems < 100) { notify('❌ Недостаточно кристаллов!', 'error'); return; }
-    gems -= 100; updateGemsDisplay();
-    const initText = document.getElementById('gachaInitText');
-    const loading = document.getElementById('gachaLoading');
-    const resultImg = document.getElementById('gachaResultImg');
-    const btn = document.getElementById('pullGachaBtn');
-    btn.disabled = true;
-    initText.style.display = 'none';
-    resultImg.style.display = 'none';
-    loading.style.display = 'block';
-    const rarity = getRarity();
-    const endpoint = rarity.api === 'neko' ? 'neko' : 'waifu';
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initPetals(); });
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight; initPetals(); drawVFX();
+
+  document.getElementById('themeToggle').onclick = () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+  };
+  let isVergil = false;
+  document.getElementById('vergilBtn').onclick = () => {
+    isVergil = !isVergil;
+    document.documentElement.setAttribute('data-vergil', isVergil ? 'on' : 'off');
+    document.getElementById('vergilBtn').textContent = isVergil ? '⚔️' : '🗡️';
+  };
+  let isSaya = false;
+  document.getElementById('sayaBtn').onclick = () => {
+    isSaya = !isSaya;
+    document.documentElement.setAttribute('data-saya', isSaya ? 'on' : 'off');
+  };
+
+  // ================= 3. ANIME STREAM (С ПРОКСИ ДЛЯ SHIKIMORI) =================
+  // Используем allorigins как прокси для обхода CORS (403 Forbidden)
+  async function fetchShikimori(endpoint) {
+    const targetUrl = `https://shikimori.one/api/${endpoint}`;
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+    const res = await fetch(proxyUrl);
+    if(!res.ok) throw new Error("CORS Proxy error");
+    const data = await res.json();
+    return JSON.parse(data.contents); // Извлекаем оригинальный JSON
+  }
+
+  async function loadPopularAnime() {
+    const grid = document.getElementById('animeResultsGrid');
+    const loader = document.getElementById('animeLoader');
+    document.getElementById('animeGridTitle').innerText = "🔥 Популярное сейчас";
+    grid.style.display = 'none'; loader.style.display = 'block';
     try {
-      const res = await fetch(`https://nekos.life/api/v2/img/${endpoint}`);
-      const data = await res.json();
-      loading.style.display = 'none';
-      resultImg.src = data.url;
-      resultImg.className = `gacha-result-card rarity-${rarity.id}`;
-      resultImg.style.display = 'block';
-      const existing = inventory.find(i => i.url === data.url);
-      if (existing) existing.count++;
-      else inventory.unshift({ url: data.url, rarity: rarity.id, name: rarity.name, count: 1 });
-      localStorage.setItem('gacha_inventory', JSON.stringify(inventory));
-      renderInventory();
-      notify(`🎉 Выпало: ${rarity.name}!`, rarity.id === 'legendary' ? 'success' : '');
-    } catch(e) {
-      loading.style.display = 'none';
-      initText.style.display = 'block';
-      notify('Ошибка API, кристаллы возвращены', 'error');
-      gems += 100; updateGemsDisplay();
+      const data = await fetchShikimori('animes?limit=10&order=popularity');
+      renderAnimeGrid(data);
+    } catch(e) { grid.innerHTML = `<p style="color:red">Ошибка загрузки популярных тайтлов.</p>`; }
+    loader.style.display = 'none'; grid.style.display = 'grid';
+  }
+
+  async function searchAnime() {
+    const query = document.getElementById('animeSearchInput').value.trim();
+    if(!query) return loadPopularAnime();
+    const grid = document.getElementById('animeResultsGrid');
+    const loader = document.getElementById('animeLoader');
+    document.getElementById('animeGridTitle').innerText = "🔍 Результаты поиска";
+    grid.style.display = 'none'; loader.style.display = 'block';
+    try {
+      const data = await fetchShikimori(`animes?search=${encodeURIComponent(query)}&limit=12`);
+      renderAnimeGrid(data);
+    } catch(e) { grid.innerHTML = `<p style="color:red">Ошибка поиска.</p>`; }
+    loader.style.display = 'none'; grid.style.display = 'grid';
+  }
+
+  function renderAnimeGrid(animes) {
+    const grid = document.getElementById('animeResultsGrid');
+    if(!animes || animes.length === 0) { grid.innerHTML = "<p>Ничего не найдено.</p>"; return; }
+    grid.innerHTML = animes.map(a => `
+      <div class="anime-card" onclick="openPlayer(${a.id})">
+        <span class="score">${a.score || '?'}</span>
+        <img src="https://shikimori.one${a.image.original}" alt="${a.name}">
+        <div class="title" title="${a.russian || a.name}">${a.russian || a.name}</div>
+      </div>
+    `).join('');
+  }
+
+  async function openPlayer(id) {
+    document.getElementById('animeSearchArea').style.display = 'none';
+    document.getElementById('animePlayerArea').style.display = 'block';
+    const iframe = document.getElementById('kodikPlayer');
+    const loader = document.getElementById('playerLoader');
+    iframe.style.display = 'none'; loader.style.display = 'block';
+    document.getElementById('playerTitle').innerText = "Загрузка...";
+    
+    try {
+      const anime = await fetchShikimori(`animes/${id}`);
+      document.getElementById('playerTitle').innerText = anime.russian || anime.name;
+      document.getElementById('playerScore').innerText = anime.score;
+      document.getElementById('playerPoster').src = `https://shikimori.one${anime.image.original}`;
+      document.getElementById('playerDesc').innerHTML = anime.description_html || 'Нет описания.';
+      
+      // Инициализация Kodik
+      iframe.src = `//kodik.info/find-player?shikimoriID=${id}`;
+      iframe.onload = () => { loader.style.display = 'none'; iframe.style.display = 'block'; };
+    } catch(e) { document.getElementById('playerTitle').innerText = "Ошибка загрузки информации"; }
+  }
+
+  function closePlayer() {
+    document.getElementById('kodikPlayer').src = '';
+    document.getElementById('animePlayerArea').style.display = 'none';
+    document.getElementById('animeSearchArea').style.display = 'block';
+  }
+
+  // ================= 4. GACHA PRO =================
+  let gems = parseInt(localStorage.getItem('gacha_gems')) || 1000;
+  let inventory = JSON.parse(localStorage.getItem('gacha_inv')) || [];
+  
+  function updateGems() { document.getElementById('gemsCount').innerText = gems; localStorage.setItem('gacha_gems', gems); renderInv(); }
+  function farmGems() { gems += 1; updateGems(); }
+  function clearInv() { if(confirm('Точно удалить всё?')) { inventory = []; updateGems(); } }
+
+  async function pullGacha(count) {
+    const cost = count * 100;
+    if(gems < cost) return alert("Мало кристаллов!");
+    gems -= cost; updateGems();
+
+    const filter = document.getElementById('gachaFilter').value;
+    const stage = document.getElementById('gachaGridResult');
+    const loader = document.getElementById('gachaLoader');
+    document.getElementById('gachaInitText').style.display = 'none';
+    stage.style.display = 'none'; loader.style.display = 'block';
+
+    let pulls = [];
+    for(let i=0; i<count; i++) {
+      let url = '';
+      try {
+        if(filter === 'kitsune') {
+          const r = await fetch('https://nekos.best/api/v2/kitsune'); const d = await r.json(); url = d.results[0].url;
+        } else {
+          const r = await fetch(`https://api.waifu.pics/sfw/${filter}`); const d = await r.json(); url = d.url;
+        }
+      } catch(e) { url = 'https://via.placeholder.com/200x300?text=Error'; }
+      pulls.push(url);
+      
+      const exist = inventory.find(x => x.url === url);
+      if(exist) exist.count++; else inventory.unshift({url: url, count: 1});
     }
-    btn.disabled = false;
+
+    localStorage.setItem('gacha_inv', JSON.stringify(inventory));
+    loader.style.display = 'none';
+    stage.innerHTML = pulls.map((url, i) => `<img src="${url}" class="gacha-result-card" style="animation: fadeSlide 0.${5+i}s" onclick="showImg('${url}')">`).join('');
+    stage.style.display = 'grid';
+    renderInv();
   }
-  function renderInventory() {
-    const grid = document.getElementById('inventoryGrid');
-    if (!inventory.length) { grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--muted);">✨ Инвентарь пуст. Крути гачу!</div>'; return; }
-    grid.innerHTML = inventory.map(item => `<div class="inventory-item rarity-${item.rarity}"><img src="${item.url}" loading="lazy">${item.count > 1 ? `<div class="item-count">x${item.count}</div>` : ''}</div>`).join('');
+
+  function renderInv() {
+    document.getElementById('inventoryGrid').innerHTML = inventory.map(item => `
+      <div class="inventory-item" onclick="showImg('${item.url}')">
+        <img src="${item.url}" loading="lazy">
+        ${item.count > 1 ? `<span class="item-count">x${item.count}</span>` : ''}
+      </div>
+    `).join('');
   }
-  document.getElementById('pullGachaBtn').addEventListener('click', pullGacha);
-  document.getElementById('freeGemsBtn').addEventListener('click', () => {
-    const lastDaily = localStorage.getItem('gacha_daily');
-    const now = new Date().toDateString();
-    if (lastDaily === now) { notify('❌ Дейлик уже собран сегодня!', 'error'); return; }
-    gems += 500; updateGemsDisplay(); localStorage.setItem('gacha_daily', now);
-    notify('✨ +500 кристаллов!', 'success');
-  });
-  document.getElementById('clearInvBtn').addEventListener('click', () => {
-    if(confirm('Очистить весь инвентарь?')) { inventory = []; localStorage.removeItem('gacha_inventory'); renderInventory(); notify('Инвентарь очищен'); }
-  });
+  updateGems();
 
-  // ---------------------------- Attack модуль (упрощённая заглушка, чтобы сохранить логику) ----------------------------
-  let attackRunning=false, attackAbort, stats={total:0,success:0,failed:0};
-  function updateStats(){ document.getElementById('totalCount').textContent=stats.total; document.getElementById('successCount').textContent=stats.success; document.getElementById('failCount').textContent=stats.failed; }
-  function log(msg,c){ const l=document.getElementById('attackLog'); const d=document.createElement('div'); d.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`; d.style.color=c||'var(--muted)'; l.appendChild(d); l.scrollTop=l.scrollHeight; }
-  async function startAttack(){ if(attackRunning) return; const phone=document.getElementById('attackPhone').value.trim(); if(!phone) return alert('Введите номер'); const dur=parseInt(document.getElementById('attackDuration').value)||60; attackRunning=true; stats={total:0,success:0,failed:0}; updateStats(); log('Старт атаки (демо)','cyan'); document.getElementById('attackStartBtn').style.display='none'; document.getElementById('attackStopBtn').style.display='inline-block'; const end=Date.now()+dur*1000; while(attackRunning && Date.now()<end){ await new Promise(r=>setTimeout(r,200)); stats.total++; stats.success++; updateStats(); } attackRunning=false; document.getElementById('attackStartBtn').style.display=''; document.getElementById('attackStopBtn').style.display='none'; log('Атака завершена'); const hist=JSON.parse(localStorage.getItem('attack_hist')||'[]'); hist.unshift({date:new Date().toLocaleString(), phone, total:stats.total, success:stats.success, failed:stats.failed}); if(hist.length>30)hist.length=30; localStorage.setItem('attack_hist',JSON.stringify(hist)); renderHistory(); }
-  function stopAttack(){ if(attackRunning) attackRunning=false; document.getElementById('attackStartBtn').style.display=''; document.getElementById('attackStopBtn').style.display='none'; log('Остановлено'); }
-  function renderHistory(){ const hist=JSON.parse(localStorage.getItem('attack_hist')||'[]'); const c=document.getElementById('historyEntries'); if(!hist.length){ c.innerHTML='<div style="color:var(--muted)">Нет записей</div>'; return; } c.innerHTML=hist.map(h=>`<div class="history-item"><div><b>${h.phone}</b></div><div><span class="ok">✓${h.success}</span> <span class="fail">✗${h.failed}</span></div><div style="font-size:.7rem;">${h.date}</div></div>`).join(''); }
-  document.getElementById('attackStartBtn').addEventListener('click',startAttack);
-  document.getElementById('attackStopBtn').addEventListener('click',stopAttack);
-  document.getElementById('clearHistoryBtn').addEventListener('click',()=>{ if(confirm('Удалить историю?')){ localStorage.removeItem('attack_hist'); renderHistory(); } });
-  document.getElementById('exportCsvBtn').addEventListener('click',()=>{ const hist=JSON.parse(localStorage.getItem('attack_hist')||'[]'); let csv='Date,Phone,Total,Success,Failed\n'; hist.forEach(h=>{ csv+=`"${h.date}","${h.phone}",${h.total},${h.success},${h.failed}\n`; }); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='attack_history.csv'; a.click(); });
-  // IP check
-  async function runIpCheck(){ const tbody=document.getElementById('ipTableBody'); try{ const r=await fetch('https://ipapi.co/json/'); const d=await r.json(); tbody.innerHTML=`<tr><td>IP</td><td>${d.ip||'?'}</td></tr><tr><td>Страна</td><td>${d.country_name||'-'}</td></tr><tr><td>Город</td><td>${d.city||'-'}</td></tr><tr><td>Провайдер</td><td>${d.org||'-'}</td></tr>`; }catch(e){ tbody.innerHTML='<tr><td>Ошибка</td><td>не удалось получить данные</td></tr>'; } }
-  document.getElementById('refreshIpBtn').addEventListener('click',runIpCheck);
-  // OSINT
-  const osintRes=document.getElementById('osintResult'); let lastOsint='';
-  function showOsint(text,isErr){ osintRes.style.display='block'; osintRes.textContent=text; osintRes.className='osint-result'+(isErr?' error':''); document.getElementById('osintCopyTarget').style.display='inline-block'; lastOsint=text; }
-  document.getElementById('osintClearBtn').addEventListener('click',()=>{ osintRes.style.display='none'; document.getElementById('osintCopyTarget').style.display='none'; });
-  document.getElementById('osintCopyBtn').addEventListener('click',()=>navigator.clipboard.writeText(lastOsint).then(()=>notify('Скопировано')));
-  function getOsintHistory(){ return JSON.parse(localStorage.getItem('osint_history')||'[]'); }
-  function saveOsintHist(entry){ const h=getOsintHistory(); h.unshift(entry); if(h.length>20)h.length=20; localStorage.setItem('osint_history',JSON.stringify(h)); renderOsintHistory(); }
-  function renderOsintHistory(){ const h=getOsintHistory(); document.getElementById('osintHistoryList').innerHTML=h.length?h.map(e=>`<div class="osint-history-item"><span class="target">${e.target}</span><span class="type">${e.type}</span></div>`).join(''):'Нет запросов'; }
-  document.getElementById('clearOsintHistoryBtn').addEventListener('click',()=>{ localStorage.removeItem('osint_history'); renderOsintHistory(); });
-  async function lookupIP(ip){ const r=await fetch(`https://ipapi.co/${ip}/json/`); const d=await r.json(); return JSON.stringify(d,null,2); }
-  async function lookupWhois(d){ const r=await fetch(`https://api.hackertarget.com/whois/?q=${d}`); return r.text(); }
-  async function lookupDNS(d){ const r=await fetch(`https://dns.google/resolve?name=${d}&type=A`); return JSON.stringify(await r.json()); }
-  document.getElementById('osintRunBtn').addEventListener('click',async()=>{ const target=document.getElementById('osintTarget').value.trim(); const type=document.getElementById('osintType').value; if(!target)return; showOsint('Загрузка...'); let res=''; try{ if(type==='ip')res=await lookupIP(target); else if(type==='whois')res=await lookupWhois(target); else if(type==='dns')res=await lookupDNS(target); else if(type==='username'){ window.open(`https://whatsmyname.app/?q=${target}`); res='Поиск запущен'; } else if(type==='email'){ window.open(`https://haveibeenpwned.com/account/${target}`); res='Проверка запущена'; } saveOsintHist({target,type,time:new Date().toLocaleString()}); }catch(e){ res='Ошибка: '+e.message; } showOsint(res); });
-  document.getElementById('searchDorkBtn').addEventListener('click',()=>{ const dork=document.getElementById('dorkInput').value.trim(); if(!dork)return; const eng=document.getElementById('searchEngine').value; window.open(eng==='google'?`https://google.com/search?q=${dork}`:`https://bing.com/search?q=${dork}`); });
+  // ================= 5. УТИЛИТЫ (IP, Модалка, OSINT) =================
+  function showImg(url) {
+    document.getElementById('modalImg').src = url;
+    document.getElementById('imgModal').style.display = 'flex';
+  }
 
-  // PWA
-  if('serviceWorker' in navigator){ const sw=`self.addEventListener('install',e=>self.skipWaiting()); self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))})`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'text/javascript'}))); }
-  const manifest={name:'GOD_AE86',short_name:'AE86',start_url:'.',display:'standalone',background_color:'#1a1025',theme_color:'#ffb7c5'}; document.getElementById('manifest-link').href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
-  if(window.Notification&&Notification.permission==='default') Notification.requestPermission();
+  async function fetchIP() {
+    try {
+      const res = await fetch('https://ipapi.co/json/'); const data = await res.json();
+      document.getElementById('ipResult').innerHTML = `IP: ${data.ip}<br>Страна: ${data.country_name}<br>Провайдер: ${data.org}`;
+    } catch(e) { document.getElementById('ipResult').innerText = "Ошибка получения IP"; }
+  }
 
-  // Инициализация
-  setVfx('petals'); lastT=performance.now(); requestAnimationFrame(animate);
-  fetchAvatar(); buildGallery(); fetchQuote(); fetchNeko();
-  renderHistory(); renderOsintHistory(); updateGemsDisplay(); renderInventory();
-  runIpCheck();
+  async function loadGallery() {
+    const grid = document.getElementById('galleryGrid');
+    try {
+      const res = await fetch('https://nekos.best/api/v2/neko?amount=10'); const data = await res.json();
+      grid.innerHTML += data.results.map(n => `<img src="${n.url}" style="width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:8px; cursor:pointer;" onclick="showImg('${n.url}')">`).join('');
+    } catch(e) {}
+  }
+
+  async function runOsint() {
+    const target = document.getElementById('osintTarget').value.trim();
+    if(!target) return;
+    const resDiv = document.getElementById('osintResult');
+    resDiv.style.display = 'block'; resDiv.innerText = "Сканирование...";
+    try {
+      const res = await fetch(`https://api.hackertarget.com/whois/?q=${target}`);
+      const text = await res.text();
+      resDiv.innerText = text || "Нет данных.";
+    } catch(e) { resDiv.innerText = "Ошибка API"; }
+  }
+
+  // Attack stub
+  document.getElementById('attackStartBtn').onclick = () => {
+    document.getElementById('attackLog').innerHTML += "<br>▶ Поток запущен. Имитация отправки пакетов...";
+  }
 </script>
 </body>
 </html>
