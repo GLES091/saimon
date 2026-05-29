@@ -1,1034 +1,849 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GOD_AE86 ✦</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-<!-- Подключение внешнего файла со стихами -->
-<script src="poems.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>GOD_AE86 ✦ аниме-плеер</title>
+  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и Telegram-спамер.">
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* variables */
+    :root {
+      --bg: #1a1025;
+      --bg2: #22133a;
+      --card: rgba(34,18,58,0.88);
+      --text: #f2deff;
+      --muted: #c9a8e2;
+      --accent: #ffb7c5;
+      --purple: #c77dff;
+      --teal: #a8edea;
+      --border: rgba(199,125,255,0.22);
+      --shadow: 0 4px 40px rgba(255,183,197,0.16);
+      --glow: 0 0 28px rgba(255,183,197,0.42);
+      --pglow: 0 0 28px rgba(199,125,255,0.4);
+      --radius: 22px;
+      --tr: 0.28s cubic-bezier(.2,0,0,1);
+      --fh: 'Mochiy Pop One', cursive;
+      --fb: 'Nunito', sans-serif;
+    }
+    [data-theme="light"] {
+      --bg: #fce8f3; --bg2: #f9d8eb; --card: rgba(255,245,252,0.93);
+      --text: #3a1a2e; --muted: #7a4a68; --accent: #e05a82; --purple: #9b59b6;
+      --border: rgba(224,90,130,0.22); --shadow: 0 4px 30px rgba(224,90,130,0.13);
+      --glow: 0 0 24px rgba(224,90,130,0.38); --pglow: 0 0 24px rgba(155,89,182,0.35);
+    }
+    [data-anime="on"] {
+      --accent: #ff4da6; --purple: #bf00ff; --border: rgba(191,0,255,0.32);
+      --shadow: 0 4px 50px rgba(255,77,166,0.3); --glow: 0 0 40px rgba(255,77,166,0.6);
+    }
+    * { margin:0; padding:0; box-sizing: border-box; }
+    body {
+      font-family: var(--fb);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 60% 55% at 10% 10%, rgba(199,125,255,.12) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 45% at 90% 85%, rgba(255,183,197,.1) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    /* VFX */
+    .petal, .star-vfx { position: absolute; pointer-events: none; will-change: transform, opacity; }
+    .petal {
+      border-radius: 50% 0 50% 0;
+      background: radial-gradient(ellipse at 35% 35%, #ffcfd9 0%, #ff85a1 55%, rgba(255,100,140,0) 100%);
+      animation: petalFall linear infinite;
+    }
+    @keyframes petalFall {
+      0%   { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0.85; }
+      100% { transform: translateY(115vh) rotate(360deg) translateX(0); opacity: 0; }
+    }
+    .star-vfx {
+      border-radius: 50%; background: var(--accent);
+      box-shadow: 0 0 8px var(--accent), 0 0 18px var(--purple);
+      animation: starDrop linear infinite;
+    }
+    @keyframes starDrop {
+      0%   { transform: translateY(-20px) scale(1); opacity: 0; }
+      10%  { opacity: 0.9; }
+      100% { transform: translateY(115vh) scale(0.3); opacity: 0; }
+    }
+    /* Layout */
+    .fixed-top { position: fixed; top: 1rem; right: 1rem; display: flex; gap: 0.7rem; z-index: 200; }
+    .icon-btn {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--card); border: 1.5px solid var(--border);
+      cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(14px); transition: all var(--tr); color: var(--text);
+    }
+    .icon-btn:hover { transform: scale(1.05); box-shadow: var(--glow); border-color: var(--accent); }
+    .page-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 5rem; }
+    .container { width: 100%; max-width: 960px; display: flex; flex-direction: column; gap: 1.6rem; }
+    
+    /* Tabs */
+    .tabs-wrapper { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(14px); padding: 0.5rem; }
+    .tablist { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
+    .tab-btn {
+      flex: 1 0 auto; min-width: 90px; background: transparent; border: none; padding: 0.8rem 1.2rem;
+      border-radius: calc(var(--radius) - 6px); cursor: pointer; font-weight: 800; font-family: var(--fh);
+      font-size: 0.8rem; letter-spacing: 0.5px; color: var(--muted); transition: all var(--tr);
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: white; box-shadow: 0 0 18px rgba(255,183,197,0.4); transform: translateY(-2px);
+    }
+    .tab-panel { display: none; animation: fadeSlide 0.35s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    
+    .card { background: var(--card); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); backdrop-filter: blur(14px); }
+    
+    /* Form & Buttons */
+    .btn { border: none; font-weight: 800; font-size: 0.8rem; padding: 0.75rem 1.4rem; border-radius: 14px; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; box-shadow: 0 4px 14px rgba(255,183,197,.4); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,183,197,.6); }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,183,197,.08); }
+    
+    input[type="text"], input[type="number"], input[type="search"] { width: 100%; padding: 0.8rem 1rem; background: rgba(199,125,255,.07); border: 1.5px solid var(--border); border-radius: 14px; color: var(--text); outline: none; transition: 0.2s; }
+    input:focus { border-color: var(--accent); }
 
-<style>
-/* ── ТЕМЫ И ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ── */
-:root {
-  --bg-color: #0b0914;
-  --bg-grad: radial-gradient(circle at 50% 0%, #2a164d 0%, #0b0914 70%);
-  --surface: rgba(20, 18, 35, 0.6);
-  --surface-hover: rgba(35, 30, 55, 0.8);
-  --text: #f2ebff;
-  --muted: #8b7ca6;
-  --accent: #b24dff;
-  --accent-glow: #d84dff;
-  --border: rgba(178, 77, 255, 0.2);
-  --border-light: rgba(255, 255, 255, 0.08);
-  --glow: 0 0 25px rgba(178, 77, 255, 0.5);
-  --sh: 0 8px 32px rgba(0, 0, 0, 0.6);
-  --r: 20px;
-  --tr: 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --font-main: 'Poppins', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-head: 'Poppins', sans-serif;
-  --particle-type: 'normal'; /* normal, rain, pulse */
-}
+    /* Bio */
+    .profile { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+    .avatar-wrap { position: relative; width: 155px; height: 155px; }
+    .avatar { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #000; border: 3px solid transparent; box-shadow: 0 0 0 6px rgba(199,125,255,.12), 0 0 40px rgba(255,183,197,.4); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-ring, .avatar-ring2 { position: absolute; border-radius: 50%; border: 2px dashed var(--purple); pointer-events: none; animation: spin 16s linear infinite; }
+    .avatar-ring { inset: -8px; opacity: 0.6; }
+    .avatar-ring2 { inset: -18px; border: 1px dotted var(--accent); animation: spin 24s reverse infinite; opacity: 0.3; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .bio-name { font-family: var(--fh); font-size: 2rem; background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-[data-theme=light] {
-  --bg-color: #f7f5fa;
-  --bg-grad: radial-gradient(circle at 50% 0%, #e8d9ff 0%, #f7f5fa 70%);
-  --surface: rgba(255, 255, 255, 0.8);
-  --surface-hover: rgba(255, 255, 255, 1);
-  --text: #1a1525;
-  --muted: #6b637a;
-  --accent: #8000ff;
-  --accent-glow: #a64dff;
-  --border: rgba(128, 0, 255, 0.2);
-  --border-light: rgba(0, 0, 0, 0.05);
-  --glow: 0 0 25px rgba(128, 0, 255, 0.3);
-  --sh: 0 8px 32px rgba(128, 0, 255, 0.1);
-}
+    /* Spammer */
+    .log { background: rgba(12,5,24,.85); border-radius: 16px; padding: 1rem; height: 230px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: #d0b0e4; margin-top: 1rem; }
+    
+    /* Anime */
+    .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .anime-card { background: rgba(199,125,255,.06); border-radius: 18px; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; overflow: hidden; }
+    .anime-card:hover { transform: translateY(-4px); box-shadow: var(--glow); border-color: var(--accent); }
+    .anime-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+    .anime-card .info { padding: 0.8rem; }
+    .anime-card .title { font-weight: bold; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.2rem; color: var(--text); }
+    .anime-card .meta { font-size: 0.75rem; color: var(--muted); }
 
-[data-mode=vergil] {
-  --bg-color: #03050a;
-  --bg-grad: radial-gradient(circle at 50% 0%, #0a1b4d 0%, #03050a 70%);
-  --surface: rgba(5, 10, 25, 0.7);
-  --surface-hover: rgba(10, 20, 45, 0.9);
-  --text: #d9e6ff;
-  --muted: #4d6b99;
-  --accent: #1a66ff;
-  --accent-glow: #4d88ff;
-  --border: rgba(26, 102, 255, 0.3);
-  --glow: 0 0 30px rgba(26, 102, 255, 0.6);
-  --font-main: 'JetBrains Mono', monospace;
-  --font-head: 'Oswald', sans-serif;
-  --particle-type: 'rain';
-}
+    /* Gacha */
+    .gacha-box { background: #0c051a; border-radius: var(--radius); border: 1px solid var(--border); padding: 2rem; text-align: center; box-shadow: inset 0 0 80px rgba(34,18,58,0.8); min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+    .gacha-card { background: #120822; border-radius: 14px; overflow: hidden; width: 240px; position: relative; box-shadow: var(--glow); animation: fadeSlide 0.5s ease; border: 2px solid var(--accent); }
+    .gacha-card img { width: 100%; height: 320px; object-fit: cover; }
+    .gacha-card .rarity { position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(0,0,0,0.8); padding: 0.2rem 0.8rem; border-radius: 20px; color: white; font-weight: bold; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); }
+    .gacha-card .name { position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: white; font-weight: bold; }
+    .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; margin-top: 1rem; }
+    .inv-item { background: rgba(199,125,255,.06); border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .inv-item img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+    .inv-item .info { font-size: 0.7rem; }
+    .inv-item .info strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70px; }
 
-[data-mode=saya] {
-  --bg-color: #0a0101;
-  --bg-grad: radial-gradient(circle at 50% 0%, #3d0505 0%, #0a0101 70%);
-  --surface: rgba(25, 5, 5, 0.7);
-  --surface-hover: rgba(45, 10, 10, 0.9);
-  --text: #ffcccc;
-  --muted: #993333;
-  --accent: #ff0000;
-  --accent-glow: #ff3333;
-  --border: rgba(255, 0, 0, 0.3);
-  --glow: 0 0 35px rgba(255, 0, 0, 0.6);
-  --font-head: 'Oswald', sans-serif;
-  --particle-type: 'pulse';
-}
+    /* Neko */
+    .neko-wrap { position: fixed; bottom: 1.2rem; right: 1rem; z-index: 150; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .neko-corner { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent); overflow: hidden; cursor: pointer; box-shadow: 0 0 18px rgba(255,183,197,.6); background: var(--card); }
+    .neko-corner img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; }
+    .neko-tip { background: var(--card); border-radius: 30px; padding: 0.2rem 0.8rem; font-size: 0.65rem; backdrop-filter: blur(8px); }
 
-/* ── СБРОС И БАЗА ── */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-main);
-  background: var(--bg-grad) no-repeat center center fixed;
-  background-color: var(--bg-color);
-  background-size: cover;
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  transition: all 0.6s ease;
-}
-
-#cvs { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.6; transition: opacity var(--tr); }
-
-/* ── ЛЕЙАУТ ── */
-.wrap {
-  position: relative; z-index: 2; display: flex; flex-direction: column;
-  align-items: center; padding: 2rem 1rem 6rem; gap: 1.5rem;
-}
-.container { width: 100%; max-width: 960px; display: flex; flex-direction: column; gap: 1.5rem; }
-
-/* ── ВЕРХНИЕ КНОПКИ (УПРАВЛЕНИЕ ТЕМАМИ) ── */
-.top-row {
-  position: fixed; top: 1rem; right: 1rem; display: flex; gap: 0.5rem; z-index: 300;
-}
-.tbn {
-  width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border-light);
-  background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-  cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
-  color: var(--text); transition: all var(--tr); box-shadow: var(--sh);
-}
-.tbn:hover, .tbn.active {
-  transform: translateY(-3px); border-color: var(--accent);
-  box-shadow: var(--glow); background: var(--surface-hover); color: var(--accent);
-}
-
-/* ── НАВИГАЦИЯ (ТАБЫ) ── */
-nav.tabs {
-  display: flex; gap: 0.5rem; flex-wrap: wrap; padding: 0.5rem;
-  background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-light); border-radius: 16px; box-shadow: var(--sh);
-}
-.tab {
-  flex: 1; min-width: 90px; padding: 0.8rem 1rem; border: none; cursor: pointer;
-  background: transparent; color: var(--muted); border-radius: 12px;
-  font-family: var(--font-head); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
-  text-transform: uppercase; white-space: nowrap; text-align: center; transition: all var(--tr);
-}
-.tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-.tab.active { 
-  color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-glow));
-  box-shadow: var(--glow); transform: translateY(-2px); border-color: transparent;
-}
-
-/* ── КОНТЕНТ ТАБОВ ── */
-.tc { display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
-.tc.active { display: block; }
-@keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-
-/* ── КАРТОЧКИ (СТЕКЛО) ── */
-.card {
-  background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-light); border-radius: var(--r);
-  padding: 2.5rem; box-shadow: var(--sh); position: relative; overflow: hidden;
-}
-.card::before {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6;
-}
-
-/* ── ЗАГОЛОВКИ СЕКЦИЙ ── */
-.stitle {
-  font-family: var(--font-head); font-size: 1.1rem; font-weight: 900; color: var(--text);
-  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;
-}
-.stitle i { color: var(--accent); font-style: normal; font-size: 1.3em; text-shadow: var(--glow); }
-.stitle::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
-
-/* ── ПРОФИЛЬ (МИНИМАЛИЗМ) ── */
-.profile { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; text-align: center; }
-.avatar-wrap { position: relative; width: 140px; height: 140px; }
-.avatar-ring {
-  position: absolute; inset: -4px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), transparent, var(--accent-glow));
-  animation: spinRing 5s linear infinite; z-index: 0; opacity: 0.8;
-}
-@keyframes spinRing { to { transform: rotate(360deg); } }
-.avatar-img {
-  position: relative; width: 100%; height: 100%; border-radius: 50%;
-  object-fit: cover; border: 3px solid var(--bg-color); z-index: 1;
-  background-color: var(--surface); box-shadow: var(--sh);
-}
-.bio-name { font-family: var(--font-head); font-size: 2.2rem; font-weight: 900; color: var(--text); letter-spacing: -0.02em; text-shadow: var(--glow); }
-.badges { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-top: 0.5rem; }
-.badge {
-  padding: 0.4rem 1rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.7rem;
-  font-weight: 700; letter-spacing: 0.05em; color: var(--accent); text-transform: uppercase;
-  background: rgba(0,0,0,0.2); border: 1px solid var(--border); transition: all 0.3s ease;
-}
-.badge:hover { background: var(--accent); color: #fff; box-shadow: var(--glow); transform: translateY(-2px); }
-
-/* ── СТАТИСТИКА ── */
-.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 2.5rem; }
-.stat {
-  background: rgba(0,0,0,0.2); border: 1px solid var(--border-light); border-radius: 12px;
-  padding: 1.5rem 1rem; text-align: center; transition: all 0.3s ease;
-}
-.stat:hover { border-color: var(--accent); transform: translateY(-3px); background: rgba(0,0,0,0.4); box-shadow: var(--glow); }
-.stat-val { font-family: var(--font-head); font-size: 2rem; font-weight: 900; color: var(--text); display: block; line-height: 1; }
-.stat-lbl { font-size: 0.7rem; color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.1em; margin-top: 0.6rem; display: block; text-transform: uppercase;}
-
-/* ── СТИХИ / ЗАПИСИ ── */
-.poems-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; height: 600px; }
-@media (max-width: 768px) { .poems-wrap { grid-template-columns: 1fr; height: auto; display: flex; flex-direction: column;} }
-
-.poems-list-panel {
-  background: rgba(0,0,0,0.2); border: 1px solid var(--border-light); border-radius: 16px;
-  display: flex; flex-direction: column; overflow: hidden; height: 100%; max-height: 600px;
-}
-.plp-head {
-  padding: 1.2rem; border-bottom: 1px solid var(--border-light);
-  font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text);
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; font-weight: 700;
-}
-.plp-search {
-  width: calc(100% - 1.5rem); margin: 0.75rem; padding: 0.8rem 1rem; background: rgba(0,0,0,0.4);
-  border: 1px solid var(--border-light); border-radius: 10px; color: var(--text);
-  font-size: 0.85rem; font-family: var(--font-main); outline: none; transition: all var(--tr);
-}
-.plp-search:focus { border-color: var(--accent); box-shadow: inset 0 0 10px rgba(178, 77, 255, 0.1); }
-.plp-inner { overflow-y: auto; flex: 1; padding: 0.5rem; }
-
-.pli {
-  padding: 1rem; border-radius: 10px; cursor: pointer;
-  border: 1px solid transparent; margin-bottom: 0.4rem; transition: all var(--tr);
-}
-.pli:hover { background: rgba(255,255,255,0.05); }
-.pli.active { background: rgba(178, 77, 255, 0.15); border-color: var(--border); border-left: 4px solid var(--accent); }
-.pli-title { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 0.3rem; font-family: var(--font-head); }
-.pli-meta { font-size: 0.7rem; color: var(--muted); font-family: var(--font-mono); }
-
-.poem-reader {
-  background: rgba(0,0,0,0.2); border: 1px solid var(--border-light); border-radius: 16px;
-  padding: 2rem; display: flex; flex-direction: column; overflow: hidden; position: relative;
-  min-height: 400px;
-}
-.pr-empty {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 1rem; color: var(--muted); font-family: var(--font-mono); font-size: 0.85rem; text-align: center;
-}
-.pr-empty-icon { font-size: 3.5rem; opacity: 0.3; }
-.pr-head { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
-.pr-title { font-family: var(--font-head); font-size: 1.6rem; color: var(--text); margin-bottom: 0.5rem; font-weight: 900; text-shadow: var(--glow); }
-.pr-meta { font-size: 0.8rem; color: var(--accent); font-family: var(--font-mono); }
-.pr-text {
-  font-family: var(--font-main); font-size: 1rem; line-height: 1.8; color: var(--text);
-  white-space: pre-line; flex: 1; overflow-y: auto; padding-right: 1rem;
-}
-.pr-nav {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-light); flex-shrink: 0;
-}
-
-/* ── ГАЧА СИСТЕМА ── */
-.gacha-hdr { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-.gems-badge {
-  background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 12px;
-  padding: 0.8rem 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
-  display: flex; align-items: center; gap: 0.8rem; color: var(--text);
-}
-.gems-val { color: var(--accent); font-size: 1.3rem; text-shadow: var(--glow); }
-.farm-btn {
-  width: 50px; height: 50px; border-radius: 12px; border: none; cursor: pointer; font-size: 1.5rem;
-  background: linear-gradient(135deg, var(--accent), var(--accent-glow)); color: #fff;
-  transition: all var(--tr); display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--sh);
-}
-.farm-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: var(--glow); }
-.farm-btn:active { transform: scale(0.95); }
-
-.gacha-filters { display: flex; gap: 0.8rem; overflow-x: auto; padding-bottom: 1rem; margin-bottom: 1rem; scrollbar-width: none; }
-.gacha-filters::-webkit-scrollbar { display: none; }
-.g-filt {
-  padding: 0.8rem 1.5rem; border-radius: 10px; background: rgba(0,0,0,0.3);
-  border: 1px solid var(--border-light); color: var(--muted); cursor: pointer;
-  white-space: nowrap; transition: all var(--tr); font-family: var(--font-head); font-size: 0.8rem; font-weight: 700;
-}
-.g-filt:hover { border-color: var(--accent); color: var(--text); }
-.g-filt.active { background: var(--accent); color: #fff; box-shadow: var(--glow); border-color: transparent; }
-
-.stage {
-  width: 100%; min-height: 300px; border-radius: 16px; border: 2px dashed var(--border-light);
-  background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;
-  padding: 1.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; transition: all var(--tr);
-}
-.stage.active { border-color: var(--accent); border-style: solid; background: rgba(0, 0, 0, 0.4); box-shadow: inset var(--glow); }
-.stage-hint { font-family: var(--font-mono); font-size: 0.9rem; letter-spacing: 0.1em; color: var(--muted); text-align: center; }
-.stage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; width: 100%; }
-
-.result-card-wrap { position: relative; width: 100%; aspect-ratio: 2/3; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; }
-@keyframes popIn { 0% { opacity: 0; transform: scale(0.5) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-.result-card-wrap img {
-  width: 100%; height: 100%; object-fit: cover; border-radius: 10px;
-  border: 3px solid; cursor: pointer; transition: all var(--tr); background: var(--bg-color);
-}
-.result-card-wrap:hover img { transform: scale(1.05) translateY(-5px); }
-.rc-badge {
-  position: absolute; top: -10px; right: -10px; color: #fff; font-family: var(--font-head);
-  font-size: 0.75rem; font-weight: 900; padding: 4px 10px; border-radius: 6px;
-  z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}
-
-.pull-btns { display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap; }
-.btn {
-  border: none; cursor: pointer; font-family: var(--font-head); font-weight: 700;
-  font-size: 0.85rem; letter-spacing: 0.05em; padding: 1rem 2rem;
-  border-radius: 12px; transition: all var(--tr); display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase;
-}
-.btn-p { background: linear-gradient(135deg, var(--accent), var(--accent-glow)); color: #fff; box-shadow: var(--glow); }
-.btn-g { background: linear-gradient(135deg, #ffb700, #ff6200); color: #fff; box-shadow: 0 0 20px rgba(255, 98, 0, 0.4); }
-.btn-o { background: rgba(0,0,0,0.3); border: 1px solid var(--border-light); color: var(--text); }
-.btn-o:hover { border-color: var(--accent); background: rgba(0,0,0,0.5); }
-.btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
-.btn:active { transform: scale(0.96); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
-
-.inv-hdr {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 1.5rem; border-top: 1px solid var(--border-light); margin-bottom: 1.5rem;
-}
-.inv-hdr span { font-family: var(--font-head); font-size: 0.9rem; color: var(--text); font-weight: 700; text-transform: uppercase; }
-.inv-clear { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; font-family: var(--font-mono); transition: color var(--tr); }
-.inv-clear:hover { color: #ff4444; }
-
-.inv-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 12px; max-height: 400px; overflow-y: auto; padding: 0.5rem; padding-right: 10px;
-}
-.inv-item { position: relative; cursor: pointer; border-radius: 8px; }
-.inv-item img {
-  width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px;
-  transition: all var(--tr); border: 2px solid transparent; background: rgba(0,0,0,0.3);
-}
-.inv-item:hover img { transform: scale(1.08) translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-.inv-cnt {
-  position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2);
-  color: #fff; font-size: 0.65rem; font-family: var(--font-mono); padding: 2px 6px; border-radius: 6px; z-index: 2;
-}
-.inv-rarity {
-  position: absolute; top: 4px; left: 4px; color: #fff; font-size: 0.55rem;
-  font-family: var(--font-head); font-weight: 900; padding: 2px 5px; border-radius: 4px;
-  z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-}
-
-/* ── IP И OSINT ── */
-.ip-card {
-  font-family: var(--font-mono); font-size: 0.9rem; line-height: 2.2;
-  background: rgba(0,0,0,0.3); border: 1px solid var(--border-light);
-  border-radius: 12px; padding: 1.5rem;
-}
-.ip-row { display: flex; gap: 1rem; align-items: baseline; flex-wrap: wrap; border-bottom: 1px dashed rgba(255,255,255,0.05); padding: 0.5rem 0; }
-.ip-row:last-child { border-bottom: none; }
-.ip-key { color: var(--muted); min-width: 130px; font-size: 0.8rem; text-transform: uppercase;}
-.ip-val { color: var(--text); font-weight: 700; }
-
-.input-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.inp {
-  flex: 1; min-width: 200px; padding: 1rem 1.2rem; background: rgba(0,0,0,0.4);
-  border: 1px solid var(--border-light); border-radius: 10px; color: var(--text);
-  font-family: var(--font-mono); font-size: 0.9rem; outline: none; transition: all var(--tr);
-}
-.inp:focus { border-color: var(--accent); box-shadow: inset 0 0 10px rgba(178,77,255,0.1); }
-.osint-out {
-  background: #000; border: 1px solid var(--border-light); border-radius: 10px;
-  padding: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;
-  white-space: pre-wrap; max-height: 400px; overflow-y: auto; color: #00ff00;
-  display: none; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-}
-.osint-out.show { display: block; animation: slideUp 0.3s ease; }
-
-/* ── ГАЛЕРЕЯ ── */
-.gal-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px;
-}
-.gal-grid img {
-  width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 10px;
-  cursor: pointer; transition: all var(--tr); border: 2px solid transparent; background: rgba(0,0,0,0.3);
-}
-.gal-grid img:hover { transform: scale(1.05) translateY(-5px); border-color: var(--accent); box-shadow: var(--glow); }
-
-/* ── ЛОАДЕРЫ И СИСТЕМНОЕ ── */
-.loader {
-  width: 45px; height: 45px; border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent);
-  animation: spin 0.8s ease-in-out infinite; margin: 2rem auto;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-  z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
-}
-.modal.open { display: flex; opacity: 1; }
-.modal img { max-width: 90vw; max-height: 85vh; border-radius: 12px; border: 2px solid var(--border); box-shadow: var(--glow); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.modal.open img { transform: scale(1); }
-.modal-x {
-  position: absolute; top: 20px; right: 30px; font-size: 2.5rem; color: #fff;
-  cursor: pointer; transition: all var(--tr); z-index: 10000; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-.modal-x:hover { color: var(--accent); transform: scale(1.1) rotate(90deg); }
-
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 6px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-@media (max-width: 600px) {
-  .card { padding: 1.5rem; }
-  .bio-name { font-size: 1.8rem; }
-  .tab { font-size: 0.65rem; padding: 0.8rem 0.5rem; min-width: 80px; }
-  .btn { width: 100%; justify-content: center; }
-}
-</style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
-
-<canvas id="cvs"></canvas>
-
-<!-- ВЕРХНИЕ КНОПКИ УПРАВЛЕНИЯ ТЕМАМИ -->
-<div class="top-row">
-  <button class="tbn" id="btnTheme" title="Сменить тему (Dark/Light)">🌗</button>
-  <button class="tbn" id="btnVergil" title="Vergil Mode">🗡️</button>
-  <button class="tbn" id="btnSaya" title="Saya Mode">🩸</button>
+<div id="vfx-bg" style="position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;"></div>
+<div class="fixed-top">
+  <button class="icon-btn" id="themeToggle" aria-label="Сменить тему">🌸</button>
+  <button class="icon-btn" id="animeModeBtn" aria-label="Аниме-режим">✨</button>
 </div>
 
-<div class="wrap">
-<div class="container">
+<div class="neko-wrap">
+  <div class="neko-corner" id="nekoCorner">
+    <img id="nekoImg" src="" alt="random neko" style="opacity:0;">
+  </div>
+  <div class="neko-tip">🐱 нажми для котика!</div>
+</div>
 
-<!-- НАВИГАЦИЯ -->
-<nav class="tabs">
-  <button class="tab active" data-tab="bio">Профиль</button>
-  <button class="tab" data-tab="poems">Архив</button>
-  <button class="tab" data-tab="gacha">Гача</button>
-  <button class="tab" data-tab="ip">Сеть</button>
-  <button class="tab" data-tab="osint">OSINT</button>
-  <button class="tab" data-tab="gallery">Медиа</button>
-</nav>
-
-<!-- ═══ ПРОФИЛЬ ═══ -->
-<div class="tc active" id="tc-bio">
-  <div class="card">
-    <div class="profile">
-      <div class="avatar-wrap">
-        <div class="avatar-ring"></div>
-        <!-- Аватар будет загружен через API при старте -->
-        <img class="avatar-img" id="avaImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Аватар">
-      </div>
-      <div>
-        <div class="bio-name">GOD_AE86</div>
-        <div class="badges">
-          <span class="badge">Creator</span>
-          <span class="badge">Writer</span>
-          <span class="badge">Gacha Player</span>
-        </div>
-      </div>
-    </div>
-    <div class="stats-row">
-      <div class="stat"><span class="stat-val" id="poemStatVal">0</span><span class="stat-lbl">ЗАПИСЕЙ</span></div>
-      <div class="stat"><span class="stat-val" id="gemStatVal">0</span><span class="stat-lbl">КРИСТАЛЛОВ</span></div>
-      <div class="stat"><span class="stat-val" id="invStatVal">0</span><span class="stat-lbl">В ИНВЕНТАРЕ</span></div>
+<div class="page-wrap"><div class="container">
+  <!-- Tabs -->
+  <div class="tabs-wrapper">
+    <div class="tablist" id="tablist">
+      <button class="tab-btn active" data-tab="bio">🌸 Био</button>
+      <button class="tab-btn" data-tab="spammer">⚡ Спамер</button>
+      <button class="tab-btn" data-tab="gallery">🎴 Галерея</button>
+      <button class="tab-btn" data-tab="anime">🎌 Аниме</button>
+      <button class="tab-btn" data-tab="gacha">✨ Гача</button>
     </div>
   </div>
-</div>
 
-<!-- ═══ СТИХИ / ЗАПИСИ ═══ -->
-<div class="tc" id="tc-poems">
-  <div class="card">
-    <div class="stitle"><i>📜</i> Архивы Сознания</div>
-    <div class="poems-wrap">
-      
-      <!-- Список -->
-      <div class="poems-list-panel">
-        <div class="plp-head">
-          <span>БАЗА ДАННЫХ</span>
-          <span id="plpCount" style="color:var(--accent);">...</span>
+  <!-- BIO -->
+  <div class="tab-panel active" id="panel-bio">
+    <div class="card">
+      <div class="profile">
+        <div class="avatar-wrap">
+          <div class="avatar"><img id="avatarImg" src="" alt="GOD_AE86"></div>
+          <div class="avatar-ring"></div>
+          <div class="avatar-ring2"></div>
         </div>
         <div>
-          <input class="plp-search" id="poemSearch" placeholder="Поиск по названию или тексту...">
-        </div>
-        <div class="plp-inner" id="poemList">
-            <div style="padding:1rem; text-align:center; color:var(--muted); font-size:0.85rem;">Ожидание загрузки модуля poems.js...</div>
-        </div>
-      </div>
-
-      <!-- Ридер -->
-      <div class="poem-reader" id="poemReader">
-        <div class="pr-empty" id="prEmpty">
-          <div class="pr-empty-icon">📁</div>
-          <div>Выберите запись из базы данных</div>
-        </div>
-        <div id="prContent" style="display:none; flex-direction:column; height:100%;">
-          <div class="pr-head">
-            <div class="pr-title" id="prTitle"></div>
-            <div class="pr-meta" id="prMeta"></div>
+          <div class="bio-name">GOD_AE86</div>
+          <div style="color:var(--muted); font-weight:bold; margin-bottom:0.8rem; text-transform: uppercase; font-size: 0.9rem;">@resivert</div>
+          <div style="font-weight:bold; margin-bottom:0.8rem; color:var(--text);">аниме-вайб ✦ тексты ✦ батлы ✦ неко-спамер</div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">🌸 аниме</span>
+            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">🎤 батлы</span>
+            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">🐾 неко</span>
+            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">⚡ спамер</span>
           </div>
-          <div class="pr-text" id="prText"></div>
-          <div class="pr-nav">
-            <button class="btn btn-o" id="prPrev" onclick="shiftPoem(-1)">← Пред.</button>
-            <span class="pr-count" id="prCount" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);"></span>
-            <button class="btn btn-o" id="prNext" onclick="shiftPoem(1)">След. →</button>
+          <div style="background:rgba(199,125,255,.1); border-left:3px solid var(--purple); padding:1rem; border-radius:8px; margin-top:1rem;">
+             <div id="quoteText" style="font-style:italic;">...</div>
+             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+               <div id="quoteSrc" style="font-size:0.75rem; color:var(--muted); font-weight:bold;"></div>
+               <button id="newQuoteBtn" class="btn-outline" style="padding:0.3rem 0.8rem; font-size:0.7rem;">🔄 новая</button>
+             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
-</div>
 
-<!-- ═══ ГАЧА ═══ -->
-<div class="tc" id="tc-gacha">
-  <div class="card">
-    <div class="stitle"><i>🎲</i> Gacha Terminal</div>
-    <div class="gacha-hdr">
-      <div class="gems-badge">💎 <span class="gems-val" id="gemsVal">0</span> </div>
-      <button class="farm-btn" onclick="farm()" title="Фарм кристаллов (+10 💎)">✨</button>
+  <!-- SPAMMER -->
+  <div class="tab-panel" id="panel-spammer">
+    <div class="card">
+      <h2 style="font-family:var(--fh); color:var(--accent); margin-bottom:1rem;">⚡ Remote Terminal Injector</h2>
+      <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1rem;">* Демо имитация стресс-тестирования</p>
+      
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+        <div>
+          <label style="display:block; font-size:0.75rem; color:var(--accent); font-weight:bold; margin-bottom:0.3rem;">📱 Номер жертвы</label>
+          <input type="text" id="spamPhone" placeholder="+79001234567">
+        </div>
+        <div style="display:flex; gap:1rem;">
+           <div style="flex:1;">
+             <label style="display:block; font-size:0.75rem; color:var(--accent); font-weight:bold; margin-bottom:0.3rem;">⏱️ Задержка (с)</label>
+             <input type="number" id="spamDelay" value="0.8" step="0.1">
+           </div>
+           <div style="flex:1;">
+             <label style="display:block; font-size:0.75rem; color:var(--accent); font-weight:bold; margin-bottom:0.3rem;">🔄 Циклы</label>
+             <input type="number" id="spamCycles" value="5">
+           </div>
+        </div>
+      </div>
+      
+      <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+        <button class="btn btn-primary" id="startSpamBtn" style="flex:1;">▶ НАЧАТЬ АТАКУ</button>
+        <button class="btn btn-outline" id="stopSpamBtn" style="flex:1; border-color:#ff607e; color:#ff607e;">⏹ ПРЕРВАТЬ</button>
+      </div>
+      
+      <div class="log" id="spamLog">
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.5rem;">
+          <strong>SYSTEM LOG</strong>
+          <button id="clearSpamBtn" style="background:none;border:none;color:var(--accent);cursor:pointer;font-weight:bold;">Очистить</button>
+        </div>
+        <div id="spamLogLines"></div>
+      </div>
     </div>
-
-    <div class="gacha-filters" id="gachaFilters">
-      <button class="g-filt active" data-pool="waifu">Вайфу</button>
-      <button class="g-filt" data-pool="neko">Неко</button>
-      <button class="g-filt" data-pool="kitsune">Кицунэ</button>
-      <button class="g-filt" data-pool="husbando">Хасбандо</button>
-    </div>
-
-    <div class="stage" id="stage">
-      <div class="stage-hint" id="stageHint">ТЕРМИНАЛ ГОТОВ. ОЖИДАНИЕ КРУТКИ.</div>
-      <div class="loader" id="stageLoader" style="display:none"></div>
-      <div class="stage-grid" id="stageGrid" style="display:none"></div>
-    </div>
-
-    <div class="pull-btns">
-      <button class="btn btn-p" id="pull1" onclick="pull(1)">Сингл Крутка (100 💎)</button>
-      <button class="btn btn-g" id="pull10" onclick="pull(10)">Мульти ×10 (900 💎)</button>
-    </div>
-
-    <div class="inv-hdr">
-      <span>🎒 Инвентарь (<span id="invCount">0</span>)</span>
-      <button class="inv-clear" onclick="clearInv()">Очистить базу</button>
-    </div>
-    <div class="inv-grid" id="invGrid"></div>
   </div>
-</div>
 
-<!-- ═══ IP ═══ -->
-<div class="tc" id="tc-ip">
-  <div class="card">
-    <div class="stitle"><i>🔍</i> Сетевая сводка</div>
-    <div class="ip-card" id="ipCard">
-      <div class="loader"></div>
+  <!-- GALLERY -->
+  <div class="tab-panel" id="panel-gallery">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
+        <h2 style="font-family:var(--fh); color:var(--accent);">🎴 Арт Галерея</h2>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;" id="galCats">
+          <button class="btn btn-primary" data-cat="waifu">waifu</button>
+          <button class="btn btn-outline" data-cat="neko">neko</button>
+          <button class="btn btn-outline" data-cat="kitsune">kitsune</button>
+          <button class="btn btn-outline" data-cat="husbando">husbando</button>
+        </div>
+        <button class="btn btn-primary" id="reloadGalBtn">🔄 Обновить</button>
+      </div>
+      <div id="galleryGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:1rem;"></div>
     </div>
-    <button class="btn btn-o" onclick="loadIP()" style="margin-top:1.5rem; width:100%; justify-content:center;">Запросить данные заново</button>
   </div>
-</div>
 
-<!-- ═══ OSINT ═══ -->
-<div class="tc" id="tc-osint">
-  <div class="card">
-    <div class="stitle"><i>🕵️</i> Whois Scanner</div>
-    <div class="input-row">
-      <input class="inp" id="osintQ" placeholder="IP или домен (например: google.com)" onkeydown="if(event.key==='Enter')doOsint()">
-      <button class="btn btn-p" onclick="doOsint()">Сканировать</button>
+  <!-- ANIME PLAYER -->
+  <div class="tab-panel" id="panel-anime">
+    <div class="card">
+      <!-- CATALOG VIEW -->
+      <div id="animeCatalogView">
+        <h2 style="font-family:var(--fh); color:var(--accent); margin-bottom:1rem;">🎌 Аниме-плеер</h2>
+        <form id="animeSearchForm" style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+          <input type="search" id="animeSearch" placeholder="Поиск (на русском или англ)..." style="flex:1;">
+          <button type="submit" class="btn btn-primary">🔍 Поиск</button>
+        </form>
+        <div id="animeCatalogStatus" style="text-align:center; color:var(--muted); margin-bottom:1rem; font-weight:bold;"></div>
+        <div id="animeResults" class="anime-grid"></div>
+      </div>
+      
+      <!-- PLAYER VIEW -->
+      <div id="animePlayerView" style="display:none;">
+        <button class="btn btn-outline" id="backToCatalogAnime" style="margin-bottom:1rem;">← Вернуться в каталог</button>
+        
+        <!-- Anime Details Info Box -->
+        <div id="animeInfoBox" style="display:flex; gap:1.5rem; margin-bottom:1.5rem; align-items:flex-start; flex-wrap:wrap; background:rgba(34,18,58,0.5); padding:1rem; border-radius:var(--radius); border:1px solid var(--border);">
+          <img id="apPoster" src="" style="width:140px; height:200px; object-fit:cover; border-radius:12px; box-shadow:var(--shadow);">
+          <div style="flex:1; min-width:200px;">
+            <h2 id="apTitle" style="color:var(--accent); font-weight:bold; font-family:var(--fh); margin-bottom:0.3rem;"></h2>
+            <div id="apEngTitle" style="color:var(--muted); font-size:0.85rem; margin-bottom:0.8rem;"></div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.8rem;" id="apGenres"></div>
+            <div id="apDesc" style="font-size:0.8rem; line-height:1.5; color:var(--text); max-height:100px; overflow-y:auto; padding-right:5px;"></div>
+          </div>
+        </div>
+
+        <div id="animePlayerStatus" style="color:var(--muted); margin-bottom:1rem; font-weight:bold;"></div>
+        
+        <h3 id="episodesTitle" style="margin-bottom:0.5rem; display:none; color:var(--accent); font-family:var(--fh);">Серии:</h3>
+        <div id="animeEpisodes" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(70px, 1fr)); gap:0.5rem; margin-bottom:1rem; max-height:200px; overflow-y:auto; padding-right:5px;"></div>
+        
+        <div id="videoContainer" style="display:none; position:relative; background:#000; border-radius:18px; overflow:hidden; aspect-ratio:16/9; box-shadow:var(--shadow);">
+          <div style="position:absolute; top:0.8rem; right:0.8rem; z-index:10; display:flex; gap:0.5rem;">
+            <select id="videoQuality" class="btn-outline" style="background:rgba(0,0,0,0.7); color:white; border:1px solid var(--border); border-radius:8px; padding:0.3rem 0.6rem; font-size:0.8rem; outline:none; cursor:pointer;">
+              <option value="hls_1080">1080p</option>
+              <option value="hls_720" selected>720p</option>
+              <option value="hls_480">480p</option>
+            </select>
+          </div>
+          <video id="hlsVideo" controls playsinline style="width:100%; height:100%; object-fit:contain;"></video>
+        </div>
+      </div>
     </div>
-    <div class="osint-out" id="osintOut"></div>
   </div>
-</div>
 
-<!-- ═══ ГАЛЕРЕЯ ═══ -->
-<div class="tc" id="tc-gallery">
-  <div class="card">
-    <div class="stitle"><i>🖼</i> Медиа-репозиторий</div>
-    <div class="gal-grid" id="galGrid"></div>
-    <div id="galLoader" style="padding:2rem; display:none;"><div class="loader"></div></div>
-    <button class="btn btn-o" onclick="loadGal()" style="margin-top:1.5rem; width:100%; justify-content:center;">Подгрузить медиа</button>
+  <!-- GACHA -->
+  <div class="tab-panel" id="panel-gacha">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--border);">
+        <div style="font-family:var(--fh); color:var(--accent); display:flex; align-items:center; gap:0.5rem;">
+          <span style="font-size:1.5rem;">🪙</span> <span id="coinsCount" style="font-size:1.2rem;">1000</span> монет
+        </div>
+        <button class="btn btn-outline" id="dailyRewardBtn">+ Ежедневный бонус</button>
+      </div>
+
+      <div class="gacha-box">
+        <div id="gachaResultContainer" style="display:none; margin-bottom:2rem;"></div>
+        <button class="btn btn-primary" id="rollGachaBtn" style="padding:1rem 2rem; font-size:1.1rem; border-radius:30px; box-shadow:0 0 30px rgba(255,183,197,0.5);">
+          ✨ ПРИЗЫВ (100)
+        </button>
+      </div>
+
+      <h3 style="margin-top:2rem; margin-bottom:1rem; font-family:var(--fh); font-size:1rem; color:var(--muted);">🎒 Инвентарь:</h3>
+      <div class="inventory" id="gachaInventory"></div>
+    </div>
   </div>
-</div>
 
-</div>
-</div>
-
-<!-- МОДАЛЬНОЕ ОКНО -->
-<div class="modal" id="modal" onclick="closeModal()">
-  <span class="modal-x" onclick="closeModal()">✕</span>
-  <img id="modalImg" src="" onclick="event.stopPropagation()" alt="Full view">
-</div>
+</div></div>
 
 <script>
-'use strict';
+// ---------- Core System ----------
+const state = {
+  theme: localStorage.getItem('theme') || 'dark',
+  animeMode: false,
+  coins: parseInt(localStorage.getItem('coins')) || 1000,
+  inventory: JSON.parse(localStorage.getItem('inventory')) || []
+};
 
-/* ─────── ЧАСТИЦЫ (АДАПТИВНЫЕ ПОД ТЕМУ) ─────── */
-const cvs = document.getElementById('cvs');
-const cx = cvs.getContext('2d');
-let pts = [];
+// Toggle Theme
+const html = document.documentElement;
+html.setAttribute('data-theme', state.theme);
+document.getElementById('themeToggle').textContent = state.theme === 'dark' ? '🌸' : '🌙';
+document.getElementById('themeToggle').addEventListener('click', () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', state.theme);
+  localStorage.setItem('theme', state.theme);
+  document.getElementById('themeToggle').textContent = state.theme === 'dark' ? '🌸' : '🌙';
+});
 
-function initPts() {
-  cvs.width = window.innerWidth; 
-  cvs.height = window.innerHeight;
-  pts = Array.from({length: 60}, () => createParticle());
-}
-
-function createParticle() {
-    return {
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        r: Math.random() * 2 + 0.5,
-        vy: Math.random() * 1 + 0.2,
-        vx: (Math.random() - 0.5) * 0.5,
-        o: Math.random() * 0.5 + 0.1,
-        life: 0,
-        maxLife: Math.random() * 100 + 50
-    };
-}
-
-function drawPts() {
-  cx.clearRect(0, 0, cvs.width, cvs.height);
-  const rootStyle = getComputedStyle(document.documentElement);
-  const col = rootStyle.getPropertyValue('--accent').trim() || '#b24dff';
-  const pType = rootStyle.getPropertyValue('--particle-type').trim() || 'normal';
-  
-  // Конвертация HEX в RGB
-  let r=178, g=77, b=255;
-  if(col.startsWith('#') && col.length >= 7) {
-       r = parseInt(col.slice(1,3), 16);
-       g = parseInt(col.slice(3,5), 16);
-       b = parseInt(col.slice(5,7), 16);
+// Toggle Anime Mode
+const vfx = document.getElementById('vfx-bg');
+function renderVFX() {
+  vfx.innerHTML = '';
+  const count = state.animeMode ? 38 : 22;
+  for(let i=0; i<count; i++) {
+    const el = document.createElement('div');
+    const size = state.animeMode ? 2 + Math.random()*6 : 8 + Math.random()*12;
+    el.className = state.animeMode ? 'star-vfx' : 'petal';
+    el.style.left = `${Math.random()*100}vw`;
+    el.style.width = `${size}px`;
+    el.style.height = state.animeMode ? `${size}px` : `${size+4}px`;
+    el.style.animationDuration = `${(state.animeMode?3:6) + Math.random()*(state.animeMode?8:12)}s`;
+    el.style.animationDelay = `${Math.random()*5}s`;
+    vfx.appendChild(el);
   }
+}
+document.getElementById('animeModeBtn').addEventListener('click', () => {
+  state.animeMode = !state.animeMode;
+  html.setAttribute('data-anime', state.animeMode ? 'on' : 'off');
+  document.getElementById('animeModeBtn').textContent = state.animeMode ? '💫' : '✨';
+  renderVFX();
+});
+renderVFX();
 
-  pts.forEach(p => {
-    cx.beginPath(); 
+// Tabs Logic
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const target = 'panel-' + btn.getAttribute('data-tab');
+    document.getElementById(target).classList.add('active');
     
-    if(pType === "'rain'") {
-        // Эффект дождя / скорости (Vergil)
-        cx.moveTo(p.x, p.y);
-        cx.lineTo(p.x + p.vx * 2, p.y - p.vy * 10);
-        cx.strokeStyle = `rgba(${r},${g},${b},${p.o})`;
-        cx.lineWidth = p.r / 2;
-        cx.stroke();
-        p.y += p.vy * 5; 
-        p.x -= p.vx * 2;
-    } else if (pType === "'pulse'") {
-        // Эффект пульсации / крови (Saya)
-        p.life++;
-        let pulseR = p.r + Math.sin(p.life * 0.05) * 2;
-        if(pulseR < 0.1) pulseR = 0.1;
-        cx.arc(p.x, p.y, pulseR, 0, Math.PI * 2);
-        cx.fillStyle = `rgba(${r},${g},${b},${p.o})`;
-        cx.fill();
-        p.y -= p.vy * 0.2; 
-        p.x += Math.sin(p.life * 0.02) * 0.5;
-    } else {
-        // Обычные летящие частицы
-        cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        cx.fillStyle = `rgba(${r},${g},${b},${p.o})`;
-        cx.fill();
-        p.y -= p.vy; 
-        p.x += p.vx;
+    // Lazy load panels on first click
+    if(btn.getAttribute('data-tab') === 'anime' && !window.animeLoaded) { fetchTopAnime(); window.animeLoaded = true; }
+    if(btn.getAttribute('data-tab') === 'gallery' && !window.galleryLoaded) { fetchGallery('waifu'); window.galleryLoaded = true; }
+    if(btn.getAttribute('data-tab') === 'gacha' && !window.gachaLoaded) { renderInventory(); updateCoins(); window.gachaLoaded = true; }
+  });
+});
+
+// ---------- Neko Corner ----------
+const nekoImg = document.getElementById('nekoImg');
+async function fetchNeko() {
+  nekoImg.style.opacity = '0.3';
+  try {
+    const res = await fetch('https://api.waifu.pics/sfw/neko');
+    const data = await res.json();
+    if(data.url) { nekoImg.src = data.url; nekoImg.style.opacity = '1'; }
+  } catch(e) {}
+}
+document.getElementById('nekoCorner').addEventListener('click', fetchNeko);
+fetchNeko();
+setInterval(fetchNeko, 45000);
+
+// ---------- Bio ----------
+(async () => {
+  try {
+    const res = await fetch('https://api.waifu.pics/sfw/waifu');
+    const data = await res.json();
+    if(data.url) document.getElementById('avatarImg').src = data.url;
+  } catch(e){}
+})();
+
+const quotes = [
+  {q:'Если не веришь в себя, то и не стоит начинать.',c:'Макака',a:'Доктор Стоун'},
+  {q:'Настоящая сила — в умении защищать.',c:'Аска',a:'Евангелион'},
+  {q:'Неважно, сколько у тебя таланта. Главное — желание.',c:'Мидория',a:'Моя геройская академия'},
+  {q:'Даже в самой глубокой тьме можно найти свет.',c:'Тандзиро',a:'Клинок, рассекающий демонов'}
+];
+function updateQuote() {
+  const q = quotes[Math.floor(Math.random()*quotes.length)];
+  document.getElementById('quoteText').textContent = `"${q.q}"`;
+  document.getElementById('quoteSrc').textContent = `— ${q.c} · ${q.a}`;
+}
+updateQuote();
+document.getElementById('newQuoteBtn').addEventListener('click', updateQuote);
+
+// ---------- Spammer ----------
+const spamLog = document.getElementById('spamLogLines');
+const spamLogScroll = document.getElementById('spamLog');
+let spamInt = null;
+
+function addLog(msg, type='info') {
+  const d = document.createElement('div');
+  d.style.color = type==='err' ? '#ff607e' : (type==='ok' ? '#a8edea' : '#d0b0e4');
+  d.style.marginBottom = '2px';
+  d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  spamLog.appendChild(d);
+  spamLogScroll.scrollTop = spamLogScroll.scrollHeight;
+}
+
+document.getElementById('clearSpamBtn').addEventListener('click', () => spamLog.innerHTML = '');
+
+document.getElementById('startSpamBtn').addEventListener('click', () => {
+  if(spamInt) return;
+  const phone = document.getElementById('spamPhone').value.trim() || "+79001234567";
+  const delay = parseFloat(document.getElementById('spamDelay').value) || 0.8;
+  const cycles = parseInt(document.getElementById('spamCycles').value) || 5;
+  
+  addLog(`Запуск сессии стресс-тестирования на: ${phone}`);
+  let c = 0;
+  
+  spamInt = setInterval(() => {
+    c++;
+    if(cycles > 0 && c > cycles) {
+      clearInterval(spamInt);
+      spamInt = null;
+      addLog('Атака успешно завершена.', 'ok');
+      return;
+    }
+    addLog(`[Цикл ${c}] Подготовка инъекций...`);
+    setTimeout(() => { if(spamInt) addLog(`[Цикл ${c}] Telegram Auth -> OK`, 'ok'); }, 200*delay);
+    setTimeout(() => { if(spamInt) addLog(`[Цикл ${c}] VK Gateway -> 429 Limit`, 'err'); }, 500*delay);
+  }, delay*1000 + 600);
+});
+
+document.getElementById('stopSpamBtn').addEventListener('click', () => {
+  if(spamInt) {
+    clearInterval(spamInt);
+    spamInt = null;
+    addLog('Прервано пользователем', 'err');
+  }
+});
+
+// ---------- Gallery ----------
+let currentGalCat = 'waifu';
+async function fetchGallery(cat) {
+  currentGalCat = cat;
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '<div style="color:var(--muted); text-align:center; grid-column:1/-1;">Загрузка галереи...</div>';
+  
+  // update buttons
+  document.querySelectorAll('#galCats button').forEach(b => {
+    b.className = b.getAttribute('data-cat') === cat ? 'btn btn-primary' : 'btn btn-outline';
+  });
+
+  try {
+    const res = await fetch(`https://nekos.best/api/v2/${cat}?amount=8`);
+    const data = await res.json();
+    grid.innerHTML = '';
+    if(data.results) {
+      data.results.forEach(img => {
+        const d = document.createElement('div');
+        d.style.cssText = 'position:relative; aspect-ratio:1; border-radius:16px; overflow:hidden; border:1px solid var(--border);';
+        d.innerHTML = `<img src="${img.url}" loading="lazy" style="width:100%; height:100%; object-fit:cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                       <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.8)); padding:1rem 0.5rem 0.5rem; color:white; font-size:0.75rem; font-weight:bold; text-shadow:0 1px 2px black;">
+                         ${img.artist_name ? `Автор: ${img.artist_name}` : cat}
+                       </div>`;
+        grid.appendChild(d);
+      });
+    }
+  } catch(e) {
+    grid.innerHTML = '<div style="color:#ff607e; grid-column:1/-1;">Ошибка получения артов</div>';
+  }
+}
+document.querySelectorAll('#galCats button').forEach(b => {
+  b.addEventListener('click', () => fetchGallery(b.getAttribute('data-cat')));
+});
+document.getElementById('reloadGalBtn').addEventListener('click', () => fetchGallery(currentGalCat));
+
+// ---------- Anime Player (AniLibria) ----------
+let currentHlsInstance = null;
+const API_BASE = 'https://anilibria.top/api/v1';
+
+let apCurrentEps = [];
+let apCurrentEpIndex = -1;
+let apCurrentQuality = 'hls_720';
+let apCurrentReleaseData = null;
+let apFranchisesData = [];
+
+async function fetchTopAnime() {
+  document.getElementById('animeCatalogStatus').textContent = 'Загрузка последних релизов...';
+  document.getElementById('animeResults').innerHTML = '';
+  try {
+    const res = await fetch(API_BASE + '/anime/releases/latest');
+    const data = await res.json();
+    renderAnimeCards(data || []);
+  } catch(e) {}
+  document.getElementById('animeCatalogStatus').textContent = '';
+}
+
+document.getElementById('animeSearchForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const q = document.getElementById('animeSearch').value.trim();
+  if(!q) return fetchTopAnime();
+  
+  document.getElementById('animeCatalogStatus').textContent = `Поиск: ${q}`;
+  document.getElementById('animeResults').innerHTML = '';
+  try {
+    const res = await fetch(API_BASE + `/app/search/releases?query=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    renderAnimeCards(data || []);
+    if(!data || data.length===0) document.getElementById('animeCatalogStatus').textContent = 'По запросу ничего не найдено';
+    else document.getElementById('animeCatalogStatus').textContent = '';
+  } catch(e) {}
+});
+
+function renderAnimeCards(list) {
+  const container = document.getElementById('animeResults');
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'anime-card';
+    const title = item.name?.main || item.name?.english || item.alias;
+    const year = item.year || 'TBA';
+    const type = item.type?.description || item.type?.value || 'OVA';
+    const posterUrl = item.poster?.optimized?.src || item.poster?.src || item.poster?.optimized?.thumbnail || item.poster?.thumbnail || '';
+    const imgUrl = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
+    
+    card.innerHTML = `
+      <img src="${imgUrl}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x225/1a1025/c77dff?text=No+Poster'">
+      <div class="info">
+        <div class="title" title="${title}">${title}</div>
+        <div class="meta">${year} • ${type}</div>
+      </div>
+    `;
+    card.addEventListener('click', () => openAnimePlayer(item));
+    container.appendChild(card);
+  });
+}
+
+async function openAnimePlayer(anime) {
+  document.getElementById('animeCatalogView').style.display = 'none';
+  document.getElementById('animePlayerView').style.display = 'block';
+  
+  const status = document.getElementById('animePlayerStatus');
+  const epsDiv = document.getElementById('animeEpisodes');
+  const videoCont = document.getElementById('videoContainer');
+  const epsTitle = document.getElementById('episodesTitle');
+  const infoBox = document.getElementById('animeInfoBox');
+  
+  epsDiv.innerHTML = ''; 
+  epsTitle.style.display = 'none';
+  videoCont.style.display = 'none';
+  status.textContent = 'Загрузка информации...';
+  
+  // Set basic data immediately
+  document.getElementById('apTitle').textContent = anime.name?.main || anime.alias;
+  document.getElementById('apEngTitle').textContent = anime.name?.english || '';
+  document.getElementById('apDesc').textContent = anime.description || 'Описание отсутствует.';
+  
+  const posterUrl = anime.poster?.optimized?.src || anime.poster?.src || '';
+  const imgUrl = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
+  document.getElementById('apPoster').src = imgUrl;
+  document.getElementById('apGenres').innerHTML = ''; // reset
+
+  if(currentHlsInstance) { currentHlsInstance.destroy(); currentHlsInstance = null; }
+  document.getElementById('hlsVideo').pause();
+  document.getElementById('hlsVideo').removeAttribute('src');
+
+  try {
+    // Fetch full data
+    const res = await fetch(API_BASE + `/anime/releases/${anime.id}`);
+    const data = await res.json();
+    apCurrentReleaseData = data;
+    
+    // Also fetch franchise data in background for season loop
+    apFranchisesData = [];
+    fetch(API_BASE + `/anime/franchises/release/${anime.id}`).then(r=>r.json()).then(d=>{
+      if(d && d.length > 0 && d[0].franchise_releases) {
+        apFranchisesData = d[0].franchise_releases.sort((a,b)=>a.sort_order - b.sort_order);
+      }
+    }).catch(e=>{});
+    
+    status.textContent = '';
+    
+    // Add genres
+    const genresWrap = document.getElementById('apGenres');
+    genresWrap.innerHTML = '';
+    if(data.genres) {
+      data.genres.forEach(g => {
+        const p = document.createElement('span');
+        p.className = 'btn-outline';
+        p.style.padding = '0.2rem 0.6rem';
+        p.style.borderRadius = '20px';
+        p.style.fontSize = '0.7rem';
+        p.textContent = g.name;
+        genresWrap.appendChild(p);
+      });
+    }
+
+    apCurrentEps = data.episodes || [];
+    apCurrentEps.sort((a,b) => Number(a.ordinal) - Number(b.ordinal));
+    
+    if(apCurrentEps.length === 0) {
+      status.textContent = 'Список серий пуст.';
+      return;
     }
     
-    // Респавн
-    if (p.y < -20 || p.y > cvs.height + 20 || p.x < -20 || p.x > cvs.width + 20) {
-        Object.assign(p, createParticle());
-        if(pType === "'rain'") p.y = -10; // Дождь падает сверху
-        else p.y = cvs.height + 10;       // Обычные летят снизу
+    epsTitle.style.display = 'block';
+    
+    apCurrentEps.forEach((ep, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-outline ep-btn';
+      btn.dataset.idx = idx;
+      btn.style.padding = '0.4rem';
+      btn.style.fontSize = '0.8rem';
+      btn.style.textAlign = 'center';
+      btn.textContent = `${ep.ordinal} эп`;
+      btn.addEventListener('click', () => {
+        playEpisodeIndex(idx);
+      });
+      epsDiv.appendChild(btn);
+    });
+  } catch(e) {
+    status.textContent = 'Ошибка загрузки плеера.';
+  }
+}
+
+document.getElementById('videoQuality').addEventListener('change', (e) => {
+  apCurrentQuality = e.target.value;
+  if(apCurrentEpIndex >= 0) {
+    const video = document.getElementById('hlsVideo');
+    const ct = video.currentTime;
+    const wasPlaying = !video.paused;
+    playEpisodeIndex(apCurrentEpIndex, ct, wasPlaying);
+  }
+});
+
+function playEpisodeIndex(idx, startTime=0, autoPlay=true) {
+  if(idx < 0 || idx >= apCurrentEps.length) return;
+  apCurrentEpIndex = idx;
+  const ep = apCurrentEps[idx];
+  
+  // Highlight buttons
+  document.querySelectorAll('.ep-btn').forEach(b => {
+    if(b.dataset.idx == idx) {
+      b.style.background = 'rgba(255,183,197,.1)';
+      b.style.borderColor = 'var(--accent)'; 
+      b.style.color = 'var(--accent)';
+    } else {
+      b.style.background = '';
+      b.style.borderColor = 'var(--border)';
+      b.style.color = 'var(--muted)';
     }
   });
-  requestAnimationFrame(drawPts);
-}
 
-window.addEventListener('resize', initPts);
-initPts(); 
-drawPts();
-
-/* ─────── ТЕМЫ ─────── */
-const html = document.documentElement;
-
-function resetThemeBtns() {
-    document.querySelectorAll('.tbn').forEach(b => b.classList.remove('active'));
-}
-
-document.getElementById('btnTheme').onclick = function() {
-  resetThemeBtns();
-  this.classList.add('active');
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  html.removeAttribute('data-mode');
-};
-
-document.getElementById('btnVergil').onclick = function() {
-  resetThemeBtns();
-  const isActive = html.getAttribute('data-mode') === 'vergil';
-  if(!isActive) {
-      this.classList.add('active');
-      html.setAttribute('data-mode', 'vergil');
-  } else {
-      html.removeAttribute('data-mode');
-      document.getElementById('btnTheme').classList.add('active');
-  }
-};
-
-document.getElementById('btnSaya').onclick = function() {
-  resetThemeBtns();
-  const isActive = html.getAttribute('data-mode') === 'saya';
-  if(!isActive) {
-      this.classList.add('active');
-      html.setAttribute('data-mode', 'saya');
-  } else {
-      html.removeAttribute('data-mode');
-      document.getElementById('btnTheme').classList.add('active');
-  }
-};
-// Установим дефолтную активную кнопку
-document.getElementById('btnTheme').classList.add('active');
-
-
-/* ─────── ТАБЫ ─────── */
-function openTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
-  document.querySelectorAll('.tc').forEach(c => c.classList.toggle('active', c.id === `tc-${id}`));
-  if (id === 'ip' && !ipLoaded) loadIP();
-  if (id === 'gallery' && !document.getElementById('galGrid').children.length) loadGal();
-}
-document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openTab(t.dataset.tab)));
-
-
-/* ─────── АВАТАР ИЗ API ─────── */
-async function loadDynamicAvatar() {
-    try {
-        const res = await fetch('https://nekos.best/api/v2/neko');
-        if(!res.ok) throw new Error();
-        const data = await res.json();
-        document.getElementById('avaImg').src = data.results[0].url;
-    } catch(e) {
-        // Fallback если API не ответит
-        document.getElementById('avaImg').src = 'https://placehold.co/400x400/1a1a2e/b24dff?text=Error';
-    }
-}
-
-
-/* ─────── СТИХИ / ЗАПИСИ (Динамическая загрузка) ─────── */
-let poemsData = [];
-let currentPoem = -1;
-let filteredPoems = [];
-
-// Функция для инициализации стихов, когда внешний файл загружен
-function initPoemsList() {
-    if (typeof window.POEMS !== 'undefined' && Array.isArray(window.POEMS)) {
-        poemsData = window.POEMS;
-        buildList();
-        updateStats();
-        return true;
-    }
-    return false;
-}
-
-// Проверяем наличие стихов каждые 100мс (на случай если poems.js загрузится позже)
-let poemCheckAttempts = 0;
-const poemCheckInterval = setInterval(() => {
-    if (initPoemsList()) {
-        clearInterval(poemCheckInterval);
-    } else {
-        poemCheckAttempts++;
-        if(poemCheckAttempts > 50) { // 5 секунд ожидания макс
-            clearInterval(poemCheckInterval);
-            document.getElementById('poemList').innerHTML = `<div style="padding:1rem; text-align:center; color:#ff4444; font-size:0.85rem;">Ошибка: Файл poems.js не найден или пуст.</div>`;
-        }
-    }
-}, 100);
-
-function buildList(filter = '') {
-  const q = filter.toLowerCase();
-  filteredPoems = poemsData.filter(p =>
-    !q || p.title.toLowerCase().includes(q) || p.text.toLowerCase().includes(q) || (p.date && p.date.includes(q))
-  );
+  let url = ep[apCurrentQuality] || ep['hls_720'] || ep['hls_480'] || ep['hls_1080'];
+  if(!url) return;
+  if(!url.startsWith('http')) url = 'https://cache.libria.fun' + url;
   
-  const list = document.getElementById('poemList');
-  if(filteredPoems.length === 0) {
-     list.innerHTML = `<div style="padding:1rem; text-align:center; color:var(--muted); font-size:0.85rem;">Совпадений не найдено.</div>`;
-  } else {
-     list.innerHTML = filteredPoems.map((p) => {
-       const globalIdx = poemsData.indexOf(p);
-       const isActive = (currentPoem === globalIdx) ? ' active' : '';
-       return `
-        <div class="pli${isActive}" onclick="openPoem(${globalIdx})">
-          <div class="pli-title">${p.title}</div>
-          <div class="pli-meta">${p.date || 'Неизвестно'} · ${p.author || 'Аноним'}</div>
-        </div>`;
-     }).join('');
-  }
-  document.getElementById('plpCount').textContent = filteredPoems.length;
+  playVideo(url, startTime, autoPlay);
 }
 
-window.openPoem = function(idx) {
-  const p = poemsData[idx];
-  if (!p) return;
-  currentPoem = idx;
-  
-  buildList(document.getElementById('poemSearch').value); // Перестраиваем для обновления класса active
-
-  document.getElementById('prEmpty').style.display = 'none';
-  const c = document.getElementById('prContent');
-  c.style.display = 'flex';
-  
-  document.getElementById('prTitle').textContent = p.title;
-  document.getElementById('prMeta').textContent = `${p.date || ''}  ·  ${p.author || ''}`;
-  document.getElementById('prText').textContent = p.text;
-  document.getElementById('prCount').textContent = `${idx + 1} / ${poemsData.length}`;
-  
-  document.getElementById('prPrev').disabled = (idx === 0);
-  document.getElementById('prNext').disabled = (idx === poemsData.length - 1);
-};
-
-window.shiftPoem = function(dir) {
-  const next = currentPoem + dir;
-  if (next >= 0 && next < poemsData.length) openPoem(next);
-};
-
-document.getElementById('poemSearch').addEventListener('input', e => buildList(e.target.value));
-
-
-/* ─────── GACHA СИСТЕМА ─────── */
-let gems = 1000;
-let inv = [];
-
-try {
-  gems = localStorage.getItem('goda86_gems_v2') !== null ? parseInt(localStorage.getItem('goda86_gems_v2')) : 1000;
-  inv = JSON.parse(localStorage.getItem('goda86_inv_v2')) || [];
-} catch(e) {
-  inv = [];
-  gems = 1000;
-}
-
-let currentGachaPool = 'waifu';
-
-document.querySelectorAll('.g-filt').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.g-filt').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentGachaPool = btn.dataset.pool;
-    document.getElementById('stageHint').textContent = `ТЕРМИНАЛ: ${btn.textContent.toUpperCase()} — ОЖИДАНИЕ КРУТКИ.`;
-  };
+document.getElementById('backToCatalogAnime').addEventListener('click', () => {
+  document.getElementById('animeCatalogView').style.display = 'block';
+  document.getElementById('animePlayerView').style.display = 'none';
+  if(currentHlsInstance) { currentHlsInstance.destroy(); }
+  document.getElementById('hlsVideo').pause();
 });
 
-function getRarity() {
-  const r = Math.random();
-  if (r < 0.03) return { name: 'SSR', color: '#ffb700' }; 
-  if (r < 0.15) return { name: 'SR', color: '#b24dff' };  
-  if (r < 0.45) return { name: 'R', color: '#4da6ff' };   
-  return { name: 'N', color: '#8b7ca6' };                 
-}
-
-function saveData() {
-  localStorage.setItem('goda86_gems_v2', gems);
-  localStorage.setItem('goda86_inv_v2', JSON.stringify(inv));
-}
-
-window.farm = function() {
-  gems += 10;
-  document.getElementById('gemsVal').textContent = gems;
-  saveData(); 
-  updateStats();
-}
-
-window.clearInv = function() {
-  if (!inv.length) return;
-  if (!confirm('Внимание! Все данные инвентаря будут стерты. Продолжить?')) return;
-  inv = []; 
-  saveData(); 
-  renderInv(); 
-  updateStats();
-}
-
-function renderInv() {
-  const grid = document.getElementById('invGrid');
-  if(!inv.length) {
-      grid.innerHTML = '<div style="grid-column: 1/-1; color: var(--muted); text-align:center; padding:1rem; font-family: var(--font-mono); font-size: 0.85rem;">БАЗА ПУСТА</div>';
-  } else {
-      grid.innerHTML = inv.map(item => `
-        <div class="inv-item" onclick="showModal('${item.url}')">
-          <img src="${item.url}" style="border-color:${item.rCol || 'transparent'}" loading="lazy">
-          ${item.rName ? `<span class="inv-rarity" style="background:${item.rCol}">${item.rName}</span>` : ''}
-          ${item.cnt > 1 ? `<span class="inv-cnt">×${item.cnt}</span>` : ''}
-        </div>`).join('');
+document.getElementById('hlsVideo').addEventListener('ended', async () => {
+  if (apCurrentEpIndex >= 0 && apCurrentEpIndex < apCurrentEps.length - 1) {
+    // Next episode
+    playEpisodeIndex(apCurrentEpIndex + 1);
+  } else if (apCurrentEpIndex === apCurrentEps.length - 1 && apFranchisesData.length > 0 && apCurrentReleaseData) {
+    // End of release, look for next season
+    const currFrIdx = apFranchisesData.findIndex(f => f.release_id === apCurrentReleaseData.id);
+    if(currFrIdx >= 0 && currFrIdx < apFranchisesData.length - 1) {
+      const nextRel = apFranchisesData[currFrIdx + 1];
+      if(nextRel && nextRel.release) {
+        document.getElementById('animePlayerStatus').textContent = 'Переход к следующему сезону...';
+        await openAnimePlayer(nextRel.release);
+        // Autoplay series 1
+        setTimeout(() => {
+          if(apCurrentEps.length > 0) playEpisodeIndex(0);
+        }, 800);
+      }
+    }
   }
-  document.getElementById('invCount').textContent = inv.reduce((s,i)=>s+i.cnt,0);
-}
+});
 
-window.pull = async function(n) {
-  const cost = n === 1 ? 100 : 900;
-  if (gems < cost) { 
-    alert(`Отказ. Недостаточно кристаллов. Требуется: ${cost}, В наличии: ${gems}.`); 
-    return; 
-  }
+function playVideo(url, startTime=0, autoPlay=true) {
+  const cont = document.getElementById('videoContainer');
+  const video = document.getElementById('hlsVideo');
+  cont.style.display = 'block';
+  video.pause();
   
-  const btn1 = document.getElementById('pull1');
-  const btn10 = document.getElementById('pull10');
-  btn1.disabled = true; btn10.disabled = true;
+  if(currentHlsInstance) { currentHlsInstance.destroy(); }
+  
+  if(Hls.isSupported()) {
+    currentHlsInstance = new Hls();
+    currentHlsInstance.loadSource(url);
+    currentHlsInstance.attachMedia(video);
+    currentHlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+      if(startTime > 0) video.currentTime = startTime;
+      if(autoPlay) video.play().catch(()=>{});
+    });
+  } else if(video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    if(startTime > 0) {
+      video.addEventListener('loadedmetadata', function onLoaded() {
+        video.currentTime = startTime;
+        video.removeEventListener('loadedmetadata', onLoaded);
+      });
+    }
+    if(autoPlay) video.play().catch(()=>{});
+  }
+  cont.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
 
-  gems -= cost;
-  document.getElementById('gemsVal').textContent = gems;
-  saveData();
 
-  const stage = document.getElementById('stage');
-  stage.classList.add('active');
-  document.getElementById('stageHint').style.display = 'none';
-  document.getElementById('stageGrid').style.display = 'none';
-  document.getElementById('stageLoader').style.display = 'block';
+// ---------- Gacha ----------
+function updateCoins() {
+  document.getElementById('coinsCount').textContent = state.coins;
+  localStorage.setItem('coins', state.coins);
+}
 
+document.getElementById('dailyRewardBtn').addEventListener('click', () => {
+  state.coins += 500;
+  updateCoins();
+  document.getElementById('dailyRewardBtn').disabled = true;
+  document.getElementById('dailyRewardBtn').textContent = '✅ Получено';
+  setTimeout(() => {
+    document.getElementById('dailyRewardBtn').disabled = false;
+    document.getElementById('dailyRewardBtn').textContent = '+ Ежедневный бонус';
+  }, 60000); // 1 minute cooldown for demo
+});
+
+document.getElementById('rollGachaBtn').addEventListener('click', async () => {
+  if(state.coins < 100) return;
+  const btn = document.getElementById('rollGachaBtn');
+  const resCont = document.getElementById('gachaResultContainer');
+  
+  btn.disabled = true;
+  btn.textContent = '...Призыв...';
+  state.coins -= 100;
+  updateCoins();
+  
   try {
-    const res = await fetch(`https://nekos.best/api/v2/${currentGachaPool}?amount=${n}`);
-    if (!res.ok) throw new Error('API Error');
+    const res = await fetch('https://api.jikan.moe/v4/random/characters');
     const data = await res.json();
+    const char = data.data;
     
-    const results = data.results.map(r => ({ url: r.url, rarity: getRarity() }));
-
-    document.getElementById('stageLoader').style.display = 'none';
-    const g = document.getElementById('stageGrid');
+    let rarity = 'R 💫'; let rClass = 'color:var(--teal);';
+    if(char.favorites > 15000) { rarity = 'SSR 🌟'; rClass = 'color:#facc15;'; }
+    else if(char.favorites > 6000) { rarity = 'SR ✨'; rClass = 'color:var(--purple);'; }
     
-    g.innerHTML = results.map((item, i) => `
-      <div class="result-card-wrap" style="animation-delay:${i * 0.1}s" onclick="showModal('${item.url}')">
-        <img src="${item.url}" style="border-color:${item.rarity.color}; box-shadow: 0 0 15px ${item.rarity.color}66" loading="lazy">
-        <div class="rc-badge" style="background:${item.rarity.color}">${item.rarity.name}</div>
+    const obj = { name: char.name, img: char.images.jpg.image_url, rarity, rClass };
+    state.inventory.unshift(obj);
+    localStorage.setItem('inventory', JSON.stringify(state.inventory));
+    
+    resCont.style.display = 'block';
+    resCont.innerHTML = `
+      <div class="gacha-card">
+        <div class="rarity">${rarity}</div>
+        <img src="${obj.img}">
+        <div class="name">${obj.name}</div>
       </div>
-    `).join('');
-    g.style.display = 'grid';
-
-    results.forEach(item => {
-      const ex = inv.find(x => x.url === item.url);
-      if (ex) ex.cnt++; 
-      else inv.unshift({ url: item.url, cnt: 1, rName: item.rarity.name, rCol: item.rarity.color });
-    });
-
-    saveData(); 
-    renderInv(); 
-    updateStats();
-
-  } catch (e) {
-    alert('Сбой связи с сервером. Кристаллы восстановлены.');
-    gems += cost;
-    document.getElementById('gemsVal').textContent = gems;
-    saveData();
-    document.getElementById('stageLoader').style.display = 'none';
-    document.getElementById('stageHint').style.display = 'block';
-  } finally {
-    btn1.disabled = false; btn10.disabled = false;
-    setTimeout(() => stage.classList.remove('active'), 600);
+    `;
+    renderInventory();
+  } catch(e) {
+    state.coins += 100; updateCoins();
   }
-}
-
-/* ─────── IP ИНФО ─────── */
-let ipLoaded = false;
-window.loadIP = async function() {
-  const card = document.getElementById('ipCard');
-  card.innerHTML = '<div class="loader"></div>';
-  try {
-    const r = await fetch('https://ipapi.co/json/');
-    if(!r.ok) throw new Error();
-    const d = await r.json();
-    if(d.error) throw new Error(d.reason);
-
-    card.innerHTML = [
-      ['IP',         d.ip],
-      ['Провайдер',  d.org || '—'],
-      ['Локация',    `${d.country_name}, ${d.city || '—'}`],
-      ['Регион',     d.region || '—'],
-      ['Таймзона',   d.timezone || '—'],
-      ['ASN',        d.asn || '—'],
-    ].map(([k,v]) => `<div class="ip-row"><span class="ip-key">${k}</span><span class="ip-val">${v}</span></div>`).join('');
-    ipLoaded = true;
-  } catch (e) {
-    card.innerHTML = '<div style="color:#ff4444; text-align:center;">Блокировка API или ошибка сети.</div>';
-  }
-}
-
-/* ─────── OSINT (WHOIS) ─────── */
-window.doOsint = async function() {
-  const q = document.getElementById('osintQ').value.trim();
-  if (!q) return;
-  const out = document.getElementById('osintOut');
-  out.textContent = 'Выполнение запроса...'; 
-  out.classList.add('show');
   
-  try {
-    const r = await fetch(`https://api.hackertarget.com/whois/?q=${encodeURIComponent(q)}`);
-    if(!r.ok) throw new Error();
-    const text = await r.text();
-    out.textContent = text || 'Пустой ответ сервера';
-  } catch { 
-    out.textContent = 'Ошибка. Возможно, достигнут лимит запросов к публичному API.'; 
-  }
-}
-
-/* ─────── ГАЛЕРЕЯ ─────── */
-window.loadGal = async function() {
-  const g = document.getElementById('galGrid');
-  const l = document.getElementById('galLoader');
-  l.style.display = 'block';
-  try {
-    const r = await fetch('https://nekos.best/api/v2/neko?amount=14');
-    const d = await r.json();
-    d.results.forEach(n => {
-      const img = document.createElement('img');
-      img.src = n.url; 
-      img.loading = 'lazy';
-      img.onclick = () => showModal(n.url);
-      g.appendChild(img);
-    });
-  } catch (e) {
-      console.error("Gallery Error", e);
-  } finally { 
-      l.style.display = 'none'; 
-  }
-}
-
-/* ─────── МОДАЛКА КАРТИНОК ─────── */
-window.showModal = function(url) {
-  document.getElementById('modalImg').src = url;
-  document.getElementById('modal').classList.add('open');
-}
-window.closeModal = function() {
-  document.getElementById('modal').classList.remove('open');
-}
-document.addEventListener('keydown', (e) => {
-  if(e.key === "Escape") closeModal();
+  btn.disabled = false;
+  btn.textContent = '✨ ПРИЗЫВ (100)';
 });
 
-/* ─────── СТАТИСТИКА ─────── */
-function updateStats() {
-  document.getElementById('poemStatVal').textContent = poemsData.length;
-  document.getElementById('gemStatVal').textContent = gems;
-  const totalInv = inv.reduce((sum, item) => sum + item.cnt, 0);
-  document.getElementById('invStatVal').textContent = totalInv;
+function renderInventory() {
+  const inv = document.getElementById('gachaInventory');
+  inv.innerHTML = '';
+  state.inventory.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'inv-item';
+    d.innerHTML = `
+      <img src="${item.img}" loading="lazy">
+      <div class="info">
+        <strong>${item.name}</strong>
+        <span style="${item.rClass} font-weight:bold;">${item.rarity}</span>
+      </div>
+    `;
+    inv.appendChild(d);
+  });
 }
-
-/* ─────── ИНИЦИАЛИЗАЦИЯ ПРИ СТАРТЕ ─────── */
-window.onload = () => {
-    loadDynamicAvatar(); // Грузим свежий аватар
-    document.getElementById('gemsVal').textContent = gems;
-    renderInv();
-    // Инициализация стихов происходит через setInterval (см. начало скрипта)
-};
+// Init Gacha on load
+updateCoins();
 </script>
 </body>
 </html>
+
