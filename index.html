@@ -1322,13 +1322,10 @@ const WT = {
     this._peerPromise = new Promise((resolve, reject) => {
       let peer;
       try {
+        // Use default PeerJS cloud (most reliable)
         peer = new Peer({
-          debug: 1,
-          config: ICE_SERVERS,
-          host: '0.peerjs.com',
-          port: 443,
-          secure: true,
-          path: '/'
+          debug: 0,
+          config: ICE_SERVERS
         });
       } catch (e) { this._peerPromise = null; reject(e); return; }
       this.peer = peer;
@@ -1336,7 +1333,7 @@ const WT = {
       const timeout = setTimeout(() => {
         this._peerPromise = null;
         reject(new Error('Не удалось подключиться к сигнальному серверу. Проверь интернет.'));
-      }, 15000);
+      }, 20000);
 
       peer.on('open', (id) => {
         clearTimeout(timeout);
@@ -1354,7 +1351,6 @@ const WT = {
       // ===== Incoming data connection =====
       peer.on('connection', (conn) => {
         const meta = conn.metadata || {};
-        // Presence ping: short-lived, just for online check
         if (meta.kind === 'presence') {
           conn.on('open', () => {
             try { conn.send({ type: 'presence-pong' }); } catch (e) {}
@@ -1362,7 +1358,6 @@ const WT = {
           });
           return;
         }
-        // WT session: only accept if we're a host waiting for guest
         if (this.role === 'host' && (!this.conn || !this.conn.open)) {
           this.conn = conn;
           this.bindConn();
@@ -1374,12 +1369,10 @@ const WT = {
             this.callPeer(conn.peer, this.localStream);
           }
         } else {
-          // Not in host mode or already have a session — reject
           try { conn.close(); } catch (e) {}
         }
       });
 
-      // ===== Incoming voice call =====
       peer.on('call', (call) => {
         this.call = call;
         call.on('stream', (stream) => {
@@ -1399,26 +1392,27 @@ const WT = {
         clearTimeout(timeout);
         console.warn('Peer error:', err.type, err.message);
         if (err.type === 'peer-unavailable') {
-          // Don't destroy peer, just bubble up to caller via stored reject
           if (this._joinReject) { this._joinReject(new Error('Друг сейчас не в сети. Попроси его открыть сайт и создать комнату.')); this._joinReject = null; }
-        } else if (err.type === 'network' || err.type === 'server-error' || err.type === 'socket-error' || err.type === 'disconnected') {
-          this.peerReady = false;
-          this.tryReconnect();
-        } else if (err.type === 'browser-incompatible') {
-          Toast.show('Браузер не поддерживается. Используй Chrome/Firefox.', 'error', 6000);
-        } else if (err.type === 'unavailable-id') {
-          // ID taken, retry with new
-          this.peerReady = false;
-          this.tryReconnect();
+          return;
         }
-        // Don't reject _peerPromise for non-fatal errors
+        if (err.type === 'browser-incompatible') {
+          Toast.show('Браузер не поддерживается. Используй Chrome/Firefox.', 'error', 6000);
+          return;
+        }
+        // For all other errors (network, server-error, socket-error, disconnected, unavailable-id):
+        // Mark as not ready and try to recover, but DON'T spam chat
+        if (this.peerReady) {
+          this.peerReady = false;
+          this.setPeerStatus('connecting');
+        }
+        // Don't immediately reconnect — wait for 'disconnected' event or schedule a soft retry
       });
 
       peer.on('disconnected', () => {
+        if (!this.peerReady) return; // already handling
         this.peerReady = false;
         this.setPeerStatus('connecting');
-        WT.addSysMsg('⚠ Связь потеряна, переподключаемся...');
-        this.tryReconnect();
+        this.scheduleReconnect();
       });
 
       peer.on('close', () => {
@@ -1430,46 +1424,70 @@ const WT = {
     return this._peerPromise;
   },
 
-  tryReconnect() {
+  // Debounced reconnect — prevents flap storms
+  scheduleReconnect() {
+    if (this._reconnectTimer) return;
+    this._reconnectTimer = setTimeout(() => {
+      this._reconnectTimer = null;
+      this.doReconnect();
+    }, 3000);
+  },
+
+  doReconnect() {
     if (this.reconnectAttempts >= this.maxReconnect) {
-      WT.addSysMsg('❌ Не удалось переподключиться к серверу. Обнови страницу.');
-      Toast.show('Потеряно соединение. Обнови страницу.', 'error', 6000);
       this.setPeerStatus('offline');
+      Toast.show('Не удалось подключиться к серверу. Обновите страницу.', 'error', 6000);
       return;
     }
     this.reconnectAttempts++;
     this.setPeerStatus('connecting');
-    const delay = Math.min(1000 * Math.pow(1.4, this.reconnectAttempts), 10000);
-    WT.addSysMsg(`🔄 Переподключение #${this.reconnectAttempts} через ${Math.round(delay/1000)}с...`);
-    setTimeout(() => {
-      if (this.peer && !this.peer.destroyed) {
-        try {
-          this.peer.reconnect();
-          // Listen for re-open
-          const reopenHandler = () => {
-            this.peerReady = true;
-            this.setPeerStatus('online');
-            this.peer.off('open', reopenHandler);
-          };
-          this.peer.on('open', reopenHandler);
-        } catch (e) {
-          // Fallback: recreate peer entirely
-          this.peer = null;
-          this._peerPromise = null;
-          this.peerReady = false;
-          this.ensurePeer().then(() => {
-            if (this.role && this.lastRemoteId && this.role === 'guest') {
-              this.join(this.lastRemoteId).catch(() => {});
-            }
-          }).catch(() => {});
-        }
-      } else {
-        this.peer = null;
-        this._peerPromise = null;
-        this.peerReady = false;
-        this.ensurePeer().catch(() => {});
+    
+    // Try peer.reconnect() first (preserves ID)
+    if (this.peer && !this.peer.destroyed) {
+      try {
+        this.peer.reconnect();
+        // Wait 6s for reconnection
+        let reconnected = false;
+        const reopenHandler = () => {
+          if (reconnected) return;
+          reconnected = true;
+          this.peerReady = true;
+          this.reconnectAttempts = 0;
+          this.setPeerStatus('online');
+          // Re-join WT session if guest
+          if (this.role === 'guest' && this.lastRemoteId && !this.connected) {
+            this.join(this.lastRemoteId).catch(() => {});
+          }
+        };
+        this.peer.on('open', reopenHandler);
+        // If still not connected after 6s, recreate peer
+        setTimeout(() => {
+          if (!reconnected) {
+            this.recreatePeer();
+          }
+        }, 6000);
+      } catch (e) {
+        this.recreatePeer();
       }
-    }, delay);
+    } else {
+      this.recreatePeer();
+    }
+  },
+
+  recreatePeer() {
+    try { if (this.peer) this.peer.destroy(); } catch (e) {}
+    this.peer = null;
+    this._peerPromise = null;
+    this.peerReady = false;
+    this.ensurePeer().then(() => {
+      // Re-join if we were in a session
+      if (this.role === 'guest' && this.lastRemoteId && !this.connected) {
+        this.join(this.lastRemoteId).catch(() => {});
+      }
+    }).catch(() => {
+      // Schedule another attempt
+      setTimeout(() => this.doReconnect(), 5000);
+    });
   },
 
   setPeerStatus(status) {
@@ -1486,10 +1504,11 @@ const WT = {
   startHeartbeat() {
     if (this.heartbeatTimer) clearInterval(this.heartbeatTimer);
     this.heartbeatTimer = setInterval(() => {
+      // Only ping if we have an active WT session
       if (this.conn && this.conn.open) {
         try { this.conn.send({ type: 'ping', ts: Date.now() }); } catch (e) {}
       }
-    }, 3000);
+    }, 8000); // 8s — less aggressive
   },
 
   // ===== Host: create room =====
@@ -1836,23 +1855,21 @@ const WT = {
 
   // ===== End WT session but keep peer alive for presence =====
   endSession() {
-    if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
-    try { if (this.call) this.call.close(); } catch (e) {}
-    try { if (this.conn) this.conn.close(); } catch (e) {}
+    if (this.call) { try { this.call.close(); } catch (e) {} this.call = null; }
+    if (this.conn) { try { this.conn.close(); } catch (e) {} this.conn = null; }
     if (this.localStream) { this.localStream.getAudioTracks().forEach(t => t.stop()); this.localStream = null; }
     state.micEnabled = false;
-    this.call = null; this.conn = null;
     this.connected = false; this.voiceConnected = false;
     this.role = null; this.peerName = null;
     this.lastRemoteId = null;
-    // Restart heartbeat for presence
-    this.startHeartbeat();
-    // Peer stays alive
+    // Peer stays alive — do NOT destroy it
   },
 
   // Full cleanup (page unload only)
   cleanup() {
     this.endSession();
+    if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
+    if (this._reconnectTimer) { clearTimeout(this._reconnectTimer); this._reconnectTimer = null; }
     try { if (this.peer) this.peer.destroy(); } catch (e) {}
     this.peer = null;
     this.peerReady = false;
