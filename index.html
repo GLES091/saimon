@@ -146,6 +146,23 @@
     .icon-btn .pulse-dot.show { display: block; }
     @keyframes pulse { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.4; transform: scale(0.8); } }
 
+    /* Peer status pill */
+    .peer-status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 800;
+      background: rgba(199,125,255,.08); border: 1px solid var(--border);
+      transition: all var(--tr-fast);
+    }
+    .peer-status-pill .ps-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); transition: background var(--tr-fast); }
+    .peer-status-pill.connecting .ps-dot { background: var(--gold); animation: pulse 1.2s infinite; }
+    .peer-status-pill.online .ps-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .peer-status-pill.offline .ps-dot { background: var(--danger); }
+    .peer-status-pill.online { color: var(--success); border-color: rgba(126,231,135,.3); }
+    .peer-status-pill.offline { color: var(--danger); border-color: rgba(255,107,138,.3); }
+    .peer-status-pill.connecting { color: var(--gold); border-color: rgba(249,199,79,.3); }
+    @media (max-width: 480px) { .peer-status-pill .ps-text { display: none; } .peer-status-pill { padding: 6px 8px; } }
+
     /* ===== Layout ===== */
     .page-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: var(--sp-4) var(--sp-3) var(--sp-7); }
     .container { width: 100%; max-width: 1080px; display: flex; flex-direction: column; gap: var(--sp-4); }
@@ -529,6 +546,9 @@
     <span>GOD_AE86</span>
   </div>
   <div class="topbar-actions">
+    <div id="peerStatusPill" class="peer-status-pill connecting" title="Статус подключения">
+      <span class="ps-dot"></span><span class="ps-text">подключение...</span>
+    </div>
     <button class="icon-btn" id="themeToggle" aria-label="Сменить тему" title="Тема">🌸</button>
     <button class="icon-btn" id="animeModeBtn" aria-label="Аниме-режим" title="VFX">✨</button>
   </div>
@@ -1276,61 +1296,91 @@ const ICE_SERVERS = {
   ]
 };
 
+// One persistent peer for everything (presence + WT sessions).
+// Connections are differentiated by metadata: { kind: 'presence' | 'wt' }
 const WT = {
   peer: null,
-  conn: null,           // data connection
+  conn: null,           // WT data connection
   call: null,           // media connection (voice)
   localStream: null,
   remoteStream: null,
-  role: null,
-  connected: false,
+  role: null,           // 'host' | 'guest' | null (presence-only)
+  connected: false,     // WT session active
   voiceConnected: false,
   reconnectAttempts: 0,
-  maxReconnect: 5,
+  maxReconnect: 8,
   heartbeatTimer: null,
   unread: 0,
+  peerReady: false,
 
-  async initPeer(role) {
-    this.cleanup();
-    this.role = role;
-    return new Promise((resolve, reject) => {
+  // ===== Initialize persistent peer (called once on page load) =====
+  ensurePeer() {
+    if (this.peer && !this.peer.destroyed && this.peerReady) {
+      return Promise.resolve(state.myPeerId);
+    }
+    if (this._peerPromise) return this._peerPromise;
+    this._peerPromise = new Promise((resolve, reject) => {
+      let peer;
       try {
-        this.peer = new Peer({
+        peer = new Peer({
           debug: 1,
-          config: ICE_SERVERS
+          config: ICE_SERVERS,
+          host: '0.peerjs.com',
+          port: 443,
+          secure: true,
+          path: '/'
         });
-      } catch (e) { reject(e); return; }
+      } catch (e) { this._peerPromise = null; reject(e); return; }
+      this.peer = peer;
 
       const timeout = setTimeout(() => {
-        reject(new Error('Превышено время ожидания подключения к серверу'));
+        this._peerPromise = null;
+        reject(new Error('Не удалось подключиться к сигнальному серверу. Проверь интернет.'));
       }, 15000);
 
-      this.peer.on('open', (id) => {
+      peer.on('open', (id) => {
         clearTimeout(timeout);
-        state.myPeerId = id;
-        $('myPeerId').textContent = id;
+        this._peerPromise = null;
+        this.peerReady = true;
         this.reconnectAttempts = 0;
-        // Start heartbeat
+        state.myPeerId = id;
+        const idEl = $('myPeerId');
+        if (idEl) idEl.textContent = id;
+        this.setPeerStatus('online');
         this.startHeartbeat();
         resolve(id);
       });
 
-      this.peer.on('connection', (conn) => {
-        // For host: accept first connection
-        if (this.conn && this.conn.open) { conn.close(); return; }
-        this.conn = conn;
-        this.bindConn();
-        WT.addSysMsg('Друг присоединился к комнате! 🎉');
-        WT.showSide();
-        WT.updateBadge(true);
-        // Auto-start voice if mic is enabled
-        if (state.micEnabled && this.localStream) {
-          this.callPeer(conn.peer, this.localStream);
+      // ===== Incoming data connection =====
+      peer.on('connection', (conn) => {
+        const meta = conn.metadata || {};
+        // Presence ping: short-lived, just for online check
+        if (meta.kind === 'presence') {
+          conn.on('open', () => {
+            try { conn.send({ type: 'presence-pong' }); } catch (e) {}
+            setTimeout(() => { try { conn.close(); } catch (e) {} }, 400);
+          });
+          return;
+        }
+        // WT session: only accept if we're a host waiting for guest
+        if (this.role === 'host' && (!this.conn || !this.conn.open)) {
+          this.conn = conn;
+          this.bindConn();
+          WT.addSysMsg('Друг присоединился к комнате! 🎉');
+          WT.showSide();
+          WT.updateBadge(true);
+          Toast.show('Друг подключился!', 'success');
+          if (state.micEnabled && this.localStream) {
+            this.callPeer(conn.peer, this.localStream);
+          }
+        } else {
+          // Not in host mode or already have a session — reject
+          try { conn.close(); } catch (e) {}
         }
       });
 
-      this.peer.on('call', (call) => {
-        // Incoming voice call
+      // ===== Incoming voice call =====
+      peer.on('call', (call) => {
         this.call = call;
         call.on('stream', (stream) => {
           this.remoteStream = stream;
@@ -1341,51 +1391,96 @@ const WT = {
         });
         call.on('close', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
         call.on('error', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
-        // Answer with our local stream (or empty if mic off)
         const stream = this.localStream || new MediaStream();
         call.answer(stream);
       });
 
-      this.peer.on('error', (err) => {
+      peer.on('error', (err) => {
         clearTimeout(timeout);
         console.warn('Peer error:', err.type, err.message);
         if (err.type === 'peer-unavailable') {
-          reject(new Error('Друг сейчас не в сети. Попроси его открыть сайт.'));
-        } else if (err.type === 'network' || err.type === 'server-error' || err.type === 'socket-error') {
+          // Don't destroy peer, just bubble up to caller via stored reject
+          if (this._joinReject) { this._joinReject(new Error('Друг сейчас не в сети. Попроси его открыть сайт и создать комнату.')); this._joinReject = null; }
+        } else if (err.type === 'network' || err.type === 'server-error' || err.type === 'socket-error' || err.type === 'disconnected') {
+          this.peerReady = false;
           this.tryReconnect();
         } else if (err.type === 'browser-incompatible') {
-          reject(new Error('Браузер не поддерживается. Используй Chrome/Firefox.'));
-        } else if (err.type === 'disconnected') {
+          Toast.show('Браузер не поддерживается. Используй Chrome/Firefox.', 'error', 6000);
+        } else if (err.type === 'unavailable-id') {
+          // ID taken, retry with new
+          this.peerReady = false;
           this.tryReconnect();
-        } else {
-          reject(err);
         }
+        // Don't reject _peerPromise for non-fatal errors
       });
 
-      this.peer.on('disconnected', () => {
-        WT.addSysMsg('⚠ Связь потеряна, пытаемся переподключиться...');
+      peer.on('disconnected', () => {
+        this.peerReady = false;
+        this.setPeerStatus('connecting');
+        WT.addSysMsg('⚠ Связь потеряна, переподключаемся...');
         this.tryReconnect();
       });
+
+      peer.on('close', () => {
+        this.peerReady = false;
+        this._peerPromise = null;
+        this.setPeerStatus('offline');
+      });
     });
+    return this._peerPromise;
   },
 
   tryReconnect() {
     if (this.reconnectAttempts >= this.maxReconnect) {
-      WT.addSysMsg('❌ Не удалось переподключиться. Создайте комнату заново.');
-      Toast.show('Потеряно соединение с сервером', 'error', 5000);
+      WT.addSysMsg('❌ Не удалось переподключиться к серверу. Обнови страницу.');
+      Toast.show('Потеряно соединение. Обнови страницу.', 'error', 6000);
+      this.setPeerStatus('offline');
       return;
     }
     this.reconnectAttempts++;
-    const delay = Math.min(1000 * Math.pow(1.5, this.reconnectAttempts), 8000);
+    this.setPeerStatus('connecting');
+    const delay = Math.min(1000 * Math.pow(1.4, this.reconnectAttempts), 10000);
     WT.addSysMsg(`🔄 Переподключение #${this.reconnectAttempts} через ${Math.round(delay/1000)}с...`);
     setTimeout(() => {
       if (this.peer && !this.peer.destroyed) {
-        try { this.peer.reconnect(); } catch (e) {
-          // Re-create peer if reconnect fails
-          this.initPeer(this.role).catch(() => {});
+        try {
+          this.peer.reconnect();
+          // Listen for re-open
+          const reopenHandler = () => {
+            this.peerReady = true;
+            this.setPeerStatus('online');
+            this.peer.off('open', reopenHandler);
+          };
+          this.peer.on('open', reopenHandler);
+        } catch (e) {
+          // Fallback: recreate peer entirely
+          this.peer = null;
+          this._peerPromise = null;
+          this.peerReady = false;
+          this.ensurePeer().then(() => {
+            if (this.role && this.lastRemoteId && this.role === 'guest') {
+              this.join(this.lastRemoteId).catch(() => {});
+            }
+          }).catch(() => {});
         }
+      } else {
+        this.peer = null;
+        this._peerPromise = null;
+        this.peerReady = false;
+        this.ensurePeer().catch(() => {});
       }
     }, delay);
+  },
+
+  setPeerStatus(status) {
+    const pill = $('peerStatusPill');
+    if (!pill) return;
+    pill.classList.remove('online', 'offline', 'connecting');
+    pill.classList.add(status);
+    const text = pill.querySelector('.ps-text');
+    if (text) {
+      text.textContent = status === 'online' ? 'в сети' : (status === 'connecting' ? 'переподключение...' : 'не в сети');
+    }
   },
 
   startHeartbeat() {
@@ -1397,22 +1492,59 @@ const WT = {
     }, 3000);
   },
 
+  // ===== Host: create room =====
+  async createRoom() {
+    await this.ensurePeer();
+    this.role = 'host';
+    this.lastRemoteId = null;
+    return state.myPeerId;
+  },
+
+  // ===== Guest: join host by ID =====
   join(remoteId) {
-    return new Promise((resolve, reject) => {
-      this.initPeer('guest').then(() => {
-        const conn = this.peer.connect(remoteId, { reliable: true });
-        this.conn = conn;
-        const to = setTimeout(() => reject(new Error('Друг не ответил. Возможно, он не в сети.')), 10000);
-        conn.on('open', () => {
-          clearTimeout(to);
-          this.bindConn();
-          WT.addSysMsg('Подключено к комнате! 🎬');
-          WT.showSide();
-          WT.updateBadge(true);
-          resolve();
-        });
-        conn.on('error', (e) => { clearTimeout(to); reject(e); });
-      }).catch(reject);
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.ensurePeer();
+      } catch (e) { reject(e); return; }
+      this.role = 'guest';
+      this.lastRemoteId = remoteId;
+      this._joinReject = reject;
+
+      const conn = this.peer.connect(remoteId, {
+        reliable: true,
+        metadata: { kind: 'wt' }
+      });
+      this.conn = conn;
+
+      const to = setTimeout(() => {
+        try { conn.close(); } catch (e) {}
+        this.conn = null;
+        this._joinReject = null;
+        reject(new Error('Друг не ответил за 15с. Проверь ID или попроси его создать новую комнату.'));
+      }, 15000);
+
+      conn.on('open', () => {
+        clearTimeout(to);
+        this._joinReject = null;
+        this.bindConn();
+        WT.addSysMsg('Подключено к комнате! 🎬');
+        WT.showSide();
+        WT.updateBadge(true);
+        // If guest has mic enabled, call host
+        if (state.micEnabled && this.localStream) {
+          this.callPeer(conn.peer, this.localStream);
+        }
+        resolve();
+      });
+      conn.on('error', (e) => {
+        clearTimeout(to);
+        this._joinReject = null;
+        this.conn = null;
+        // peer-unavailable is handled in peer.on('error')
+        if (e.type !== 'peer-unavailable') {
+          reject(new Error('Ошибка соединения: ' + (e.message || e.type || 'unknown')));
+        }
+      });
     });
   },
 
@@ -1422,12 +1554,14 @@ const WT = {
     this.conn.on('close', () => {
       this.connected = false;
       this.voiceConnected = false;
+      this.conn = null;
       WT.addSysMsg('Друг отключился. Комната закрыта.');
       WT.updateBadge(false);
       WT.updateVoiceUI();
       $('wtStatusBadge').classList.remove('live');
       $('wtStatusBadge').style.display = 'none';
       $('voiceBarWrap').style.display = 'none';
+      Toast.show('Сессия завершена', 'info', 2500);
     });
     this.conn.on('error', () => {
       this.connected = false;
@@ -1440,7 +1574,7 @@ const WT = {
     $('wtStatusText').textContent = 'LIVE';
     $('voiceBarWrap').style.display = '';
 
-    // host sends initial state
+    // host sends initial state to guest
     if (this.role === 'host') {
       const v = $('hlsVideo');
       setTimeout(() => {
@@ -1561,16 +1695,28 @@ const WT = {
   },
 
   callPeer(peerId, stream) {
-    if (!this.peer || !this.peer.open) return;
-    this.call = this.peer.call(peerId, stream);
-    this.call.on('stream', (remoteStream) => {
-      this.remoteStream = remoteStream;
-      this.attachRemoteAudio(remoteStream);
-      this.voiceConnected = true;
-      WT.updateVoiceUI();
-    });
-    this.call.on('close', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
-    this.call.on('error', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
+    if (!this.peer || !this.peer.open || !peerId) return;
+    // Close existing call first
+    if (this.call) { try { this.call.close(); } catch (e) {} this.call = null; }
+    try {
+      this.call = this.peer.call(peerId, stream);
+      if (!this.call) return;
+      this.call.on('stream', (remoteStream) => {
+        this.remoteStream = remoteStream;
+        this.attachRemoteAudio(remoteStream);
+        this.voiceConnected = true;
+        WT.updateVoiceUI();
+      });
+      this.call.on('close', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
+      this.call.on('error', (e) => {
+        console.warn('Call error:', e);
+        this.voiceConnected = false;
+        WT.updateVoiceUI();
+        Toast.show('Ошибка голосового соединения', 'warn', 3000);
+      });
+    } catch (e) {
+      console.warn('callPeer exception:', e);
+    }
   },
 
   attachRemoteAudio(stream) {
@@ -1688,16 +1834,29 @@ const WT = {
     return d;
   },
 
-  cleanup() {
+  // ===== End WT session but keep peer alive for presence =====
+  endSession() {
     if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
     try { if (this.call) this.call.close(); } catch (e) {}
     try { if (this.conn) this.conn.close(); } catch (e) {}
-    try { if (this.peer) this.peer.destroy(); } catch (e) {}
     if (this.localStream) { this.localStream.getAudioTracks().forEach(t => t.stop()); this.localStream = null; }
     state.micEnabled = false;
-    this.call = null; this.conn = null; this.peer = null;
+    this.call = null; this.conn = null;
     this.connected = false; this.voiceConnected = false;
     this.role = null; this.peerName = null;
+    this.lastRemoteId = null;
+    // Restart heartbeat for presence
+    this.startHeartbeat();
+    // Peer stays alive
+  },
+
+  // Full cleanup (page unload only)
+  cleanup() {
+    this.endSession();
+    try { if (this.peer) this.peer.destroy(); } catch (e) {}
+    this.peer = null;
+    this.peerReady = false;
+    this._peerPromise = null;
   },
 
   // ===== Chat helpers =====
@@ -1761,7 +1920,7 @@ $('wtCreateBtn').addEventListener('click', async () => {
   $('wtCreateBtn').disabled = true;
   $('wtCreateBtn').textContent = '⏳ Создаём...';
   try {
-    const id = await WT.initPeer('host');
+    const id = await WT.createRoom();
     $('wtHostResult').style.display = 'flex';
     const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}`;
     $('wtShareLink').textContent = shareUrl;
@@ -1826,7 +1985,7 @@ $('wtJoinBtn').addEventListener('click', async () => {
 });
 
 $('wtDisconnectBtn').addEventListener('click', () => {
-  WT.cleanup();
+  WT.endSession();
   $('wtHostResult').style.display = 'none';
   $('wtToggleBtn').classList.remove('show');
   $('voiceToggleBtn').classList.remove('show');
@@ -1836,7 +1995,7 @@ $('wtDisconnectBtn').addEventListener('click', () => {
   Toast.show('Комната закрыта', 'info');
 });
 $('wtGuestDisconnectBtn').addEventListener('click', () => {
-  WT.cleanup();
+  WT.endSession();
   $('wtGuestStatus').style.display = 'none';
   $('wtGuestDisconnectBtn').style.display = 'none';
   $('wtToggleBtn').classList.remove('show');
@@ -1858,7 +2017,19 @@ function sendChat() {
   const inp = $('wtChatInput');
   const text = inp.value.trim();
   if (!text) return;
-  if (!WT.connected) { WT.addSysMsg('Нет подключения к комнате.'); return; }
+  if (!WT.peerReady) {
+    Toast.show('Подождите, идёт подключение к серверу...', 'warn', 3000);
+    return;
+  }
+  if (WT.role === 'host' && !WT.connected) {
+    WT.addSysMsg('⏳ Ожидание друга... Как только он присоединится — сообщение будет видно.');
+    return;
+  }
+  if (!WT.connected) {
+    Toast.show('Сначала создайте или присоединитесь к комнате', 'warn', 3000);
+    openWTModal();
+    return;
+  }
   WT.addMsg(text, 'me', 'Я');
   WT.send({ type: 'chat', text, from: 'Друг' });
   inp.value = '';
@@ -1994,6 +2165,7 @@ $('copyMyIdBtn').addEventListener('click', async () => {
 
 // ============================================
 //  Friends Presence (probe online status via PeerJS)
+// Uses the SAME persistent peer as WT, but with metadata kind:'presence'
 // ============================================
 const FriendsPresence = {
   probeTimer: null,
@@ -2006,111 +2178,89 @@ const FriendsPresence = {
   },
 
   probeAll() {
-    if (!state.myPeerId) return;
+    if (!state.myPeerId || !WT.peerReady) return;
     state.friends.forEach(f => {
-      if (!this.probing.has(f.id)) {
-        this.probing.has(f.id);
-        this.probe(f.id);
-      }
+      if (!this.probing.has(f.id)) this.probe(f.id);
     });
   },
 
-  ping(friendId) {
-    this.probe(friendId);
-  },
+  ping(friendId) { this.probe(friendId); },
 
   probe(friendId) {
-    if (!window.Peer) return;
+    if (!WT.peer || !WT.peerReady || !WT.peer.open) return;
+    if (this.probing.has(friendId)) return;
     this.probing.add(friendId);
-    // Use a temporary peer to ping
-    const tempPeer = new Peer({ config: ICE_SERVERS, debug: 0 });
-    let resolved = false;
 
-    const cleanup = () => {
-      this.probing.delete(friendId);
-      try { tempPeer.destroy(); } catch (e) {}
+    // Use the persistent peer with metadata kind:'presence'
+    let resolved = false;
+    const cleanup = () => { this.probing.delete(friendId); };
+
+    const markOffline = () => {
+      if (resolved) return;
+      resolved = true;
+      const f = state.friends.find(x => x.id === friendId);
+      if (f && f.online) { f.online = false; f.inSession = false; saveFriends(); renderFriends(); }
+      cleanup();
     };
 
-    const timeout = setTimeout(() => {
-      if (!resolved) {
-        resolved = true;
-        const f = state.friends.find(x => x.id === friendId);
-        if (f) { f.online = false; f.inSession = false; saveFriends(); renderFriends(); }
-        cleanup();
-      }
-    }, 8000);
+    const markOnline = () => {
+      if (resolved) return;
+      resolved = true;
+      const f = state.friends.find(x => x.id === friendId);
+      if (f && !f.online) { f.online = true; saveFriends(); renderFriends(); }
+      cleanup();
+    };
 
-    tempPeer.on('open', () => {
-      const conn = tempPeer.connect(friendId, { reliable: true });
-      const connTimeout = setTimeout(() => {
-        if (!resolved) {
-          resolved = true;
-          const f = state.friends.find(x => x.id === friendId);
-          if (f) { f.online = false; f.inSession = false; saveFriends(); renderFriends(); }
-          cleanup();
-        }
-      }, 4000);
+    try {
+      const conn = WT.peer.connect(friendId, {
+        reliable: true,
+        metadata: { kind: 'presence' }
+      });
+
+      const timeout = setTimeout(markOffline, 6000);
 
       conn.on('open', () => {
-        if (resolved) return;
-        resolved = true;
-        clearTimeout(connTimeout);
         clearTimeout(timeout);
+        // Wait for pong
+        const pongTimeout = setTimeout(() => {
+          try { conn.close(); } catch (e) {}
+          markOnline(); // connection opened = peer exists
+        }, 1500);
+        conn.on('data', (data) => {
+          if (data && data.type === 'presence-pong') {
+            clearTimeout(pongTimeout);
+            try { conn.close(); } catch (e) {}
+            markOnline();
+          }
+        });
         try { conn.send({ type: 'presence-ping' }); } catch (e) {}
-        const f = state.friends.find(x => x.id === friendId);
-        if (f) { f.online = true; saveFriends(); renderFriends(); }
-        setTimeout(cleanup, 500);
       });
 
       conn.on('error', () => {
-        if (resolved) return;
-        // peer-unavailable means offline
-        resolved = true;
-        clearTimeout(connTimeout);
         clearTimeout(timeout);
-        const f = state.friends.find(x => x.id === friendId);
-        if (f) { f.online = false; saveFriends(); renderFriends(); }
-        cleanup();
+        markOffline();
       });
-    });
-
-    tempPeer.on('error', () => {
-      if (resolved) return;
-      // peer-unavailable = offline, other errors also = offline
-      resolved = true;
-      clearTimeout(timeout);
-      const f = state.friends.find(x => x.id === friendId);
-      if (f) { f.online = false; saveFriends(); renderFriends(); }
-      cleanup();
-    });
+    } catch (e) {
+      markOffline();
+    }
   }
 };
 window.FriendsPresence = FriendsPresence;
 
 // ============================================
-//  Bootstrap: init own peer for presence
+//  Bootstrap: init persistent peer on page load
 // ============================================
 async function bootstrapMyPeer() {
+  $('myPeerId').textContent = 'подключение...';
+  WT.setPeerStatus('connecting');
   try {
-    state.myPeerId = await WT.initPeer('presence');
-    // Register presence handler
-    WT.peer.on('connection', (conn) => {
-      // If already in a session, reject extra connections unless they are presence pings
-      conn.on('open', () => {
-        conn.on('data', (data) => {
-          if (data && data.type === 'presence-ping') {
-            try { conn.send({ type: 'presence-pong' }); } catch (e) {}
-            setTimeout(() => { try { conn.close(); } catch (e) {} }, 300);
-          }
-        });
-      });
-      // For real WT sessions, the host's WT.peer.on('connection') handler in initPeer already handles them
-      // But since initPeer was called for 'presence', we treat incoming as presence pings only
-    });
+    await WT.ensurePeer();
     FriendsPresence.start();
     renderFriends();
   } catch (e) {
     $('myPeerId').textContent = 'недоступен (повтор через 10с)';
+    WT.setPeerStatus('offline');
+    Toast.show('Не удалось подключиться к серверу. Повтор через 10с.', 'warn', 5000);
     setTimeout(bootstrapMyPeer, 10000);
   }
 }
