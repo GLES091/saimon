@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>GOD_AE86 ✦ аниме-плеер</title>
-  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, совместный просмотр, галерея и гача.">
+  <title>GOD_AE86 ✦ аниме + смотреть вместе</title>
+  <meta name="description" content="Аниме-плеер с совместным просмотром, голосовым чатом и контактами.">
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     /* ===== Design Tokens ===== */
@@ -16,6 +16,7 @@
       --bg2: #1f1135;
       --card: rgba(34,18,58,0.72);
       --card-solid: #22133a;
+      --card-2: rgba(45,24,76,0.85);
       --text: #f5e7ff;
       --muted: #b9a0d4;
       --muted-2: #8a6fa8;
@@ -26,6 +27,7 @@
       --gold: #f9c74f;
       --danger: #ff6b8a;
       --success: #7ee787;
+      --info: #62b6e8;
       --border: rgba(199,125,255,0.20);
       --border-strong: rgba(199,125,255,0.42);
       --shadow-sm: 0 2px 12px rgba(0,0,0,0.25);
@@ -44,7 +46,7 @@
       --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
     }
     [data-theme="light"] {
-      --bg: #fbeaf3; --bg2: #f6d3e6; --card: rgba(255,250,253,0.86); --card-solid: #fff5fa;
+      --bg: #fbeaf3; --bg2: #f6d3e6; --card: rgba(255,250,253,0.86); --card-solid: #fff5fa; --card-2: rgba(252,235,245,0.95);
       --text: #3a1a2e; --muted: #6f4768; --muted-2: #9b7a92;
       --accent: #e0567f; --accent-2: #d8456f; --purple: #9b59b6;
       --teal: #2bb5b0; --gold: #d4a017;
@@ -69,6 +71,7 @@
       transition: background var(--tr), color var(--tr);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
     body::before {
       content:''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -79,6 +82,8 @@
     }
     img { max-width: 100%; display: block; }
     button { font-family: inherit; }
+    a { color: var(--accent); text-decoration: none; }
+    code { font-family: 'Sarasa Mono SC', 'Cascadia Code', monospace; }
 
     /* ===== VFX ===== */
     .petal, .star-vfx { position: absolute; pointer-events: none; will-change: transform, opacity; }
@@ -107,53 +112,72 @@
     }
 
     /* ===== Top Bar ===== */
-    .fixed-top { position: fixed; top: var(--sp-3); right: var(--sp-3); display: flex; gap: var(--sp-2); z-index: 200; }
-    .icon-btn {
-      width: 46px; height: 46px; border-radius: 50%;
-      background: var(--card); border: 1.5px solid var(--border);
-      cursor: pointer; font-size: 1.25rem; display: grid; place-items: center;
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      transition: transform var(--tr-fast), box-shadow var(--tr-fast), border-color var(--tr-fast);
-      color: var(--text);
+    .topbar {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--sp-2) var(--sp-4);
+      background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
     }
-    .icon-btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: var(--glow); border-color: var(--accent); }
-    .icon-btn:active { transform: scale(0.95); }
-
-    /* ===== Layout ===== */
-    .page-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: var(--sp-6) var(--sp-3) var(--sp-7); }
-    .container { width: 100%; max-width: 1020px; display: flex; flex-direction: column; gap: var(--sp-4); }
-
-    /* ===== Brand Header ===== */
     .brand {
-      display: flex; align-items: center; justify-content: center; gap: var(--sp-3);
-      padding: var(--sp-3) 0 var(--sp-2);
-      font-family: var(--fh); font-size: 1.4rem;
+      display: flex; align-items: center; gap: var(--sp-2);
+      font-family: var(--fh); font-size: 1.05rem;
       background: linear-gradient(135deg, var(--accent), var(--purple));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       letter-spacing: 0.5px;
     }
     .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: var(--glow); -webkit-text-fill-color: initial; }
+    .topbar-actions { display: flex; gap: var(--sp-2); align-items: center; }
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(199,125,255,.08); border: 1.5px solid var(--border);
+      cursor: pointer; font-size: 1.15rem; display: grid; place-items: center;
+      transition: transform var(--tr-fast), box-shadow var(--tr-fast), border-color var(--tr-fast), background var(--tr-fast);
+      color: var(--text); position: relative;
+    }
+    .icon-btn:hover { transform: translateY(-2px); box-shadow: var(--glow); border-color: var(--accent); background: rgba(255,155,179,.08); }
+    .icon-btn:active { transform: scale(0.95); }
+    .icon-btn .pulse-dot {
+      position: absolute; top: 4px; right: 4px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--success); box-shadow: 0 0 6px var(--success);
+      animation: pulse 1.5s infinite; display: none;
+    }
+    .icon-btn .pulse-dot.show { display: block; }
+    @keyframes pulse { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.4; transform: scale(0.8); } }
 
-    /* ===== Tabs ===== */
+    /* ===== Layout ===== */
+    .page-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: var(--sp-4) var(--sp-3) var(--sp-7); }
+    .container { width: 100%; max-width: 1080px; display: flex; flex-direction: column; gap: var(--sp-4); }
+
+    /* ===== Pill Tabs ===== */
     .tabs-wrapper {
       background: var(--card); border-radius: var(--radius-lg);
       border: 1px solid var(--border); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      padding: var(--sp-1); position: sticky; top: var(--sp-2); z-index: 100;
+      padding: var(--sp-1); position: sticky; top: 64px; z-index: 100;
       box-shadow: var(--shadow-sm);
     }
     .tablist { display: flex; gap: var(--sp-1); flex-wrap: wrap; justify-content: center; }
     .tab-btn {
-      flex: 1 0 auto; min-width: 96px; background: transparent; border: none;
+      flex: 1 0 auto; min-width: 92px; background: transparent; border: none;
       padding: var(--sp-3) var(--sp-4); border-radius: var(--radius);
       cursor: pointer; font-weight: 800; font-family: var(--fh);
-      font-size: 0.78rem; letter-spacing: 0.4px; color: var(--muted);
+      font-size: 0.76rem; letter-spacing: 0.3px; color: var(--muted);
       transition: all var(--tr-fast); display: flex; align-items: center; justify-content: center; gap: var(--sp-1);
+      white-space: nowrap;
     }
     .tab-btn:hover { color: var(--text); background: rgba(199,125,255,.06); }
     .tab-btn.active {
       background: linear-gradient(135deg, var(--accent), var(--purple));
       color: white; box-shadow: 0 4px 16px rgba(255,155,179,0.4);
     }
+    .tab-btn .badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+      background: var(--danger); color: white; font-size: 0.62rem; font-weight: 800;
+      margin-left: 2px;
+    }
+    .tab-btn.active .badge { background: rgba(255,255,255,0.3); color: white; }
     .tab-panel { display: none; animation: fadeSlide 0.35s ease; }
     .tab-panel.active { display: block; }
     @keyframes fadeSlide { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
@@ -167,14 +191,19 @@
     }
     .card h2 { font-family: var(--fh); color: var(--accent); font-size: 1.1rem; letter-spacing: 0.3px; }
     .card h3 { font-family: var(--fh); color: var(--accent); font-size: 0.95rem; }
+    .section-head {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4);
+    }
+    .section-head h2 { margin: 0; }
 
     /* ===== Form & Buttons ===== */
     .btn {
       border: none; font-weight: 800; font-size: 0.82rem;
       padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-sm);
-      cursor: pointer; transition: transform var(--tr-fast), box-shadow var(--tr-fast), background var(--tr-fast);
+      cursor: pointer; transition: transform var(--tr-fast), box-shadow var(--tr-fast), background var(--tr-fast), opacity var(--tr-fast);
       display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-1);
-      line-height: 1;
+      line-height: 1; white-space: nowrap;
     }
     .btn:hover { transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
@@ -186,17 +215,23 @@
     .btn-danger { background: transparent; border: 1.5px solid var(--danger); color: var(--danger); }
     .btn-danger:hover { background: rgba(255,107,138,.1); }
     .btn-success { background: linear-gradient(135deg, var(--success), var(--teal)); color: #0a3014; }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { color: var(--accent); background: rgba(199,125,255,.06); }
+    .btn-icon { padding: var(--sp-2); width: 38px; height: 38px; }
+    .btn-lg { padding: var(--sp-4) var(--sp-5); font-size: 0.95rem; }
 
-    input[type="text"], input[type="number"], input[type="search"], textarea {
+    input[type="text"], input[type="number"], input[type="search"], input[type="url"], textarea, select {
       width: 100%; padding: var(--sp-3) var(--sp-4);
       background: rgba(199,125,255,.07); border: 1.5px solid var(--border);
       border-radius: var(--radius-sm); color: var(--text); outline: none;
       transition: border-color var(--tr-fast), background var(--tr-fast);
       font-family: inherit; font-size: 0.9rem;
     }
-    input:focus, textarea:focus { border-color: var(--accent); background: rgba(255,155,179,.06); }
+    select { cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c77dff' d='M2 4l4 4 4-4z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); background: rgba(255,155,179,.06); }
     input::placeholder, textarea::placeholder { color: var(--muted-2); }
     label { display: block; font-size: 0.72rem; color: var(--accent); font-weight: 800; margin-bottom: var(--sp-1); text-transform: uppercase; letter-spacing: 0.5px; }
+    .hint { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
 
     /* ===== Bio ===== */
     .profile { display: flex; align-items: center; gap: var(--sp-5); flex-wrap: wrap; justify-content: center; }
@@ -207,42 +242,23 @@
       box-shadow: 0 0 0 6px rgba(199,125,255,.12), 0 0 40px rgba(255,155,179,.4);
     }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-ring, .avatar-ring2 {
-      position: absolute; border-radius: 50%; pointer-events: none;
-      animation: spin 16s linear infinite;
-    }
+    .avatar-ring, .avatar-ring2 { position: absolute; border-radius: 50%; pointer-events: none; animation: spin 16s linear infinite; }
     .avatar-ring { inset: -8px; border: 2px dashed var(--purple); opacity: 0.55; }
     .avatar-ring2 { inset: -18px; border: 1px dotted var(--accent); animation: spin 24s reverse infinite; opacity: 0.3; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .bio-name {
-      font-family: var(--fh); font-size: 1.9rem; margin-bottom: var(--sp-1);
-      background: linear-gradient(135deg, var(--accent), var(--purple));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    .bio-name { font-family: var(--fh); font-size: 1.9rem; margin-bottom: var(--sp-1); background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .bio-handle { color: var(--muted); font-weight: 800; margin-bottom: var(--sp-3); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
     .bio-tag { color: var(--text); font-weight: 700; margin-bottom: var(--sp-3); }
     .tag-row { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
-    .chip {
-      padding: var(--sp-1) var(--sp-3); border-radius: 20px;
-      font-size: 0.72rem; font-weight: 800; color: var(--accent);
-      border: 1.5px solid var(--accent); background: transparent;
-    }
-    .quote-box {
-      background: rgba(199,125,255,.08); border-left: 3px solid var(--purple);
-      padding: var(--sp-4); border-radius: var(--radius-sm); margin-top: var(--sp-4);
-    }
+    .chip { padding: var(--sp-1) var(--sp-3); border-radius: 20px; font-size: 0.72rem; font-weight: 800; color: var(--accent); border: 1.5px solid var(--accent); background: transparent; }
+    .quote-box { background: rgba(199,125,255,.08); border-left: 3px solid var(--purple); padding: var(--sp-4); border-radius: var(--radius-sm); margin-top: var(--sp-4); }
     .quote-box .q-text { font-style: italic; font-size: 0.92rem; line-height: 1.5; }
     .quote-box .q-foot { display: flex; justify-content: space-between; align-items: center; margin-top: var(--sp-2); }
     .quote-box .q-src { font-size: 0.75rem; color: var(--muted); font-weight: 800; }
 
     /* ===== Anime ===== */
     .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-3); }
-    .anime-card {
-      background: rgba(199,125,255,.05); border-radius: var(--radius);
-      border: 1px solid var(--border); cursor: pointer;
-      transition: transform var(--tr-fast), box-shadow var(--tr-fast), border-color var(--tr-fast);
-      overflow: hidden;
-    }
+    .anime-card { background: rgba(199,125,255,.05); border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; transition: transform var(--tr-fast), box-shadow var(--tr-fast), border-color var(--tr-fast); overflow: hidden; }
     .anime-card:hover { transform: translateY(-4px); box-shadow: var(--glow); border-color: var(--accent); }
     .anime-card .poster { position: relative; aspect-ratio: 2/3; background: var(--card-solid); }
     .anime-card .poster img { width: 100%; height: 100%; object-fit: cover; }
@@ -250,119 +266,101 @@
     .anime-card .title { font-weight: 800; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: var(--sp-1); color: var(--text); }
     .anime-card .meta { font-size: 0.72rem; color: var(--muted); font-weight: 700; }
 
-    .player-header {
-      display: flex; justify-content: space-between; align-items: center;
-      gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4);
-    }
-    .anime-info-box {
-      display: flex; gap: var(--sp-4); margin-bottom: var(--sp-4);
-      align-items: flex-start; flex-wrap: wrap;
-      background: rgba(34,18,58,0.5); padding: var(--sp-4);
-      border-radius: var(--radius); border: 1px solid var(--border);
-    }
+    .anime-info-box { display: flex; gap: var(--sp-4); margin-bottom: var(--sp-4); align-items: flex-start; flex-wrap: wrap; background: rgba(34,18,58,0.5); padding: var(--sp-4); border-radius: var(--radius); border: 1px solid var(--border); }
     .anime-info-box img { width: 130px; height: 190px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow); flex-shrink: 0; }
 
     .ep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: var(--sp-1); margin-bottom: var(--sp-4); max-height: 220px; overflow-y: auto; padding-right: var(--sp-1); }
     .ep-btn { padding: var(--sp-2) var(--sp-1) !important; font-size: 0.78rem !important; text-align: center; min-height: 38px; }
     .ep-btn.active { background: linear-gradient(135deg, var(--accent), var(--purple)); color: white !important; border-color: transparent !important; box-shadow: 0 2px 10px rgba(255,155,179,.4); }
 
-    .video-container {
-      position: relative; background: #000; border-radius: var(--radius-lg);
-      overflow: hidden; aspect-ratio: 16/9; box-shadow: var(--shadow-lg);
-    }
+    .video-container { position: relative; background: #000; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 16/9; box-shadow: var(--shadow-lg); }
     .video-container video { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .video-overlay-top {
-      position: absolute; top: var(--sp-3); right: var(--sp-3); z-index: 10;
-      display: flex; gap: var(--sp-2); align-items: center;
-    }
-    .wt-badge {
-      display: inline-flex; align-items: center; gap: var(--sp-1);
-      padding: var(--sp-1) var(--sp-3); border-radius: 30px;
-      font-size: 0.72rem; font-weight: 800; color: white;
-      background: rgba(0,0,0,0.7); border: 1px solid var(--border-strong);
-      backdrop-filter: blur(8px);
-    }
+    .video-overlay-top { position: absolute; top: var(--sp-3); right: var(--sp-3); z-index: 10; display: flex; gap: var(--sp-2); align-items: center; }
+    .video-overlay-bottom { position: absolute; bottom: var(--sp-3); left: var(--sp-3); z-index: 10; display: flex; gap: var(--sp-2); align-items: center; }
+    .wt-badge { display: inline-flex; align-items: center; gap: var(--sp-1); padding: var(--sp-1) var(--sp-3); border-radius: 30px; font-size: 0.72rem; font-weight: 800; color: white; background: rgba(0,0,0,0.7); border: 1px solid var(--border-strong); backdrop-filter: blur(8px); }
     .wt-badge.live { background: linear-gradient(135deg, #ff4da6, #c77dff); border-color: transparent; }
     .wt-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); }
     .wt-badge.live .dot { background: #fff; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-    select.wt-select {
-      background: rgba(0,0,0,0.7); color: white; border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm); padding: var(--sp-1) var(--sp-3);
-      font-size: 0.78rem; outline: none; cursor: pointer; font-family: inherit;
+    .wt-badge.voice { background: linear-gradient(135deg, #7ee787, #2bb5b0); color: #0a3014; border-color: transparent; }
+    select.wt-select { background: rgba(0,0,0,0.7); color: white; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: var(--sp-1) var(--sp-3); font-size: 0.78rem; outline: none; cursor: pointer; font-family: inherit; }
+
+    /* Voice control bar inside player */
+    .voice-bar {
+      display: flex; align-items: center; gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-3); border-radius: 30px;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+      border: 1px solid var(--border-strong);
     }
+    .voice-bar .vb-mic {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: linear-gradient(135deg, var(--accent), var(--purple)); color: white;
+      cursor: pointer; display: grid; place-items: center; font-size: 1rem;
+      transition: transform var(--tr-fast);
+    }
+    .voice-bar .vb-mic:hover { transform: scale(1.08); }
+    .voice-bar .vb-mic.off { background: rgba(255,255,255,0.1); color: var(--muted); }
+    .voice-bar .vb-mic.speaking { box-shadow: 0 0 0 4px rgba(126,231,135,0.4), 0 0 18px var(--success); animation: micPulse 0.6s ease; }
+    @keyframes micPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+    .voice-bar .vb-info { color: white; font-size: 0.75rem; font-weight: 800; }
+    .voice-bar .vb-info .who { color: var(--accent-2); }
 
     /* ===== Gallery ===== */
     .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--sp-3); }
-    .gal-item {
-      position: relative; aspect-ratio: 1; border-radius: var(--radius);
-      overflow: hidden; border: 1px solid var(--border); cursor: pointer;
-    }
+    .gal-item { position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
     .gal-item img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--tr); }
     .gal-item:hover img { transform: scale(1.08); }
-    .gal-item .gal-cap {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
-      padding: var(--sp-5) var(--sp-2) var(--sp-2);
-      color: white; font-size: 0.74rem; font-weight: 800;
-      text-shadow: 0 1px 2px black;
-    }
+    .gal-item .gal-cap { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: var(--sp-5) var(--sp-2) var(--sp-2); color: white; font-size: 0.74rem; font-weight: 800; text-shadow: 0 1px 2px black; }
 
     /* ===== Gacha ===== */
-    .gacha-head {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: var(--sp-4); padding-bottom: var(--sp-4);
-      border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: var(--sp-3);
-    }
+    .gacha-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4); padding-bottom: var(--sp-4); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: var(--sp-3); }
     .gacha-coins { font-family: var(--fh); color: var(--accent); display: flex; align-items: center; gap: var(--sp-2); font-size: 1.1rem; }
-    .gacha-box {
-      background: linear-gradient(180deg, #0c051a 0%, #160a2e 100%);
-      border-radius: var(--radius-lg); border: 1px solid var(--border);
-      padding: var(--sp-6); text-align: center;
-      box-shadow: inset 0 0 80px rgba(34,18,58,0.8);
-      min-height: 340px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: var(--sp-4);
-    }
-    .gacha-card {
-      background: #120822; border-radius: var(--radius); overflow: hidden;
-      width: 220px; position: relative; box-shadow: var(--glow);
-      animation: fadeSlide 0.5s ease; border: 2px solid var(--accent);
-    }
+    .gacha-box { background: linear-gradient(180deg, #0c051a 0%, #160a2e 100%); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: var(--sp-6); text-align: center; box-shadow: inset 0 0 80px rgba(34,18,58,0.8); min-height: 340px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-4); }
+    .gacha-card { background: #120822; border-radius: var(--radius); overflow: hidden; width: 220px; position: relative; box-shadow: var(--glow); animation: fadeSlide 0.5s ease; border: 2px solid var(--accent); }
     .gacha-card img { width: 100%; height: 300px; object-fit: cover; }
-    .gacha-card .rarity {
-      position: absolute; top: var(--sp-2); right: var(--sp-2);
-      background: rgba(0,0,0,0.8); padding: var(--sp-1) var(--sp-3);
-      border-radius: 20px; color: white; font-weight: 800; font-size: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px);
-    }
-    .gacha-card .name {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: var(--sp-4); background: linear-gradient(transparent, rgba(0,0,0,0.92));
-      color: white; font-weight: 800;
-    }
+    .gacha-card .rarity { position: absolute; top: var(--sp-2); right: var(--sp-2); background: rgba(0,0,0,0.8); padding: var(--sp-1) var(--sp-3); border-radius: 20px; color: white; font-weight: 800; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); }
+    .gacha-card .name { position: absolute; bottom: 0; left: 0; right: 0; padding: var(--sp-4); background: linear-gradient(transparent, rgba(0,0,0,0.92)); color: white; font-weight: 800; }
     .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-2); margin-top: var(--sp-3); }
-    .inv-item {
-      background: rgba(199,125,255,.06); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: var(--sp-2);
-      display: flex; align-items: center; gap: var(--sp-2);
-      transition: border-color var(--tr-fast), transform var(--tr-fast);
-    }
+    .inv-item { background: rgba(199,125,255,.06); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--sp-2); display: flex; align-items: center; gap: var(--sp-2); transition: border-color var(--tr-fast), transform var(--tr-fast); }
     .inv-item:hover { border-color: var(--accent); transform: translateY(-2px); }
     .inv-item img { width: 42px; height: 42px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
     .inv-item .info { font-size: 0.72rem; min-width: 0; }
     .inv-item .info strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+    /* ===== Friends ===== */
+    .friends-toolbar { display: flex; gap: var(--sp-2); margin-bottom: var(--sp-4); flex-wrap: wrap; align-items: center; }
+    .friends-toolbar input { flex: 1; min-width: 200px; }
+    .my-id-box { display: flex; align-items: center; gap: var(--sp-2); background: rgba(199,125,255,.06); padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong); margin-bottom: var(--sp-4); }
+    .my-id-box label { margin: 0; }
+    .my-id-box code { flex: 1; color: var(--accent); font-size: 0.8rem; word-break: break-all; }
+    .friend-section-title { display: flex; align-items: center; gap: var(--sp-2); font-family: var(--fh); color: var(--muted); font-size: 0.85rem; margin: var(--sp-4) 0 var(--sp-2); text-transform: uppercase; letter-spacing: 0.5px; }
+    .friend-section-title .count { background: rgba(199,125,255,.15); color: var(--accent); padding: 1px 8px; border-radius: 10px; font-size: 0.7rem; }
+    .friend-list { display: flex; flex-direction: column; gap: var(--sp-2); }
+    .friend-card {
+      display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3);
+      background: rgba(199,125,255,.05); border: 1px solid var(--border);
+      border-radius: var(--radius); transition: all var(--tr-fast);
+    }
+    .friend-card:hover { border-color: var(--accent); transform: translateX(2px); background: rgba(255,155,179,.06); }
+    .friend-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--card-solid); display: grid; place-items: center; font-family: var(--fh); color: white; font-size: 1rem; flex-shrink: 0; position: relative; }
+    .friend-avatar .status-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--bg); background: var(--muted-2); }
+    .friend-avatar .status-dot.online { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .friend-avatar .status-dot.in-session { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse 1.5s infinite; }
+    .friend-info { flex: 1; min-width: 0; }
+    .friend-info .fname { font-weight: 800; font-size: 0.92rem; }
+    .friend-info .fstatus { font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+    .friend-info .fstatus.online { color: var(--success); }
+    .friend-actions { display: flex; gap: var(--sp-1); }
+    .empty-state { text-align: center; padding: var(--sp-6); color: var(--muted); }
+    .empty-state .ico { font-size: 2.5rem; margin-bottom: var(--sp-2); opacity: 0.5; }
+    .empty-state .title { font-family: var(--fh); font-size: 0.95rem; margin-bottom: var(--sp-1); }
+    .empty-state .desc { font-size: 0.82rem; line-height: 1.5; max-width: 360px; margin: 0 auto; }
+
     /* ===== Neko Corner ===== */
     .neko-wrap { position: fixed; bottom: var(--sp-3); right: var(--sp-3); z-index: 150; display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); }
-    .neko-corner {
-      width: 64px; height: 64px; border-radius: 50%;
-      border: 2px solid var(--accent); overflow: hidden; cursor: pointer;
-      box-shadow: 0 0 18px rgba(255,155,179,.5); background: var(--card-solid);
-      transition: transform var(--tr-fast);
-    }
+    .neko-corner { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); overflow: hidden; cursor: pointer; box-shadow: 0 0 18px rgba(255,155,179,.5); background: var(--card-solid); transition: transform var(--tr-fast); }
     .neko-corner:hover { transform: scale(1.08) rotate(-3deg); }
     .neko-corner img { width: 100%; height: 100%; object-fit: cover; transition: opacity var(--tr); }
-    .neko-tip { background: var(--card); border-radius: 30px; padding: var(--sp-1) var(--sp-3); font-size: 0.65rem; backdrop-filter: blur(8px); font-weight: 700; color: var(--muted); }
+    .neko-tip { background: var(--card); border-radius: 30px; padding: var(--sp-1) var(--sp-3); font-size: 0.62rem; backdrop-filter: blur(8px); font-weight: 700; color: var(--muted); }
 
     /* ===== Watch Together Modal ===== */
     .wt-overlay {
@@ -374,113 +372,134 @@
     .wt-overlay.open { display: flex; }
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
     .wt-modal {
-      width: 100%; max-width: 460px;
+      width: 100%; max-width: 480px;
       background: var(--card-solid); border-radius: var(--radius-lg);
       border: 1px solid var(--border-strong); box-shadow: var(--shadow-lg);
-      overflow: hidden; animation: slideUp 0.25s cubic-bezier(.2,0,0,1);
+      overflow: hidden; animation: slideUp 0.25s cubic-bezier(.2,0,0,1); max-height: 90vh; display: flex; flex-direction: column;
     }
     @keyframes slideUp { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
-    .wt-modal-head {
-      padding: var(--sp-4) var(--sp-5); border-bottom: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      background: linear-gradient(135deg, rgba(255,155,179,0.08), rgba(199,125,255,0.08));
-    }
-    .wt-modal-head h3 { font-family: var(--fh); color: var(--accent); font-size: 1rem; }
+    .wt-modal-head { padding: var(--sp-4) var(--sp-5); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(255,155,179,0.08), rgba(199,125,255,0.08)); flex-shrink: 0; }
+    .wt-modal-head h3 { font-family: var(--fh); color: var(--accent); font-size: 1rem; display: flex; align-items: center; gap: var(--sp-2); }
     .wt-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0 var(--sp-1); }
     .wt-close:hover { color: var(--accent); }
-    .wt-modal-body { padding: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-4); }
+    .wt-modal-body { padding: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-4); overflow-y: auto; }
     .wt-tabs { display: flex; gap: var(--sp-1); background: rgba(199,125,255,.08); padding: var(--sp-1); border-radius: var(--radius-sm); }
-    .wt-tab {
-      flex: 1; padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm);
-      background: transparent; border: none; color: var(--muted);
-      font-weight: 800; cursor: pointer; font-size: 0.82rem; transition: all var(--tr-fast); font-family: inherit;
-    }
+    .wt-tab { flex: 1; padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm); background: transparent; border: none; color: var(--muted); font-weight: 800; cursor: pointer; font-size: 0.82rem; transition: all var(--tr-fast); font-family: inherit; }
     .wt-tab.active { background: var(--card-solid); color: var(--accent); box-shadow: var(--shadow-sm); }
     .wt-pane { display: none; flex-direction: column; gap: var(--sp-3); }
     .wt-pane.active { display: flex; }
-    .wt-link-box {
-      display: flex; gap: var(--sp-2); align-items: center;
-      background: rgba(199,125,255,.06); padding: var(--sp-2) var(--sp-3);
-      border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);
-    }
-    .wt-link-box code {
-      flex: 1; font-family: 'Sarasa Mono SC', monospace;
-      font-size: 0.78rem; color: var(--accent); word-break: break-all;
-    }
-    .wt-status {
-      display: flex; align-items: center; gap: var(--sp-2);
-      padding: var(--sp-3); border-radius: var(--radius-sm);
-      font-size: 0.85rem; font-weight: 700;
-    }
-    .wt-status.info { background: rgba(142,233,230,.08); color: var(--teal); }
+    .wt-link-box { display: flex; gap: var(--sp-2); align-items: center; background: rgba(199,125,255,.06); padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong); }
+    .wt-link-box code { flex: 1; font-size: 0.78rem; color: var(--accent); word-break: break-all; }
+    .wt-status { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3); border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700; }
+    .wt-status.info { background: rgba(98,182,232,.08); color: var(--info); }
     .wt-status.warn { background: rgba(249,199,79,.08); color: var(--gold); }
     .wt-status.err { background: rgba(255,107,138,.08); color: var(--danger); }
     .wt-status.ok { background: rgba(126,231,135,.08); color: var(--success); }
-    .wt-info-row { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .wt-info-row { font-size: 0.78rem; color: var(--muted); line-height: 1.55; }
     .wt-info-row b { color: var(--text); }
+    .wt-step { display: flex; gap: var(--sp-2); align-items: flex-start; padding: var(--sp-2); border-radius: var(--radius-sm); background: rgba(199,125,255,.04); }
+    .wt-step .num { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; display: grid; place-items: center; font-weight: 800; font-size: 0.72rem; flex-shrink: 0; }
+    .wt-step .txt { font-size: 0.78rem; line-height: 1.4; }
 
-    /* WT Chat (in player sidebar) */
-    .wt-side {
+    /* ===== Side panels ===== */
+    .side-panel {
       position: fixed; top: 0; right: 0; bottom: 0;
-      width: 340px; max-width: 90vw; z-index: 400;
+      width: 360px; max-width: 92vw; z-index: 400;
       background: var(--card-solid); border-left: 1px solid var(--border-strong);
       box-shadow: -10px 0 40px rgba(0,0,0,0.4);
       transform: translateX(100%); transition: transform var(--tr);
       display: flex; flex-direction: column;
     }
-    .wt-side.open { transform: translateX(0); }
-    .wt-side-head {
-      padding: var(--sp-4); border-bottom: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      background: linear-gradient(135deg, rgba(255,155,179,0.06), rgba(199,125,255,0.06));
-    }
-    .wt-side-head h3 { font-family: var(--fh); color: var(--accent); font-size: 0.95rem; display: flex; align-items: center; gap: var(--sp-2); }
-    .wt-side-body { flex: 1; overflow-y: auto; padding: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-2); }
-    .wt-msg {
-      max-width: 85%; padding: var(--sp-2) var(--sp-3);
-      border-radius: var(--radius); font-size: 0.84rem; line-height: 1.4;
-      word-wrap: break-word; animation: fadeSlide 0.2s ease;
-    }
+    .side-panel.open { transform: translateX(0); }
+    .side-head { padding: var(--sp-4); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(255,155,179,0.06), rgba(199,125,255,0.06)); flex-shrink: 0; }
+    .side-head h3 { font-family: var(--fh); color: var(--accent); font-size: 0.95rem; display: flex; align-items: center; gap: var(--sp-2); }
+    .side-head .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); }
+    .side-head .live-dot.on { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .side-body { flex: 1; overflow-y: auto; padding: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-2); }
+
+    /* WT chat */
+    .wt-msg { max-width: 85%; padding: var(--sp-2) var(--sp-3); border-radius: var(--radius); font-size: 0.84rem; line-height: 1.4; word-wrap: break-word; animation: fadeSlide 0.2s ease; }
     .wt-msg.sys { align-self: center; background: rgba(199,125,255,.08); color: var(--muted); font-size: 0.74rem; text-align: center; max-width: 100%; border-radius: 20px; }
     .wt-msg.me { align-self: flex-end; background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; border-bottom-right-radius: 4px; }
     .wt-msg.them { align-self: flex-start; background: rgba(199,125,255,.1); color: var(--text); border-bottom-left-radius: 4px; }
     .wt-msg .who { font-size: 0.68rem; font-weight: 800; opacity: 0.7; margin-bottom: 2px; display: block; }
-    .wt-side-foot { padding: var(--sp-3); border-top: 1px solid var(--border); display: flex; gap: var(--sp-2); }
-    .wt-side-foot input { flex: 1; }
-    .wt-toggle-btn {
-      position: fixed; right: var(--sp-3); bottom: 90px; z-index: 350;
+    .side-foot { padding: var(--sp-3); border-top: 1px solid var(--border); display: flex; gap: var(--sp-2); flex-shrink: 0; }
+    .side-foot input { flex: 1; }
+
+    /* Floating toggle buttons */
+    .float-btns { position: fixed; right: var(--sp-3); bottom: 90px; z-index: 350; display: flex; flex-direction: column; gap: var(--sp-2); }
+    .float-btn {
       width: 50px; height: 50px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--purple));
-      border: none; cursor: pointer; box-shadow: var(--glow);
-      color: white; font-size: 1.2rem; display: none;
-      align-items: center; justify-content: center;
-      transition: transform var(--tr-fast);
+      border: none; cursor: pointer; color: white; font-size: 1.2rem;
+      display: none; align-items: center; justify-content: center; position: relative;
+      transition: transform var(--tr-fast), box-shadow var(--tr-fast);
+      box-shadow: var(--glow);
     }
-    .wt-toggle-btn.show { display: flex; }
-    .wt-toggle-btn:hover { transform: scale(1.08); }
-    .wt-toggle-btn .badge {
-      position: absolute; top: -2px; right: -2px;
-      background: var(--danger); color: white; font-size: 0.6rem;
-      width: 18px; height: 18px; border-radius: 50%;
-      display: grid; place-items: center; font-weight: 800;
-      border: 2px solid var(--bg);
+    .float-btn.show { display: flex; }
+    .float-btn:hover { transform: scale(1.08); }
+    .float-btn .badge { position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; font-size: 0.6rem; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; border: 2px solid var(--bg); }
+    .float-btn.chat { background: linear-gradient(135deg, var(--accent), var(--purple)); }
+    .float-btn.voice { background: linear-gradient(135deg, var(--success), var(--teal)); color: #0a3014; }
+    .float-btn.voice.off { background: rgba(255,255,255,0.1); color: var(--muted); box-shadow: none; }
+
+    /* Voice panel */
+    .voice-panel-content { padding: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-4); }
+    .voice-participants { display: flex; flex-direction: column; gap: var(--sp-2); }
+    .voice-participant { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3); background: rgba(199,125,255,.05); border-radius: var(--radius); border: 1px solid var(--border); }
+    .voice-participant .vp-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; display: grid; place-items: center; font-weight: 800; font-family: var(--fh); position: relative; flex-shrink: 0; }
+    .voice-participant .vp-avatar.speaking { box-shadow: 0 0 0 3px var(--success), 0 0 12px var(--success); }
+    .voice-participant .vp-info { flex: 1; }
+    .voice-participant .vp-info .name { font-weight: 800; font-size: 0.88rem; }
+    .voice-participant .vp-info .state { font-size: 0.72rem; color: var(--muted); }
+    .voice-participant .vp-mic-icon { font-size: 1.1rem; opacity: 0.6; }
+    .voice-participant .vp-mic-icon.muted { opacity: 1; color: var(--danger); }
+    .voice-controls { display: flex; gap: var(--sp-2); }
+    .voice-controls .btn { flex: 1; }
+    .voice-meter { height: 6px; background: rgba(199,125,255,.1); border-radius: 3px; overflow: hidden; }
+    .voice-meter .bar { height: 100%; background: linear-gradient(90deg, var(--success), var(--accent)); width: 0%; transition: width 0.1s; }
+
+    /* ===== Toasts ===== */
+    #toastWrap {
+      position: fixed; top: 80px; right: var(--sp-3); z-index: 1000;
+      display: flex; flex-direction: column; gap: var(--sp-2); max-width: 340px;
+      pointer-events: none;
     }
+    .toast {
+      pointer-events: auto;
+      background: var(--card-2); backdrop-filter: blur(14px);
+      border: 1px solid var(--border-strong); border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm); padding: var(--sp-3) var(--sp-4);
+      box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: var(--sp-2);
+      animation: toastIn 0.25s cubic-bezier(.2,0,0,1);
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warn { border-left-color: var(--gold); }
+    .toast.info { border-left-color: var(--info); }
+    .toast .ico { font-size: 1.1rem; }
+    .toast.hide { animation: toastOut 0.25s forwards; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity:1; transform: translateX(0); } }
+    @keyframes toastOut { to { opacity: 0; transform: translateX(40px); } }
 
     /* ===== Skeleton ===== */
-    .skeleton {
-      background: linear-gradient(90deg, rgba(199,125,255,.05) 0%, rgba(199,125,255,.15) 50%, rgba(199,125,255,.05) 100%);
-      background-size: 200% 100%; animation: shimmer 1.4s infinite;
-      border-radius: var(--radius);
-    }
+    .skeleton { background: linear-gradient(90deg, rgba(199,125,255,.05) 0%, rgba(199,125,255,.15) 50%, rgba(199,125,255,.05) 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: var(--radius); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     .sk-card { aspect-ratio: 2/3; }
-    .sk-line { height: 12px; margin: var(--sp-1) 0; }
 
     /* ===== Scrollbar ===== */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ===== Modal: add friend ===== */
+    .modal-overlay { position: fixed; inset: 0; z-index: 600; background: rgba(10,5,18,0.78); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: var(--sp-3); animation: fadeIn 0.2s ease; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { width: 100%; max-width: 420px; background: var(--card-solid); border-radius: var(--radius-lg); border: 1px solid var(--border-strong); box-shadow: var(--shadow-lg); overflow: hidden; animation: slideUp 0.25s cubic-bezier(.2,0,0,1); }
+    .modal-head { padding: var(--sp-4) var(--sp-5); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(255,155,179,0.08), rgba(199,125,255,0.08)); }
+    .modal-head h3 { font-family: var(--fh); color: var(--accent); font-size: 1rem; }
+    .modal-body { padding: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-3); }
 
     /* ===== Responsive ===== */
     @media (max-width: 640px) {
@@ -489,9 +508,12 @@
       .avatar-wrap { width: 110px; height: 110px; }
       .bio-name { font-size: 1.5rem; }
       .anime-info-box img { width: 100px; height: 150px; }
-      .tab-btn { min-width: 0; padding: var(--sp-2) var(--sp-3); font-size: 0.7rem; }
+      .tab-btn { min-width: 0; padding: var(--sp-2) var(--sp-3); font-size: 0.68rem; }
       .gacha-card { width: 180px; }
       .gacha-card img { height: 250px; }
+      .brand { font-size: 0.92rem; }
+      .tabs-wrapper { top: 56px; }
+      #toastWrap { top: 70px; right: var(--sp-2); left: var(--sp-2); max-width: none; }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -499,11 +521,18 @@
 </head>
 <body>
 <div id="vfx-bg" style="position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;"></div>
+<div id="toastWrap"></div>
 
-<div class="fixed-top">
-  <button class="icon-btn" id="themeToggle" aria-label="Сменить тему">🌸</button>
-  <button class="icon-btn" id="animeModeBtn" aria-label="Аниме-режим">✨</button>
-</div>
+<header class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <span>GOD_AE86</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="themeToggle" aria-label="Сменить тему" title="Тема">🌸</button>
+    <button class="icon-btn" id="animeModeBtn" aria-label="Аниме-режим" title="VFX">✨</button>
+  </div>
+</header>
 
 <div class="neko-wrap">
   <div class="neko-corner" id="nekoCorner">
@@ -512,35 +541,60 @@
   <div class="neko-tip">🐱 нажми для котика!</div>
 </div>
 
-<button class="wt-toggle-btn" id="wtToggleBtn" aria-label="Чат смотреть вместе">
-  💬<span class="badge" id="wtMsgBadge" style="display:none;">0</span>
-</button>
+<div class="float-btns">
+  <button class="float-btn voice off" id="voiceToggleBtn" aria-label="Голосовой чат" title="Голосовой чат">🎤</button>
+  <button class="float-btn chat" id="wtToggleBtn" aria-label="Чат смотреть вместе" title="Чат">💬<span class="badge" id="wtMsgBadge" style="display:none;">0</span></button>
+</div>
 
-<aside class="wt-side" id="wtSide" aria-label="Чат смотреть вместе">
-  <div class="wt-side-head">
-    <h3><span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--muted-2);"></span> <span id="wtSideTitle">Смотреть вместе</span></h3>
+<aside class="side-panel" id="wtSide" aria-label="Чат смотреть вместе">
+  <div class="side-head">
+    <h3><span class="live-dot" id="wtSideDot"></span> Чат комнаты</h3>
     <button class="wt-close" id="wtSideClose" aria-label="Закрыть">×</button>
   </div>
-  <div class="wt-side-body" id="wtChatBody"></div>
-  <div class="wt-side-foot">
+  <div class="side-body" id="wtChatBody"></div>
+  <div class="side-foot">
     <input type="text" id="wtChatInput" placeholder="Сообщение..." maxlength="500">
     <button class="btn btn-primary" id="wtChatSend">➤</button>
   </div>
 </aside>
 
-<div class="page-wrap"><div class="container">
-  <div class="brand">
-    <span class="dot"></span>
-    <span>GOD_AE86</span>
-    <span class="dot"></span>
+<aside class="side-panel" id="voiceSide" aria-label="Голосовой чат">
+  <div class="side-head">
+    <h3><span class="live-dot" id="voiceSideDot"></span> 🎤 Голосовой чат</h3>
+    <button class="wt-close" id="voiceSideClose" aria-label="Закрыть">×</button>
   </div>
+  <div class="voice-panel-content">
+    <div>
+      <label>Участники</label>
+      <div class="voice-participants" id="voiceParticipants">
+        <div class="empty-state" style="padding: var(--sp-4);">
+          <div class="ico">🎧</div>
+          <div class="desc">Голосовой чат начнётся, когда вы подключитесь к комнате "Смотреть вместе".</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label>Ваш микрофон</label>
+      <div class="voice-meter" style="margin-bottom: var(--sp-2);"><div class="bar" id="voiceMeterBar"></div></div>
+      <div class="voice-controls">
+        <button class="btn btn-outline" id="micToggleBtn">🎤 Включить микрофон</button>
+        <button class="btn btn-outline" id="speakerToggleBtn">🔊 Динамик: вкл</button>
+      </div>
+    </div>
+    <div class="hint" id="voiceHint">
+      Подключитесь к комнате "Смотреть вместе" — голосовой чат включится автоматически.
+    </div>
+  </div>
+</aside>
 
+<div class="page-wrap"><div class="container">
   <!-- Tabs -->
   <div class="tabs-wrapper">
     <div class="tablist" id="tablist" role="tablist">
       <button class="tab-btn active" data-tab="bio" role="tab">🌸 Био</button>
-      <button class="tab-btn" data-tab="gallery" role="tab">🎴 Галерея</button>
       <button class="tab-btn" data-tab="anime" role="tab">🎌 Аниме</button>
+      <button class="tab-btn" data-tab="friends" role="tab">👥 Друзья<span class="badge" id="friendsBadge" style="display:none;">0</span></button>
+      <button class="tab-btn" data-tab="gallery" role="tab">🎴 Галерея</button>
       <button class="tab-btn" data-tab="gacha" role="tab">✨ Гача</button>
     </div>
   </div>
@@ -557,12 +611,13 @@
         <div style="flex:1; min-width:240px;">
           <div class="bio-name">GOD_AE86</div>
           <div class="bio-handle">@resivert</div>
-          <div class="bio-tag">аниме-вайб ✦ тексты ✦ батлы ✦ совместный просмотр</div>
+          <div class="bio-tag">аниме-вайб ✦ тексты ✦ батлы ✦ совместный просмотр с голосом</div>
           <div class="tag-row">
             <span class="chip">🌸 аниме</span>
             <span class="chip">🎤 батлы</span>
             <span class="chip">🐾 неко</span>
             <span class="chip">🎬 вместе</span>
+            <span class="chip">🎙 голос</span>
           </div>
           <div class="quote-box">
             <div class="q-text" id="quoteText">...</div>
@@ -576,42 +631,33 @@
     </div>
   </div>
 
-  <!-- GALLERY -->
-  <div class="tab-panel" id="panel-gallery">
-    <div class="card">
-      <div class="player-header">
-        <h2>🎴 Арт Галерея</h2>
-        <div style="display:flex; gap:var(--sp-1); flex-wrap:wrap;" id="galCats">
-          <button class="btn btn-primary" data-cat="waifu">waifu</button>
-          <button class="btn btn-outline" data-cat="neko">neko</button>
-          <button class="btn btn-outline" data-cat="kitsune">kitsune</button>
-          <button class="btn btn-outline" data-cat="husbando">husbando</button>
-        </div>
-        <button class="btn btn-primary" id="reloadGalBtn">🔄 Обновить</button>
-      </div>
-      <div id="galleryGrid" class="gal-grid"></div>
-    </div>
-  </div>
-
   <!-- ANIME PLAYER -->
   <div class="tab-panel" id="panel-anime">
     <div class="card">
       <!-- CATALOG VIEW -->
       <div id="animeCatalogView">
-        <div class="player-header">
+        <div class="section-head">
           <h2>🎌 Аниме-плеер</h2>
+          <span class="hint">Совместный просмотр запускается из плеера</span>
         </div>
-        <form id="animeSearchForm" style="display:flex; gap:var(--sp-2); margin-bottom:var(--sp-4);">
+        <form id="animeSearchForm" style="display:flex; gap:var(--sp-2); margin-bottom:var(--sp-3);">
           <input type="search" id="animeSearch" placeholder="Поиск аниме (рус / англ)..." style="flex:1;" autocomplete="off">
           <button type="submit" class="btn btn-primary">🔍 Поиск</button>
         </form>
+        <div class="tag-row" style="margin-bottom: var(--sp-3);" id="animeQuickTags">
+          <button class="chip" data-q="про любовь">🌸 романтика</button>
+          <button class="chip" data-q="боевые искусства">⚔️ боевые</button>
+          <button class="chip" data-q="школа">🎒 школа</button>
+          <button class="chip" data-q="фэнтези">🧝 фэнтези</button>
+          <button class="chip" data-q="комедия">😂 комедия</button>
+        </div>
         <div id="animeCatalogStatus" style="text-align:center; color:var(--muted); margin-bottom:var(--sp-4); font-weight:800;"></div>
         <div id="animeResults" class="anime-grid"></div>
       </div>
 
       <!-- PLAYER VIEW -->
       <div id="animePlayerView" style="display:none;">
-        <div class="player-header">
+        <div class="section-head">
           <button class="btn btn-outline" id="backToCatalogAnime">← В каталог</button>
           <button class="btn btn-primary" id="wtOpenBtn">🎬 Смотреть вместе</button>
         </div>
@@ -642,9 +688,64 @@
               <option value="hls_480">480p</option>
             </select>
           </div>
+          <div class="video-overlay-bottom" id="voiceBarWrap" style="display:none;">
+            <div class="voice-bar">
+              <button class="vb-mic off" id="vbMicBtn" title="Включить микрофон">🎤</button>
+              <div class="vb-info">
+                <div><span class="who" id="vbWho">—</span></div>
+                <div style="font-size:0.65rem; opacity:0.7;" id="vbState">микрофон выключен</div>
+              </div>
+            </div>
+          </div>
           <video id="hlsVideo" controls playsinline></video>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- FRIENDS -->
+  <div class="tab-panel" id="panel-friends">
+    <div class="card">
+      <div class="section-head">
+        <h2>👥 Друзья</h2>
+        <button class="btn btn-primary" id="addFriendBtn">➕ Добавить</button>
+      </div>
+
+      <div class="my-id-box">
+        <label style="margin:0; flex-shrink:0;">Мой ID:</label>
+        <code id="myPeerId">загрузка...</code>
+        <button class="btn btn-outline btn-icon" id="copyMyIdBtn" title="Скопировать">📋</button>
+      </div>
+      <div class="hint" style="margin-bottom: var(--sp-4);">
+        Поделись своим ID с другом — он добавит тебя в контакты. Чтобы позвать друга на совместный просмотр, открой "🎬 Смотреть вместе" в плеере и поделись ссылкой.
+      </div>
+
+      <div class="friend-section-title">
+        В сети <span class="count" id="onlineCount">0</span>
+      </div>
+      <div class="friend-list" id="onlineFriends"></div>
+
+      <div class="friend-section-title">
+        Не в сети <span class="count" id="offlineCount">0</span>
+      </div>
+      <div class="friend-list" id="offlineFriends"></div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="tab-panel" id="panel-gallery">
+    <div class="card">
+      <div class="section-head">
+        <h2>🎴 Арт Галерея</h2>
+        <div style="display:flex; gap:var(--sp-1); flex-wrap:wrap;" id="galCats">
+          <button class="btn btn-primary" data-cat="waifu">waifu</button>
+          <button class="btn btn-outline" data-cat="neko">neko</button>
+          <button class="btn btn-outline" data-cat="kitsune">kitsune</button>
+          <button class="btn btn-outline" data-cat="husbando">husbando</button>
+        </div>
+        <button class="btn btn-primary" id="reloadGalBtn">🔄 Обновить</button>
+      </div>
+      <div id="galleryGrid" class="gal-grid"></div>
     </div>
   </div>
 
@@ -662,9 +763,7 @@
 
       <div class="gacha-box">
         <div id="gachaResultContainer" style="display:none; margin-bottom:var(--sp-4);"></div>
-        <button class="btn btn-primary" id="rollGachaBtn" style="padding:var(--sp-4) var(--sp-6); font-size:1.05rem; border-radius:30px; box-shadow:0 0 30px rgba(255,155,179,0.5);">
-          ✨ ПРИЗЫВ (100)
-        </button>
+        <button class="btn btn-primary btn-lg" id="rollGachaBtn">✨ ПРИЗЫВ (100)</button>
       </div>
 
       <h3 style="margin-top:var(--sp-5); margin-bottom:var(--sp-2); color:var(--muted); font-size:0.92rem;">🎒 Инвентарь:</h3>
@@ -690,18 +789,18 @@
       <!-- HOST pane -->
       <div class="wt-pane active" id="wtPaneHost">
         <div class="wt-info-row">
-          Создай комнату и поделись ссылкой с другом. Когда друг присоединится — ваши плееры синхронизируются: <b>play / pause / перемотка / смена серии</b>.
+          Создай комнату и поделись ссылкой с другом. Ваши плееры и <b>голосовой чат</b> синхронизируются автоматически.
         </div>
-        <button class="btn btn-primary" id="wtCreateBtn" style="padding:var(--sp-3);">🚀 Создать комнату</button>
+        <button class="btn btn-primary btn-lg" id="wtCreateBtn">🚀 Создать комнату</button>
         <div id="wtHostResult" style="display:none; flex-direction:column; gap:var(--sp-3);">
           <div class="wt-status ok" id="wtHostStatus">
             <span>✅</span><span>Комната создана! Ждём друга...</span>
           </div>
           <div>
-            <label>Ссылка для друга</label>
+            <label>Ссылка для друга (нажми чтобы скопировать)</label>
             <div class="wt-link-box">
               <code id="wtShareLink">—</code>
-              <button class="btn btn-outline" id="wtCopyBtn" style="padding:var(--sp-2) var(--sp-3);">📋</button>
+              <button class="btn btn-outline btn-icon" id="wtCopyBtn" title="Копировать">📋</button>
             </div>
           </div>
           <div>
@@ -710,23 +809,58 @@
               <code id="wtShareId">—</code>
             </div>
           </div>
-          <button class="btn btn-danger" id="wtDisconnectBtn" style="padding:var(--sp-3);">🔴 Закрыть комнату</button>
+          <button class="btn btn-danger" id="wtDisconnectBtn">🔴 Закрыть комнату</button>
         </div>
       </div>
 
       <!-- GUEST pane -->
       <div class="wt-pane" id="wtPaneGuest">
         <div class="wt-info-row">
-          Вставь ссылку от друга или введи ID комнаты, чтобы присоединиться к просмотру.
+          Вставь ссылку от друга или введи ID комнаты, чтобы присоединиться к просмотру с голосом.
         </div>
         <div>
           <label>Ссылка или ID комнаты</label>
           <input type="text" id="wtJoinInput" placeholder="https://... или ID">
         </div>
-        <button class="btn btn-primary" id="wtJoinBtn" style="padding:var(--sp-3);">🔗 Присоединиться</button>
+        <button class="btn btn-primary btn-lg" id="wtJoinBtn">🔗 Присоединиться</button>
         <div id="wtGuestStatus" style="display:none;"></div>
-        <button class="btn btn-danger" id="wtGuestDisconnectBtn" style="display:none; padding:var(--sp-3);">🔴 Выйти из комнаты</button>
+        <button class="btn btn-danger" id="wtGuestDisconnectBtn" style="display:none;">🔴 Выйти из комнаты</button>
       </div>
+
+      <!-- How it works -->
+      <div style="border-top: 1px solid var(--border); padding-top: var(--sp-3); margin-top: var(--sp-2);">
+        <label style="margin-bottom: var(--sp-2);">Как это работает</label>
+        <div style="display:flex; flex-direction:column; gap:var(--sp-2);">
+          <div class="wt-step"><div class="num">1</div><div class="txt">Один из вас создаёт комнату и копирует ссылку</div></div>
+          <div class="wt-step"><div class="num">2</div><div class="txt">Друг открывает ссылку и нажимает "Присоединиться"</div></div>
+          <div class="wt-step"><div class="num">3</div><div class="txt">play / pause / перемотка / серии синхронизируются</div></div>
+          <div class="wt-step"><div class="num">4</div><div class="txt">🎤 Голосовой чат включается автоматически</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Add Friend Modal ===== -->
+<div class="modal-overlay" id="addFriendOverlay">
+  <div class="modal-box" role="dialog" aria-label="Добавить друга">
+    <div class="modal-head">
+      <h3>➕ Добавить друга</h3>
+      <button class="wt-close" id="addFriendCloseBtn" aria-label="Закрыть">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="wt-info-row">
+        Введи ID друга и придумай имя. Друг появится в списке контактов. Если он в сети — позови его в совместный просмотр!
+      </div>
+      <div>
+        <label>ID друга</label>
+        <input type="text" id="addFriendIdInput" placeholder="например: abc123def456">
+      </div>
+      <div>
+        <label>Имя (псевдоним)</label>
+        <input type="text" id="addFriendNameInput" placeholder="например: Сакура">
+      </div>
+      <button class="btn btn-primary btn-lg" id="addFriendConfirmBtn">➕ Добавить в контакты</button>
     </div>
   </div>
 </div>
@@ -734,24 +868,42 @@
 <script>
 'use strict';
 // ============================================
-//  Core State & Utilities
+//  Utilities
 // ============================================
 const $ = (id) => document.getElementById(id);
 const $$ = (sel) => document.querySelectorAll(sel);
+function debounce(fn, ms = 300) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmtTime(s) { const m = Math.floor(s / 60); const ss = Math.floor(s % 60); return `${m}:${String(ss).padStart(2,'0')}`; }
 
+// Toast system
+const Toast = {
+  show(msg, type = 'info', duration = 3500) {
+    const wrap = $('toastWrap');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    const icons = { success:'✅', error:'❌', warn:'⚠️', info:'ℹ️' };
+    t.innerHTML = `<span class="ico">${icons[type] || 'ℹ️'}</span><span>${escapeHtml(msg)}</span>`;
+    wrap.appendChild(t);
+    setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 250); }, duration);
+  }
+};
+
+// ============================================
+//  State
+// ============================================
 const state = {
   theme: localStorage.getItem('theme') || 'dark',
   animeMode: false,
   coins: parseInt(localStorage.getItem('coins')) || 1000,
   inventory: JSON.parse(localStorage.getItem('inventory') || '[]'),
-  wtMode: 'host'  // 'host' | 'guest'
+  friends: JSON.parse(localStorage.getItem('friends') || '[]'),
+  wtMode: 'host',
+  myPeerId: null,
+  micEnabled: false,
+  speakerEnabled: true
 };
-
-// Debounce helper
-function debounce(fn, ms = 300) {
-  let t;
-  return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
-}
 
 // ============================================
 //  Theme & VFX
@@ -805,6 +957,7 @@ $$('.tab-btn').forEach(btn => {
     if (tab === 'anime' && !window.animeLoaded) { fetchTopAnime(); window.animeLoaded = true; }
     if (tab === 'gallery' && !window.galleryLoaded) { fetchGallery('waifu'); window.galleryLoaded = true; }
     if (tab === 'gacha' && !window.gachaLoaded) { renderInventory(); updateCoins(); window.gachaLoaded = true; }
+    if (tab === 'friends') renderFriends();
   });
 });
 
@@ -812,17 +965,12 @@ $$('.tab-btn').forEach(btn => {
 //  Neko Corner
 // ============================================
 const nekoImg = $('nekoImg');
-let nekoCache = null;
 async function fetchNeko() {
   nekoImg.style.opacity = '0.3';
   try {
     const res = await fetch('https://api.waifu.pics/sfw/neko');
     const data = await res.json();
-    if (data.url) {
-      nekoCache = data.url;
-      nekoImg.src = data.url;
-      nekoImg.style.opacity = '1';
-    }
+    if (data.url) { nekoImg.src = data.url; nekoImg.style.opacity = '1'; }
   } catch (e) {}
 }
 $('nekoCorner').addEventListener('click', fetchNeko);
@@ -845,10 +993,12 @@ const quotes = [
   { q: 'Неважно, сколько у тебя таланта. Главное — желание.', c: 'Мидория', a: 'Моя геройская академия' },
   { q: 'Даже в самой глубокой тьме можно найти свет.', c: 'Тандзиро', a: 'Клинок, рассекающий демонов' },
   { q: 'Не важно, как медленно ты идёшь, главное — не останавливайся.', c: 'Рин', a: 'Blue Exorcist' },
-  { q: 'Сильнейший не тот, кто никогда не падает, а тот, кто поднимается.', c: 'Гон', a: 'Hunter x Hunter' }
+  { q: 'Сильнейший не тот, кто никогда не падает, а тот, кто поднимается.', c: 'Гон', a: 'Hunter x Hunter' },
+  { q: 'Люди, которые не способны признать свои ошибки, не смогут ничего изменить.', c: 'Леви', a: 'Атака титанов' },
+  { q: 'Чтобы что-то получить, нужно что-то отдать.', c: 'Эдвард Элрик', a: 'Стальной алхимик' }
 ];
 function updateQuote() {
-  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  const q = rand(quotes);
   $('quoteText').textContent = `"${q.q}"`;
   $('quoteSrc').textContent = `— ${q.c} · ${q.a}`;
 }
@@ -862,19 +1012,9 @@ let currentGalCat = 'waifu';
 async function fetchGallery(cat) {
   currentGalCat = cat;
   const grid = $('galleryGrid');
-  $$('#galCats button').forEach(b => {
-    b.className = b.dataset.cat === cat ? 'btn btn-primary' : 'btn btn-outline';
-  });
-
-  // skeletons
+  $$('#galCats button').forEach(b => { b.className = b.dataset.cat === cat ? 'btn btn-primary' : 'btn btn-outline'; });
   grid.innerHTML = '';
-  for (let i = 0; i < 8; i++) {
-    const s = document.createElement('div');
-    s.className = 'skeleton';
-    s.style.aspectRatio = '1';
-    grid.appendChild(s);
-  }
-
+  for (let i = 0; i < 8; i++) { const s = document.createElement('div'); s.className = 'skeleton'; s.style.aspectRatio = '1'; grid.appendChild(s); }
   try {
     const res = await fetch(`https://nekos.best/api/v2/${cat}?amount=8`);
     const data = await res.json();
@@ -885,9 +1025,7 @@ async function fetchGallery(cat) {
         const d = document.createElement('div');
         d.className = 'gal-item';
         const cap = img.artist_name ? `Автор: ${img.artist_name}` : cat;
-        d.innerHTML = `
-          <img src="${img.url}" loading="lazy" alt="${cap}">
-          <div class="gal-cap">${cap}</div>`;
+        d.innerHTML = `<img src="${img.url}" loading="lazy" alt="${cap}"><div class="gal-cap">${cap}</div>`;
         frag.appendChild(d);
       });
     }
@@ -909,17 +1047,12 @@ let apCurrentEpIndex = -1;
 let apCurrentQuality = 'hls_720';
 let apCurrentReleaseData = null;
 let apFranchisesData = [];
-let apSuppressSync = false; // avoid feedback loops when WT applies remote state
+let apSuppressSync = false;
 
 async function fetchTopAnime() {
   $('animeCatalogStatus').textContent = 'Загрузка последних релизов...';
   $('animeResults').innerHTML = '';
-  // skeletons
-  for (let i = 0; i < 12; i++) {
-    const s = document.createElement('div');
-    s.className = 'skeleton sk-card';
-    $('animeResults').appendChild(s);
-  }
+  for (let i = 0; i < 12; i++) { const s = document.createElement('div'); s.className = 'skeleton sk-card'; $('animeResults').appendChild(s); }
   try {
     const res = await fetch(API_BASE + '/anime/releases/latest');
     const data = await res.json();
@@ -945,10 +1078,11 @@ const debouncedSearch = debounce(async (q) => {
   }
 }, 450);
 
-$('animeSearchForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  debouncedSearch($('animeSearch').value.trim());
-});
+$('animeSearchForm').addEventListener('submit', (e) => { e.preventDefault(); debouncedSearch($('animeSearch').value.trim()); });
+$$('#animeQuickTags .chip').forEach(c => c.addEventListener('click', () => {
+  $('animeSearch').value = c.dataset.q;
+  debouncedSearch(c.dataset.q);
+}));
 
 function renderAnimeCards(list) {
   const container = $('animeResults');
@@ -995,7 +1129,6 @@ async function openAnimePlayer(anime) {
   v.pause();
   v.removeAttribute('src');
 
-  // Reset WT state when switching release
   if (window.WT && WT.connected) {
     WT.send({ type: 'release', data: { id: anime.id, name: anime.name } });
   }
@@ -1008,29 +1141,18 @@ async function openAnimePlayer(anime) {
     apFranchisesData = [];
     fetch(API_BASE + `/anime/franchises/release/${anime.id}`)
       .then(r => r.json())
-      .then(d => {
-        if (d && d.length > 0 && d[0].franchise_releases) {
-          apFranchisesData = d[0].franchise_releases.sort((a, b) => a.sort_order - b.sort_order);
-        }
-      }).catch(() => {});
+      .then(d => { if (d && d.length > 0 && d[0].franchise_releases) { apFranchisesData = d[0].franchise_releases.sort((a, b) => a.sort_order - b.sort_order); } })
+      .catch(() => {});
 
     status.textContent = '';
 
     const genresWrap = $('apGenres');
     if (data.genres) {
-      data.genres.forEach(g => {
-        const p = document.createElement('span');
-        p.className = 'chip';
-        p.textContent = g.name;
-        genresWrap.appendChild(p);
-      });
+      data.genres.forEach(g => { const p = document.createElement('span'); p.className = 'chip'; p.textContent = g.name; genresWrap.appendChild(p); });
     }
 
     apCurrentEps = (data.episodes || []).slice().sort((a, b) => Number(a.ordinal) - Number(b.ordinal));
-    if (apCurrentEps.length === 0) {
-      status.textContent = 'Список серий пуст.';
-      return;
-    }
+    if (apCurrentEps.length === 0) { status.textContent = 'Список серий пуст.'; return; }
 
     $('episodesTitle').style.display = 'block';
     const epsDiv = $('animeEpisodes');
@@ -1066,11 +1188,7 @@ function playEpisodeIndex(idx, startTime = 0, autoPlay = true) {
   if (idx < 0 || idx >= apCurrentEps.length) return;
   apCurrentEpIndex = idx;
   const ep = apCurrentEps[idx];
-
-  $$('.ep-btn').forEach(b => {
-    b.classList.toggle('active', Number(b.dataset.idx) === idx);
-  });
-
+  $$('.ep-btn').forEach(b => { b.classList.toggle('active', Number(b.dataset.idx) === idx); });
   let url = ep[apCurrentQuality] || ep['hls_720'] || ep['hls_480'] || ep['hls_1080'];
   if (!url) return;
   if (!url.startsWith('http')) url = 'https://cache.libria.fun' + url;
@@ -1107,9 +1225,7 @@ function playVideo(url, startTime = 0, autoPlay = true) {
   const video = $('hlsVideo');
   cont.style.display = 'block';
   video.pause();
-
   if (currentHlsInstance) { currentHlsInstance.destroy(); }
-
   if (Hls.isSupported()) {
     currentHlsInstance = new Hls({ maxBufferLength: 30, liveSyncDuration: 4 });
     currentHlsInstance.loadSource(url);
@@ -1131,81 +1247,172 @@ function playVideo(url, startTime = 0, autoPlay = true) {
   cont.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Local playback listeners → broadcast to peer (host → guest sync)
+// Local playback listeners → broadcast
 (function attachPlayerSyncListeners() {
   const v = $('hlsVideo');
   let lastBroadcast = 0;
-  v.addEventListener('play', () => {
-    if (apSuppressSync) return;
-    if (window.WT && WT.connected) WT.send({ type: 'play', t: v.currentTime });
-  });
-  v.addEventListener('pause', () => {
-    if (apSuppressSync) return;
-    if (window.WT && WT.connected) WT.send({ type: 'pause', t: v.currentTime });
-  });
-  v.addEventListener('seeked', () => {
-    if (apSuppressSync) return;
-    if (window.WT && WT.connected) WT.send({ type: 'seek', t: v.currentTime });
-  });
-  // time-sync heartbeat every 5s to keep drift low
+  v.addEventListener('play', () => { if (apSuppressSync) return; if (window.WT && WT.connected) WT.send({ type: 'play', t: v.currentTime }); });
+  v.addEventListener('pause', () => { if (apSuppressSync) return; if (window.WT && WT.connected) WT.send({ type: 'pause', t: v.currentTime }); });
+  v.addEventListener('seeked', () => { if (apSuppressSync) return; if (window.WT && WT.connected) WT.send({ type: 'seek', t: v.currentTime }); });
   setInterval(() => {
     if (apSuppressSync) return;
     if (window.WT && WT.connected && !v.paused) {
       const now = Date.now();
-      if (now - lastBroadcast > 5000) {
-        WT.send({ type: 'time', t: v.currentTime });
-        lastBroadcast = now;
-      }
+      if (now - lastBroadcast > 5000) { WT.send({ type: 'time', t: v.currentTime }); lastBroadcast = now; }
     }
   }, 5000);
 })();
 
 // ============================================
-//  Watch Together (PeerJS)
+//  PeerJS - Watch Together + Voice Chat
 // ============================================
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' },
+    { urls: 'stun:stun.nextcloud.com:443' }
+  ]
+};
+
 const WT = {
   peer: null,
-  conn: null,
-  role: null,         // 'host' | 'guest'
+  conn: null,           // data connection
+  call: null,           // media connection (voice)
+  localStream: null,
+  remoteStream: null,
+  role: null,
   connected: false,
+  voiceConnected: false,
+  reconnectAttempts: 0,
+  maxReconnect: 5,
+  heartbeatTimer: null,
   unread: 0,
 
-  init(role) {
+  async initPeer(role) {
     this.cleanup();
     this.role = role;
-    this.peer = new Peer({ debug: 1 });
     return new Promise((resolve, reject) => {
-      this.peer.on('open', (id) => resolve(id));
-      this.peer.on('error', (err) => reject(err));
-      // host receives incoming connections
+      try {
+        this.peer = new Peer({
+          debug: 1,
+          config: ICE_SERVERS
+        });
+      } catch (e) { reject(e); return; }
+
+      const timeout = setTimeout(() => {
+        reject(new Error('Превышено время ожидания подключения к серверу'));
+      }, 15000);
+
+      this.peer.on('open', (id) => {
+        clearTimeout(timeout);
+        state.myPeerId = id;
+        $('myPeerId').textContent = id;
+        this.reconnectAttempts = 0;
+        // Start heartbeat
+        this.startHeartbeat();
+        resolve(id);
+      });
+
       this.peer.on('connection', (conn) => {
-        // only accept first connection
-        if (this.conn) { conn.close(); return; }
+        // For host: accept first connection
+        if (this.conn && this.conn.open) { conn.close(); return; }
         this.conn = conn;
         this.bindConn();
         WT.addSysMsg('Друг присоединился к комнате! 🎉');
         WT.showSide();
         WT.updateBadge(true);
+        // Auto-start voice if mic is enabled
+        if (state.micEnabled && this.localStream) {
+          this.callPeer(conn.peer, this.localStream);
+        }
+      });
+
+      this.peer.on('call', (call) => {
+        // Incoming voice call
+        this.call = call;
+        call.on('stream', (stream) => {
+          this.remoteStream = stream;
+          this.attachRemoteAudio(stream);
+          this.voiceConnected = true;
+          WT.updateVoiceUI();
+          WT.addSysMsg('🎤 Голосовой чат активен');
+        });
+        call.on('close', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
+        call.on('error', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
+        // Answer with our local stream (or empty if mic off)
+        const stream = this.localStream || new MediaStream();
+        call.answer(stream);
+      });
+
+      this.peer.on('error', (err) => {
+        clearTimeout(timeout);
+        console.warn('Peer error:', err.type, err.message);
+        if (err.type === 'peer-unavailable') {
+          reject(new Error('Друг сейчас не в сети. Попроси его открыть сайт.'));
+        } else if (err.type === 'network' || err.type === 'server-error' || err.type === 'socket-error') {
+          this.tryReconnect();
+        } else if (err.type === 'browser-incompatible') {
+          reject(new Error('Браузер не поддерживается. Используй Chrome/Firefox.'));
+        } else if (err.type === 'disconnected') {
+          this.tryReconnect();
+        } else {
+          reject(err);
+        }
+      });
+
+      this.peer.on('disconnected', () => {
+        WT.addSysMsg('⚠ Связь потеряна, пытаемся переподключиться...');
+        this.tryReconnect();
       });
     });
   },
 
+  tryReconnect() {
+    if (this.reconnectAttempts >= this.maxReconnect) {
+      WT.addSysMsg('❌ Не удалось переподключиться. Создайте комнату заново.');
+      Toast.show('Потеряно соединение с сервером', 'error', 5000);
+      return;
+    }
+    this.reconnectAttempts++;
+    const delay = Math.min(1000 * Math.pow(1.5, this.reconnectAttempts), 8000);
+    WT.addSysMsg(`🔄 Переподключение #${this.reconnectAttempts} через ${Math.round(delay/1000)}с...`);
+    setTimeout(() => {
+      if (this.peer && !this.peer.destroyed) {
+        try { this.peer.reconnect(); } catch (e) {
+          // Re-create peer if reconnect fails
+          this.initPeer(this.role).catch(() => {});
+        }
+      }
+    }, delay);
+  },
+
+  startHeartbeat() {
+    if (this.heartbeatTimer) clearInterval(this.heartbeatTimer);
+    this.heartbeatTimer = setInterval(() => {
+      if (this.conn && this.conn.open) {
+        try { this.conn.send({ type: 'ping', ts: Date.now() }); } catch (e) {}
+      }
+    }, 3000);
+  },
+
   join(remoteId) {
     return new Promise((resolve, reject) => {
-      this.peer = new Peer({ debug: 1 });
-      this.peer.on('open', () => {
+      this.initPeer('guest').then(() => {
         const conn = this.peer.connect(remoteId, { reliable: true });
         this.conn = conn;
+        const to = setTimeout(() => reject(new Error('Друг не ответил. Возможно, он не в сети.')), 10000);
         conn.on('open', () => {
+          clearTimeout(to);
           this.bindConn();
           WT.addSysMsg('Подключено к комнате! 🎬');
           WT.showSide();
           WT.updateBadge(true);
           resolve();
         });
-        conn.on('error', (e) => reject(e));
-      });
-      this.peer.on('error', (err) => reject(err));
+        conn.on('error', (e) => { clearTimeout(to); reject(e); });
+      }).catch(reject);
     });
   },
 
@@ -1214,22 +1421,26 @@ const WT = {
     this.conn.on('data', (data) => this.onData(data));
     this.conn.on('close', () => {
       this.connected = false;
+      this.voiceConnected = false;
       WT.addSysMsg('Друг отключился. Комната закрыта.');
       WT.updateBadge(false);
+      WT.updateVoiceUI();
       $('wtStatusBadge').classList.remove('live');
       $('wtStatusBadge').style.display = 'none';
+      $('voiceBarWrap').style.display = 'none';
     });
     this.conn.on('error', () => {
       this.connected = false;
-      WT.addSysMsg('Ошибка соединения.');
+      WT.addSysMsg('⚠ Ошибка соединения данных.');
       WT.updateBadge(false);
     });
     this.connected = true;
     $('wtStatusBadge').style.display = '';
     $('wtStatusBadge').classList.add('live');
     $('wtStatusText').textContent = 'LIVE';
+    $('voiceBarWrap').style.display = '';
 
-    // host: send current state to guest immediately
+    // host sends initial state
     if (this.role === 'host') {
       const v = $('hlsVideo');
       setTimeout(() => {
@@ -1245,14 +1456,21 @@ const WT = {
   },
 
   send(msg) {
-    if (this.conn && this.conn.open) {
-      try { this.conn.send(msg); } catch (e) {}
-    }
+    if (this.conn && this.conn.open) { try { this.conn.send(msg); } catch (e) {} }
   },
 
   onData(msg) {
     if (!msg || typeof msg !== 'object') return;
     const v = $('hlsVideo');
+    if (msg.type === 'ping') {
+      this.send({ type: 'pong', ts: msg.ts });
+      return;
+    }
+    if (msg.type === 'pong') {
+      const rtt = Date.now() - msg.ts;
+      if (rtt > 1500) WT.addSysMsg(`⚠ Высокая задержка: ${rtt}мс`);
+      return;
+    }
     apSuppressSync = true;
     setTimeout(() => { apSuppressSync = false; }, 800);
 
@@ -1269,7 +1487,7 @@ const WT = {
         break;
       case 'seek':
         v.currentTime = msg.t;
-        WT.addSysMsg(`⏩ друг перемотал на ${Math.floor(msg.t / 60)}:${String(Math.floor(msg.t % 60)).padStart(2, '0')}`);
+        WT.addSysMsg(`⏩ друг перемотал на ${fmtTime(msg.t)}`);
         break;
       case 'time':
         if (!v.paused && Math.abs(v.currentTime - msg.t) > 2.5) v.currentTime = msg.t;
@@ -1281,17 +1499,21 @@ const WT = {
         }
         break;
       case 'release':
-        // guest should open same release (best-effort: search by id via API)
         if (msg.data && msg.data.id) {
           WT.addSysMsg('🔄 друг сменил тайтл. Открываю...');
           openAnimePlayer({ id: msg.data.id, name: msg.data.name || {}, poster: {} });
         }
         break;
       case 'state':
-        // initial state for guest
         if (typeof msg.epIdx === 'number' && msg.epIdx >= 0) {
           playEpisodeIndex(msg.epIdx, msg.t || 0, !msg.paused);
         }
+        break;
+      case 'voice-on':
+        WT.addSysMsg('🎤 друг включил микрофон');
+        break;
+      case 'voice-off':
+        WT.addSysMsg('🔇 друг выключил микрофон');
         break;
       case 'chat':
         WT.addMsg(msg.text, 'them', msg.from || 'Друг');
@@ -1299,16 +1521,186 @@ const WT = {
     }
   },
 
-  cleanup() {
-    try { if (this.conn) this.conn.close(); } catch (e) {}
-    try { if (this.peer) this.peer.destroy(); } catch (e) {}
-    this.conn = null;
-    this.peer = null;
-    this.connected = false;
-    this.role = null;
+  // ===== Voice =====
+  async enableMic() {
+    try {
+      if (!this.localStream) {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+          video: false
+        });
+        this.setupMicMeter();
+      }
+      state.micEnabled = true;
+      // If connected, call peer or send track
+      if (this.conn && this.conn.open && !this.voiceConnected) {
+        this.callPeer(this.conn.peer, this.localStream);
+        this.send({ type: 'voice-on' });
+      }
+      WT.updateVoiceUI();
+      return true;
+    } catch (e) {
+      Toast.show('Не удалось получить доступ к микрофону', 'error');
+      return false;
+    }
   },
 
-  // chat helpers
+  disableMic() {
+    state.micEnabled = false;
+    if (this.localStream) {
+      this.localStream.getAudioTracks().forEach(t => t.stop());
+      this.localStream = null;
+    }
+    if (this.call) {
+      try { this.call.close(); } catch (e) {}
+      this.call = null;
+    }
+    this.voiceConnected = false;
+    this.send({ type: 'voice-off' });
+    WT.updateVoiceUI();
+  },
+
+  callPeer(peerId, stream) {
+    if (!this.peer || !this.peer.open) return;
+    this.call = this.peer.call(peerId, stream);
+    this.call.on('stream', (remoteStream) => {
+      this.remoteStream = remoteStream;
+      this.attachRemoteAudio(remoteStream);
+      this.voiceConnected = true;
+      WT.updateVoiceUI();
+    });
+    this.call.on('close', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
+    this.call.on('error', () => { this.voiceConnected = false; WT.updateVoiceUI(); });
+  },
+
+  attachRemoteAudio(stream) {
+    let audio = document.getElementById('remoteAudio');
+    if (!audio) {
+      audio = document.createElement('audio');
+      audio.id = 'remoteAudio';
+      audio.autoplay = true;
+      document.body.appendChild(audio);
+    }
+    audio.srcObject = stream;
+    audio.volume = state.speakerEnabled ? 1 : 0;
+    audio.play().catch(() => {});
+  },
+
+  setupMicMeter() {
+    if (!this.localStream) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = ctx.createMediaStreamSource(this.localStream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      src.connect(analyser);
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      const bar = $('voiceMeterBar');
+      const micBtn = $('vbMicBtn');
+      const update = () => {
+        if (!state.micEnabled || !this.localStream) { bar.style.width = '0%'; micBtn.classList.remove('speaking'); return; }
+        analyser.getByteFrequencyData(data);
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) sum += data[i];
+        const avg = sum / data.length;
+        const pct = Math.min(100, (avg / 80) * 100);
+        bar.style.width = pct + '%';
+        micBtn.classList.toggle('speaking', avg > 25);
+        requestAnimationFrame(update);
+      };
+      update();
+    } catch (e) {}
+  },
+
+  updateVoiceUI() {
+    const vbar = $('voiceBarWrap');
+    const vbtn = $('voiceToggleBtn');
+    const micBtn = $('vbMicBtn');
+    const micToggleBtn = $('micToggleBtn');
+    const speakerToggleBtn = $('speakerToggleBtn');
+    const vbState = $('vbState');
+    const vbWho = $('vbWho');
+    const voiceSideDot = $('voiceSideDot');
+    const voiceHint = $('voiceHint');
+    const participants = $('voiceParticipants');
+
+    if (this.connected) {
+      vbar.style.display = '';
+      vbtn.classList.add('show');
+      vbtn.classList.toggle('off', !state.micEnabled);
+    } else {
+      vbar.style.display = 'none';
+      vbtn.classList.remove('show');
+    }
+
+    if (state.micEnabled) {
+      micBtn.classList.remove('off');
+      micBtn.textContent = '🎤';
+      micToggleBtn.textContent = '🔇 Выключить микрофон';
+      micToggleBtn.classList.add('btn-danger');
+      micToggleBtn.classList.remove('btn-outline');
+      vbState.textContent = this.voiceConnected ? 'говорите — друг слышит вас' : 'микрофон включён';
+    } else {
+      micBtn.classList.add('off');
+      micBtn.textContent = '🎤';
+      micToggleBtn.textContent = '🎤 Включить микрофон';
+      micToggleBtn.classList.remove('btn-danger');
+      micToggleBtn.classList.add('btn-outline');
+      vbState.textContent = 'микрофон выключен';
+    }
+
+    speakerToggleBtn.textContent = state.speakerEnabled ? '🔊 Динамик: вкл' : '🔇 Динамик: выкл';
+
+    if (this.voiceConnected) {
+      voiceSideDot.classList.add('on');
+      voiceHint.textContent = 'Голосовой чат активен. Говорите — друг вас слышит!';
+    } else if (this.connected) {
+      voiceSideDot.classList.remove('on');
+      voiceHint.textContent = 'Включите микрофон, чтобы начать голосовой чат.';
+    } else {
+      voiceSideDot.classList.remove('on');
+      voiceHint.textContent = 'Подключитесь к комнате "Смотреть вместе" — голосовой чат включится автоматически.';
+    }
+
+    // Render participants
+    if (this.connected) {
+      const myName = 'Я';
+      const friendName = WT.peerName || 'Друг';
+      participants.innerHTML = '';
+      participants.appendChild(WT.renderVoiceParticipant(myName, true, state.micEnabled, 'вы'));
+      participants.appendChild(WT.renderVoiceParticipant(friendName, false, this.voiceConnected, this.voiceConnected ? 'в эфире' : 'не в эфире'));
+    } else {
+      participants.innerHTML = '<div class="empty-state" style="padding: var(--sp-4);"><div class="ico">🎧</div><div class="desc">Голосовой чат начнётся, когда вы подключитесь к комнате "Смотреть вместе".</div></div>';
+    }
+  },
+
+  renderVoiceParticipant(name, isMe, micOn, state) {
+    const d = document.createElement('div');
+    d.className = 'voice-participant';
+    const initial = (name || '?').charAt(0).toUpperCase();
+    d.innerHTML = `
+      <div class="vp-avatar ${micOn ? 'speaking' : ''}">${escapeHtml(initial)}</div>
+      <div class="vp-info">
+        <div class="name">${escapeHtml(name)}${isMe ? ' <span style="color:var(--muted);font-size:0.72rem;">(вы)</span>' : ''}</div>
+        <div class="state">${escapeHtml(state)}</div>
+      </div>
+      <div class="vp-mic-icon ${micOn ? '' : 'muted'}">${micOn ? '🎤' : '🔇'}</div>`;
+    return d;
+  },
+
+  cleanup() {
+    if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
+    try { if (this.call) this.call.close(); } catch (e) {}
+    try { if (this.conn) this.conn.close(); } catch (e) {}
+    try { if (this.peer) this.peer.destroy(); } catch (e) {}
+    if (this.localStream) { this.localStream.getAudioTracks().forEach(t => t.stop()); this.localStream = null; }
+    state.micEnabled = false;
+    this.call = null; this.conn = null; this.peer = null;
+    this.connected = false; this.voiceConnected = false;
+    this.role = null; this.peerName = null;
+  },
+
+  // ===== Chat helpers =====
   addSysMsg(text) {
     const body = $('wtChatBody');
     const d = document.createElement('div');
@@ -1333,33 +1725,19 @@ const WT = {
   },
   showSide() { $('wtToggleBtn').classList.add('show'); },
   updateBadge(connected) {
-    const dot = $('wtSideTitle').previousElementSibling;
-    if (connected) {
-      dot.style.background = 'var(--success)';
-      $('wtStatusBadge').classList.add('live');
-      $('wtStatusBadge').style.display = '';
-      $('wtStatusText').textContent = 'LIVE';
-    } else {
-      dot.style.background = 'var(--muted-2)';
-      $('wtStatusBadge').classList.remove('live');
-      $('wtStatusBadge').style.display = 'none';
-    }
+    const dot = $('wtSideDot');
+    if (connected) { dot.classList.add('on'); $('wtStatusBadge').classList.add('live'); $('wtStatusBadge').style.display = ''; $('wtStatusText').textContent = 'LIVE'; }
+    else { dot.classList.remove('on'); $('wtStatusBadge').classList.remove('live'); $('wtStatusBadge').style.display = 'none'; }
   }
 };
 window.WT = WT;
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
 
 // ============================================
 //  WT UI Bindings
 // ============================================
 $('wtOpenBtn').addEventListener('click', () => openWTModal());
-
 function openWTModal() {
   $('wtOverlay').classList.add('open');
-  // If URL has #room=..., prefill guest
   const url = new URL(window.location.href);
   const roomFromUrl = url.searchParams.get('room') || url.hash.replace(/^#room=/, '');
   if (roomFromUrl && !WT.connected) {
@@ -1379,12 +1757,11 @@ function switchWTTab(mode) {
 }
 $$('.wt-tab').forEach(t => t.addEventListener('click', () => switchWTTab(t.dataset.mode)));
 
-// Create room (host)
 $('wtCreateBtn').addEventListener('click', async () => {
   $('wtCreateBtn').disabled = true;
   $('wtCreateBtn').textContent = '⏳ Создаём...';
   try {
-    const id = await WT.init('host');
+    const id = await WT.initPeer('host');
     $('wtHostResult').style.display = 'flex';
     const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}`;
     $('wtShareLink').textContent = shareUrl;
@@ -1392,8 +1769,9 @@ $('wtCreateBtn').addEventListener('click', async () => {
     WT.showSide();
     WT.updateBadge(false);
     WT.addSysMsg('Комната создана. Ждём друга...');
+    Toast.show('Комната создана! Поделитесь ссылкой', 'success');
   } catch (e) {
-    alert('Ошибка создания комнаты: ' + e.message);
+    Toast.show('Ошибка: ' + (e.message || e), 'error', 5000);
   }
   $('wtCreateBtn').disabled = false;
   $('wtCreateBtn').textContent = '🚀 Создать комнату';
@@ -1404,22 +1782,18 @@ $('wtCopyBtn').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(link);
     $('wtCopyBtn').textContent = '✅';
+    Toast.show('Ссылка скопирована', 'success', 2000);
     setTimeout(() => $('wtCopyBtn').textContent = '📋', 1500);
   } catch (e) {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = link; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); ta.remove();
+    const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
     $('wtCopyBtn').textContent = '✅';
     setTimeout(() => $('wtCopyBtn').textContent = '📋', 1500);
   }
 });
 
-// Join room (guest)
 $('wtJoinBtn').addEventListener('click', async () => {
   let val = $('wtJoinInput').value.trim();
   if (!val) return;
-  // extract id from URL if full link
   try {
     if (val.startsWith('http')) {
       const u = new URL(val);
@@ -1441,9 +1815,11 @@ $('wtJoinBtn').addEventListener('click', async () => {
     statusEl.innerHTML = '<span>✅</span><span>Подключено! Наслаждайтесь просмотром.</span>';
     $('wtGuestDisconnectBtn').style.display = '';
     closeWTModal();
+    Toast.show('Подключено к комнате!', 'success');
   } catch (e) {
     statusEl.className = 'wt-status err';
     statusEl.innerHTML = `<span>❌</span><span>Ошибка: ${escapeHtml(e.message || e.type || 'не удалось подключиться')}</span>`;
+    Toast.show('Ошибка подключения', 'error');
   }
   $('wtJoinBtn').disabled = false;
   $('wtJoinBtn').textContent = '🔗 Присоединиться';
@@ -1453,15 +1829,21 @@ $('wtDisconnectBtn').addEventListener('click', () => {
   WT.cleanup();
   $('wtHostResult').style.display = 'none';
   $('wtToggleBtn').classList.remove('show');
+  $('voiceToggleBtn').classList.remove('show');
   $('wtSide').classList.remove('open');
+  $('voiceBarWrap').style.display = 'none';
   WT.addSysMsg('Комната закрыта.');
+  Toast.show('Комната закрыта', 'info');
 });
 $('wtGuestDisconnectBtn').addEventListener('click', () => {
   WT.cleanup();
   $('wtGuestStatus').style.display = 'none';
   $('wtGuestDisconnectBtn').style.display = 'none';
   $('wtToggleBtn').classList.remove('show');
+  $('voiceToggleBtn').classList.remove('show');
   $('wtSide').classList.remove('open');
+  $('voiceBarWrap').style.display = 'none';
+  Toast.show('Вы вышли из комнаты', 'info');
 });
 
 // Chat side panel
@@ -1484,39 +1866,284 @@ function sendChat() {
 $('wtChatSend').addEventListener('click', sendChat);
 $('wtChatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
 
+// ============================================
+//  Voice UI Bindings
+// ============================================
+$('voiceToggleBtn').addEventListener('click', () => {
+  $('voiceSide').classList.add('open');
+  WT.updateVoiceUI();
+});
+$('voiceSideClose').addEventListener('click', () => $('voiceSide').classList.remove('open'));
+
+$('vbMicBtn').addEventListener('click', async () => {
+  if (state.micEnabled) WT.disableMic();
+  else await WT.enableMic();
+});
+$('micToggleBtn').addEventListener('click', async () => {
+  if (state.micEnabled) WT.disableMic();
+  else await WT.enableMic();
+});
+$('speakerToggleBtn').addEventListener('click', () => {
+  state.speakerEnabled = !state.speakerEnabled;
+  const audio = document.getElementById('remoteAudio');
+  if (audio) audio.volume = state.speakerEnabled ? 1 : 0;
+  WT.updateVoiceUI();
+});
+
+// ============================================
+//  Friends
+// ============================================
+function saveFriends() { localStorage.setItem('friends', JSON.stringify(state.friends)); }
+
+function renderFriends() {
+  const online = state.friends.filter(f => f.online);
+  const offline = state.friends.filter(f => !f.online);
+  $('onlineCount').textContent = online.length;
+  $('offlineCount').textContent = offline.length;
+
+  const renderList = (list, container, emptyMsg) => {
+    container.innerHTML = '';
+    if (list.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = `<div class="ico">👥</div><div class="title">Пока пусто</div><div class="desc">${emptyMsg}</div>`;
+      container.appendChild(empty);
+      return;
+    }
+    list.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'friend-card';
+      const initial = (f.name || f.id || '?').charAt(0).toUpperCase();
+      const statusClass = f.online ? (f.inSession ? 'in-session' : 'online') : '';
+      const statusText = f.online ? (f.inSession ? '🎬 в просмотре' : '🟢 в сети') : '⚫ не в сети';
+      card.innerHTML = `
+        <div class="friend-avatar">
+          ${escapeHtml(initial)}
+          <div class="status-dot ${statusClass}"></div>
+        </div>
+        <div class="friend-info">
+          <div class="fname">${escapeHtml(f.name)}</div>
+          <div class="fstatus ${f.online ? 'online' : ''}">${statusText}</div>
+          <div class="fstatus" style="font-size:0.68rem; color:var(--muted-2); margin-top:2px;">ID: ${escapeHtml(f.id.substring(0, 14))}...</div>
+        </div>
+        <div class="friend-actions">
+          ${f.online ? '<button class="btn btn-primary btn-icon" data-act="invite" title="Позвать в просмотр">🎬</button>' : ''}
+          <button class="btn btn-outline btn-icon" data-act="copy" title="Скопировать ID">📋</button>
+          <button class="btn btn-danger btn-icon" data-act="remove" title="Удалить">🗑</button>
+        </div>`;
+      card.querySelector('[data-act="copy"]').addEventListener('click', () => {
+        navigator.clipboard.writeText(f.id).then(() => Toast.show('ID скопирован', 'success', 2000));
+      });
+      card.querySelector('[data-act="remove"]').addEventListener('click', () => {
+        state.friends = state.friends.filter(x => x.id !== f.id);
+        saveFriends();
+        renderFriends();
+        Toast.show('Друг удалён', 'info', 2000);
+      });
+      const inviteBtn = card.querySelector('[data-act="invite"]');
+      if (inviteBtn) {
+        inviteBtn.addEventListener('click', () => {
+          // Invite: open WT modal pre-filled
+          $('wtJoinInput').value = f.id;
+          openWTModal();
+          switchWTTab('guest');
+          Toast.show(`Подключаемся к ${f.name}...`, 'info', 2000);
+        });
+      }
+      container.appendChild(card);
+    });
+  };
+
+  renderList(online, $('onlineFriends'), 'Позови друга в просмотр — он появится здесь, когда зайдёт на сайт.');
+  renderList(offline, $('offlineFriends'), 'Добавь друга по ID — он появится здесь, как только зайдёт онлайн.');
+}
+
+// Add Friend modal
+$('addFriendBtn').addEventListener('click', () => {
+  $('addFriendOverlay').classList.add('open');
+  $('addFriendIdInput').focus();
+});
+$('addFriendCloseBtn').addEventListener('click', () => $('addFriendOverlay').classList.remove('open'));
+$('addFriendOverlay').addEventListener('click', (e) => { if (e.target === $('addFriendOverlay')) $('addFriendOverlay').classList.remove('open'); });
+
+$('addFriendConfirmBtn').addEventListener('click', () => {
+  const id = $('addFriendIdInput').value.trim();
+  const name = $('addFriendNameInput').value.trim() || 'Безымянный друг';
+  if (!id) { Toast.show('Введите ID друга', 'warn'); return; }
+  if (state.friends.find(f => f.id === id)) { Toast.show('Этот друг уже в списке', 'warn'); return; }
+  state.friends.push({ id, name, online: false, addedAt: Date.now() });
+  saveFriends();
+  renderFriends();
+  $('addFriendIdInput').value = '';
+  $('addFriendNameInput').value = '';
+  $('addFriendOverlay').classList.remove('open');
+  Toast.show(`${name} добавлен в контакты`, 'success');
+  // Try to ping
+  FriendsPresence.ping(id);
+});
+
+$('copyMyIdBtn').addEventListener('click', async () => {
+  if (!state.myPeerId) { Toast.show('ID ещё не загружен', 'warn'); return; }
+  try {
+    await navigator.clipboard.writeText(state.myPeerId);
+    $('copyMyIdBtn').textContent = '✅';
+    Toast.show('ID скопирован', 'success', 2000);
+    setTimeout(() => $('copyMyIdBtn').textContent = '📋', 1500);
+  } catch (e) {}
+});
+
+// ============================================
+//  Friends Presence (probe online status via PeerJS)
+// ============================================
+const FriendsPresence = {
+  probeTimer: null,
+  probing: new Set(),
+
+  start() {
+    if (this.probeTimer) clearInterval(this.probeTimer);
+    this.probeTimer = setInterval(() => this.probeAll(), 15000);
+    this.probeAll();
+  },
+
+  probeAll() {
+    if (!state.myPeerId) return;
+    state.friends.forEach(f => {
+      if (!this.probing.has(f.id)) {
+        this.probing.has(f.id);
+        this.probe(f.id);
+      }
+    });
+  },
+
+  ping(friendId) {
+    this.probe(friendId);
+  },
+
+  probe(friendId) {
+    if (!window.Peer) return;
+    this.probing.add(friendId);
+    // Use a temporary peer to ping
+    const tempPeer = new Peer({ config: ICE_SERVERS, debug: 0 });
+    let resolved = false;
+
+    const cleanup = () => {
+      this.probing.delete(friendId);
+      try { tempPeer.destroy(); } catch (e) {}
+    };
+
+    const timeout = setTimeout(() => {
+      if (!resolved) {
+        resolved = true;
+        const f = state.friends.find(x => x.id === friendId);
+        if (f) { f.online = false; f.inSession = false; saveFriends(); renderFriends(); }
+        cleanup();
+      }
+    }, 8000);
+
+    tempPeer.on('open', () => {
+      const conn = tempPeer.connect(friendId, { reliable: true });
+      const connTimeout = setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          const f = state.friends.find(x => x.id === friendId);
+          if (f) { f.online = false; f.inSession = false; saveFriends(); renderFriends(); }
+          cleanup();
+        }
+      }, 4000);
+
+      conn.on('open', () => {
+        if (resolved) return;
+        resolved = true;
+        clearTimeout(connTimeout);
+        clearTimeout(timeout);
+        try { conn.send({ type: 'presence-ping' }); } catch (e) {}
+        const f = state.friends.find(x => x.id === friendId);
+        if (f) { f.online = true; saveFriends(); renderFriends(); }
+        setTimeout(cleanup, 500);
+      });
+
+      conn.on('error', () => {
+        if (resolved) return;
+        // peer-unavailable means offline
+        resolved = true;
+        clearTimeout(connTimeout);
+        clearTimeout(timeout);
+        const f = state.friends.find(x => x.id === friendId);
+        if (f) { f.online = false; saveFriends(); renderFriends(); }
+        cleanup();
+      });
+    });
+
+    tempPeer.on('error', () => {
+      if (resolved) return;
+      // peer-unavailable = offline, other errors also = offline
+      resolved = true;
+      clearTimeout(timeout);
+      const f = state.friends.find(x => x.id === friendId);
+      if (f) { f.online = false; saveFriends(); renderFriends(); }
+      cleanup();
+    });
+  }
+};
+window.FriendsPresence = FriendsPresence;
+
+// ============================================
+//  Bootstrap: init own peer for presence
+// ============================================
+async function bootstrapMyPeer() {
+  try {
+    state.myPeerId = await WT.initPeer('presence');
+    // Register presence handler
+    WT.peer.on('connection', (conn) => {
+      // If already in a session, reject extra connections unless they are presence pings
+      conn.on('open', () => {
+        conn.on('data', (data) => {
+          if (data && data.type === 'presence-ping') {
+            try { conn.send({ type: 'presence-pong' }); } catch (e) {}
+            setTimeout(() => { try { conn.close(); } catch (e) {} }, 300);
+          }
+        });
+      });
+      // For real WT sessions, the host's WT.peer.on('connection') handler in initPeer already handles them
+      // But since initPeer was called for 'presence', we treat incoming as presence pings only
+    });
+    FriendsPresence.start();
+    renderFriends();
+  } catch (e) {
+    $('myPeerId').textContent = 'недоступен (повтор через 10с)';
+    setTimeout(bootstrapMyPeer, 10000);
+  }
+}
+bootstrapMyPeer();
+
 // Auto-open WT modal if URL has ?room=...
 window.addEventListener('load', () => {
   const url = new URL(window.location.href);
   const room = url.searchParams.get('room');
   if (room) {
-    // ensure user is on anime tab so player is reachable
     $$('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'anime'));
     $$('.tab-panel').forEach(p => p.classList.remove('active'));
     $('panel-anime').classList.add('active');
     if (!window.animeLoaded) { fetchTopAnime(); window.animeLoaded = true; }
-    setTimeout(() => openWTModal(), 400);
+    setTimeout(() => openWTModal(), 600);
   }
 });
 
 // ============================================
 //  Gacha
 // ============================================
-function updateCoins() {
-  $('coinsCount').textContent = state.coins;
-  localStorage.setItem('coins', state.coins);
-}
+function updateCoins() { $('coinsCount').textContent = state.coins; localStorage.setItem('coins', state.coins); }
 
 $('dailyRewardBtn').addEventListener('click', () => {
   state.coins += 500;
   updateCoins();
   const b = $('dailyRewardBtn');
-  b.disabled = true;
-  b.textContent = '✅ Получено';
+  b.disabled = true; b.textContent = '✅ Получено';
   setTimeout(() => { b.disabled = false; b.textContent = '+ Ежедневный бонус'; }, 60000);
 });
 
 $('rollGachaBtn').addEventListener('click', async () => {
-  if (state.coins < 100) return;
+  if (state.coins < 100) { Toast.show('Недостаточно монет', 'warn', 2000); return; }
   const btn = $('rollGachaBtn');
   const resCont = $('gachaResultContainer');
   btn.disabled = true;
@@ -1542,8 +2169,10 @@ $('rollGachaBtn').addEventListener('click', async () => {
         <div class="name">${escapeHtml(obj.name)}</div>
       </div>`;
     renderInventory();
+    Toast.show(`Получен: ${char.name} (${rarity})`, rarity.includes('SSR') ? 'success' : 'info', 2500);
   } catch (e) {
     state.coins += 100; updateCoins();
+    Toast.show('Ошибка призыва, попробуйте снова', 'error');
   }
   btn.disabled = false;
   btn.textContent = '✨ ПРИЗЫВ (100)';
