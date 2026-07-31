@@ -466,6 +466,66 @@
       border: 2px solid var(--bg);
     }
 
+    /* ===== WT Connection Quality ===== */
+    .wt-quality {
+      display: flex; align-items: center; gap: 5px; font-size: 0.68rem;
+      font-weight: 800; color: var(--muted); padding: 2px 8px;
+      border-radius: 20px; background: rgba(0,0,0,0.15); flex-shrink: 0;
+    }
+    .wt-quality .q-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted-2); transition: background var(--tr-fast); }
+    .wt-quality.good .q-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .wt-quality.ok .q-dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+    .wt-quality.bad .q-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); animation: pulse 1s infinite; }
+
+    /* ===== Reconnect banner ===== */
+    .wt-reconnect-banner {
+      display: none; align-items: center; gap: var(--sp-2);
+      background: rgba(249,199,79,.12); color: var(--gold);
+      padding: var(--sp-2) var(--sp-3); font-size: 0.78rem; font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+    .wt-reconnect-banner.show { display: flex; }
+    .wt-reconnect-banner .spin-ico { animation: spin 1s linear infinite; }
+
+    /* ===== Voice Chat ===== */
+    .wt-voice-bar {
+      display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
+      padding: var(--sp-3); border-bottom: 1px solid var(--border);
+      background: rgba(199,125,255,.04);
+    }
+    .voice-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--border-strong);
+      background: var(--card-solid); color: var(--text); cursor: pointer;
+      font-size: 1.05rem; display: grid; place-items: center; flex-shrink: 0;
+      transition: transform var(--tr-fast), box-shadow var(--tr-fast), background var(--tr-fast), border-color var(--tr-fast);
+    }
+    .voice-btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+    .voice-btn.on { background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; border-color: transparent; }
+    .voice-btn.muted { background: var(--danger); color: white; border-color: transparent; }
+    .voice-btn.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+    .voice-btn.danger:hover { background: rgba(255,107,138,.12); }
+    .voice-btn.talking { box-shadow: 0 0 0 4px rgba(126,231,135,.35), 0 0 16px rgba(126,231,135,.5); border-color: var(--success); }
+    .voice-join-btn {
+      flex: 1; min-width: 140px; padding: var(--sp-2) var(--sp-3) !important;
+      font-size: 0.8rem !important;
+    }
+    .wt-voice-status { width: 100%; font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+    .wt-voice-status.err { color: var(--danger); }
+    .wt-voice-status.ok { color: var(--success); }
+
+    .wt-incoming-call {
+      display: none; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
+      padding: var(--sp-3); background: linear-gradient(135deg, rgba(255,155,179,.15), rgba(199,125,255,.15));
+      border-bottom: 1px solid var(--border-strong); animation: fadeSlide 0.25s ease;
+    }
+    .wt-incoming-call.show { display: flex; }
+    .wt-incoming-call .ring-ico { font-size: 1.3rem; animation: ring 0.6s ease-in-out infinite; }
+    @keyframes ring { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-18deg); } 75% { transform: rotate(18deg); } }
+    .wt-incoming-call span.txt { flex: 1; font-size: 0.8rem; font-weight: 800; min-width: 120px; }
+
+    /* Talking ring around avatar/toggle when mic is live */
+    .wt-toggle-btn.talking { box-shadow: 0 0 0 5px rgba(126,231,135,.4), var(--glow); }
+
     /* ===== Skeleton ===== */
     .skeleton {
       background: linear-gradient(90deg, rgba(199,125,255,.05) 0%, rgba(199,125,255,.15) 50%, rgba(199,125,255,.05) 100%);
@@ -519,14 +579,36 @@
 <aside class="wt-side" id="wtSide" aria-label="Чат смотреть вместе">
   <div class="wt-side-head">
     <h3><span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--muted-2);"></span> <span id="wtSideTitle">Смотреть вместе</span></h3>
+    <div class="wt-quality" id="wtQuality" title="Качество соединения"><span class="q-dot"></span><span id="wtPingText">—</span></div>
     <button class="wt-close" id="wtSideClose" aria-label="Закрыть">×</button>
   </div>
+
+  <div class="wt-reconnect-banner" id="wtReconnectBanner">
+    <span class="spin-ico">🔄</span><span id="wtReconnectText">Переподключение...</span>
+  </div>
+
+  <div class="wt-incoming-call" id="wtIncomingCall">
+    <span class="ring-ico">📞</span>
+    <span class="txt">Друг зовёт в голосовой чат</span>
+    <button class="btn btn-success" id="wtAcceptCallBtn" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Принять</button>
+    <button class="btn btn-danger" id="wtDeclineCallBtn" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Отклонить</button>
+  </div>
+
+  <div class="wt-voice-bar" id="wtVoiceBar">
+    <button class="btn btn-outline voice-join-btn" id="wtVoiceJoinBtn">🎙️ Войти в голосовой чат</button>
+    <button class="voice-btn" id="wtMicBtn" style="display:none;" title="Микрофон вкл/выкл" aria-label="Микрофон">🎤</button>
+    <button class="voice-btn" id="wtDeafenBtn" style="display:none;" title="Звук вкл/выкл" aria-label="Звук">🔊</button>
+    <button class="voice-btn danger" id="wtHangupBtn" style="display:none;" title="Завершить звонок" aria-label="Завершить звонок">📞</button>
+    <div class="wt-voice-status" id="wtVoiceStatus"></div>
+  </div>
+
   <div class="wt-side-body" id="wtChatBody"></div>
   <div class="wt-side-foot">
     <input type="text" id="wtChatInput" placeholder="Сообщение..." maxlength="500">
     <button class="btn btn-primary" id="wtChatSend">➤</button>
   </div>
 </aside>
+<audio id="wtRemoteAudio" autoplay playsinline></audio>
 
 <div class="page-wrap"><div class="container">
   <div class="brand">
@@ -690,7 +772,7 @@
       <!-- HOST pane -->
       <div class="wt-pane active" id="wtPaneHost">
         <div class="wt-info-row">
-          Создай комнату и поделись ссылкой с другом. Когда друг присоединится — ваши плееры синхронизируются: <b>play / pause / перемотка / смена серии</b>.
+          <b>1.</b> Жми «Создать комнату» → <b>2.</b> отправь ссылку другу → <b>3.</b> смотрите и обсуждайте вместе — видео, серии, чат и <b>голосовой чат</b> синхронизируются автоматически.
         </div>
         <button class="btn btn-primary" id="wtCreateBtn" style="padding:var(--sp-3);">🚀 Создать комнату</button>
         <div id="wtHostResult" style="display:none; flex-direction:column; gap:var(--sp-3);">
@@ -701,7 +783,8 @@
             <label>Ссылка для друга</label>
             <div class="wt-link-box">
               <code id="wtShareLink">—</code>
-              <button class="btn btn-outline" id="wtCopyBtn" style="padding:var(--sp-2) var(--sp-3);">📋</button>
+              <button class="btn btn-outline" id="wtShareBtn" style="padding:var(--sp-2) var(--sp-3); display:none;" title="Поделиться">📤</button>
+              <button class="btn btn-outline" id="wtCopyBtn" style="padding:var(--sp-2) var(--sp-3);" title="Скопировать">📋</button>
             </div>
           </div>
           <div>
@@ -717,7 +800,7 @@
       <!-- GUEST pane -->
       <div class="wt-pane" id="wtPaneGuest">
         <div class="wt-info-row">
-          Вставь ссылку от друга или введи ID комнаты, чтобы присоединиться к просмотру.
+          Вставь ссылку от друга или введи ID комнаты, чтобы присоединиться к просмотру. Внутри также будет доступен <b>голосовой чат</b>.
         </div>
         <div>
           <label>Ссылка или ID комнаты</label>
@@ -1161,73 +1244,152 @@ function playVideo(url, startTime = 0, autoPlay = true) {
 })();
 
 // ============================================
-//  Watch Together (PeerJS)
+//  Watch Together (PeerJS) + Голосовой чат
 // ============================================
+
+// Расширенный набор ICE-серверов (несколько STUN + публичный TURN) —
+// заметно повышает шанс установить и удержать P2P-связь за NAT/файрволами.
+const ICE_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun.stunprotocol.org:3478' },
+    { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+    { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+    { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
+  ]
+};
+
+// Простой измеритель громкости потока (для индикации "говорит сейчас")
+function attachVoiceMeter(stream, onLevel) {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.6;
+    src.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    let raf, stopped = false;
+    (function tick() {
+      if (stopped) return;
+      analyser.getByteFrequencyData(data);
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) sum += data[i];
+      onLevel(sum / data.length);
+      raf = requestAnimationFrame(tick);
+    })();
+    return () => { stopped = true; cancelAnimationFrame(raf); try { ctx.close(); } catch (e) {} };
+  } catch (e) { return () => {}; }
+}
+
 const WT = {
   peer: null,
   conn: null,
   role: null,         // 'host' | 'guest'
   connected: false,
   unread: 0,
+  remoteId: null,
+  _manualClose: false,
+  _hadGuest: false,
+  reconnectAttempts: 0,
+  reconnectTimer: null,
+  pingTimer: null,
+  pingWatchdog: null,
 
   init(role) {
     this.cleanup();
+    this._manualClose = false;
+    this._hadGuest = false;
     this.role = role;
-    this.peer = new Peer({ debug: 1 });
+    this.peer = new Peer({ debug: 1, config: ICE_CONFIG });
+    this._bindPeerLifecycle();
     return new Promise((resolve, reject) => {
       this.peer.on('open', (id) => resolve(id));
       this.peer.on('error', (err) => reject(err));
       // host receives incoming connections
       this.peer.on('connection', (conn) => {
-        // only accept first connection
-        if (this.conn) { conn.close(); return; }
+        if (this.conn && this.conn.open) { conn.close(); return; }
+        const isReconnect = this._hadGuest;
+        this._hadGuest = true;
         this.conn = conn;
+        this.remoteId = conn.peer;
         this.bindConn();
-        WT.addSysMsg('Друг присоединился к комнате! 🎉');
+        WT.addSysMsg(isReconnect ? 'Друг переподключился ✅' : 'Друг присоединился к комнате! 🎉');
         WT.showSide();
         WT.updateBadge(true);
+        WT.hideReconnectBanner();
       });
     });
   },
 
   join(remoteId) {
+    this._manualClose = false;
+    this.remoteId = remoteId;
     return new Promise((resolve, reject) => {
-      this.peer = new Peer({ debug: 1 });
-      this.peer.on('open', () => {
-        const conn = this.peer.connect(remoteId, { reliable: true });
-        this.conn = conn;
-        conn.on('open', () => {
-          this.bindConn();
-          WT.addSysMsg('Подключено к комнате! 🎬');
-          WT.showSide();
-          WT.updateBadge(true);
-          resolve();
-        });
-        conn.on('error', (e) => reject(e));
-      });
+      this.peer = new Peer({ debug: 1, config: ICE_CONFIG });
+      this._bindPeerLifecycle();
+      this.peer.on('open', () => this._dial(resolve, reject));
       this.peer.on('error', (err) => reject(err));
     });
   },
 
+  // Устанавливает исходящее соединение к this.remoteId.
+  // Используется и для первого входа, и для автопереподключения.
+  _dial(resolve, reject) {
+    const conn = this.peer.connect(this.remoteId, { reliable: true });
+    this.conn = conn;
+    let settled = false;
+    const dialTimeout = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      try { conn.close(); } catch (e) {}
+      if (reject) reject(new Error('Время ожидания истекло'));
+    }, 7000);
+    conn.on('open', () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(dialTimeout);
+      const wasReconnect = this.reconnectAttempts > 0;
+      this.bindConn();
+      WT.addSysMsg(wasReconnect ? 'Соединение восстановлено ✅' : 'Подключено к комнате! 🎬');
+      WT.showSide();
+      WT.updateBadge(true);
+      WT.hideReconnectBanner();
+      this.reconnectAttempts = 0;
+      if (resolve) resolve();
+    });
+    conn.on('error', (e) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(dialTimeout);
+      if (reject) reject(e);
+    });
+  },
+
+  _bindPeerLifecycle() {
+    this.peer.on('disconnected', () => {
+      if (this._manualClose) return;
+      WT.showReconnectBanner('Восстанавливаем соединение с сервером...');
+      try { this.peer.reconnect(); } catch (e) {}
+    });
+    // входящие голосовые звонки приходят на peer независимо от роли
+    this.peer.on('call', (call) => WT.voice.onIncomingCall(call));
+  },
+
   bindConn() {
     if (!this.conn) return;
+    this.remoteId = this.conn.peer || this.remoteId;
     this.conn.on('data', (data) => this.onData(data));
-    this.conn.on('close', () => {
-      this.connected = false;
-      WT.addSysMsg('Друг отключился. Комната закрыта.');
-      WT.updateBadge(false);
-      $('wtStatusBadge').classList.remove('live');
-      $('wtStatusBadge').style.display = 'none';
-    });
-    this.conn.on('error', () => {
-      this.connected = false;
-      WT.addSysMsg('Ошибка соединения.');
-      WT.updateBadge(false);
-    });
+    this.conn.on('close', () => this._handleDrop());
+    this.conn.on('error', () => this._handleDrop());
     this.connected = true;
     $('wtStatusBadge').style.display = '';
     $('wtStatusBadge').classList.add('live');
     $('wtStatusText').textContent = 'LIVE';
+    this._startPing();
 
     // host: send current state to guest immediately
     if (this.role === 'host') {
@@ -1244,6 +1406,83 @@ const WT = {
     }
   },
 
+  // Обрыв связи (не по инициативе пользователя) → пробуем восстановить
+  _handleDrop() {
+    if (this._manualClose) {
+      this.connected = false;
+      this._stopPing();
+      $('wtStatusBadge').classList.remove('live');
+      $('wtStatusBadge').style.display = 'none';
+      WT.setQuality(null);
+      return;
+    }
+    if (!this.connected) return; // уже обработано
+    this.connected = false;
+    this._stopPing();
+    $('wtStatusBadge').classList.remove('live');
+    $('wtStatusBadge').style.display = 'none';
+    WT.setQuality(null);
+    WT.voice.stop(true);
+    WT.addSysMsg('⚠️ Связь прервалась. Пытаемся восстановить...');
+    this.conn = null;
+
+    if (this.role === 'guest') {
+      this._scheduleReconnect();
+    } else {
+      WT.showReconnectBanner('Друг отключился. Ждём переподключения...');
+    }
+  },
+
+  _scheduleReconnect() {
+    if (this._manualClose) return;
+    this.reconnectAttempts++;
+    const n = this.reconnectAttempts;
+    if (n > 6) {
+      WT.showReconnectBanner('Не удалось переподключиться', true);
+      return;
+    }
+    WT.showReconnectBanner(`Переподключение... (попытка ${n}/6)`);
+    const delay = Math.min(1500 * n, 8000);
+    clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = setTimeout(() => {
+      if (this._manualClose || !this.peer || this.peer.destroyed) return;
+      if (this.peer.disconnected) {
+        try { this.peer.reconnect(); } catch (e) {}
+        setTimeout(() => this._dial(null, () => this._scheduleReconnect()), 1000);
+      } else {
+        this._dial(null, () => this._scheduleReconnect());
+      }
+    }, delay);
+  },
+
+  retryNow() {
+    clearTimeout(this.reconnectTimer);
+    this.reconnectAttempts = 0;
+    this._scheduleReconnect();
+  },
+
+  // ---- Пинг для индикатора качества связи ----
+  _startPing() {
+    this._stopPing();
+    this.pingTimer = setInterval(() => {
+      if (!this.connected) return;
+      this.send({ type: 'ping', ts: Date.now() });
+      clearTimeout(this.pingWatchdog);
+      this.pingWatchdog = setTimeout(() => WT.setQuality('bad'), 6000);
+    }, 4000);
+  },
+  _stopPing() {
+    clearInterval(this.pingTimer);
+    clearTimeout(this.pingWatchdog);
+  },
+  setQuality(rttOrState) {
+    const el = $('wtQuality'), txt = $('wtPingText');
+    if (rttOrState === null) { el.className = 'wt-quality'; txt.textContent = '—'; return; }
+    if (rttOrState === 'bad') { el.className = 'wt-quality bad'; txt.textContent = 'нет ответа'; return; }
+    txt.textContent = `${rttOrState} мс`;
+    el.className = 'wt-quality ' + (rttOrState < 150 ? 'good' : rttOrState < 400 ? 'ok' : 'bad');
+  },
+
   send(msg) {
     if (this.conn && this.conn.open) {
       try { this.conn.send(msg); } catch (e) {}
@@ -1252,6 +1491,11 @@ const WT = {
 
   onData(msg) {
     if (!msg || typeof msg !== 'object') return;
+
+    if (msg.type === 'ping') { this.send({ type: 'pong', ts: msg.ts }); return; }
+    if (msg.type === 'pong') { clearTimeout(this.pingWatchdog); WT.setQuality(Date.now() - msg.ts); return; }
+    if (msg.type === 'voice_declined') { WT.addSysMsg('📞 Друг отклонил звонок.'); WT.voice.stop(true); return; }
+
     const v = $('hlsVideo');
     apSuppressSync = true;
     setTimeout(() => { apSuppressSync = false; }, 800);
@@ -1300,13 +1544,34 @@ const WT = {
   },
 
   cleanup() {
+    this._manualClose = true;
+    clearTimeout(this.reconnectTimer);
+    this._stopPing();
+    this.voice.stop(true);
     try { if (this.conn) this.conn.close(); } catch (e) {}
     try { if (this.peer) this.peer.destroy(); } catch (e) {}
     this.conn = null;
     this.peer = null;
     this.connected = false;
     this.role = null;
+    this.remoteId = null;
+    this.reconnectAttempts = 0;
+    WT.setQuality(null);
+    WT.hideReconnectBanner();
   },
+
+  showReconnectBanner(text, isFinal) {
+    const b = $('wtReconnectBanner');
+    b.classList.add('show');
+    $('wtReconnectText').innerHTML = isFinal
+      ? `${text} — <a href="#" id="wtRetryNowLink" style="color:var(--gold); text-decoration:underline;">Повторить сейчас</a>`
+      : text;
+    if (isFinal) {
+      const link = $('wtRetryNowLink');
+      if (link) link.addEventListener('click', (e) => { e.preventDefault(); WT.retryNow(); });
+    }
+  },
+  hideReconnectBanner() { $('wtReconnectBanner').classList.remove('show'); },
 
   // chat helpers
   addSysMsg(text) {
@@ -1343,6 +1608,166 @@ const WT = {
       dot.style.background = 'var(--muted-2)';
       $('wtStatusBadge').classList.remove('live');
       $('wtStatusBadge').style.display = 'none';
+    }
+  },
+
+  // ============================================
+  //  Голосовой чат (WebRTC-звонок через тот же Peer)
+  // ============================================
+  voice: {
+    localStream: null,
+    call: null,
+    active: false,
+    muted: false,
+    deafened: false,
+    pendingCall: null,
+    stopMeterLocal: null,
+    stopMeterRemote: null,
+    talkTimeoutLocal: null,
+    talkTimeoutRemote: null,
+
+    async start() {
+      if (!WT.connected) { WT.addSysMsg('Нет подключения к комнате.'); return; }
+      if (this.active || this.call) return;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.setStatus('Микрофон недоступен (нужен HTTPS)', 'err');
+        return;
+      }
+      $('wtVoiceJoinBtn').disabled = true;
+      $('wtVoiceJoinBtn').textContent = '📞 Вызываем...';
+      this.setStatus('Запрашиваем доступ к микрофону...', '');
+      try {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+      } catch (e) {
+        this.setStatus('Доступ к микрофону отклонён', 'err');
+        $('wtVoiceJoinBtn').disabled = false;
+        $('wtVoiceJoinBtn').textContent = '🎙️ Войти в голосовой чат';
+        return;
+      }
+      this.setStatus('📞 Вызываем друга...', '');
+      const call = WT.peer.call(WT.remoteId, this.localStream);
+      this._bindCall(call);
+    },
+
+    onIncomingCall(call) {
+      if (this.active || this.pendingCall) { call.close(); return; }
+      this.pendingCall = call;
+      $('wtIncomingCall').classList.add('show');
+      WT.showSide();
+      call.on('close', () => this._resetIncoming());
+    },
+    _resetIncoming() {
+      $('wtIncomingCall').classList.remove('show');
+      this.pendingCall = null;
+    },
+
+    async accept() {
+      const call = this.pendingCall;
+      if (!call) return;
+      this._resetIncoming();
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.setStatus('Микрофон недоступен (нужен HTTPS)', 'err');
+        call.close();
+        return;
+      }
+      try {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+      } catch (e) {
+        this.setStatus('Доступ к микрофону отклонён', 'err');
+        call.close();
+        return;
+      }
+      call.answer(this.localStream);
+      this._bindCall(call);
+    },
+
+    decline() {
+      const call = this.pendingCall;
+      this._resetIncoming();
+      if (call) call.close();
+      WT.send({ type: 'voice_declined' });
+    },
+
+    _bindCall(call) {
+      this.call = call;
+      call.on('stream', (remoteStream) => {
+        const audio = $('wtRemoteAudio');
+        audio.srcObject = remoteStream;
+        audio.muted = this.deafened;
+        audio.play().catch(() => {});
+        this.active = true;
+        this.setStatus('🎙️ Голосовой чат активен', 'ok');
+        this._updateButtons();
+        this.stopMeterRemote = attachVoiceMeter(remoteStream, (lvl) => this._onLevel(lvl, false));
+      });
+      call.on('close', () => this.stop(false));
+      call.on('error', () => { this.setStatus('Ошибка голосового соединения', 'err'); this.stop(false); });
+      this.stopMeterLocal = attachVoiceMeter(this.localStream, (lvl) => this._onLevel(lvl, true));
+      this._updateButtons();
+    },
+
+    _onLevel(level, isLocal) {
+      const threshold = 14;
+      const btn = isLocal ? $('wtMicBtn') : $('wtToggleBtn');
+      if (!btn || level <= threshold) return;
+      btn.classList.add('talking');
+      clearTimeout(isLocal ? this.talkTimeoutLocal : this.talkTimeoutRemote);
+      const t = setTimeout(() => btn.classList.remove('talking'), 500);
+      if (isLocal) this.talkTimeoutLocal = t; else this.talkTimeoutRemote = t;
+    },
+
+    toggleMute() {
+      if (!this.localStream) return;
+      this.muted = !this.muted;
+      this.localStream.getAudioTracks().forEach(t => t.enabled = !this.muted);
+      const btn = $('wtMicBtn');
+      btn.classList.toggle('muted', this.muted);
+      btn.textContent = this.muted ? '🔇' : '🎤';
+    },
+    toggleDeafen() {
+      this.deafened = !this.deafened;
+      $('wtRemoteAudio').muted = this.deafened;
+      const btn = $('wtDeafenBtn');
+      btn.classList.toggle('muted', this.deafened);
+      btn.textContent = this.deafened ? '🔇' : '🔊';
+    },
+    hangup() {
+      if (this.call) { try { this.call.close(); } catch (e) {} }
+      this.stop(true);
+    },
+    stop(silent) {
+      if (this.stopMeterLocal) { this.stopMeterLocal(); this.stopMeterLocal = null; }
+      if (this.stopMeterRemote) { this.stopMeterRemote(); this.stopMeterRemote = null; }
+      if (this.localStream) { this.localStream.getTracks().forEach(t => t.stop()); this.localStream = null; }
+      if (this.call) { try { this.call.close(); } catch (e) {} this.call = null; }
+      const audio = $('wtRemoteAudio');
+      if (audio) audio.srcObject = null;
+      const wasActive = this.active;
+      this.active = false; this.muted = false; this.deafened = false;
+      $('wtMicBtn').classList.remove('talking', 'muted'); $('wtMicBtn').textContent = '🎤';
+      $('wtDeafenBtn').classList.remove('muted'); $('wtDeafenBtn').textContent = '🔊';
+      $('wtToggleBtn').classList.remove('talking');
+      this._updateButtons();
+      if (wasActive && !silent) this.setStatus('Звонок завершён', '');
+      if (!wasActive) this.setStatus('', '');
+    },
+    setStatus(text, type) {
+      const el = $('wtVoiceStatus');
+      el.textContent = text;
+      el.className = 'wt-voice-status' + (type ? ' ' + type : '');
+    },
+    _updateButtons() {
+      const inCall = !!this.call;
+      $('wtVoiceJoinBtn').style.display = inCall ? 'none' : '';
+      $('wtVoiceJoinBtn').disabled = false;
+      $('wtVoiceJoinBtn').textContent = '🎙️ Войти в голосовой чат';
+      $('wtMicBtn').style.display = inCall ? '' : 'none';
+      $('wtDeafenBtn').style.display = inCall ? '' : 'none';
+      $('wtHangupBtn').style.display = inCall ? '' : 'none';
     }
   }
 };
@@ -1462,7 +1887,30 @@ $('wtGuestDisconnectBtn').addEventListener('click', () => {
   $('wtGuestDisconnectBtn').style.display = 'none';
   $('wtToggleBtn').classList.remove('show');
   $('wtSide').classList.remove('open');
+  WT.addSysMsg('Вы вышли из комнаты.');
 });
+
+// Native share (mobile) — рядом с копированием ссылки
+if (navigator.share) {
+  $('wtShareBtn').style.display = '';
+  $('wtShareBtn').addEventListener('click', async () => {
+    try {
+      await navigator.share({
+        title: 'Смотрим аниме вместе 🎬',
+        text: 'Присоединяйся к моей комнате — смотрим аниме вместе с чатом и голосовой связью!',
+        url: $('wtShareLink').textContent
+      });
+    } catch (e) {}
+  });
+}
+
+// ---------- Голосовой чат: привязка кнопок ----------
+$('wtVoiceJoinBtn').addEventListener('click', () => WT.voice.start());
+$('wtMicBtn').addEventListener('click', () => WT.voice.toggleMute());
+$('wtDeafenBtn').addEventListener('click', () => WT.voice.toggleDeafen());
+$('wtHangupBtn').addEventListener('click', () => WT.voice.hangup());
+$('wtAcceptCallBtn').addEventListener('click', () => WT.voice.accept());
+$('wtDeclineCallBtn').addEventListener('click', () => WT.voice.decline());
 
 // Chat side panel
 $('wtToggleBtn').addEventListener('click', () => {
