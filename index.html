@@ -757,6 +757,13 @@
 window.addEventListener('trystero-ready', function() {
   const { joinRoom, selfId } = window.__Trystero;
   const APP_ID = 'god-ae86-anime-v3';
+  // Use known working WebTorrent trackers, omitting the problematic btorrent.xyz
+  const TRACKER_URLS = [
+    'wss://tracker.webtorrent.dev',
+    'wss://tracker.openwebtorrent.com',
+    'wss://tracker.files.fm:7073/announce',
+    'wss://qot.abiir.top:443/announce'
+  ];
 
   // ============================================
   //  Utilities
@@ -879,7 +886,6 @@ window.addEventListener('trystero-ready', function() {
   async function fetchNeko() {
     nekoImg.style.opacity = '0.3';
     try {
-      // Use picsum as fallback (always works, no CORS)
       const seed = Math.floor(Math.random() * 100000);
       nekoImg.src = `https://picsum.photos/seed/neko${seed}/120/120.jpg`;
       nekoImg.style.opacity = '1';
@@ -926,7 +932,6 @@ window.addEventListener('trystero-ready', function() {
     $$('#galCats button').forEach(b => { b.className = b.dataset.cat === cat ? 'btn btn-primary' : 'btn btn-outline'; });
     grid.innerHTML = '';
     for (let i = 0; i < 8; i++) { const s = document.createElement('div'); s.className = 'skeleton'; s.style.aspectRatio = '1'; grid.appendChild(s); }
-    // Use picsum (always reliable, no CORS)
     grid.innerHTML = '';
     const frag = document.createDocumentFragment();
     for (let i = 0; i < 8; i++) {
@@ -1199,7 +1204,7 @@ window.addEventListener('trystero-ready', function() {
     },
 
     async _joinTrysteroRoom(roomId) {
-      const config = { appId: APP_ID };
+      const config = { appId: APP_ID, trackerUrls: TRACKER_URLS };
       const fullRoomId = `wt-${roomId}`;
       this.room = joinRoom(config, fullRoomId);
 
@@ -1837,7 +1842,7 @@ window.addEventListener('trystero-ready', function() {
       const myId = state.myPeerId;
       const roomId = `presence-${[myId, friendId].sort().join('-')}`;
       try {
-        const room = joinRoom({ appId: APP_ID }, roomId);
+        const room = joinRoom({ appId: APP_ID, trackerUrls: TRACKER_URLS }, roomId);
         const peers = new Set();
         const entry = { room, peers };
 
