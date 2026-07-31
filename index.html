@@ -203,10 +203,16 @@
     .avatar-wrap { position: relative; width: 150px; height: 150px; flex-shrink: 0; }
     .avatar {
       width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
-      background: var(--card-solid); border: 3px solid transparent;
+      background: linear-gradient(135deg, var(--purple), var(--accent)); border: 3px solid transparent;
       box-shadow: 0 0 0 6px rgba(199,125,255,.12), 0 0 40px rgba(255,155,179,.4);
+      display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
     }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; transition: opacity .35s ease; }
+    .avatar.is-loading img { opacity: 0; }
+    .avatar.is-loading::after { content: '💮'; font-size: 2.4rem; animation: pulse 1.3s ease-in-out infinite; }
+    .avatar.is-fallback::before { content: '🌸'; font-size: 3rem; position: absolute; }
+    .avatar.is-fallback img { display: none; }
+    @keyframes pulse { 0%,100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.05); } }
     .avatar-ring, .avatar-ring2 {
       position: absolute; border-radius: 50%; pointer-events: none;
       animation: spin 16s linear infinite;
@@ -355,13 +361,17 @@
     /* ===== Neko Corner ===== */
     .neko-wrap { position: fixed; bottom: var(--sp-3); right: var(--sp-3); z-index: 150; display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); }
     .neko-corner {
-      width: 64px; height: 64px; border-radius: 50%;
+      width: 64px; height: 64px; border-radius: 50%; position: relative;
       border: 2px solid var(--accent); overflow: hidden; cursor: pointer;
       box-shadow: 0 0 18px rgba(255,155,179,.5); background: var(--card-solid);
       transition: transform var(--tr-fast);
     }
     .neko-corner:hover { transform: scale(1.08) rotate(-3deg); }
     .neko-corner img { width: 100%; height: 100%; object-fit: cover; transition: opacity var(--tr); }
+    .neko-corner.is-loading img { opacity: 0; }
+    .neko-corner.is-loading::after { content: '🐈'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; animation: pulse 1.2s ease-in-out infinite; }
+    .neko-corner.is-fallback::before { content: '🐾'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; background: linear-gradient(135deg, var(--purple), var(--accent)); }
+    .neko-corner.is-fallback img { display: none; }
     .neko-tip { background: var(--card); border-radius: 30px; padding: var(--sp-1) var(--sp-3); font-size: 0.65rem; backdrop-filter: blur(8px); font-weight: 700; color: var(--muted); }
 
     /* ===== Watch Together Modal ===== */
@@ -775,6 +785,7 @@
           <b>1.</b> Жми «Создать комнату» → <b>2.</b> отправь ссылку другу → <b>3.</b> смотрите и обсуждайте вместе — видео, серии, чат и <b>голосовой чат</b> синхронизируются автоматически.
         </div>
         <button class="btn btn-primary" id="wtCreateBtn" style="padding:var(--sp-3);">🚀 Создать комнату</button>
+        <div class="wt-status err" id="wtHostError" style="display:none;"></div>
         <div id="wtHostResult" style="display:none; flex-direction:column; gap:var(--sp-3);">
           <div class="wt-status ok" id="wtHostStatus">
             <span>✅</span><span>Комната создана! Ждём друга...</span>
@@ -892,35 +903,83 @@ $$('.tab-btn').forEach(btn => {
 });
 
 // ============================================
+//  Image fallback helper (несколько источников на случай CORS/недоступности)
+// ============================================
+async function fetchFirstWorking(sources) {
+  for (const src of sources) {
+    try {
+      const res = await fetch(src.url, { cache: 'no-store' });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const url = src.extract(data);
+      if (url) return url;
+    } catch (e) { /* пробуем следующий источник */ }
+  }
+  return null;
+}
+function preloadImg(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+// ============================================
 //  Neko Corner
 // ============================================
 const nekoImg = $('nekoImg');
+const nekoCorner = $('nekoCorner');
 let nekoCache = null;
+const NEKO_SOURCES = [
+  { url: 'https://api.waifu.pics/sfw/neko', extract: d => d.url },
+  { url: 'https://nekos.best/api/v2/neko', extract: d => d.results?.[0]?.url },
+  { url: 'https://api.thecatapi.com/v1/images/search', extract: d => d[0]?.url }
+];
 async function fetchNeko() {
-  nekoImg.style.opacity = '0.3';
+  nekoCorner.classList.remove('is-fallback');
+  nekoCorner.classList.add('is-loading');
   try {
-    const res = await fetch('https://api.waifu.pics/sfw/neko');
-    const data = await res.json();
-    if (data.url) {
-      nekoCache = data.url;
-      nekoImg.src = data.url;
-      nekoImg.style.opacity = '1';
-    }
-  } catch (e) {}
+    const url = await fetchFirstWorking(NEKO_SOURCES);
+    if (!url) throw new Error('no source');
+    await preloadImg(url);
+    nekoCache = url;
+    nekoImg.src = url;
+    nekoCorner.classList.remove('is-loading');
+  } catch (e) {
+    nekoCorner.classList.remove('is-loading');
+    nekoCorner.classList.add('is-fallback');
+  }
 }
 $('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
 
 // ============================================
-//  Bio
+//  Bio / Avatar
 // ============================================
-(async () => {
+const avatarEl = $('avatarImg').closest('.avatar');
+const AVATAR_SOURCES = [
+  { url: 'https://api.waifu.pics/sfw/waifu', extract: d => d.url },
+  { url: 'https://nekos.best/api/v2/waifu', extract: d => d.results?.[0]?.url }
+];
+async function fetchAvatar() {
+  avatarEl.classList.remove('is-fallback');
+  avatarEl.classList.add('is-loading');
   try {
-    const res = await fetch('https://api.waifu.pics/sfw/waifu');
-    const data = await res.json();
-    if (data.url) $('avatarImg').src = data.url;
-  } catch (e) {}
-})();
+    const url = await fetchFirstWorking(AVATAR_SOURCES);
+    if (!url) throw new Error('no source');
+    await preloadImg(url);
+    $('avatarImg').src = url;
+    avatarEl.classList.remove('is-loading');
+  } catch (e) {
+    avatarEl.classList.remove('is-loading');
+    avatarEl.classList.add('is-fallback');
+  }
+}
+avatarEl.title = 'Нажми, чтобы сменить';
+avatarEl.addEventListener('click', fetchAvatar);
+fetchAvatar();
 
 const quotes = [
   { q: 'Если не веришь в себя, то и не стоит начинать.', c: 'Макака', a: 'Доктор Стоун' },
@@ -1251,13 +1310,11 @@ function playVideo(url, startTime = 0, autoPlay = true) {
 // заметно повышает шанс установить и удержать P2P-связь за NAT/файрволами.
 const ICE_CONFIG = {
   iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: 'stun:stun2.l.google.com:19302' },
-    { urls: 'stun:stun.stunprotocol.org:3478' },
-    { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
-    { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
-    { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
+    { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
+    {
+      urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'],
+      username: 'openrelayproject', credential: 'openrelayproject'
+    }
   ]
 };
 
@@ -1326,6 +1383,7 @@ const WT = {
   },
 
   join(remoteId) {
+    try { if (this.peer) this.peer.destroy(); } catch (e) {}
     this._manualClose = false;
     this.remoteId = remoteId;
     return new Promise((resolve, reject) => {
@@ -1805,11 +1863,40 @@ function switchWTTab(mode) {
 $$('.wt-tab').forEach(t => t.addEventListener('click', () => switchWTTab(t.dataset.mode)));
 
 // Create room (host)
+// Определяем "временные" ошибки PeerJS (проблемы с публичным брокером/сетью),
+// на которых имеет смысл автоматически повторить попытку подключения.
+function isTransientPeerError(err) {
+  const t = err && err.type;
+  return t === 'network' || t === 'server-error' || t === 'socket-error' || t === 'socket-closed' || !t;
+}
+async function withRetries(fn, { attempts = 3, delay = 1300, onAttempt } = {}) {
+  let lastErr;
+  for (let i = 1; i <= attempts; i++) {
+    if (onAttempt) onAttempt(i, attempts);
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e;
+      if (i < attempts && isTransientPeerError(e)) {
+        await new Promise(r => setTimeout(r, delay * i));
+        continue;
+      }
+      break;
+    }
+  }
+  throw lastErr;
+}
+
 $('wtCreateBtn').addEventListener('click', async () => {
   $('wtCreateBtn').disabled = true;
-  $('wtCreateBtn').textContent = '⏳ Создаём...';
+  $('wtHostError').style.display = 'none';
   try {
-    const id = await WT.init('host');
+    const id = await withRetries(() => WT.init('host'), {
+      attempts: 3, delay: 1300,
+      onAttempt: (i, total) => {
+        $('wtCreateBtn').textContent = i === 1 ? '⏳ Создаём...' : `⏳ Повтор подключения (${i}/${total})...`;
+      }
+    });
     $('wtHostResult').style.display = 'flex';
     const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}`;
     $('wtShareLink').textContent = shareUrl;
@@ -1818,7 +1905,10 @@ $('wtCreateBtn').addEventListener('click', async () => {
     WT.updateBadge(false);
     WT.addSysMsg('Комната создана. Ждём друга...');
   } catch (e) {
-    alert('Ошибка создания комнаты: ' + e.message);
+    $('wtHostError').style.display = '';
+    $('wtHostError').innerHTML = `<span>❌</span><span>Не удалось подключиться к серверу связи (${escapeHtml(e.message || e.type || 'сбой сети')}). Возможно, сервер сейчас перегружен — <a href="#" id="wtRetryCreate" style="color:var(--danger); text-decoration:underline;">попробовать снова</a>.</span>`;
+    const link = document.getElementById('wtRetryCreate');
+    if (link) link.addEventListener('click', (e2) => { e2.preventDefault(); $('wtCreateBtn').click(); });
   }
   $('wtCreateBtn').disabled = false;
   $('wtCreateBtn').textContent = '🚀 Создать комнату';
@@ -1861,14 +1951,25 @@ $('wtJoinBtn').addEventListener('click', async () => {
   statusEl.innerHTML = '<span>🔗</span><span>Подключаемся к комнате...</span>';
 
   try {
-    await WT.join(val);
+    await withRetries(() => WT.join(val), {
+      attempts: 3, delay: 1300,
+      onAttempt: (i, total) => {
+        statusEl.className = 'wt-status info';
+        statusEl.innerHTML = i === 1
+          ? '<span>🔗</span><span>Подключаемся к комнате...</span>'
+          : `<span>🔄</span><span>Повтор подключения (${i}/${total})...</span>`;
+        $('wtJoinBtn').textContent = i === 1 ? '⏳ Подключение...' : `⏳ Повтор (${i}/${total})...`;
+      }
+    });
     statusEl.className = 'wt-status ok';
     statusEl.innerHTML = '<span>✅</span><span>Подключено! Наслаждайтесь просмотром.</span>';
     $('wtGuestDisconnectBtn').style.display = '';
     closeWTModal();
   } catch (e) {
     statusEl.className = 'wt-status err';
-    statusEl.innerHTML = `<span>❌</span><span>Ошибка: ${escapeHtml(e.message || e.type || 'не удалось подключиться')}</span>`;
+    statusEl.innerHTML = `<span>❌</span><span>Ошибка: ${escapeHtml(e.message || e.type || 'не удалось подключиться')}. Проверь код комнаты или <a href="#" id="wtRetryJoin" style="color:var(--danger); text-decoration:underline;">попробуй снова</a>.</span>`;
+    const link = document.getElementById('wtRetryJoin');
+    if (link) link.addEventListener('click', (e2) => { e2.preventDefault(); $('wtJoinBtn').click(); });
   }
   $('wtJoinBtn').disabled = false;
   $('wtJoinBtn').textContent = '🔗 Присоединиться';
