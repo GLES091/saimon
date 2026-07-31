@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>GOD_AE86 ✦ аниме-плеер</title>
-  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и Telegram-спамер.">
+  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, неко API и совместный просмотр аниме с другом.">
   
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -113,6 +113,7 @@
     
     input[type="text"], input[type="number"], input[type="search"] { width: 100%; padding: 0.8rem 1rem; background: rgba(199,125,255,.07); border: 1.5px solid var(--border); border-radius: 14px; color: var(--text); outline: none; transition: 0.2s; }
     input:focus { border-color: var(--accent); }
+    .tag-pill { padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem; color: var(--accent); border: 1.5px solid var(--accent); background: transparent; font-weight: 700; }
 
     /* Bio */
     .profile { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center; }
@@ -125,8 +126,8 @@
     @keyframes spin { to { transform:rotate(360deg); } }
     .bio-name { font-family: var(--fh); font-size: 2rem; background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* Spammer */
-    .log { background: rgba(12,5,24,.85); border-radius: 16px; padding: 1rem; height: 230px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: #d0b0e4; margin-top: 1rem; }
+    /* Chat log (used by Watch Together) */
+    .log { background: rgba(12,5,24,.55); border: 1px solid var(--border); border-radius: 16px; padding: 0.9rem 1rem; height: 170px; overflow-y: auto; font-family: var(--fb); font-size: 0.82rem; color: var(--text); line-height: 1.5; }
     
     /* Anime */
     .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
@@ -161,6 +162,7 @@
     ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
 <body>
 <div id="vfx-bg" style="position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;"></div>
@@ -181,7 +183,7 @@
   <div class="tabs-wrapper">
     <div class="tablist" id="tablist">
       <button class="tab-btn active" data-tab="bio">🌸 Био</button>
-      <button class="tab-btn" data-tab="spammer">⚡ Спамер</button>
+      <button class="tab-btn" data-tab="watch">🎬 Вместе</button>
       <button class="tab-btn" data-tab="gallery">🎴 Галерея</button>
       <button class="tab-btn" data-tab="anime">🎌 Аниме</button>
       <button class="tab-btn" data-tab="gacha">✨ Гача</button>
@@ -200,12 +202,12 @@
         <div>
           <div class="bio-name">GOD_AE86</div>
           <div style="color:var(--muted); font-weight:bold; margin-bottom:0.8rem; text-transform: uppercase; font-size: 0.9rem;">@resivert</div>
-          <div style="font-weight:bold; margin-bottom:0.8rem; color:var(--text);">аниме-вайб ✦ тексты ✦ батлы ✦ неко-спамер</div>
+          <div style="font-weight:bold; margin-bottom:0.8rem; color:var(--text);">аниме-вайб ✦ тексты ✦ батлы ✦ смотрим вместе</div>
           <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">🌸 аниме</span>
-            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">🎤 батлы</span>
-            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">🐾 неко</span>
-            <span class="btn-outline" style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.7rem; color:var(--accent); border-color:var(--accent);">⚡ спамер</span>
+            <span class="tag-pill">🌸 аниме</span>
+            <span class="tag-pill">🎤 батлы</span>
+            <span class="tag-pill">🐾 неко</span>
+            <span class="tag-pill">🎬 вместе</span>
           </div>
           <div style="background:rgba(199,125,255,.1); border-left:3px solid var(--purple); padding:1rem; border-radius:8px; margin-top:1rem;">
              <div id="quoteText" style="font-style:italic;">...</div>
@@ -219,40 +221,69 @@
     </div>
   </div>
 
-  <!-- SPAMMER -->
-  <div class="tab-panel" id="panel-spammer">
+  <!-- WATCH TOGETHER -->
+  <div class="tab-panel" id="panel-watch">
     <div class="card">
-      <h2 style="font-family:var(--fh); color:var(--accent); margin-bottom:1rem;">⚡ Remote Terminal Injector</h2>
-      <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1rem;">* Демо имитация стресс-тестирования</p>
-      
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-        <div>
-          <label style="display:block; font-size:0.75rem; color:var(--accent); font-weight:bold; margin-bottom:0.3rem;">📱 Номер жертвы</label>
-          <input type="text" id="spamPhone" placeholder="+79001234567">
+      <h2 style="font-family:var(--fh); color:var(--accent); margin-bottom:1rem;">🎬 Смотреть вместе</h2>
+
+      <!-- Setup: create or join a room -->
+      <div id="wtSetup">
+        <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.2rem;">Создай комнату и скинь код другу — или введи код, чтобы зайти к нему. Видео, серии и чат синхронизируются в реальном времени напрямую между вами (P2P).</p>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+          <button class="btn btn-primary" id="wtCreateBtn" style="flex:1; min-width:170px;">🎉 Создать комнату</button>
+          <div style="flex:1; min-width:220px; display:flex; gap:0.5rem;">
+            <input type="text" id="wtJoinCode" placeholder="Код комнаты">
+            <button class="btn btn-outline" id="wtJoinBtn">🔗 Войти</button>
+          </div>
         </div>
-        <div style="display:flex; gap:1rem;">
-           <div style="flex:1;">
-             <label style="display:block; font-size:0.75rem; color:var(--accent); font-weight:bold; margin-bottom:0.3rem;">⏱️ Задержка (с)</label>
-             <input type="number" id="spamDelay" value="0.8" step="0.1">
-           </div>
-           <div style="flex:1;">
-             <label style="display:block; font-size:0.75rem; color:var(--accent); font-weight:bold; margin-bottom:0.3rem;">🔄 Циклы</label>
-             <input type="number" id="spamCycles" value="5">
-           </div>
-        </div>
+        <div id="wtStatus" style="color:var(--muted); font-size:0.85rem; font-weight:bold; min-height:1.2em;"></div>
       </div>
-      
-      <div style="display:flex; gap:1rem; margin-bottom:1rem;">
-        <button class="btn btn-primary" id="startSpamBtn" style="flex:1;">▶ НАЧАТЬ АТАКУ</button>
-        <button class="btn btn-outline" id="stopSpamBtn" style="flex:1; border-color:#ff607e; color:#ff607e;">⏹ ПРЕРВАТЬ</button>
-      </div>
-      
-      <div class="log" id="spamLog">
-        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.5rem;">
-          <strong>SYSTEM LOG</strong>
-          <button id="clearSpamBtn" style="background:none;border:none;color:var(--accent);cursor:pointer;font-weight:bold;">Очистить</button>
+
+      <!-- Active room -->
+      <div id="wtRoom" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.6rem; background:rgba(199,125,255,.08); border:1px solid var(--border); border-radius:14px; padding:0.7rem 1rem; margin-bottom:1rem;">
+          <div style="display:flex; align-items:center; gap:0.6rem; font-size:0.85rem; flex-wrap:wrap;">
+            <span id="wtDot" style="width:9px; height:9px; border-radius:50%; background:#facc15; display:inline-block; flex-shrink:0;"></span>
+            <span id="wtConnStatus" style="font-weight:bold;">Ожидание друга · <span id="wtRoomCode" style="color:var(--accent);"></span></span>
+            <button class="tag-pill" id="wtCopyBtn" style="cursor:pointer;">📋 Копировать код</button>
+          </div>
+          <button class="btn btn-outline" id="wtLeaveBtn" style="border-color:#ff607e; color:#ff607e; padding:0.4rem 0.9rem; font-size:0.75rem;">Покинуть комнату</button>
         </div>
-        <div id="spamLogLines"></div>
+
+        <!-- Catalog -->
+        <div id="wtCatalogView">
+          <form id="wtSearchForm" style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            <input type="search" id="wtSearch" placeholder="Поиск аниме для совместного просмотра...">
+            <button type="submit" class="btn btn-primary">🔍</button>
+          </form>
+          <div id="wtCatalogStatus" style="text-align:center; color:var(--muted); margin-bottom:0.5rem; font-weight:bold;"></div>
+          <div id="wtResults" class="anime-grid"></div>
+        </div>
+
+        <!-- Player -->
+        <div id="wtPlayerView" style="display:none;">
+          <button class="btn btn-outline" id="wtBackBtn" style="margin-bottom:1rem;">← К поиску</button>
+          <div style="display:flex; gap:1.2rem; margin-bottom:1rem; flex-wrap:wrap; align-items:flex-start; background:rgba(34,18,58,0.5); padding:1rem; border-radius:var(--radius); border:1px solid var(--border);">
+            <img id="wtPoster" src="" style="width:100px; height:145px; object-fit:cover; border-radius:12px; flex-shrink:0;">
+            <div style="flex:1; min-width:180px;">
+              <h3 id="wtTitle" style="color:var(--accent); font-family:var(--fh); margin-bottom:0.6rem; font-size:1.1rem;"></h3>
+              <div id="wtEpisodes" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(56px, 1fr)); gap:0.4rem; max-height:120px; overflow-y:auto; padding-right:4px;"></div>
+            </div>
+          </div>
+          <div id="wtVideoContainer" style="display:none; position:relative; background:#000; border-radius:18px; overflow:hidden; aspect-ratio:16/9; box-shadow:var(--shadow); margin-bottom:1rem;">
+            <video id="wtVideo" controls playsinline style="width:100%; height:100%; object-fit:contain;"></video>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div style="margin-top:1rem;">
+          <h3 style="font-family:var(--fh); color:var(--muted); font-size:0.9rem; margin-bottom:0.5rem;">💬 Чат</h3>
+          <div class="log" id="wtChatLog"></div>
+          <form id="wtChatForm" style="display:flex; gap:0.5rem; margin-top:0.6rem;">
+            <input type="text" id="wtChatInput" placeholder="Написать сообщение..." style="flex:1;">
+            <button type="submit" class="btn btn-primary">➤</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -444,52 +475,232 @@ function updateQuote() {
 updateQuote();
 document.getElementById('newQuoteBtn').addEventListener('click', updateQuote);
 
-// ---------- Spammer ----------
-const spamLog = document.getElementById('spamLogLines');
-const spamLogScroll = document.getElementById('spamLog');
-let spamInt = null;
+// ---------- Watch Together (P2P via WebRTC/PeerJS) ----------
+(function initWatchTogether(){
+  const WT_API = 'https://anilibria.top/api/v1';
+  let peer = null, conn = null;
+  let applyingRemote = false;
+  let wtCurrentEps = [], wtCurrentAnimeId = null, wtEpIndex = -1, wtHls = null;
 
-function addLog(msg, type='info') {
-  const d = document.createElement('div');
-  d.style.color = type==='err' ? '#ff607e' : (type==='ok' ? '#a8edea' : '#d0b0e4');
-  d.style.marginBottom = '2px';
-  d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-  spamLog.appendChild(d);
-  spamLogScroll.scrollTop = spamLogScroll.scrollHeight;
-}
+  const setupEl = document.getElementById('wtSetup');
+  const roomEl = document.getElementById('wtRoom');
+  const statusEl = document.getElementById('wtStatus');
+  const connStatusEl = document.getElementById('wtConnStatus');
+  const dotEl = document.getElementById('wtDot');
+  const roomCodeEl = document.getElementById('wtRoomCode');
+  const video = document.getElementById('wtVideo');
+  const chatLog = document.getElementById('wtChatLog');
 
-document.getElementById('clearSpamBtn').addEventListener('click', () => spamLog.innerHTML = '');
+  function genCode() { return 'ae86-' + Math.random().toString(36).slice(2, 8); }
+  function setStatus(text) { statusEl.textContent = text; }
 
-document.getElementById('startSpamBtn').addEventListener('click', () => {
-  if(spamInt) return;
-  const phone = document.getElementById('spamPhone').value.trim() || "+79001234567";
-  const delay = parseFloat(document.getElementById('spamDelay').value) || 0.8;
-  const cycles = parseInt(document.getElementById('spamCycles').value) || 5;
-  
-  addLog(`Запуск сессии стресс-тестирования на: ${phone}`);
-  let c = 0;
-  
-  spamInt = setInterval(() => {
-    c++;
-    if(cycles > 0 && c > cycles) {
-      clearInterval(spamInt);
-      spamInt = null;
-      addLog('Атака успешно завершена.', 'ok');
-      return;
-    }
-    addLog(`[Цикл ${c}] Подготовка инъекций...`);
-    setTimeout(() => { if(spamInt) addLog(`[Цикл ${c}] Telegram Auth -> OK`, 'ok'); }, 200*delay);
-    setTimeout(() => { if(spamInt) addLog(`[Цикл ${c}] VK Gateway -> 429 Limit`, 'err'); }, 500*delay);
-  }, delay*1000 + 600);
-});
-
-document.getElementById('stopSpamBtn').addEventListener('click', () => {
-  if(spamInt) {
-    clearInterval(spamInt);
-    spamInt = null;
-    addLog('Прервано пользователем', 'err');
+  function showRoomUI(code) {
+    setupEl.style.display = 'none';
+    roomEl.style.display = 'block';
+    roomCodeEl.textContent = code;
   }
-});
+
+  function setConnected(connected) {
+    dotEl.style.background = connected ? '#4ade80' : '#facc15';
+    connStatusEl.childNodes[0].textContent = connected ? 'Друг в сети · ' : 'Ожидание друга · ';
+  }
+
+  function addChatMsg(who, text) {
+    const d = document.createElement('div');
+    d.style.marginBottom = '4px';
+    const color = who === 'я' ? 'var(--accent)' : (who === 'друг' ? 'var(--purple)' : 'var(--muted)');
+    d.innerHTML = `<strong style="color:${color}">${who}:</strong> ${text.replace(/</g,'&lt;')}`;
+    chatLog.appendChild(d);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  function sendMsg(obj) { if(conn && conn.open) conn.send(obj); }
+
+  function setupConn() {
+    conn.on('open', () => {
+      setConnected(true);
+      addChatMsg('система', 'Соединение установлено ✨');
+      if(wtCurrentAnimeId && wtEpIndex >= 0) {
+        sendMsg({type:'load', animeId: wtCurrentAnimeId, epIndex: wtEpIndex, time: video.currentTime, playing: !video.paused});
+      }
+    });
+    conn.on('data', handleData);
+    conn.on('close', () => { setConnected(false); addChatMsg('система', 'Друг отключился'); });
+  }
+
+  async function handleData(msg) {
+    if(msg.type === 'chat') addChatMsg('друг', msg.text);
+    else if(msg.type === 'load') {
+      await wtLoadAnime(msg.animeId);
+      wtPlayEpisode(msg.epIndex, msg.time || 0, msg.playing !== false, false);
+    } else if(msg.type === 'state') {
+      applyingRemote = true;
+      if(msg.action === 'play') { video.currentTime = msg.time; video.play().catch(()=>{}); }
+      else if(msg.action === 'pause') { video.currentTime = msg.time; video.pause(); }
+      else if(msg.action === 'seek') { video.currentTime = msg.time; }
+      else if(msg.action === 'sync') { if(Math.abs(video.currentTime - msg.time) > 1.5) video.currentTime = msg.time; }
+      setTimeout(() => applyingRemote = false, 250);
+    }
+  }
+
+  document.getElementById('wtCreateBtn').addEventListener('click', () => {
+    setStatus('Создаём комнату...');
+    const code = genCode();
+    peer = new Peer(code);
+    peer.on('open', id => {
+      showRoomUI(id);
+      setConnected(false);
+      addChatMsg('система', 'Комната создана. Отправь код другу, чтобы он подключился 🎉');
+    });
+    peer.on('connection', c => { conn = c; setupConn(); });
+    peer.on('error', e => setStatus('Ошибка: ' + e.type));
+  });
+
+  document.getElementById('wtJoinBtn').addEventListener('click', () => {
+    const code = document.getElementById('wtJoinCode').value.trim();
+    if(!code) return;
+    setStatus('Подключение...');
+    peer = new Peer();
+    peer.on('open', () => {
+      conn = peer.connect(code);
+      setupConn();
+      showRoomUI(code);
+    });
+    peer.on('error', e => setStatus('Ошибка: ' + e.type));
+  });
+
+  document.getElementById('wtLeaveBtn').addEventListener('click', () => {
+    if(conn) conn.close();
+    if(peer) peer.destroy();
+    peer = null; conn = null;
+    roomEl.style.display = 'none';
+    setupEl.style.display = 'block';
+    setStatus('');
+    chatLog.innerHTML = '';
+    document.getElementById('wtJoinCode').value = '';
+  });
+
+  document.getElementById('wtCopyBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(roomCodeEl.textContent).then(() => {
+      const btn = document.getElementById('wtCopyBtn');
+      const old = btn.textContent;
+      btn.textContent = '✅ Скопировано';
+      setTimeout(() => btn.textContent = old, 1500);
+    }).catch(() => {});
+  });
+
+  document.getElementById('wtChatForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = document.getElementById('wtChatInput');
+    const text = input.value.trim();
+    if(!text) return;
+    addChatMsg('я', text);
+    sendMsg({type:'chat', text});
+    input.value = '';
+  });
+
+  // ---- catalog / search ----
+  document.getElementById('wtSearchForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const q = document.getElementById('wtSearch').value.trim();
+    const statusD = document.getElementById('wtCatalogStatus');
+    const results = document.getElementById('wtResults');
+    statusD.textContent = 'Поиск...';
+    results.innerHTML = '';
+    try {
+      const url = q ? `${WT_API}/app/search/releases?query=${encodeURIComponent(q)}` : `${WT_API}/anime/releases/latest`;
+      const res = await fetch(url);
+      const data = await res.json();
+      renderWtCards(data || []);
+      statusD.textContent = (data && data.length) ? '' : 'Ничего не найдено';
+    } catch(err) { statusD.textContent = 'Ошибка загрузки'; }
+  });
+
+  function renderWtCards(list) {
+    const container = document.getElementById('wtResults');
+    list.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'anime-card';
+      const title = item.name?.main || item.name?.english || item.alias;
+      const year = item.year || 'TBA';
+      const posterUrl = item.poster?.optimized?.src || item.poster?.src || '';
+      const imgUrl = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
+      card.innerHTML = `<img src="${imgUrl}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x225/1a1025/c77dff?text=No+Poster'"><div class="info"><div class="title" title="${title}">${title}</div><div class="meta">${year}</div></div>`;
+      card.addEventListener('click', async () => {
+        await wtLoadAnime(item.id);
+        sendMsg({type:'load', animeId: item.id, epIndex: -1});
+      });
+      container.appendChild(card);
+    });
+  }
+
+  document.getElementById('wtBackBtn').addEventListener('click', () => {
+    document.getElementById('wtCatalogView').style.display = 'block';
+    document.getElementById('wtPlayerView').style.display = 'none';
+  });
+
+  async function wtLoadAnime(animeId) {
+    try {
+      const res = await fetch(WT_API + `/anime/releases/${animeId}`);
+      const data = await res.json();
+      wtCurrentAnimeId = animeId;
+      document.getElementById('wtTitle').textContent = data.name?.main || data.alias || '';
+      const posterUrl = data.poster?.optimized?.src || data.poster?.src || '';
+      document.getElementById('wtPoster').src = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
+
+      wtCurrentEps = (data.episodes || []).slice().sort((a,b) => Number(a.ordinal) - Number(b.ordinal));
+      const epsDiv = document.getElementById('wtEpisodes');
+      epsDiv.innerHTML = '';
+      wtCurrentEps.forEach((ep, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-outline';
+        btn.style.padding = '0.35rem';
+        btn.style.fontSize = '0.75rem';
+        btn.textContent = ep.ordinal;
+        btn.addEventListener('click', () => wtPlayEpisode(idx, 0, true, true));
+        epsDiv.appendChild(btn);
+      });
+
+      document.getElementById('wtCatalogView').style.display = 'none';
+      document.getElementById('wtPlayerView').style.display = 'block';
+    } catch(e) { setStatus('Не удалось загрузить аниме'); }
+  }
+
+  function wtPlayEpisode(idx, startTime, autoPlay, broadcast) {
+    if(idx < 0 || idx >= wtCurrentEps.length) return;
+    wtEpIndex = idx;
+    const ep = wtCurrentEps[idx];
+    let url = ep.hls_720 || ep.hls_480 || ep.hls_1080;
+    if(!url) return;
+    if(!url.startsWith('http')) url = 'https://cache.libria.fun' + url;
+
+    document.getElementById('wtVideoContainer').style.display = 'block';
+    if(wtHls) wtHls.destroy();
+    if(Hls.isSupported()) {
+      wtHls = new Hls();
+      wtHls.loadSource(url);
+      wtHls.attachMedia(video);
+      wtHls.on(Hls.Events.MANIFEST_PARSED, () => {
+        if(startTime > 0) video.currentTime = startTime;
+        if(autoPlay) video.play().catch(()=>{});
+      });
+    } else if(video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = url;
+      video.addEventListener('loadedmetadata', function onL() {
+        if(startTime > 0) video.currentTime = startTime;
+        if(autoPlay) video.play().catch(()=>{});
+        video.removeEventListener('loadedmetadata', onL);
+      });
+    }
+
+    if(broadcast) sendMsg({type:'load', animeId: wtCurrentAnimeId, epIndex: idx, time: startTime, playing: autoPlay});
+  }
+
+  video.addEventListener('play', () => { if(!applyingRemote) sendMsg({type:'state', action:'play', time: video.currentTime}); });
+  video.addEventListener('pause', () => { if(!applyingRemote) sendMsg({type:'state', action:'pause', time: video.currentTime}); });
+  video.addEventListener('seeked', () => { if(!applyingRemote) sendMsg({type:'state', action:'seek', time: video.currentTime}); });
+  setInterval(() => { if(conn && conn.open && !video.paused) sendMsg({type:'state', action:'sync', time: video.currentTime}); }, 5000);
+})();
 
 // ---------- Gallery ----------
 let currentGalCat = 'waifu';
