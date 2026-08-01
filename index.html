@@ -932,7 +932,6 @@ const nekoImg = $('nekoImg');
 const nekoCorner = $('nekoCorner');
 let nekoCache = null;
 const NEKO_SOURCES = [
-  { url: 'https://api.waifu.pics/sfw/neko', extract: d => d.url },
   { url: 'https://nekos.best/api/v2/neko', extract: d => d.results?.[0]?.url },
   { url: 'https://api.thecatapi.com/v1/images/search', extract: d => d[0]?.url }
 ];
@@ -959,7 +958,7 @@ fetchNeko();
 // ============================================
 const avatarEl = $('avatarImg').closest('.avatar');
 const AVATAR_SOURCES = [
-  { url: 'https://api.waifu.pics/sfw/waifu', extract: d => d.url },
+  { url: 'https://api.waifu.im/images?IncludedTags=waifu', extract: d => d.items?.[0]?.url },
   { url: 'https://nekos.best/api/v2/waifu', extract: d => d.results?.[0]?.url }
 ];
 async function fetchAvatar() {
@@ -1129,6 +1128,7 @@ async function openAnimePlayer(anime) {
   const posterUrl = anime.poster?.optimized?.src || anime.poster?.src || '';
   const imgUrl = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
   $('apPoster').src = imgUrl;
+  $('apPoster').onerror = function() { this.style.opacity = 0.2; };
   $('apGenres').innerHTML = '';
 
   if (currentHlsInstance) { currentHlsInstance.destroy(); currentHlsInstance = null; }
@@ -1305,21 +1305,25 @@ function playVideo(url, startTime = 0, autoPlay = true) {
 //  Watch Together (Trystero) + Голосовой чат
 // ============================================
 // Trystero подключает друзей через несколько параллельных публичных
-// relay-серверов (по умолчанию — сеть Nostr, сотни независимых узлов),
+// BitTorrent-трекеров (независимая, давно обкатанная инфраструктура —
+// используется в WebTorrent и подобных P2P-проектах уже около 10 лет),
 // а не через один сигнальный сервер — поэтому нет единой точки отказа,
-// как раньше было с PeerJS/0.peerjs.com. Плюс свой TURN как резерв
-// для сложных сетей/NAT/файрволов.
+// как раньше было с PeerJS/0.peerjs.com. Свой набор STUN/TURN задаём
+// полностью сами (rtcConfig), чтобы не зависеть от чужих дефолтов.
 const TRYSTERO_APP_ID = 'god-ae86-anime-watch-together-v1';
-const TURN_CONFIG = [
-  {
-    urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'],
-    username: 'openrelayproject', credential: 'openrelayproject'
-  }
-];
+const RTC_CONFIG = {
+  iceServers: [
+    { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
+    {
+      urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'],
+      username: 'openrelayproject', credential: 'openrelayproject'
+    }
+  ]
+};
 
 let _trysteroMod = null;
 async function loadTrystero() {
-  if (!_trysteroMod) _trysteroMod = await import('https://esm.run/trystero');
+  if (!_trysteroMod) _trysteroMod = await import('https://esm.run/@trystero-p2p/torrent');
   return _trysteroMod;
 }
 
@@ -1368,7 +1372,7 @@ const WT = {
     let firstFired = false;
 
     const { joinRoom } = await loadTrystero();
-    this.room = joinRoom({ appId: TRYSTERO_APP_ID, turnConfig: TURN_CONFIG }, roomId);
+    this.room = joinRoom({ appId: TRYSTERO_APP_ID, rtcConfig: RTC_CONFIG, relayRedundancy: 5 }, roomId);
     this.syncAction = this.room.makeAction('sync');
     this.syncAction.onMessage = (msg) => this.onData(msg);
 
