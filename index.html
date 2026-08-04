@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>GOD_AE86 ✦ аниме-плеер</title>
+  <meta name="description" content="Персональная страница GOD_AE86. Аниме-вайб, совместный просмотр, галерея и гача.">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== Design Tokens ===== */
+    :root {
+      --bg: #160c24;
+      --bg2: #1f1135;
+      --card: rgba(34,18,58,0.72);
+      --card-solid: #22133a;
+      --text: #f5e7ff;
+      --muted: #b9a0d4;
+      --muted-2: #8a6fa8;
+      --accent: #ff9bb3;
+      --accent-2: #ffb7c5;
+      --purple: #c77dff;
+      --teal: #8ee9e6;
+      --gold: #f9c74f;
+      --danger: #ff6b8a;
+      --success: #7ee787;
+      --border: rgba(199,125,255,0.20);
+      --border-strong: rgba(199,125,255,0.42);
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.25);
+      --shadow: 0 8px 32px rgba(255,155,179,0.14);
+      --shadow-lg: 0 18px 60px rgba(199,125,255,0.22);
+      --glow: 0 0 28px rgba(255,155,179,0.42);
+      --glow-purple: 0 0 28px rgba(199,125,255,0.4);
+      --radius-sm: 12px;
+      --radius: 18px;
+      --radius-lg: 24px;
+      --tr-fast: 0.16s cubic-bezier(.2,0,0,1);
+      --tr: 0.28s cubic-bezier(.2,0,0,1);
+      --fh: 'Mochiy Pop One', cursive;
+      --fb: 'Nunito', sans-serif;
+      --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+      --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+    }
+    [data-theme="light"] {
+      --bg: #fbeaf3; --bg2: #f6d3e6; --card: rgba(255,250,253,0.86); --card-solid: #fff5fa;
+      --text: #3a1a2e; --muted: #6f4768; --muted-2: #9b7a92;
+      --accent: #e0567f; --accent-2: #d8456f; --purple: #9b59b6;
+      --teal: #2bb5b0; --gold: #d4a017;
+      --border: rgba(224,86,127,0.20); --border-strong: rgba(224,86,127,0.42);
+      --shadow: 0 8px 32px rgba(224,86,127,0.13);
+      --shadow-lg: 0 18px 60px rgba(155,89,182,0.18);
+      --glow: 0 0 24px rgba(224,86,127,0.36); --glow-purple: 0 0 24px rgba(155,89,182,0.32);
+    }
+    [data-anime="on"] {
+      --accent: #ff4da6; --purple: #bf00ff; --border: rgba(191,0,255,0.32); --border-strong: rgba(191,0,255,0.55);
+      --shadow: 0 8px 40px rgba(255,77,166,0.28); --glow: 0 0 40px rgba(255,77,166,0.55);
+    }
+
+    * { margin:0; padding:0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--fb);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background var(--tr), color var(--tr);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content:''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 55% at 8% 6%, rgba(199,125,255,.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 45% at 92% 88%, rgba(255,155,179,.12) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(142,233,230,.05) 0%, transparent 70%);
+    }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; }
+
+    /* ===== VFX ===== */
+    .petal, .star-vfx { position: absolute; pointer-events: none; will-change: transform, opacity; }
+    .petal {
+      border-radius: 50% 0 50% 0;
+      background: radial-gradient(ellipse at 35% 35%, #ffcfd9 0%, #ff85a1 55%, rgba(255,100,140,0) 100%);
+      animation: petalFall linear infinite;
+    }
+    @keyframes petalFall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 0.85; }
+      100% { transform: translateY(115vh) rotate(360deg); opacity: 0; }
+    }
+    .star-vfx {
+      border-radius: 50%; background: var(--accent);
+      box-shadow: 0 0 8px var(--accent), 0 0 18px var(--purple);
+      animation: starDrop linear infinite;
+    }
+    @keyframes starDrop {
+      0% { transform: translateY(-20px) scale(1); opacity: 0; }
+      10% { opacity: 0.9; }
+      100% { transform: translateY(115vh) scale(0.3); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .petal, .star-vfx { animation: none !important; display: none; }
+      * { transition-duration: 0.05s !important; animation-duration: 0.05s !important; }
+    }
+
+    /* ===== Top Bar ===== */
+    .fixed-top { position: fixed; top: var(--sp-3); right: var(--sp-3); display: flex; gap: var(--sp-2); z-index: 200; }
+    .icon-btn {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--card); border: 1.5px solid var(--border);
+      cursor: pointer; font-size: 1.25rem; display: grid; place-items: center;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      transition: transform var(--tr-fast), box-shadow var(--tr-fast), border-color var(--tr-fast);
+      color: var(--text);
+    }
+    .icon-btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: var(--glow); border-color: var(--accent); }
+    .icon-btn:active { transform: scale(0.95); }
+
+    /* ===== Layout ===== */
+    .page-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: var(--sp-6) var(--sp-3) var(--sp-7); }
+    .container { width: 100%; max-width: 1020px; display: flex; flex-direction: column; gap: var(--sp-4); }
+
+    /* ===== Brand Header ===== */
+    .brand {
+      display: flex; align-items: center; justify-content: center; gap: var(--sp-3);
+      padding: var(--sp-3) 0 var(--sp-2);
+      font-family: var(--fh); font-size: 1.4rem;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+    .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: var(--glow); -webkit-text-fill-color: initial; }
+
+    /* ===== Tabs ===== */
+    .tabs-wrapper {
+      background: var(--card); border-radius: var(--radius-lg);
+      border: 1px solid var(--border); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      padding: var(--sp-1); position: sticky; top: var(--sp-2); z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .tablist { display: flex; gap: var(--sp-1); flex-wrap: wrap; justify-content: center; }
+    .tab-btn {
+      flex: 1 0 auto; min-width: 96px; background: transparent; border: none;
+      padding: var(--sp-3) var(--sp-4); border-radius: var(--radius);
+      cursor: pointer; font-weight: 800; font-family: var(--fh);
+      font-size: 0.78rem; letter-spacing: 0.4px; color: var(--muted);
+      transition: all var(--tr-fast); display: flex; align-items: center; justify-content: center; gap: var(--sp-1);
+    }
+    .tab-btn:hover { color: var(--text); background: rgba(199,125,255,.06); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: white; box-shadow: 0 4px 16px rgba(255,155,179,0.4);
+    }
+    .tab-panel { display: none; animation: fadeSlide 0.35s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ===== Card ===== */
+    .card {
+      background: var(--card); border-radius: var(--radius-lg);
+      padding: var(--sp-5); box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    .card h2 { font-family: var(--fh); color: var(--accent); font-size: 1.1rem; letter-spacing: 0.3px; }
+    .card h3 { font-family: var(--fh); color: var(--accent); font-size: 0.95rem; }
+
+    /* ===== Form & Buttons ===== */
+    .btn {
+      border: none; font-weight: 800; font-size: 0.82rem;
+      padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-sm);
+      cursor: pointer; transition: transform var(--tr-fast), box-shadow var(--tr-fast), background var(--tr-fast);
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-1);
+      line-height: 1;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; box-shadow: 0 4px 14px rgba(255,155,179,.4); }
+    .btn-primary:hover { box-shadow: 0 6px 22px rgba(255,155,179,.55); }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border-strong); color: var(--muted); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,155,179,.08); }
+    .btn-danger { background: transparent; border: 1.5px solid var(--danger); color: var(--danger); }
+    .btn-danger:hover { background: rgba(255,107,138,.1); }
+    .btn-success { background: linear-gradient(135deg, var(--success), var(--teal)); color: #0a3014; }
+
+    input[type="text"], input[type="number"], input[type="search"], textarea {
+      width: 100%; padding: var(--sp-3) var(--sp-4);
+      background: rgba(199,125,255,.07); border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text); outline: none;
+      transition: border-color var(--tr-fast), background var(--tr-fast);
+      font-family: inherit; font-size: 0.9rem;
+    }
+    input:focus, textarea:focus { border-color: var(--accent); background: rgba(255,155,179,.06); }
+    input::placeholder, textarea::placeholder { color: var(--muted-2); }
+    label { display: block; font-size: 0.72rem; color: var(--accent); font-weight: 800; margin-bottom: var(--sp-1); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ===== Bio ===== */
+    .profile { display: flex; align-items: center; gap: var(--sp-5); flex-wrap: wrap; justify-content: center; }
+    .avatar-wrap { position: relative; width: 150px; height: 150px; flex-shrink: 0; }
+    .avatar {
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+      background: linear-gradient(135deg, var(--purple), var(--accent)); border: 3px solid transparent;
+      box-shadow: 0 0 0 6px rgba(199,125,255,.12), 0 0 40px rgba(255,155,179,.4);
+      display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; transition: opacity .35s ease; }
+    .avatar.is-loading img { opacity: 0; }
+    .avatar.is-loading::after { content: '💮'; font-size: 2.4rem; animation: pulse 1.3s ease-in-out infinite; }
+    .avatar.is-fallback::before { content: '🌸'; font-size: 3rem; position: absolute; }
+    .avatar.is-fallback img { display: none; }
+    @keyframes pulse { 0%,100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.05); } }
+    .avatar-ring, .avatar-ring2 {
+      position: absolute; border-radius: 50%; pointer-events: none;
+      animation: spin 16s linear infinite;
+    }
+    .avatar-ring { inset: -8px; border: 2px dashed var(--purple); opacity: 0.55; }
+    .avatar-ring2 { inset: -18px; border: 1px dotted var(--accent); animation: spin 24s reverse infinite; opacity: 0.3; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .bio-name {
+      font-family: var(--fh); font-size: 1.9rem; margin-bottom: var(--sp-1);
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .bio-handle { color: var(--muted); font-weight: 800; margin-bottom: var(--sp-3); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+    .bio-tag { color: var(--text); font-weight: 700; margin-bottom: var(--sp-3); }
+    .tag-row { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
+    .chip {
+      padding: var(--sp-1) var(--sp-3); border-radius: 20px;
+      font-size: 0.72rem; font-weight: 800; color: var(--accent);
+      border: 1.5px solid var(--accent); background: transparent;
+    }
+    .quote-box {
+      background: rgba(199,125,255,.08); border-left: 3px solid var(--purple);
+      padding: var(--sp-4); border-radius: var(--radius-sm); margin-top: var(--sp-4);
+    }
+    .quote-box .q-text { font-style: italic; font-size: 0.92rem; line-height: 1.5; }
+    .quote-box .q-foot { display: flex; justify-content: space-between; align-items: center; margin-top: var(--sp-2); }
+    .quote-box .q-src { font-size: 0.75rem; color: var(--muted); font-weight: 800; }
+
+    /* ===== Anime ===== */
+    .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-3); }
+    .anime-card {
+      background: rgba(199,125,255,.05); border-radius: var(--radius);
+      border: 1px solid var(--border); cursor: pointer;
+      transition: transform var(--tr-fast), box-shadow var(--tr-fast), border-color var(--tr-fast);
+      overflow: hidden;
+    }
+    .anime-card:hover { transform: translateY(-4px); box-shadow: var(--glow); border-color: var(--accent); }
+    .anime-card .poster { position: relative; aspect-ratio: 2/3; background: var(--card-solid); }
+    .anime-card .poster img { width: 100%; height: 100%; object-fit: cover; }
+    .anime-card .info { padding: var(--sp-3); }
+    .anime-card .title { font-weight: 800; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: var(--sp-1); color: var(--text); }
+    .anime-card .meta { font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+
+    .player-header {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4);
+    }
+    .anime-info-box {
+      display: flex; gap: var(--sp-4); margin-bottom: var(--sp-4);
+      align-items: flex-start; flex-wrap: wrap;
+      background: rgba(34,18,58,0.5); padding: var(--sp-4);
+      border-radius: var(--radius); border: 1px solid var(--border);
+    }
+    .anime-info-box img { width: 130px; height: 190px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow); flex-shrink: 0; }
+
+    .ep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: var(--sp-1); margin-bottom: var(--sp-4); max-height: 220px; overflow-y: auto; padding-right: var(--sp-1); }
+    .ep-btn { padding: var(--sp-2) var(--sp-1) !important; font-size: 0.78rem !important; text-align: center; min-height: 38px; }
+    .ep-btn.active { background: linear-gradient(135deg, var(--accent), var(--purple)); color: white !important; border-color: transparent !important; box-shadow: 0 2px 10px rgba(255,155,179,.4); }
+
+    .video-container {
+      position: relative; background: #000; border-radius: var(--radius-lg);
+      overflow: hidden; aspect-ratio: 16/9; box-shadow: var(--shadow-lg);
+    }
+    .video-container video { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .video-overlay-top {
+      position: absolute; top: var(--sp-3); right: var(--sp-3); z-index: 10;
+      display: flex; gap: var(--sp-2); align-items: center;
+    }
+    .wt-badge {
+      display: inline-flex; align-items: center; gap: var(--sp-1);
+      padding: var(--sp-1) var(--sp-3); border-radius: 30px;
+      font-size: 0.72rem; font-weight: 800; color: white;
+      background: rgba(0,0,0,0.7); border: 1px solid var(--border-strong);
+      backdrop-filter: blur(8px);
+    }
+    .wt-badge.live { background: linear-gradient(135deg, #ff4da6, #c77dff); border-color: transparent; }
+    .wt-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); }
+    .wt-badge.live .dot { background: #fff; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    select.wt-select {
+      background: rgba(0,0,0,0.7); color: white; border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); padding: var(--sp-1) var(--sp-3);
+      font-size: 0.78rem; outline: none; cursor: pointer; font-family: inherit;
+    }
+
+    /* ===== Gallery ===== */
+    .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--sp-3); }
+    .gal-item {
+      position: relative; aspect-ratio: 1; border-radius: var(--radius);
+      overflow: hidden; border: 1px solid var(--border); cursor: pointer;
+    }
+    .gal-item img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--tr); }
+    .gal-item:hover img { transform: scale(1.08); }
+    .gal-item .gal-cap {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      padding: var(--sp-5) var(--sp-2) var(--sp-2);
+      color: white; font-size: 0.74rem; font-weight: 800;
+      text-shadow: 0 1px 2px black;
+    }
+
+    /* ===== Gacha ===== */
+    .gacha-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: var(--sp-4); padding-bottom: var(--sp-4);
+      border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: var(--sp-3);
+    }
+    .gacha-coins { font-family: var(--fh); color: var(--accent); display: flex; align-items: center; gap: var(--sp-2); font-size: 1.1rem; }
+    .gacha-box {
+      background: linear-gradient(180deg, #0c051a 0%, #160a2e 100%);
+      border-radius: var(--radius-lg); border: 1px solid var(--border);
+      padding: var(--sp-6); text-align: center;
+      box-shadow: inset 0 0 80px rgba(34,18,58,0.8);
+      min-height: 340px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: var(--sp-4);
+    }
+    .gacha-card {
+      background: #120822; border-radius: var(--radius); overflow: hidden;
+      width: 220px; position: relative; box-shadow: var(--glow);
+      animation: fadeSlide 0.5s ease; border: 2px solid var(--accent);
+    }
+    .gacha-card img { width: 100%; height: 300px; object-fit: cover; }
+    .gacha-card .rarity {
+      position: absolute; top: var(--sp-2); right: var(--sp-2);
+      background: rgba(0,0,0,0.8); padding: var(--sp-1) var(--sp-3);
+      border-radius: 20px; color: white; font-weight: 800; font-size: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+    }
+    .gacha-card .name {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: var(--sp-4); background: linear-gradient(transparent, rgba(0,0,0,0.92));
+      color: white; font-weight: 800;
+    }
+    .inventory { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-2); margin-top: var(--sp-3); }
+    .inv-item {
+      background: rgba(199,125,255,.06); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: var(--sp-2);
+      display: flex; align-items: center; gap: var(--sp-2);
+      transition: border-color var(--tr-fast), transform var(--tr-fast);
+    }
+    .inv-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .inv-item img { width: 42px; height: 42px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
+    .inv-item .info { font-size: 0.72rem; min-width: 0; }
+    .inv-item .info strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ===== Neko Corner ===== */
+    .neko-wrap { position: fixed; bottom: var(--sp-3); right: var(--sp-3); z-index: 150; display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); }
+    .neko-corner {
+      width: 64px; height: 64px; border-radius: 50%; position: relative;
+      border: 2px solid var(--accent); overflow: hidden; cursor: pointer;
+      box-shadow: 0 0 18px rgba(255,155,179,.5); background: var(--card-solid);
+      transition: transform var(--tr-fast);
+    }
+    .neko-corner:hover { transform: scale(1.08) rotate(-3deg); }
+    .neko-corner img { width: 100%; height: 100%; object-fit: cover; transition: opacity var(--tr); }
+    .neko-corner.is-loading img { opacity: 0; }
+    .neko-corner.is-loading::after { content: '🐈'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; animation: pulse 1.2s ease-in-out infinite; }
+    .neko-corner.is-fallback::before { content: '🐾'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; background: linear-gradient(135deg, var(--purple), var(--accent)); }
+    .neko-corner.is-fallback img { display: none; }
+    .neko-tip { background: var(--card); border-radius: 30px; padding: var(--sp-1) var(--sp-3); font-size: 0.65rem; backdrop-filter: blur(8px); font-weight: 700; color: var(--muted); }
+
+    /* ===== Watch Together Modal ===== */
+    .wt-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(10,5,18,0.78); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      padding: var(--sp-3); animation: fadeIn 0.2s ease;
+    }
+    .wt-overlay.open { display: flex; }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .wt-modal {
+      width: 100%; max-width: 460px;
+      background: var(--card-solid); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-strong); box-shadow: var(--shadow-lg);
+      overflow: hidden; animation: slideUp 0.25s cubic-bezier(.2,0,0,1);
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+    .wt-modal-head {
+      padding: var(--sp-4) var(--sp-5); border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(135deg, rgba(255,155,179,0.08), rgba(199,125,255,0.08));
+    }
+    .wt-modal-head h3 { font-family: var(--fh); color: var(--accent); font-size: 1rem; }
+    .wt-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0 var(--sp-1); }
+    .wt-close:hover { color: var(--accent); }
+    .wt-modal-body { padding: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-4); }
+    .wt-tabs { display: flex; gap: var(--sp-1); background: rgba(199,125,255,.08); padding: var(--sp-1); border-radius: var(--radius-sm); }
+    .wt-tab {
+      flex: 1; padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm);
+      background: transparent; border: none; color: var(--muted);
+      font-weight: 800; cursor: pointer; font-size: 0.82rem; transition: all var(--tr-fast); font-family: inherit;
+    }
+    .wt-tab.active { background: var(--card-solid); color: var(--accent); box-shadow: var(--shadow-sm); }
+    .wt-pane { display: none; flex-direction: column; gap: var(--sp-3); }
+    .wt-pane.active { display: flex; }
+    .wt-link-box {
+      display: flex; gap: var(--sp-2); align-items: center;
+      background: rgba(199,125,255,.06); padding: var(--sp-2) var(--sp-3);
+      border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);
+    }
+    .wt-link-box code {
+      flex: 1; font-family: 'Sarasa Mono SC', monospace;
+      font-size: 0.78rem; color: var(--accent); word-break: break-all;
+    }
+    .wt-status {
+      display: flex; align-items: center; gap: var(--sp-2);
+      padding: var(--sp-3); border-radius: var(--radius-sm);
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .wt-status.info { background: rgba(142,233,230,.08); color: var(--teal); }
+    .wt-status.warn { background: rgba(249,199,79,.08); color: var(--gold); }
+    .wt-status.err { background: rgba(255,107,138,.08); color: var(--danger); }
+    .wt-status.ok { background: rgba(126,231,135,.08); color: var(--success); }
+    .wt-info-row { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .wt-info-row b { color: var(--text); }
+
+    /* WT Chat (in player sidebar) */
+    .wt-side {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: 340px; max-width: 90vw; z-index: 400;
+      background: var(--card-solid); border-left: 1px solid var(--border-strong);
+      box-shadow: -10px 0 40px rgba(0,0,0,0.4);
+      transform: translateX(100%); transition: transform var(--tr);
+      display: flex; flex-direction: column;
+    }
+    .wt-side.open { transform: translateX(0); }
+    .wt-side-head {
+      padding: var(--sp-4); border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(135deg, rgba(255,155,179,0.06), rgba(199,125,255,0.06));
+    }
+    .wt-side-head h3 { font-family: var(--fh); color: var(--accent); font-size: 0.95rem; display: flex; align-items: center; gap: var(--sp-2); }
+    .wt-side-body { flex: 1; overflow-y: auto; padding: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-2); }
+    .wt-msg {
+      max-width: 85%; padding: var(--sp-2) var(--sp-3);
+      border-radius: var(--radius); font-size: 0.84rem; line-height: 1.4;
+      word-wrap: break-word; animation: fadeSlide 0.2s ease;
+    }
+    .wt-msg.sys { align-self: center; background: rgba(199,125,255,.08); color: var(--muted); font-size: 0.74rem; text-align: center; max-width: 100%; border-radius: 20px; }
+    .wt-msg.me { align-self: flex-end; background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; border-bottom-right-radius: 4px; }
+    .wt-msg.them { align-self: flex-start; background: rgba(199,125,255,.1); color: var(--text); border-bottom-left-radius: 4px; }
+    .wt-msg .who { font-size: 0.68rem; font-weight: 800; opacity: 0.7; margin-bottom: 2px; display: block; }
+    .wt-side-foot { padding: var(--sp-3); border-top: 1px solid var(--border); display: flex; gap: var(--sp-2); }
+    .wt-side-foot input { flex: 1; }
+    .wt-toggle-btn {
+      position: fixed; right: var(--sp-3); bottom: 90px; z-index: 350;
+      width: 50px; height: 50px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border: none; cursor: pointer; box-shadow: var(--glow);
+      color: white; font-size: 1.2rem; display: none;
+      align-items: center; justify-content: center;
+      transition: transform var(--tr-fast);
+    }
+    .wt-toggle-btn.show { display: flex; }
+    .wt-toggle-btn:hover { transform: scale(1.08); }
+    .wt-toggle-btn .badge {
+      position: absolute; top: -2px; right: -2px;
+      background: var(--danger); color: white; font-size: 0.6rem;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: grid; place-items: center; font-weight: 800;
+      border: 2px solid var(--bg);
+    }
+
+    /* ===== WT Connection Quality ===== */
+    .wt-quality {
+      display: flex; align-items: center; gap: 5px; font-size: 0.68rem;
+      font-weight: 800; color: var(--muted); padding: 2px 8px;
+      border-radius: 20px; background: rgba(0,0,0,0.15); flex-shrink: 0;
+    }
+    .wt-quality .q-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted-2); transition: background var(--tr-fast); }
+    .wt-quality.good .q-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .wt-quality.ok .q-dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+    .wt-quality.bad .q-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); animation: pulse 1s infinite; }
+
+    /* ===== Reconnect banner ===== */
+    .wt-reconnect-banner {
+      display: none; align-items: center; gap: var(--sp-2);
+      background: rgba(249,199,79,.12); color: var(--gold);
+      padding: var(--sp-2) var(--sp-3); font-size: 0.78rem; font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+    .wt-reconnect-banner.show { display: flex; }
+    .wt-reconnect-banner .spin-ico { animation: spin 1s linear infinite; }
+
+    /* ===== Voice Chat ===== */
+    .wt-voice-bar {
+      display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
+      padding: var(--sp-3); border-bottom: 1px solid var(--border);
+      background: rgba(199,125,255,.04);
+    }
+    .voice-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--border-strong);
+      background: var(--card-solid); color: var(--text); cursor: pointer;
+      font-size: 1.05rem; display: grid; place-items: center; flex-shrink: 0;
+      transition: transform var(--tr-fast), box-shadow var(--tr-fast), background var(--tr-fast), border-color var(--tr-fast);
+    }
+    .voice-btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+    .voice-btn.on { background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; border-color: transparent; }
+    .voice-btn.muted { background: var(--danger); color: white; border-color: transparent; }
+    .voice-btn.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+    .voice-btn.danger:hover { background: rgba(255,107,138,.12); }
+    .voice-btn.talking { box-shadow: 0 0 0 4px rgba(126,231,135,.35), 0 0 16px rgba(126,231,135,.5); border-color: var(--success); }
+    .voice-join-btn {
+      flex: 1; min-width: 140px; padding: var(--sp-2) var(--sp-3) !important;
+      font-size: 0.8rem !important;
+    }
+    .wt-voice-status { width: 100%; font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+    .wt-voice-status.err { color: var(--danger); }
+    .wt-voice-status.ok { color: var(--success); }
+
+    .wt-incoming-call {
+      display: none; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
+      padding: var(--sp-3); background: linear-gradient(135deg, rgba(255,155,179,.15), rgba(199,125,255,.15));
+      border-bottom: 1px solid var(--border-strong); animation: fadeSlide 0.25s ease;
+    }
+    .wt-incoming-call.show { display: flex; }
+    .wt-incoming-call .ring-ico { font-size: 1.3rem; animation: ring 0.6s ease-in-out infinite; }
+    @keyframes ring { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-18deg); } 75% { transform: rotate(18deg); } }
+    .wt-incoming-call span.txt { flex: 1; font-size: 0.8rem; font-weight: 800; min-width: 120px; }
+
+    /* Talking ring around avatar/toggle when mic is live */
+    .wt-toggle-btn.talking { box-shadow: 0 0 0 5px rgba(126,231,135,.4), var(--glow); }
+
+    /* ===== Skeleton ===== */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(199,125,255,.05) 0%, rgba(199,125,255,.15) 50%, rgba(199,125,255,.05) 100%);
+      background-size: 200% 100%; animation: shimmer 1.4s infinite;
+      border-radius: var(--radius);
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .sk-card { aspect-ratio: 2/3; }
+    .sk-line { height: 12px; margin: var(--sp-1) 0; }
+
+    /* ===== Scrollbar ===== */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .card { padding: var(--sp-4); }
+      .profile { gap: var(--sp-3); }
+      .avatar-wrap { width: 110px; height: 110px; }
+      .bio-name { font-size: 1.5rem; }
+      .anime-info-box img { width: 100px; height: 150px; }
+      .tab-btn { min-width: 0; padding: var(--sp-2) var(--sp-3); font-size: 0.7rem; }
+      .gacha-card { width: 180px; }
+      .gacha-card img { height: 250px; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+<div id="vfx-bg" style="position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;"></div>
+
+<div class="fixed-top">
+  <button class="icon-btn" id="themeToggle" aria-label="Сменить тему">🌸</button>
+  <button class="icon-btn" id="animeModeBtn" aria-label="Аниме-режим">✨</button>
+</div>
+
+<div class="neko-wrap">
+  <div class="neko-corner" id="nekoCorner">
+    <img id="nekoImg" src="" alt="random neko" style="opacity:0;">
+  </div>
+  <div class="neko-tip">🐱 нажми для котика!</div>
+</div>
+
+<button class="wt-toggle-btn" id="wtToggleBtn" aria-label="Чат смотреть вместе">
+  💬<span class="badge" id="wtMsgBadge" style="display:none;">0</span>
+</button>
+
+<aside class="wt-side" id="wtSide" aria-label="Чат смотреть вместе">
+  <div class="wt-side-head">
+    <h3><span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--muted-2);"></span> <span id="wtSideTitle">Смотреть вместе</span></h3>
+    <div class="wt-quality" id="wtQuality" title="Качество соединения"><span class="q-dot"></span><span id="wtPingText">—</span></div>
+    <button class="wt-close" id="wtSideClose" aria-label="Закрыть">×</button>
+  </div>
+
+  <div class="wt-reconnect-banner" id="wtReconnectBanner">
+    <span class="spin-ico">🔄</span><span id="wtReconnectText">Переподключение...</span>
+  </div>
+
+  <div class="wt-incoming-call" id="wtIncomingCall">
+    <span class="ring-ico">📞</span>
+    <span class="txt">Друг зовёт в голосовой чат</span>
+    <button class="btn btn-success" id="wtAcceptCallBtn" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Принять</button>
+    <button class="btn btn-danger" id="wtDeclineCallBtn" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Отклонить</button>
+  </div>
+
+  <div class="wt-voice-bar" id="wtVoiceBar">
+    <button class="btn btn-outline voice-join-btn" id="wtVoiceJoinBtn">🎙️ Войти в голосовой чат</button>
+    <button class="voice-btn" id="wtMicBtn" style="display:none;" title="Микрофон вкл/выкл" aria-label="Микрофон">🎤</button>
+    <button class="voice-btn" id="wtDeafenBtn" style="display:none;" title="Звук вкл/выкл" aria-label="Звук">🔊</button>
+    <button class="voice-btn danger" id="wtHangupBtn" style="display:none;" title="Завершить звонок" aria-label="Завершить звонок">📞</button>
+    <div class="wt-voice-status" id="wtVoiceStatus"></div>
+  </div>
+
+  <div class="wt-side-body" id="wtChatBody"></div>
+  <div class="wt-side-foot">
+    <input type="text" id="wtChatInput" placeholder="Сообщение..." maxlength="500">
+    <button class="btn btn-primary" id="wtChatSend">➤</button>
+  </div>
+</aside>
+<audio id="wtRemoteAudio" autoplay playsinline></audio>
+
+<div class="page-wrap"><div class="container">
+  <div class="brand">
+    <span class="dot"></span>
+    <span>GOD_AE86</span>
+    <span class="dot"></span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-wrapper">
+    <div class="tablist" id="tablist" role="tablist">
+      <button class="tab-btn active" data-tab="bio" role="tab">🌸 Био</button>
+      <button class="tab-btn" data-tab="gallery" role="tab">🎴 Галерея</button>
+      <button class="tab-btn" data-tab="anime" role="tab">🎌 Аниме</button>
+      <button class="tab-btn" data-tab="gacha" role="tab">✨ Гача</button>
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <div class="tab-panel active" id="panel-bio">
+    <div class="card">
+      <div class="profile">
+        <div class="avatar-wrap">
+          <div class="avatar"><img id="avatarImg" src="" alt="GOD_AE86"></div>
+          <div class="avatar-ring"></div>
+          <div class="avatar-ring2"></div>
+        </div>
+        <div style="flex:1; min-width:240px;">
+          <div class="bio-name">GOD_AE86</div>
+          <div class="bio-handle">@resivert</div>
+          <div class="bio-tag">аниме-вайб ✦ тексты ✦ батлы ✦ совместный просмотр</div>
+          <div class="tag-row">
+            <span class="chip">🌸 аниме</span>
+            <span class="chip">🎤 батлы</span>
+            <span class="chip">🐾 неко</span>
+            <span class="chip">🎬 вместе</span>
+          </div>
+          <div class="quote-box">
+            <div class="q-text" id="quoteText">...</div>
+            <div class="q-foot">
+              <div class="q-src" id="quoteSrc"></div>
+              <button id="newQuoteBtn" class="btn btn-outline" style="padding:0.3rem 0.8rem; font-size:0.7rem;">🔄 новая</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="tab-panel" id="panel-gallery">
+    <div class="card">
+      <div class="player-header">
+        <h2>🎴 Арт Галерея</h2>
+        <div style="display:flex; gap:var(--sp-1); flex-wrap:wrap;" id="galCats">
+          <button class="btn btn-primary" data-cat="waifu">waifu</button>
+          <button class="btn btn-outline" data-cat="neko">neko</button>
+          <button class="btn btn-outline" data-cat="kitsune">kitsune</button>
+          <button class="btn btn-outline" data-cat="husbando">husbando</button>
+        </div>
+        <button class="btn btn-primary" id="reloadGalBtn">🔄 Обновить</button>
+      </div>
+      <div id="galleryGrid" class="gal-grid"></div>
+    </div>
+  </div>
+
+  <!-- ANIME PLAYER -->
+  <div class="tab-panel" id="panel-anime">
+    <div class="card">
+      <!-- CATALOG VIEW -->
+      <div id="animeCatalogView">
+        <div class="player-header">
+          <h2>🎌 Аниме-плеер</h2>
+        </div>
+        <form id="animeSearchForm" style="display:flex; gap:var(--sp-2); margin-bottom:var(--sp-4);">
+          <input type="search" id="animeSearch" placeholder="Поиск аниме (рус / англ)..." style="flex:1;" autocomplete="off">
+          <button type="submit" class="btn btn-primary">🔍 Поиск</button>
+        </form>
+        <div id="animeCatalogStatus" style="text-align:center; color:var(--muted); margin-bottom:var(--sp-4); font-weight:800;"></div>
+        <div id="animeResults" class="anime-grid"></div>
+      </div>
+
+      <!-- PLAYER VIEW -->
+      <div id="animePlayerView" style="display:none;">
+        <div class="player-header">
+          <button class="btn btn-outline" id="backToCatalogAnime">← В каталог</button>
+          <button class="btn btn-primary" id="wtOpenBtn">🎬 Смотреть вместе</button>
+        </div>
+
+        <div class="anime-info-box" id="animeInfoBox">
+          <img id="apPoster" src="">
+          <div style="flex:1; min-width:200px;">
+            <h2 id="apTitle" style="margin-bottom:var(--sp-1);"></h2>
+            <div id="apEngTitle" style="color:var(--muted); font-size:0.85rem; margin-bottom:var(--sp-3);"></div>
+            <div class="tag-row" id="apGenres" style="margin-bottom:var(--sp-3);"></div>
+            <div id="apDesc" style="font-size:0.84rem; line-height:1.55; max-height:100px; overflow-y:auto; padding-right:var(--sp-1);"></div>
+          </div>
+        </div>
+
+        <div id="animePlayerStatus" style="color:var(--muted); margin-bottom:var(--sp-3); font-weight:800;"></div>
+
+        <h3 id="episodesTitle" style="margin-bottom:var(--sp-2); display:none;">Серии:</h3>
+        <div id="animeEpisodes" class="ep-grid"></div>
+
+        <div id="videoContainer" class="video-container" style="display:none;">
+          <div class="video-overlay-top">
+            <div class="wt-badge" id="wtStatusBadge" style="display:none;">
+              <span class="dot"></span><span id="wtStatusText">WT</span>
+            </div>
+            <select id="videoQuality" class="wt-select">
+              <option value="hls_1080">1080p</option>
+              <option value="hls_720" selected>720p</option>
+              <option value="hls_480">480p</option>
+            </select>
+          </div>
+          <video id="hlsVideo" controls playsinline></video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GACHA -->
+  <div class="tab-panel" id="panel-gacha">
+    <div class="card">
+      <div class="gacha-head">
+        <div class="gacha-coins">
+          <span style="font-size:1.4rem;">🪙</span>
+          <span id="coinsCount">1000</span>
+          <span style="font-size:0.85rem; color:var(--muted);">монет</span>
+        </div>
+        <button class="btn btn-outline" id="dailyRewardBtn">+ Ежедневный бонус</button>
+      </div>
+
+      <div class="gacha-box">
+        <div id="gachaResultContainer" style="display:none; margin-bottom:var(--sp-4);"></div>
+        <button class="btn btn-primary" id="rollGachaBtn" style="padding:var(--sp-4) var(--sp-6); font-size:1.05rem; border-radius:30px; box-shadow:0 0 30px rgba(255,155,179,0.5);">
+          ✨ ПРИЗЫВ (100)
+        </button>
+      </div>
+
+      <h3 style="margin-top:var(--sp-5); margin-bottom:var(--sp-2); color:var(--muted); font-size:0.92rem;">🎒 Инвентарь:</h3>
+      <div class="inventory" id="gachaInventory"></div>
+    </div>
+  </div>
+
+</div></div>
+
+<!-- ===== Watch Together Modal ===== -->
+<div class="wt-overlay" id="wtOverlay">
+  <div class="wt-modal" role="dialog" aria-label="Смотреть вместе">
+    <div class="wt-modal-head">
+      <h3>🎬 Смотреть вместе</h3>
+      <button class="wt-close" id="wtCloseBtn" aria-label="Закрыть">×</button>
+    </div>
+    <div class="wt-modal-body">
+      <div class="wt-tabs" id="wtTabs">
+        <button class="wt-tab active" data-mode="host">🏠 Создать комнату</button>
+        <button class="wt-tab" data-mode="guest">🔗 Присоединиться</button>
+      </div>
+
+      <!-- HOST pane -->
+      <div class="wt-pane active" id="wtPaneHost">
+        <div class="wt-info-row">
+          <b>1.</b> Жми «Создать комнату» → <b>2.</b> отправь ссылку другу → <b>3.</b> смотрите и обсуждайте вместе — видео, серии, чат и <b>голосовой чат</b> синхронизируются автоматически.
+        </div>
+        <button class="btn btn-primary" id="wtCreateBtn" style="padding:var(--sp-3);">🚀 Создать комнату</button>
+        <div class="wt-status err" id="wtHostError" style="display:none;"></div>
+        <div id="wtHostResult" style="display:none; flex-direction:column; gap:var(--sp-3);">
+          <div class="wt-status ok" id="wtHostStatus">
+            <span>✅</span><span>Комната создана! Ждём друга...</span>
+          </div>
+          <div>
+            <label>Ссылка для друга</label>
+            <div class="wt-link-box">
+              <code id="wtShareLink">—</code>
+              <button class="btn btn-outline" id="wtShareBtn" style="padding:var(--sp-2) var(--sp-3); display:none;" title="Поделиться">📤</button>
+              <button class="btn btn-outline" id="wtCopyBtn" style="padding:var(--sp-2) var(--sp-3);" title="Скопировать">📋</button>
+            </div>
+          </div>
+          <div>
+            <label>ID комнаты</label>
+            <div class="wt-link-box">
+              <code id="wtShareId">—</code>
+            </div>
+          </div>
+          <button class="btn btn-danger" id="wtDisconnectBtn" style="padding:var(--sp-3);">🔴 Закрыть комнату</button>
+        </div>
+      </div>
+
+      <!-- GUEST pane -->
+      <div class="wt-pane" id="wtPaneGuest">
+        <div class="wt-info-row">
+          Вставь ссылку от друга или введи ID комнаты, чтобы присоединиться к просмотру. Внутри также будет доступен <b>голосовой чат</b>.
+        </div>
+        <div>
+          <label>Ссылка или ID комнаты</label>
+          <input type="text" id="wtJoinInput" placeholder="https://... или ID">
+        </div>
+        <button class="btn btn-primary" id="wtJoinBtn" style="padding:var(--sp-3);">🔗 Присоединиться</button>
+        <div id="wtGuestStatus" style="display:none;"></div>
+        <button class="btn btn-danger" id="wtGuestDisconnectBtn" style="display:none; padding:var(--sp-3);">🔴 Выйти из комнаты</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ============================================
+//  Core State & Utilities
+// ============================================
+const $ = (id) => document.getElementById(id);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+const state = {
+  theme: localStorage.getItem('theme') || 'dark',
+  animeMode: false,
+  coins: parseInt(localStorage.getItem('coins')) || 1000,
+  inventory: JSON.parse(localStorage.getItem('inventory') || '[]'),
+  wtMode: 'host'  // 'host' | 'guest'
+};
+
+// Debounce helper
+function debounce(fn, ms = 300) {
+  let t;
+  return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+}
+
+// ============================================
+//  Theme & VFX
+// ============================================
+const html = document.documentElement;
+html.setAttribute('data-theme', state.theme);
+$('themeToggle').textContent = state.theme === 'dark' ? '🌸' : '🌙';
+$('themeToggle').addEventListener('click', () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', state.theme);
+  localStorage.setItem('theme', state.theme);
+  $('themeToggle').textContent = state.theme === 'dark' ? '🌸' : '🌙';
+});
+
+const vfx = $('vfx-bg');
+function renderVFX() {
+  vfx.innerHTML = '';
+  const count = state.animeMode ? 32 : 18;
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    const size = state.animeMode ? 2 + Math.random() * 6 : 8 + Math.random() * 12;
+    el.className = state.animeMode ? 'star-vfx' : 'petal';
+    el.style.left = `${Math.random() * 100}vw`;
+    el.style.width = `${size}px`;
+    el.style.height = state.animeMode ? `${size}px` : `${size + 4}px`;
+    el.style.animationDuration = `${(state.animeMode ? 3 : 6) + Math.random() * (state.animeMode ? 8 : 12)}s`;
+    el.style.animationDelay = `${Math.random() * 5}s`;
+    frag.appendChild(el);
+  }
+  vfx.appendChild(frag);
+}
+$('animeModeBtn').addEventListener('click', () => {
+  state.animeMode = !state.animeMode;
+  html.setAttribute('data-anime', state.animeMode ? 'on' : 'off');
+  $('animeModeBtn').textContent = state.animeMode ? '💫' : '✨';
+  renderVFX();
+});
+renderVFX();
+
+// ============================================
+//  Tabs
+// ============================================
+$$('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('.tab-btn').forEach(b => b.classList.remove('active'));
+    $$('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    $('panel-' + btn.dataset.tab).classList.add('active');
+    const tab = btn.dataset.tab;
+    if (tab === 'anime' && !window.animeLoaded) { fetchTopAnime(); window.animeLoaded = true; }
+    if (tab === 'gallery' && !window.galleryLoaded) { fetchGallery('waifu'); window.galleryLoaded = true; }
+    if (tab === 'gacha' && !window.gachaLoaded) { renderInventory(); updateCoins(); window.gachaLoaded = true; }
+  });
+});
+
+// ============================================
+//  Image fallback helper (несколько источников на случай CORS/недоступности)
+// ============================================
+async function fetchFirstWorking(sources) {
+  for (const src of sources) {
+    try {
+      const res = await fetch(src.url, { cache: 'no-store' });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const url = src.extract(data);
+      if (url) return url;
+    } catch (e) { /* пробуем следующий источник */ }
+  }
+  return null;
+}
+function preloadImg(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+// ============================================
+//  Neko Corner
+// ============================================
+const nekoImg = $('nekoImg');
+const nekoCorner = $('nekoCorner');
+let nekoCache = null;
+const NEKO_SOURCES = [
+  { url: 'https://api.thecatapi.com/v1/images/search', extract: d => d[0]?.url }
+];
+async function fetchNeko() {
+  nekoCorner.classList.remove('is-fallback');
+  nekoCorner.classList.add('is-loading');
+  try {
+    const url = await fetchFirstWorking(NEKO_SOURCES);
+    if (!url) throw new Error('no source');
+    await preloadImg(url);
+    nekoCache = url;
+    nekoImg.src = url;
+    nekoCorner.classList.remove('is-loading');
+  } catch (e) {
+    nekoCorner.classList.remove('is-loading');
+    nekoCorner.classList.add('is-fallback');
+  }
+}
+$('nekoCorner').addEventListener('click', fetchNeko);
+fetchNeko();
+
+// ============================================
+//  Bio / Avatar
+// ============================================
+const avatarEl = $('avatarImg').closest('.avatar');
+const AVATAR_SOURCES = [
+  { url: 'https://api.waifu.im/images?IncludedTags=waifu', extract: d => d.items?.[0]?.url },
+  { url: 'https://nekos.best/api/v2/waifu', extract: d => d.results?.[0]?.url }
+];
+async function fetchAvatar() {
+  avatarEl.classList.remove('is-fallback');
+  avatarEl.classList.add('is-loading');
+  try {
+    const url = await fetchFirstWorking(AVATAR_SOURCES);
+    if (!url) throw new Error('no source');
+    await preloadImg(url);
+    $('avatarImg').src = url;
+    avatarEl.classList.remove('is-loading');
+  } catch (e) {
+    avatarEl.classList.remove('is-loading');
+    avatarEl.classList.add('is-fallback');
+  }
+}
+avatarEl.title = 'Нажми, чтобы сменить';
+avatarEl.addEventListener('click', fetchAvatar);
+fetchAvatar();
+
+const quotes = [
+  { q: 'Если не веришь в себя, то и не стоит начинать.', c: 'Макака', a: 'Доктор Стоун' },
+  { q: 'Настоящая сила — в умении защищать.', c: 'Аска', a: 'Евангелион' },
+  { q: 'Неважно, сколько у тебя таланта. Главное — желание.', c: 'Мидория', a: 'Моя геройская академия' },
+  { q: 'Даже в самой глубокой тьме можно найти свет.', c: 'Тандзиро', a: 'Клинок, рассекающий демонов' },
+  { q: 'Не важно, как медленно ты идёшь, главное — не останавливайся.', c: 'Рин', a: 'Blue Exorcist' },
+  { q: 'Сильнейший не тот, кто никогда не падает, а тот, кто поднимается.', c: 'Гон', a: 'Hunter x Hunter' }
+];
+function updateQuote() {
+  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  $('quoteText').textContent = `"${q.q}"`;
+  $('quoteSrc').textContent = `— ${q.c} · ${q.a}`;
+}
+updateQuote();
+$('newQuoteBtn').addEventListener('click', updateQuote);
+
+// ============================================
+//  Gallery
+// ============================================
+let currentGalCat = 'waifu';
+async function fetchGallery(cat) {
+  currentGalCat = cat;
+  const grid = $('galleryGrid');
+  $$('#galCats button').forEach(b => {
+    b.className = b.dataset.cat === cat ? 'btn btn-primary' : 'btn btn-outline';
+  });
+
+  // skeletons
+  grid.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement('div');
+    s.className = 'skeleton';
+    s.style.aspectRatio = '1';
+    grid.appendChild(s);
+  }
+
+  try {
+    const res = await fetch(`https://nekos.best/api/v2/${cat}?amount=8`);
+    const data = await res.json();
+    grid.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    if (data.results) {
+      data.results.forEach(img => {
+        const d = document.createElement('div');
+        d.className = 'gal-item';
+        const cap = img.artist_name ? `Автор: ${img.artist_name}` : cat;
+        d.innerHTML = `
+          <img src="${img.url}" loading="lazy" alt="${cap}">
+          <div class="gal-cap">${cap}</div>`;
+        frag.appendChild(d);
+      });
+    }
+    grid.appendChild(frag);
+  } catch (e) {
+    grid.innerHTML = '<div style="color:var(--danger); grid-column:1/-1; text-align:center; padding:var(--sp-5);">Ошибка получения артов</div>';
+  }
+}
+$$('#galCats button').forEach(b => b.addEventListener('click', () => fetchGallery(b.dataset.cat)));
+$('reloadGalBtn').addEventListener('click', () => fetchGallery(currentGalCat));
+
+// ============================================
+//  Anime Player (AniLibria)
+// ============================================
+const API_BASE = 'https://anilibria.top/api/v1';
+let currentHlsInstance = null;
+let apCurrentEps = [];
+let apCurrentEpIndex = -1;
+let apCurrentQuality = 'hls_720';
+let apCurrentReleaseData = null;
+let apFranchisesData = [];
+let apSuppressSync = false; // avoid feedback loops when WT applies remote state
+
+async function fetchTopAnime() {
+  $('animeCatalogStatus').textContent = 'Загрузка последних релизов...';
+  $('animeResults').innerHTML = '';
+  // skeletons
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.className = 'skeleton sk-card';
+    $('animeResults').appendChild(s);
+  }
+  try {
+    const res = await fetch(API_BASE + '/anime/releases/latest');
+    const data = await res.json();
+    $('animeResults').innerHTML = '';
+    renderAnimeCards(data || []);
+  } catch (e) {
+    $('animeResults').innerHTML = '<div style="color:var(--danger); grid-column:1/-1; text-align:center;">Ошибка загрузки</div>';
+  }
+  $('animeCatalogStatus').textContent = '';
+}
+
+const debouncedSearch = debounce(async (q) => {
+  if (!q) return fetchTopAnime();
+  $('animeCatalogStatus').textContent = `Поиск: ${q}`;
+  $('animeResults').innerHTML = '';
+  try {
+    const res = await fetch(API_BASE + `/app/search/releases?query=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    renderAnimeCards(data || []);
+    $('animeCatalogStatus').textContent = (!data || data.length === 0) ? 'По запросу ничего не найдено' : '';
+  } catch (e) {
+    $('animeCatalogStatus').textContent = 'Ошибка поиска';
+  }
+}, 450);
+
+$('animeSearchForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  debouncedSearch($('animeSearch').value.trim());
+});
+
+function renderAnimeCards(list) {
+  const container = $('animeResults');
+  const frag = document.createDocumentFragment();
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'anime-card';
+    const title = item.name?.main || item.name?.english || item.alias || 'Без названия';
+    const year = item.year || 'TBA';
+    const type = item.type?.description || item.type?.value || 'OVA';
+    const posterUrl = item.poster?.optimized?.src || item.poster?.src || item.poster?.optimized?.thumbnail || item.poster?.thumbnail || '';
+    const imgUrl = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
+    card.innerHTML = `
+      <div class="poster"><img src="${imgUrl}" loading="lazy" alt="${title}" onerror="this.style.opacity=0.2"></div>
+      <div class="info">
+        <div class="title" title="${title}">${title}</div>
+        <div class="meta">${year} • ${type}</div>
+      </div>`;
+    card.addEventListener('click', () => openAnimePlayer(item));
+    frag.appendChild(card);
+  });
+  container.appendChild(frag);
+}
+
+async function openAnimePlayer(anime) {
+  $('animeCatalogView').style.display = 'none';
+  $('animePlayerView').style.display = 'block';
+  const status = $('animePlayerStatus');
+  $('animeEpisodes').innerHTML = '';
+  $('episodesTitle').style.display = 'none';
+  $('videoContainer').style.display = 'none';
+  status.textContent = 'Загрузка информации...';
+
+  $('apTitle').textContent = anime.name?.main || anime.alias || 'Без названия';
+  $('apEngTitle').textContent = anime.name?.english || '';
+  $('apDesc').textContent = anime.description || 'Описание отсутствует.';
+  const posterUrl = anime.poster?.optimized?.src || anime.poster?.src || '';
+  const imgUrl = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
+  $('apPoster').src = imgUrl;
+  $('apPoster').onerror = function() { this.style.opacity = 0.2; };
+  $('apGenres').innerHTML = '';
+
+  if (currentHlsInstance) { currentHlsInstance.destroy(); currentHlsInstance = null; }
+  const v = $('hlsVideo');
+  v.pause();
+  v.removeAttribute('src');
+
+  // Reset WT state when switching release
+  if (window.WT && WT.connected) {
+    WT.send({ type: 'release', data: { id: anime.id, name: anime.name } });
+  }
+
+  try {
+    const res = await fetch(API_BASE + `/anime/releases/${anime.id}`);
+    const data = await res.json();
+    apCurrentReleaseData = data;
+
+    apFranchisesData = [];
+    fetch(API_BASE + `/anime/franchises/release/${anime.id}`)
+      .then(r => r.json())
+      .then(d => {
+        if (d && d.length > 0 && d[0].franchise_releases) {
+          apFranchisesData = d[0].franchise_releases.sort((a, b) => a.sort_order - b.sort_order);
+        }
+      }).catch(() => {});
+
+    status.textContent = '';
+
+    const genresWrap = $('apGenres');
+    if (data.genres) {
+      data.genres.forEach(g => {
+        const p = document.createElement('span');
+        p.className = 'chip';
+        p.textContent = g.name;
+        genresWrap.appendChild(p);
+      });
+    }
+
+    apCurrentEps = (data.episodes || []).slice().sort((a, b) => Number(a.ordinal) - Number(b.ordinal));
+    if (apCurrentEps.length === 0) {
+      status.textContent = 'Список серий пуст.';
+      return;
+    }
+
+    $('episodesTitle').style.display = 'block';
+    const epsDiv = $('animeEpisodes');
+    const frag = document.createDocumentFragment();
+    apCurrentEps.forEach((ep, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-outline ep-btn';
+      btn.dataset.idx = idx;
+      btn.textContent = `${ep.ordinal} эп`;
+      btn.addEventListener('click', () => {
+        playEpisodeIndex(idx);
+        if (window.WT && WT.connected) WT.send({ type: 'episode', idx });
+      });
+      frag.appendChild(btn);
+    });
+    epsDiv.appendChild(frag);
+  } catch (e) {
+    status.textContent = 'Ошибка загрузки плеера.';
+  }
+}
+
+$('videoQuality').addEventListener('change', (e) => {
+  apCurrentQuality = e.target.value;
+  if (apCurrentEpIndex >= 0) {
+    const v = $('hlsVideo');
+    const ct = v.currentTime;
+    const wasPlaying = !v.paused;
+    playEpisodeIndex(apCurrentEpIndex, ct, wasPlaying);
+  }
+});
+
+function playEpisodeIndex(idx, startTime = 0, autoPlay = true) {
+  if (idx < 0 || idx >= apCurrentEps.length) return;
+  apCurrentEpIndex = idx;
+  const ep = apCurrentEps[idx];
+
+  $$('.ep-btn').forEach(b => {
+    b.classList.toggle('active', Number(b.dataset.idx) === idx);
+  });
+
+  let url = ep[apCurrentQuality] || ep['hls_720'] || ep['hls_480'] || ep['hls_1080'];
+  if (!url) return;
+  if (!url.startsWith('http')) url = 'https://cache.libria.fun' + url;
+  playVideo(url, startTime, autoPlay);
+}
+
+$('backToCatalogAnime').addEventListener('click', () => {
+  $('animeCatalogView').style.display = 'block';
+  $('animePlayerView').style.display = 'none';
+  if (currentHlsInstance) { currentHlsInstance.destroy(); currentHlsInstance = null; }
+  $('hlsVideo').pause();
+});
+
+$('hlsVideo').addEventListener('ended', async () => {
+  if (apCurrentEpIndex >= 0 && apCurrentEpIndex < apCurrentEps.length - 1) {
+    const nextIdx = apCurrentEpIndex + 1;
+    playEpisodeIndex(nextIdx);
+    if (window.WT && WT.connected) WT.send({ type: 'episode', idx: nextIdx });
+  } else if (apCurrentEpIndex === apCurrentEps.length - 1 && apFranchisesData.length > 0 && apCurrentReleaseData) {
+    const currFrIdx = apFranchisesData.findIndex(f => f.release_id === apCurrentReleaseData.id);
+    if (currFrIdx >= 0 && currFrIdx < apFranchisesData.length - 1) {
+      const nextRel = apFranchisesData[currFrIdx + 1];
+      if (nextRel && nextRel.release) {
+        $('animePlayerStatus').textContent = 'Переход к следующему сезону...';
+        await openAnimePlayer(nextRel.release);
+        setTimeout(() => { if (apCurrentEps.length > 0) playEpisodeIndex(0); }, 800);
+      }
+    }
+  }
+});
+
+function playVideo(url, startTime = 0, autoPlay = true) {
+  const cont = $('videoContainer');
+  const video = $('hlsVideo');
+  cont.style.display = 'block';
+  video.pause();
+
+  if (currentHlsInstance) { currentHlsInstance.destroy(); }
+
+  if (Hls.isSupported()) {
+    currentHlsInstance = new Hls({ maxBufferLength: 30, liveSyncDuration: 4 });
+    currentHlsInstance.loadSource(url);
+    currentHlsInstance.attachMedia(video);
+    currentHlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+      if (startTime > 0) video.currentTime = startTime;
+      if (autoPlay) video.play().catch(() => {});
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    if (startTime > 0) {
+      video.addEventListener('loadedmetadata', function onLoaded() {
+        video.currentTime = startTime;
+        video.removeEventListener('loadedmetadata', onLoaded);
+      });
+    }
+    if (autoPlay) video.play().catch(() => {});
+  }
+  cont.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Local playback listeners → broadcast to peer (host → guest sync)
+(function attachPlayerSyncListeners() {
+  const v = $('hlsVideo');
+  let lastBroadcast = 0;
+  v.addEventListener('play', () => {
+    if (apSuppressSync) return;
+    if (window.WT && WT.connected) WT.send({ type: 'play', t: v.currentTime });
+  });
+  v.addEventListener('pause', () => {
+    if (apSuppressSync) return;
+    if (window.WT && WT.connected) WT.send({ type: 'pause', t: v.currentTime });
+  });
+  v.addEventListener('seeked', () => {
+    if (apSuppressSync) return;
+    if (window.WT && WT.connected) WT.send({ type: 'seek', t: v.currentTime });
+  });
+  // time-sync heartbeat every 5s to keep drift low
+  setInterval(() => {
+    if (apSuppressSync) return;
+    if (window.WT && WT.connected && !v.paused) {
+      const now = Date.now();
+      if (now - lastBroadcast > 5000) {
+        WT.send({ type: 'time', t: v.currentTime });
+        lastBroadcast = now;
+      }
+    }
+  }, 5000);
+})();
+
+// ============================================
+//  Watch Together (Trystero) + Голосовой чат
+// ============================================
+// Публичные сети (Nostr, BitTorrent-трекеры, MQTT-брокеры) у пользователя
+// не проходили ни на одной сети/браузере — поэтому здесь используется
+// СВОЙ собственный relay-сервер (см. /relay-server в проекте),
+// задеплоенный на SnapDeploy.
+// Свой набор STUN/TURN задаём полностью сами (rtcConfig).
+const TRYSTERO_APP_ID = 'god-ae86-anime-watch-together-v1';
+
+// ⚠️ ВСТАВИТЬ СЮДА адрес своего relay-сервера после деплоя на Render,
+// в виде wss://... (не https://!), например:
+// 'wss://watch-together-relay-xxxx.onrender.com'
+const RELAY_SERVER_URL = 'wss://salo-1920d.containers.snapdeploy.app';
+
+const RTC_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    {
+      urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'],
+      username: 'openrelayproject', credential: 'openrelayproject'
+    }
+  ]
+};
+
+let _trysteroMod = null;
+async function loadTrystero() {
+  if (!_trysteroMod) _trysteroMod = await import('https://esm.run/@trystero-p2p/ws-relay');
+  return _trysteroMod;
+}
+
+function genRoomCode() {
+  return 'ae86-' + Math.random().toString(36).slice(2, 8);
+}
+
+// Простой измеритель громкости потока (для индикации "говорит сейчас")
+function attachVoiceMeter(stream, onLevel) {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.6;
+    src.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    let raf, stopped = false;
+    (function tick() {
+      if (stopped) return;
+      analyser.getByteFrequencyData(data);
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) sum += data[i];
+      onLevel(sum / data.length);
+      raf = requestAnimationFrame(tick);
+    })();
+    return () => { stopped = true; cancelAnimationFrame(raf); try { ctx.close(); } catch (e) {} };
+  } catch (e) { return () => {}; }
+}
+
+const WT = {
+  room: null,
+  syncAction: null,
+  roomId: null,
+  peerId: null,        // id друга внутри комнаты
+  role: null,           // 'host' | 'guest' — только для текста сообщений
+  connected: false,
+  unread: 0,
+  pingTimer: null,
+
+  async _connect(roomId, role, onFirstConnect) {
+    this.cleanup();
+    this.role = role;
+    this.roomId = roomId;
+    let firstFired = false;
+
+    const { joinRoom } = await loadTrystero();
+    this.room = joinRoom({ appId: TRYSTERO_APP_ID, rtcConfig: RTC_CONFIG, relayConfig: { urls: [RELAY_SERVER_URL] } }, roomId);
+    this.syncAction = this.room.makeAction('sync');
+    this.syncAction.onMessage = (msg) => this.onData(msg);
+
+    this.room.onPeerJoin = (peerId) => {
+      const isReconnect = this.connected;
+      this.peerId = peerId;
+      this.connected = true;
+      $('wtStatusBadge').style.display = '';
+      $('wtStatusBadge').classList.add('live');
+      $('wtStatusText').textContent = 'LIVE';
+      WT.addSysMsg(isReconnect ? 'Друг переподключился ✅' : (role === 'host' ? 'Друг присоединился к комнате! 🎉' : 'Подключено к комнате! 🎬'));
+      WT.showSide();
+      WT.updateBadge(true);
+      WT.hideReconnectBanner();
+      WT._startPing();
+
+      if (role === 'host') {
+        const v = $('hlsVideo');
+        setTimeout(() => {
+          this.send({
+            type: 'state',
+            epIdx: apCurrentEpIndex,
+            t: v.currentTime || 0,
+            paused: v.paused,
+            release: apCurrentReleaseData ? { id: apCurrentReleaseData.id } : null
+          });
+        }, 600);
+      }
+
+      if (!firstFired && onFirstConnect) { firstFired = true; onFirstConnect(); }
+    };
+
+    this.room.onPeerLeave = (peerId) => {
+      if (peerId !== this.peerId) return;
+      this.connected = false;
+      this._stopPing();
+      $('wtStatusBadge').classList.remove('live');
+      $('wtStatusBadge').style.display = 'none';
+      WT.setQuality(null);
+      WT.voice.stop(true);
+      WT.addSysMsg('⚠️ Друг отключился.');
+      WT.showReconnectBanner('Ждём, когда друг снова будет на связи...');
+    };
+
+    this.room.onPeerStream = (stream) => WT.voice._onStream(stream);
+  },
+
+  async createRoom() {
+    const code = genRoomCode();
+    await this._connect(code, 'host');
+    return code;
+  },
+
+  join(roomId) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const timeout = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        reject(new Error('комната не отвечает 15 секунд — проверь код или соединение'));
+      }, 15000);
+
+      this._connect(roomId, 'guest', () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        resolve();
+      }).catch((e) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        reject(e);
+      });
+    });
+  },
+
+  // ---- Пинг для индикатора качества связи (встроенный в Trystero) ----
+  _startPing() {
+    this._stopPing();
+    this.pingTimer = setInterval(async () => {
+      if (!this.connected || !this.peerId || !this.room) return;
+      try {
+        const ms = await this.room.ping(this.peerId);
+        WT.setQuality(Math.round(ms));
+      } catch (e) { WT.setQuality('bad'); }
+    }, 4000);
+  },
+  _stopPing() { clearInterval(this.pingTimer); },
+
+  setQuality(rttOrState) {
+    const el = $('wtQuality'), txt = $('wtPingText');
+    if (rttOrState === null) { el.className = 'wt-quality'; txt.textContent = '—'; return; }
+    if (rttOrState === 'bad') { el.className = 'wt-quality bad'; txt.textContent = 'нет ответа'; return; }
+    txt.textContent = `${rttOrState} мс`;
+    el.className = 'wt-quality ' + (rttOrState < 150 ? 'good' : rttOrState < 400 ? 'ok' : 'bad');
+  },
+
+  send(msg) {
+    if (this.syncAction && this.connected) {
+      try { this.syncAction.send(msg); } catch (e) {}
+    }
+  },
+
+  onData(msg) {
+    if (!msg || typeof msg !== 'object') return;
+
+    if (msg.type === 'voice_request') { WT.voice.onIncomingRequest(); return; }
+    if (msg.type === 'voice_accept') { WT.voice.onAccepted(); return; }
+    if (msg.type === 'voice_declined') { WT.voice.onDeclined(); return; }
+    if (msg.type === 'voice_cancel') { WT.voice.onCancelled(); return; }
+    if (msg.type === 'voice_hangup') { WT.voice.onRemoteHangup(); return; }
+
+    const v = $('hlsVideo');
+    apSuppressSync = true;
+    setTimeout(() => { apSuppressSync = false; }, 800);
+
+    switch (msg.type) {
+      case 'play':
+        if (Math.abs(v.currentTime - msg.t) > 1) v.currentTime = msg.t;
+        v.play().catch(() => {});
+        WT.addSysMsg('▶ друг запустил воспроизведение');
+        break;
+      case 'pause':
+        if (Math.abs(v.currentTime - msg.t) > 1) v.currentTime = msg.t;
+        v.pause();
+        WT.addSysMsg('⏸ друг поставил паузу');
+        break;
+      case 'seek':
+        v.currentTime = msg.t;
+        WT.addSysMsg(`⏩ друг перемотал на ${Math.floor(msg.t / 60)}:${String(Math.floor(msg.t % 60)).padStart(2, '0')}`);
+        break;
+      case 'time':
+        if (!v.paused && Math.abs(v.currentTime - msg.t) > 2.5) v.currentTime = msg.t;
+        break;
+      case 'episode':
+        if (typeof msg.idx === 'number') {
+          playEpisodeIndex(msg.idx, 0, true);
+          WT.addSysMsg(`🎬 друг выбрал серию ${apCurrentEps[msg.idx]?.ordinal || (msg.idx + 1)}`);
+        }
+        break;
+      case 'release':
+        // guest should open same release (best-effort: search by id via API)
+        if (msg.data && msg.data.id) {
+          WT.addSysMsg('🔄 друг сменил тайтл. Открываю...');
+          openAnimePlayer({ id: msg.data.id, name: msg.data.name || {}, poster: {} });
+        }
+        break;
+      case 'state':
+        // initial state for guest
+        if (typeof msg.epIdx === 'number' && msg.epIdx >= 0) {
+          playEpisodeIndex(msg.epIdx, msg.t || 0, !msg.paused);
+        }
+        break;
+      case 'chat':
+        WT.addMsg(msg.text, 'them', msg.from || 'Друг');
+        break;
+    }
+  },
+
+  cleanup() {
+    this._stopPing();
+    this.voice.stop(true);
+    try { if (this.room) this.room.leave(); } catch (e) {}
+    this.room = null;
+    this.syncAction = null;
+    this.connected = false;
+    this.role = null;
+    this.peerId = null;
+    this.roomId = null;
+    WT.setQuality(null);
+    WT.hideReconnectBanner();
+  },
+
+  showReconnectBanner(text) {
+    const b = $('wtReconnectBanner');
+    b.classList.add('show');
+    $('wtReconnectText').textContent = text;
+  },
+  hideReconnectBanner() { $('wtReconnectBanner').classList.remove('show'); },
+
+  // chat helpers
+  addSysMsg(text) {
+    const body = $('wtChatBody');
+    const d = document.createElement('div');
+    d.className = 'wt-msg sys';
+    d.textContent = text;
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+  },
+  addMsg(text, who, name = '') {
+    const body = $('wtChatBody');
+    const d = document.createElement('div');
+    d.className = `wt-msg ${who}`;
+    d.innerHTML = (name ? `<span class="who">${escapeHtml(name)}</span>` : '') + escapeHtml(text);
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+    if (who === 'them' && !$('wtSide').classList.contains('open')) {
+      this.unread++;
+      const b = $('wtMsgBadge');
+      b.textContent = this.unread;
+      b.style.display = '';
+    }
+  },
+  showSide() { $('wtToggleBtn').classList.add('show'); },
+  updateBadge(connected) {
+    const dot = $('wtSideTitle').previousElementSibling;
+    if (connected) {
+      dot.style.background = 'var(--success)';
+      $('wtStatusBadge').classList.add('live');
+      $('wtStatusBadge').style.display = '';
+      $('wtStatusText').textContent = 'LIVE';
+    } else {
+      dot.style.background = 'var(--muted-2)';
+      $('wtStatusBadge').classList.remove('live');
+      $('wtStatusBadge').style.display = 'none';
+    }
+  },
+
+  // ============================================
+  //  Голосовой чат (аудио-поток через Trystero room)
+  // ============================================
+  voice: {
+    localStream: null,
+    active: false,
+    muted: false,
+    deafened: false,
+    awaitingAccept: false,  // мы звоним, ждём ответа
+    pendingRequest: false,  // нам звонят, ждём решения
+    stopMeterLocal: null,
+    stopMeterRemote: null,
+    talkTimeoutLocal: null,
+    talkTimeoutRemote: null,
+    ringTimer: null,
+    pendingTimer: null,
+    callTimerInterval: null,
+    callStartTime: null,
+    RING_TIMEOUT_MS: 30000,
+
+    start() {
+      if (!WT.connected) { WT.addSysMsg('Нет подключения к комнате.'); return; }
+      if (this.active || this.awaitingAccept) return;
+      this.awaitingAccept = true;
+      $('wtVoiceJoinBtn').disabled = true;
+      $('wtVoiceJoinBtn').textContent = '📞 Вызываем...';
+      this.setStatus('📞 Вызываем друга...', '');
+      WT.send({ type: 'voice_request' });
+      clearTimeout(this.ringTimer);
+      this.ringTimer = setTimeout(() => {
+        if (!this.awaitingAccept) return;
+        this.awaitingAccept = false;
+        WT.send({ type: 'voice_cancel' });
+        this.setStatus('Друг не отвечает', 'err');
+        this._updateButtons();
+      }, this.RING_TIMEOUT_MS);
+    },
+
+    onIncomingRequest() {
+      if (this.active) { WT.send({ type: 'voice_declined' }); return; }
+      if (this.awaitingAccept) {
+        // оба одновременно позвонили друг другу — считаем это взаимным согласием
+        clearTimeout(this.ringTimer);
+        this.awaitingAccept = false;
+        this.pendingRequest = true;
+        this.accept();
+        return;
+      }
+      if (this.pendingRequest) { WT.send({ type: 'voice_declined' }); return; }
+      this.pendingRequest = true;
+      $('wtIncomingCall').classList.add('show');
+      WT.showSide();
+      this._updateButtons();
+      clearTimeout(this.pendingTimer);
+      this.pendingTimer = setTimeout(() => {
+        if (!this.pendingRequest) return;
+        this.decline();
+      }, this.RING_TIMEOUT_MS);
+    },
+    _resetIncoming() {
+      clearTimeout(this.pendingTimer);
+      $('wtIncomingCall').classList.remove('show');
+      this.pendingRequest = false;
+      this._updateButtons();
+    },
+
+    async accept() {
+      if (!this.pendingRequest) return;
+      this._resetIncoming();
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.setStatus('Микрофон недоступен (нужен HTTPS)', 'err');
+        WT.send({ type: 'voice_declined' });
+        return;
+      }
+      this.setStatus('Запрашиваем доступ к микрофону...', '');
+      try {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+      } catch (e) {
+        this.setStatus('Доступ к микрофону отклонён — разреши его в настройках сайта', 'err');
+        WT.send({ type: 'voice_declined' });
+        return;
+      }
+      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, { target: WT.peerId });
+      this.stopMeterLocal = attachVoiceMeter(this.localStream, (lvl) => this._onLevel(lvl, true));
+      this._markActive();
+      WT.send({ type: 'voice_accept' });
+    },
+
+    decline() {
+      this._resetIncoming();
+      WT.send({ type: 'voice_declined' });
+    },
+
+    async onAccepted() {
+      if (!this.awaitingAccept) return;
+      clearTimeout(this.ringTimer);
+      this.awaitingAccept = false;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.setStatus('Микрофон недоступен (нужен HTTPS)', 'err');
+        this._updateButtons();
+        return;
+      }
+      this.setStatus('Запрашиваем доступ к микрофону...', '');
+      try {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+      } catch (e) {
+        this.setStatus('Доступ к микрофону отклонён — разреши его в настройках сайта', 'err');
+        this._updateButtons();
+        return;
+      }
+      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, { target: WT.peerId });
+      this.stopMeterLocal = attachVoiceMeter(this.localStream, (lvl) => this._onLevel(lvl, true));
+      this._markActive();
+    },
+
+    onDeclined() {
+      clearTimeout(this.ringTimer);
+      this.awaitingAccept = false;
+      WT.addSysMsg('📞 Друг отклонил звонок.');
+      this.setStatus('', '');
+      this._updateButtons();
+    },
+
+    onCancelled() {
+      if (!this.pendingRequest) return;
+      this._resetIncoming();
+      WT.addSysMsg('📞 Друг отменил вызов.');
+    },
+
+    _onStream(stream) {
+      const audio = $('wtRemoteAudio');
+      audio.srcObject = stream;
+      audio.muted = this.deafened;
+      audio.play().catch(() => {});
+      this.stopMeterRemote = attachVoiceMeter(stream, (lvl) => this._onLevel(lvl, false));
+      this._markActive();
+    },
+
+    // Помечает звонок активным ровно один раз, откуда бы событие ни пришло
+    // (свой addStream, чужой stream, взаимный вызов) — и запускает таймер длительности.
+    _markActive() {
+      if (this.active) return;
+      this.active = true;
+      this._updateButtons();
+      this._startCallTimer();
+    },
+
+    _startCallTimer() {
+      this.callStartTime = Date.now();
+      const tick = () => {
+        const sec = Math.floor((Date.now() - this.callStartTime) / 1000);
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        this.setStatus(`🎙️ ${m}:${s}`, 'ok');
+      };
+      tick();
+      clearInterval(this.callTimerInterval);
+      this.callTimerInterval = setInterval(tick, 1000);
+    },
+    _stopCallTimer() {
+      clearInterval(this.callTimerInterval);
+      this.callTimerInterval = null;
+      this.callStartTime = null;
+    },
+
+    _onLevel(level, isLocal) {
+      const threshold = 14;
+      const btn = isLocal ? $('wtMicBtn') : $('wtToggleBtn');
+      if (!btn || level <= threshold) return;
+      btn.classList.add('talking');
+      clearTimeout(isLocal ? this.talkTimeoutLocal : this.talkTimeoutRemote);
+      const t = setTimeout(() => btn.classList.remove('talking'), 500);
+      if (isLocal) this.talkTimeoutLocal = t; else this.talkTimeoutRemote = t;
+    },
+
+    toggleMute() {
+      if (!this.localStream) return;
+      this.muted = !this.muted;
+      this.localStream.getAudioTracks().forEach(t => t.enabled = !this.muted);
+      const btn = $('wtMicBtn');
+      btn.classList.toggle('muted', this.muted);
+      btn.textContent = this.muted ? '🔇' : '🎤';
+    },
+    toggleDeafen() {
+      this.deafened = !this.deafened;
+      $('wtRemoteAudio').muted = this.deafened;
+      const btn = $('wtDeafenBtn');
+      btn.classList.toggle('muted', this.deafened);
+      btn.textContent = this.deafened ? '🔇' : '🔊';
+    },
+
+    hangup() {
+      if (this.active) {
+        WT.send({ type: 'voice_hangup' });
+      } else if (this.awaitingAccept) {
+        WT.send({ type: 'voice_cancel' });
+      }
+      this.stop(true);
+    },
+    onRemoteHangup() {
+      WT.addSysMsg('📞 Друг завершил звонок.');
+      this.stop(false);
+    },
+
+    stop(silent) {
+      clearTimeout(this.ringTimer);
+      this._stopCallTimer();
+      if (this.stopMeterLocal) { this.stopMeterLocal(); this.stopMeterLocal = null; }
+      if (this.stopMeterRemote) { this.stopMeterRemote(); this.stopMeterRemote = null; }
+      if (this.localStream) {
+        if (WT.room && WT.peerId) { try { WT.room.removeStream(this.localStream, { target: WT.peerId }); } catch (e) {} }
+        this.localStream.getTracks().forEach(t => t.stop());
+        this.localStream = null;
+      }
+      const audio = $('wtRemoteAudio');
+      if (audio) audio.srcObject = null;
+      const wasActive = this.active;
+      this.active = false; this.muted = false; this.deafened = false; this.awaitingAccept = false;
+      this._resetIncoming();
+      $('wtMicBtn').classList.remove('talking', 'muted'); $('wtMicBtn').textContent = '🎤';
+      $('wtDeafenBtn').classList.remove('muted'); $('wtDeafenBtn').textContent = '🔊';
+      $('wtToggleBtn').classList.remove('talking');
+      this._updateButtons();
+      if (wasActive && !silent) this.setStatus('Звонок завершён', '');
+      if (!wasActive) this.setStatus('', '');
+    },
+    setStatus(text, type) {
+      const el = $('wtVoiceStatus');
+      el.textContent = text;
+      el.className = 'wt-voice-status' + (type ? ' ' + type : '');
+    },
+    _updateButtons() {
+      const ringing = this.active || this.awaitingAccept;
+      const busy = ringing || this.pendingRequest;
+      $('wtVoiceJoinBtn').style.display = busy ? 'none' : '';
+      $('wtVoiceJoinBtn').disabled = false;
+      $('wtVoiceJoinBtn').textContent = '🎙️ Войти в голосовой чат';
+      $('wtMicBtn').style.display = this.active ? '' : 'none';
+      $('wtDeafenBtn').style.display = this.active ? '' : 'none';
+      $('wtHangupBtn').style.display = ringing ? '' : 'none';
+    }
+  }
+};
+window.WT = WT;
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// ============================================
+//  WT UI Bindings
+// ============================================
+$('wtOpenBtn').addEventListener('click', () => openWTModal());
+
+function openWTModal() {
+  $('wtOverlay').classList.add('open');
+  // If URL has #room=..., prefill guest
+  const url = new URL(window.location.href);
+  const roomFromUrl = url.searchParams.get('room') || url.hash.replace(/^#room=/, '');
+  if (roomFromUrl && !WT.connected) {
+    switchWTTab('guest');
+    $('wtJoinInput').value = roomFromUrl;
+  }
+}
+function closeWTModal() { $('wtOverlay').classList.remove('open'); }
+$('wtCloseBtn').addEventListener('click', closeWTModal);
+$('wtOverlay').addEventListener('click', (e) => { if (e.target === $('wtOverlay')) closeWTModal(); });
+
+function switchWTTab(mode) {
+  state.wtMode = mode;
+  $$('.wt-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  $$('.wt-pane').forEach(p => p.classList.remove('active'));
+  $(mode === 'host' ? 'wtPaneHost' : 'wtPaneGuest').classList.add('active');
+}
+$$('.wt-tab').forEach(t => t.addEventListener('click', () => switchWTTab(t.dataset.mode)));
+
+$('wtCreateBtn').addEventListener('click', async () => {
+  $('wtCreateBtn').disabled = true;
+  $('wtCreateBtn').textContent = '⏳ Создаём...';
+  $('wtHostError').style.display = 'none';
+  try {
+    const id = await WT.createRoom();
+    $('wtHostResult').style.display = 'flex';
+    const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}`;
+    $('wtShareLink').textContent = shareUrl;
+    $('wtShareId').textContent = id;
+    WT.showSide();
+    WT.updateBadge(false);
+    WT.addSysMsg('Комната создана. Ждём друга...');
+  } catch (e) {
+    $('wtHostError').style.display = '';
+    $('wtHostError').innerHTML = `<span>❌</span><span>Не удалось создать комнату (${escapeHtml(e.message || 'сбой сети')}). <a href="#" id="wtRetryCreate" style="color:var(--danger); text-decoration:underline;">Попробовать снова</a>.</span>`;
+    const link = document.getElementById('wtRetryCreate');
+    if (link) link.addEventListener('click', (e2) => { e2.preventDefault(); $('wtCreateBtn').click(); });
+  }
+  $('wtCreateBtn').disabled = false;
+  $('wtCreateBtn').textContent = '🚀 Создать комнату';
+});
+
+$('wtCopyBtn').addEventListener('click', async () => {
+  const link = $('wtShareLink').textContent;
+  try {
+    await navigator.clipboard.writeText(link);
+    $('wtCopyBtn').textContent = '✅';
+    setTimeout(() => $('wtCopyBtn').textContent = '📋', 1500);
+  } catch (e) {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = link; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+    $('wtCopyBtn').textContent = '✅';
+    setTimeout(() => $('wtCopyBtn').textContent = '📋', 1500);
+  }
+});
+
+// Join room (guest)
+$('wtJoinBtn').addEventListener('click', async () => {
+  let val = $('wtJoinInput').value.trim();
+  if (!val) return;
+  // extract id from URL if full link
+  try {
+    if (val.startsWith('http')) {
+      const u = new URL(val);
+      val = u.searchParams.get('room') || u.hash.replace(/^#room=/, '') || val;
+    }
+  } catch (e) {}
+  if (!val) return;
+
+  $('wtJoinBtn').disabled = true;
+  $('wtJoinBtn').textContent = '⏳ Подключение...';
+  const statusEl = $('wtGuestStatus');
+  statusEl.style.display = '';
+  statusEl.className = 'wt-status info';
+  statusEl.innerHTML = '<span>🔗</span><span>Подключаемся к комнате...</span>';
+
+  try {
+    await WT.join(val);
+    statusEl.className = 'wt-status ok';
+    statusEl.innerHTML = '<span>✅</span><span>Подключено! Наслаждайтесь просмотром.</span>';
+    $('wtGuestDisconnectBtn').style.display = '';
+    closeWTModal();
+  } catch (e) {
+    statusEl.className = 'wt-status err';
+    statusEl.innerHTML = `<span>❌</span><span>Ошибка: ${escapeHtml(e.message || 'не удалось подключиться')}. Проверь код комнаты или <a href="#" id="wtRetryJoin" style="color:var(--danger); text-decoration:underline;">попробуй снова</a>.</span>`;
+    const link = document.getElementById('wtRetryJoin');
+    if (link) link.addEventListener('click', (e2) => { e2.preventDefault(); $('wtJoinBtn').click(); });
+  }
+  $('wtJoinBtn').disabled = false;
+  $('wtJoinBtn').textContent = '🔗 Присоединиться';
+});
+
+$('wtDisconnectBtn').addEventListener('click', () => {
+  WT.cleanup();
+  $('wtHostResult').style.display = 'none';
+  $('wtToggleBtn').classList.remove('show');
+  $('wtSide').classList.remove('open');
+  WT.addSysMsg('Комната закрыта.');
+});
+$('wtGuestDisconnectBtn').addEventListener('click', () => {
+  WT.cleanup();
+  $('wtGuestStatus').style.display = 'none';
+  $('wtGuestDisconnectBtn').style.display = 'none';
+  $('wtToggleBtn').classList.remove('show');
+  $('wtSide').classList.remove('open');
+  WT.addSysMsg('Вы вышли из комнаты.');
+});
+
+// Native share (mobile) — рядом с копированием ссылки
+if (navigator.share) {
+  $('wtShareBtn').style.display = '';
+  $('wtShareBtn').addEventListener('click', async () => {
+    try {
+      await navigator.share({
+        title: 'Смотрим аниме вместе 🎬',
+        text: 'Присоединяйся к моей комнате — смотрим аниме вместе с чатом и голосовой связью!',
+        url: $('wtShareLink').textContent
+      });
+    } catch (e) {}
+  });
+}
+
+// ---------- Голосовой чат: привязка кнопок ----------
+$('wtVoiceJoinBtn').addEventListener('click', () => WT.voice.start());
+$('wtMicBtn').addEventListener('click', () => WT.voice.toggleMute());
+$('wtDeafenBtn').addEventListener('click', () => WT.voice.toggleDeafen());
+$('wtHangupBtn').addEventListener('click', () => WT.voice.hangup());
+$('wtAcceptCallBtn').addEventListener('click', () => WT.voice.accept());
+$('wtDeclineCallBtn').addEventListener('click', () => WT.voice.decline());
+
+// Chat side panel
+$('wtToggleBtn').addEventListener('click', () => {
+  $('wtSide').classList.toggle('open');
+  WT.unread = 0;
+  $('wtMsgBadge').style.display = 'none';
+});
+$('wtSideClose').addEventListener('click', () => $('wtSide').classList.remove('open'));
+
+function sendChat() {
+  const inp = $('wtChatInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  if (!WT.connected) { WT.addSysMsg('Нет подключения к комнате.'); return; }
+  WT.addMsg(text, 'me', 'Я');
+  WT.send({ type: 'chat', text, from: 'Друг' });
+  inp.value = '';
+}
+$('wtChatSend').addEventListener('click', sendChat);
+$('wtChatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
+
+// Auto-open WT modal if URL has ?room=...
+window.addEventListener('load', () => {
+  const url = new URL(window.location.href);
+  const room = url.searchParams.get('room');
+  if (room) {
+    // ensure user is on anime tab so player is reachable
+    $$('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'anime'));
+    $$('.tab-panel').forEach(p => p.classList.remove('active'));
+    $('panel-anime').classList.add('active');
+    if (!window.animeLoaded) { fetchTopAnime(); window.animeLoaded = true; }
+    setTimeout(() => openWTModal(), 400);
+  }
+});
+
+// ============================================
+//  Gacha
+// ============================================
+function updateCoins() {
+  $('coinsCount').textContent = state.coins;
+  localStorage.setItem('coins', state.coins);
+}
+
+$('dailyRewardBtn').addEventListener('click', () => {
+  state.coins += 500;
+  updateCoins();
+  const b = $('dailyRewardBtn');
+  b.disabled = true;
+  b.textContent = '✅ Получено';
+  setTimeout(() => { b.disabled = false; b.textContent = '+ Ежедневный бонус'; }, 60000);
+});
+
+$('rollGachaBtn').addEventListener('click', async () => {
+  if (state.coins < 100) return;
+  const btn = $('rollGachaBtn');
+  const resCont = $('gachaResultContainer');
+  btn.disabled = true;
+  btn.textContent = '...Призыв...';
+  state.coins -= 100;
+  updateCoins();
+
+  try {
+    const res = await fetch('https://api.jikan.moe/v4/random/characters');
+    const data = await res.json();
+    const char = data.data;
+    let rarity = 'R 💫', rClass = 'color:var(--teal);';
+    if (char.favorites > 15000) { rarity = 'SSR 🌟'; rClass = 'color:var(--gold);'; }
+    else if (char.favorites > 6000) { rarity = 'SR ✨'; rClass = 'color:var(--purple);'; }
+    const obj = { name: char.name, img: char.images.jpg.image_url, rarity, rClass };
+    state.inventory.unshift(obj);
+    localStorage.setItem('inventory', JSON.stringify(state.inventory));
+    resCont.style.display = 'block';
+    resCont.innerHTML = `
+      <div class="gacha-card">
+        <div class="rarity" style="${rClass}">${rarity}</div>
+        <img src="${obj.img}" alt="${escapeHtml(obj.name)}">
+        <div class="name">${escapeHtml(obj.name)}</div>
+      </div>`;
+    renderInventory();
+  } catch (e) {
+    state.coins += 100; updateCoins();
+  }
+  btn.disabled = false;
+  btn.textContent = '✨ ПРИЗЫВ (100)';
+});
+
+function renderInventory() {
+  const inv = $('gachaInventory');
+  inv.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  state.inventory.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'inv-item';
+    d.innerHTML = `
+      <img src="${item.img}" loading="lazy" alt="">
+      <div class="info">
+        <strong>${escapeHtml(item.name)}</strong>
+        <span style="${item.rClass} font-weight:800;">${item.rarity}</span>
+      </div>`;
+    frag.appendChild(d);
+  });
+  inv.appendChild(frag);
+}
+updateCoins();
+</script>
+</body>
+</html>
