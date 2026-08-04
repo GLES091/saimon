@@ -203,10 +203,16 @@
     .avatar-wrap { position: relative; width: 150px; height: 150px; flex-shrink: 0; }
     .avatar {
       width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
-      background: var(--card-solid); border: 3px solid transparent;
+      background: linear-gradient(135deg, var(--purple), var(--accent)); border: 3px solid transparent;
       box-shadow: 0 0 0 6px rgba(199,125,255,.12), 0 0 40px rgba(255,155,179,.4);
+      display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
     }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; transition: opacity .35s ease; }
+    .avatar.is-loading img { opacity: 0; }
+    .avatar.is-loading::after { content: '💮'; font-size: 2.4rem; animation: pulse 1.3s ease-in-out infinite; }
+    .avatar.is-fallback::before { content: '🌸'; font-size: 3rem; position: absolute; }
+    .avatar.is-fallback img { display: none; }
+    @keyframes pulse { 0%,100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.05); } }
     .avatar-ring, .avatar-ring2 {
       position: absolute; border-radius: 50%; pointer-events: none;
       animation: spin 16s linear infinite;
@@ -355,13 +361,17 @@
     /* ===== Neko Corner ===== */
     .neko-wrap { position: fixed; bottom: var(--sp-3); right: var(--sp-3); z-index: 150; display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); }
     .neko-corner {
-      width: 64px; height: 64px; border-radius: 50%;
+      width: 64px; height: 64px; border-radius: 50%; position: relative;
       border: 2px solid var(--accent); overflow: hidden; cursor: pointer;
       box-shadow: 0 0 18px rgba(255,155,179,.5); background: var(--card-solid);
       transition: transform var(--tr-fast);
     }
     .neko-corner:hover { transform: scale(1.08) rotate(-3deg); }
     .neko-corner img { width: 100%; height: 100%; object-fit: cover; transition: opacity var(--tr); }
+    .neko-corner.is-loading img { opacity: 0; }
+    .neko-corner.is-loading::after { content: '🐈'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; animation: pulse 1.2s ease-in-out infinite; }
+    .neko-corner.is-fallback::before { content: '🐾'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; background: linear-gradient(135deg, var(--purple), var(--accent)); }
+    .neko-corner.is-fallback img { display: none; }
     .neko-tip { background: var(--card); border-radius: 30px; padding: var(--sp-1) var(--sp-3); font-size: 0.65rem; backdrop-filter: blur(8px); font-weight: 700; color: var(--muted); }
 
     /* ===== Watch Together Modal ===== */
@@ -466,6 +476,66 @@
       border: 2px solid var(--bg);
     }
 
+    /* ===== WT Connection Quality ===== */
+    .wt-quality {
+      display: flex; align-items: center; gap: 5px; font-size: 0.68rem;
+      font-weight: 800; color: var(--muted); padding: 2px 8px;
+      border-radius: 20px; background: rgba(0,0,0,0.15); flex-shrink: 0;
+    }
+    .wt-quality .q-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted-2); transition: background var(--tr-fast); }
+    .wt-quality.good .q-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .wt-quality.ok .q-dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+    .wt-quality.bad .q-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); animation: pulse 1s infinite; }
+
+    /* ===== Reconnect banner ===== */
+    .wt-reconnect-banner {
+      display: none; align-items: center; gap: var(--sp-2);
+      background: rgba(249,199,79,.12); color: var(--gold);
+      padding: var(--sp-2) var(--sp-3); font-size: 0.78rem; font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+    .wt-reconnect-banner.show { display: flex; }
+    .wt-reconnect-banner .spin-ico { animation: spin 1s linear infinite; }
+
+    /* ===== Voice Chat ===== */
+    .wt-voice-bar {
+      display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
+      padding: var(--sp-3); border-bottom: 1px solid var(--border);
+      background: rgba(199,125,255,.04);
+    }
+    .voice-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--border-strong);
+      background: var(--card-solid); color: var(--text); cursor: pointer;
+      font-size: 1.05rem; display: grid; place-items: center; flex-shrink: 0;
+      transition: transform var(--tr-fast), box-shadow var(--tr-fast), background var(--tr-fast), border-color var(--tr-fast);
+    }
+    .voice-btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+    .voice-btn.on { background: linear-gradient(135deg, var(--accent), var(--purple)); color: white; border-color: transparent; }
+    .voice-btn.muted { background: var(--danger); color: white; border-color: transparent; }
+    .voice-btn.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+    .voice-btn.danger:hover { background: rgba(255,107,138,.12); }
+    .voice-btn.talking { box-shadow: 0 0 0 4px rgba(126,231,135,.35), 0 0 16px rgba(126,231,135,.5); border-color: var(--success); }
+    .voice-join-btn {
+      flex: 1; min-width: 140px; padding: var(--sp-2) var(--sp-3) !important;
+      font-size: 0.8rem !important;
+    }
+    .wt-voice-status { width: 100%; font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+    .wt-voice-status.err { color: var(--danger); }
+    .wt-voice-status.ok { color: var(--success); }
+
+    .wt-incoming-call {
+      display: none; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
+      padding: var(--sp-3); background: linear-gradient(135deg, rgba(255,155,179,.15), rgba(199,125,255,.15));
+      border-bottom: 1px solid var(--border-strong); animation: fadeSlide 0.25s ease;
+    }
+    .wt-incoming-call.show { display: flex; }
+    .wt-incoming-call .ring-ico { font-size: 1.3rem; animation: ring 0.6s ease-in-out infinite; }
+    @keyframes ring { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-18deg); } 75% { transform: rotate(18deg); } }
+    .wt-incoming-call span.txt { flex: 1; font-size: 0.8rem; font-weight: 800; min-width: 120px; }
+
+    /* Talking ring around avatar/toggle when mic is live */
+    .wt-toggle-btn.talking { box-shadow: 0 0 0 5px rgba(126,231,135,.4), var(--glow); }
+
     /* ===== Skeleton ===== */
     .skeleton {
       background: linear-gradient(90deg, rgba(199,125,255,.05) 0%, rgba(199,125,255,.15) 50%, rgba(199,125,255,.05) 100%);
@@ -495,7 +565,6 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
 <body>
 <div id="vfx-bg" style="position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;"></div>
@@ -519,14 +588,36 @@
 <aside class="wt-side" id="wtSide" aria-label="Чат смотреть вместе">
   <div class="wt-side-head">
     <h3><span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--muted-2);"></span> <span id="wtSideTitle">Смотреть вместе</span></h3>
+    <div class="wt-quality" id="wtQuality" title="Качество соединения"><span class="q-dot"></span><span id="wtPingText">—</span></div>
     <button class="wt-close" id="wtSideClose" aria-label="Закрыть">×</button>
   </div>
+
+  <div class="wt-reconnect-banner" id="wtReconnectBanner">
+    <span class="spin-ico">🔄</span><span id="wtReconnectText">Переподключение...</span>
+  </div>
+
+  <div class="wt-incoming-call" id="wtIncomingCall">
+    <span class="ring-ico">📞</span>
+    <span class="txt">Друг зовёт в голосовой чат</span>
+    <button class="btn btn-success" id="wtAcceptCallBtn" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Принять</button>
+    <button class="btn btn-danger" id="wtDeclineCallBtn" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Отклонить</button>
+  </div>
+
+  <div class="wt-voice-bar" id="wtVoiceBar">
+    <button class="btn btn-outline voice-join-btn" id="wtVoiceJoinBtn">🎙️ Войти в голосовой чат</button>
+    <button class="voice-btn" id="wtMicBtn" style="display:none;" title="Микрофон вкл/выкл" aria-label="Микрофон">🎤</button>
+    <button class="voice-btn" id="wtDeafenBtn" style="display:none;" title="Звук вкл/выкл" aria-label="Звук">🔊</button>
+    <button class="voice-btn danger" id="wtHangupBtn" style="display:none;" title="Завершить звонок" aria-label="Завершить звонок">📞</button>
+    <div class="wt-voice-status" id="wtVoiceStatus"></div>
+  </div>
+
   <div class="wt-side-body" id="wtChatBody"></div>
   <div class="wt-side-foot">
     <input type="text" id="wtChatInput" placeholder="Сообщение..." maxlength="500">
     <button class="btn btn-primary" id="wtChatSend">➤</button>
   </div>
 </aside>
+<audio id="wtRemoteAudio" autoplay playsinline></audio>
 
 <div class="page-wrap"><div class="container">
   <div class="brand">
@@ -690,9 +781,10 @@
       <!-- HOST pane -->
       <div class="wt-pane active" id="wtPaneHost">
         <div class="wt-info-row">
-          Создай комнату и поделись ссылкой с другом. Когда друг присоединится — ваши плееры синхронизируются: <b>play / pause / перемотка / смена серии</b>.
+          <b>1.</b> Жми «Создать комнату» → <b>2.</b> отправь ссылку другу → <b>3.</b> смотрите и обсуждайте вместе — видео, серии, чат и <b>голосовой чат</b> синхронизируются автоматически.
         </div>
         <button class="btn btn-primary" id="wtCreateBtn" style="padding:var(--sp-3);">🚀 Создать комнату</button>
+        <div class="wt-status err" id="wtHostError" style="display:none;"></div>
         <div id="wtHostResult" style="display:none; flex-direction:column; gap:var(--sp-3);">
           <div class="wt-status ok" id="wtHostStatus">
             <span>✅</span><span>Комната создана! Ждём друга...</span>
@@ -701,7 +793,8 @@
             <label>Ссылка для друга</label>
             <div class="wt-link-box">
               <code id="wtShareLink">—</code>
-              <button class="btn btn-outline" id="wtCopyBtn" style="padding:var(--sp-2) var(--sp-3);">📋</button>
+              <button class="btn btn-outline" id="wtShareBtn" style="padding:var(--sp-2) var(--sp-3); display:none;" title="Поделиться">📤</button>
+              <button class="btn btn-outline" id="wtCopyBtn" style="padding:var(--sp-2) var(--sp-3);" title="Скопировать">📋</button>
             </div>
           </div>
           <div>
@@ -717,7 +810,7 @@
       <!-- GUEST pane -->
       <div class="wt-pane" id="wtPaneGuest">
         <div class="wt-info-row">
-          Вставь ссылку от друга или введи ID комнаты, чтобы присоединиться к просмотру.
+          Вставь ссылку от друга или введи ID комнаты, чтобы присоединиться к просмотру. Внутри также будет доступен <b>голосовой чат</b>.
         </div>
         <div>
           <label>Ссылка или ID комнаты</label>
@@ -809,35 +902,81 @@ $$('.tab-btn').forEach(btn => {
 });
 
 // ============================================
+//  Image fallback helper (несколько источников на случай CORS/недоступности)
+// ============================================
+async function fetchFirstWorking(sources) {
+  for (const src of sources) {
+    try {
+      const res = await fetch(src.url, { cache: 'no-store' });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const url = src.extract(data);
+      if (url) return url;
+    } catch (e) { /* пробуем следующий источник */ }
+  }
+  return null;
+}
+function preloadImg(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+// ============================================
 //  Neko Corner
 // ============================================
 const nekoImg = $('nekoImg');
+const nekoCorner = $('nekoCorner');
 let nekoCache = null;
+const NEKO_SOURCES = [
+  { url: 'https://api.thecatapi.com/v1/images/search', extract: d => d[0]?.url }
+];
 async function fetchNeko() {
-  nekoImg.style.opacity = '0.3';
+  nekoCorner.classList.remove('is-fallback');
+  nekoCorner.classList.add('is-loading');
   try {
-    const res = await fetch('https://api.waifu.pics/sfw/neko');
-    const data = await res.json();
-    if (data.url) {
-      nekoCache = data.url;
-      nekoImg.src = data.url;
-      nekoImg.style.opacity = '1';
-    }
-  } catch (e) {}
+    const url = await fetchFirstWorking(NEKO_SOURCES);
+    if (!url) throw new Error('no source');
+    await preloadImg(url);
+    nekoCache = url;
+    nekoImg.src = url;
+    nekoCorner.classList.remove('is-loading');
+  } catch (e) {
+    nekoCorner.classList.remove('is-loading');
+    nekoCorner.classList.add('is-fallback');
+  }
 }
 $('nekoCorner').addEventListener('click', fetchNeko);
 fetchNeko();
 
 // ============================================
-//  Bio
+//  Bio / Avatar
 // ============================================
-(async () => {
+const avatarEl = $('avatarImg').closest('.avatar');
+const AVATAR_SOURCES = [
+  { url: 'https://api.waifu.im/images?IncludedTags=waifu', extract: d => d.items?.[0]?.url },
+  { url: 'https://nekos.best/api/v2/waifu', extract: d => d.results?.[0]?.url }
+];
+async function fetchAvatar() {
+  avatarEl.classList.remove('is-fallback');
+  avatarEl.classList.add('is-loading');
   try {
-    const res = await fetch('https://api.waifu.pics/sfw/waifu');
-    const data = await res.json();
-    if (data.url) $('avatarImg').src = data.url;
-  } catch (e) {}
-})();
+    const url = await fetchFirstWorking(AVATAR_SOURCES);
+    if (!url) throw new Error('no source');
+    await preloadImg(url);
+    $('avatarImg').src = url;
+    avatarEl.classList.remove('is-loading');
+  } catch (e) {
+    avatarEl.classList.remove('is-loading');
+    avatarEl.classList.add('is-fallback');
+  }
+}
+avatarEl.title = 'Нажми, чтобы сменить';
+avatarEl.addEventListener('click', fetchAvatar);
+fetchAvatar();
 
 const quotes = [
   { q: 'Если не веришь в себя, то и не стоит начинать.', c: 'Макака', a: 'Доктор Стоун' },
@@ -988,6 +1127,7 @@ async function openAnimePlayer(anime) {
   const posterUrl = anime.poster?.optimized?.src || anime.poster?.src || '';
   const imgUrl = posterUrl.startsWith('http') ? posterUrl : 'https://anilibria.top' + posterUrl;
   $('apPoster').src = imgUrl;
+  $('apPoster').onerror = function() { this.style.opacity = 0.2; };
   $('apGenres').innerHTML = '';
 
   if (currentHlsInstance) { currentHlsInstance.destroy(); currentHlsInstance = null; }
@@ -1161,97 +1301,194 @@ function playVideo(url, startTime = 0, autoPlay = true) {
 })();
 
 // ============================================
-//  Watch Together (PeerJS)
+//  Watch Together (Trystero) + Голосовой чат
 // ============================================
+// Публичные сети (Nostr, BitTorrent-трекеры, MQTT-брокеры) у пользователя
+// не проходили ни на одной сети/браузере — поэтому здесь используется
+// СВОЙ собственный relay-сервер (см. /relay-server в проекте),
+// задеплоенный на SnapDeploy.
+// Свой набор STUN/TURN задаём полностью сами (rtcConfig).
+const TRYSTERO_APP_ID = 'god-ae86-anime-watch-together-v1';
+
+// ⚠️ ВСТАВИТЬ СЮДА адрес своего relay-сервера после деплоя на Render,
+// в виде wss://... (не https://!), например:
+// 'wss://watch-together-relay-xxxx.onrender.com'
+const RELAY_SERVER_URL = 'wss://salo-1920d.containers.snapdeploy.app';
+
+const RTC_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    {
+      urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'],
+      username: 'openrelayproject', credential: 'openrelayproject'
+    }
+  ]
+};
+
+let _trysteroMod = null;
+async function loadTrystero() {
+  if (!_trysteroMod) _trysteroMod = await import('https://esm.run/@trystero-p2p/ws-relay');
+  return _trysteroMod;
+}
+
+function genRoomCode() {
+  return 'ae86-' + Math.random().toString(36).slice(2, 8);
+}
+
+// Простой измеритель громкости потока (для индикации "говорит сейчас")
+function attachVoiceMeter(stream, onLevel) {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.6;
+    src.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    let raf, stopped = false;
+    (function tick() {
+      if (stopped) return;
+      analyser.getByteFrequencyData(data);
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) sum += data[i];
+      onLevel(sum / data.length);
+      raf = requestAnimationFrame(tick);
+    })();
+    return () => { stopped = true; cancelAnimationFrame(raf); try { ctx.close(); } catch (e) {} };
+  } catch (e) { return () => {}; }
+}
+
 const WT = {
-  peer: null,
-  conn: null,
-  role: null,         // 'host' | 'guest'
+  room: null,
+  syncAction: null,
+  roomId: null,
+  peerId: null,        // id друга внутри комнаты
+  role: null,           // 'host' | 'guest' — только для текста сообщений
   connected: false,
   unread: 0,
+  pingTimer: null,
 
-  init(role) {
+  async _connect(roomId, role, onFirstConnect) {
     this.cleanup();
     this.role = role;
-    this.peer = new Peer({ debug: 1 });
-    return new Promise((resolve, reject) => {
-      this.peer.on('open', (id) => resolve(id));
-      this.peer.on('error', (err) => reject(err));
-      // host receives incoming connections
-      this.peer.on('connection', (conn) => {
-        // only accept first connection
-        if (this.conn) { conn.close(); return; }
-        this.conn = conn;
-        this.bindConn();
-        WT.addSysMsg('Друг присоединился к комнате! 🎉');
-        WT.showSide();
-        WT.updateBadge(true);
-      });
-    });
-  },
+    this.roomId = roomId;
+    let firstFired = false;
 
-  join(remoteId) {
-    return new Promise((resolve, reject) => {
-      this.peer = new Peer({ debug: 1 });
-      this.peer.on('open', () => {
-        const conn = this.peer.connect(remoteId, { reliable: true });
-        this.conn = conn;
-        conn.on('open', () => {
-          this.bindConn();
-          WT.addSysMsg('Подключено к комнате! 🎬');
-          WT.showSide();
-          WT.updateBadge(true);
-          resolve();
-        });
-        conn.on('error', (e) => reject(e));
-      });
-      this.peer.on('error', (err) => reject(err));
-    });
-  },
+    const { joinRoom } = await loadTrystero();
+    this.room = joinRoom({ appId: TRYSTERO_APP_ID, rtcConfig: RTC_CONFIG, relayConfig: { urls: [RELAY_SERVER_URL] } }, roomId);
+    this.syncAction = this.room.makeAction('sync');
+    this.syncAction.onMessage = (msg) => this.onData(msg);
 
-  bindConn() {
-    if (!this.conn) return;
-    this.conn.on('data', (data) => this.onData(data));
-    this.conn.on('close', () => {
+    this.room.onPeerJoin = (peerId) => {
+      const isReconnect = this.connected;
+      this.peerId = peerId;
+      this.connected = true;
+      $('wtStatusBadge').style.display = '';
+      $('wtStatusBadge').classList.add('live');
+      $('wtStatusText').textContent = 'LIVE';
+      WT.addSysMsg(isReconnect ? 'Друг переподключился ✅' : (role === 'host' ? 'Друг присоединился к комнате! 🎉' : 'Подключено к комнате! 🎬'));
+      WT.showSide();
+      WT.updateBadge(true);
+      WT.hideReconnectBanner();
+      WT._startPing();
+
+      if (role === 'host') {
+        const v = $('hlsVideo');
+        setTimeout(() => {
+          this.send({
+            type: 'state',
+            epIdx: apCurrentEpIndex,
+            t: v.currentTime || 0,
+            paused: v.paused,
+            release: apCurrentReleaseData ? { id: apCurrentReleaseData.id } : null
+          });
+        }, 600);
+      }
+
+      if (!firstFired && onFirstConnect) { firstFired = true; onFirstConnect(); }
+    };
+
+    this.room.onPeerLeave = (peerId) => {
+      if (peerId !== this.peerId) return;
       this.connected = false;
-      WT.addSysMsg('Друг отключился. Комната закрыта.');
-      WT.updateBadge(false);
+      this._stopPing();
       $('wtStatusBadge').classList.remove('live');
       $('wtStatusBadge').style.display = 'none';
-    });
-    this.conn.on('error', () => {
-      this.connected = false;
-      WT.addSysMsg('Ошибка соединения.');
-      WT.updateBadge(false);
-    });
-    this.connected = true;
-    $('wtStatusBadge').style.display = '';
-    $('wtStatusBadge').classList.add('live');
-    $('wtStatusText').textContent = 'LIVE';
+      WT.setQuality(null);
+      WT.voice.stop(true);
+      WT.addSysMsg('⚠️ Друг отключился.');
+      WT.showReconnectBanner('Ждём, когда друг снова будет на связи...');
+    };
 
-    // host: send current state to guest immediately
-    if (this.role === 'host') {
-      const v = $('hlsVideo');
-      setTimeout(() => {
-        this.send({
-          type: 'state',
-          epIdx: apCurrentEpIndex,
-          t: v.currentTime || 0,
-          paused: v.paused,
-          release: apCurrentReleaseData ? { id: apCurrentReleaseData.id } : null
-        });
-      }, 600);
-    }
+    this.room.onPeerStream = (stream) => WT.voice._onStream(stream);
+  },
+
+  async createRoom() {
+    const code = genRoomCode();
+    await this._connect(code, 'host');
+    return code;
+  },
+
+  join(roomId) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const timeout = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        reject(new Error('комната не отвечает 15 секунд — проверь код или соединение'));
+      }, 15000);
+
+      this._connect(roomId, 'guest', () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        resolve();
+      }).catch((e) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        reject(e);
+      });
+    });
+  },
+
+  // ---- Пинг для индикатора качества связи (встроенный в Trystero) ----
+  _startPing() {
+    this._stopPing();
+    this.pingTimer = setInterval(async () => {
+      if (!this.connected || !this.peerId || !this.room) return;
+      try {
+        const ms = await this.room.ping(this.peerId);
+        WT.setQuality(Math.round(ms));
+      } catch (e) { WT.setQuality('bad'); }
+    }, 4000);
+  },
+  _stopPing() { clearInterval(this.pingTimer); },
+
+  setQuality(rttOrState) {
+    const el = $('wtQuality'), txt = $('wtPingText');
+    if (rttOrState === null) { el.className = 'wt-quality'; txt.textContent = '—'; return; }
+    if (rttOrState === 'bad') { el.className = 'wt-quality bad'; txt.textContent = 'нет ответа'; return; }
+    txt.textContent = `${rttOrState} мс`;
+    el.className = 'wt-quality ' + (rttOrState < 150 ? 'good' : rttOrState < 400 ? 'ok' : 'bad');
   },
 
   send(msg) {
-    if (this.conn && this.conn.open) {
-      try { this.conn.send(msg); } catch (e) {}
+    if (this.syncAction && this.connected) {
+      try { this.syncAction.send(msg); } catch (e) {}
     }
   },
 
   onData(msg) {
     if (!msg || typeof msg !== 'object') return;
+
+    if (msg.type === 'voice_request') { WT.voice.onIncomingRequest(); return; }
+    if (msg.type === 'voice_accept') { WT.voice.onAccepted(); return; }
+    if (msg.type === 'voice_declined') { WT.voice.onDeclined(); return; }
+    if (msg.type === 'voice_cancel') { WT.voice.onCancelled(); return; }
+    if (msg.type === 'voice_hangup') { WT.voice.onRemoteHangup(); return; }
+
     const v = $('hlsVideo');
     apSuppressSync = true;
     setTimeout(() => { apSuppressSync = false; }, 800);
@@ -1300,13 +1537,25 @@ const WT = {
   },
 
   cleanup() {
-    try { if (this.conn) this.conn.close(); } catch (e) {}
-    try { if (this.peer) this.peer.destroy(); } catch (e) {}
-    this.conn = null;
-    this.peer = null;
+    this._stopPing();
+    this.voice.stop(true);
+    try { if (this.room) this.room.leave(); } catch (e) {}
+    this.room = null;
+    this.syncAction = null;
     this.connected = false;
     this.role = null;
+    this.peerId = null;
+    this.roomId = null;
+    WT.setQuality(null);
+    WT.hideReconnectBanner();
   },
+
+  showReconnectBanner(text) {
+    const b = $('wtReconnectBanner');
+    b.classList.add('show');
+    $('wtReconnectText').textContent = text;
+  },
+  hideReconnectBanner() { $('wtReconnectBanner').classList.remove('show'); },
 
   // chat helpers
   addSysMsg(text) {
@@ -1344,6 +1593,253 @@ const WT = {
       $('wtStatusBadge').classList.remove('live');
       $('wtStatusBadge').style.display = 'none';
     }
+  },
+
+  // ============================================
+  //  Голосовой чат (аудио-поток через Trystero room)
+  // ============================================
+  voice: {
+    localStream: null,
+    active: false,
+    muted: false,
+    deafened: false,
+    awaitingAccept: false,  // мы звоним, ждём ответа
+    pendingRequest: false,  // нам звонят, ждём решения
+    stopMeterLocal: null,
+    stopMeterRemote: null,
+    talkTimeoutLocal: null,
+    talkTimeoutRemote: null,
+    ringTimer: null,
+    pendingTimer: null,
+    callTimerInterval: null,
+    callStartTime: null,
+    RING_TIMEOUT_MS: 30000,
+
+    start() {
+      if (!WT.connected) { WT.addSysMsg('Нет подключения к комнате.'); return; }
+      if (this.active || this.awaitingAccept) return;
+      this.awaitingAccept = true;
+      $('wtVoiceJoinBtn').disabled = true;
+      $('wtVoiceJoinBtn').textContent = '📞 Вызываем...';
+      this.setStatus('📞 Вызываем друга...', '');
+      WT.send({ type: 'voice_request' });
+      clearTimeout(this.ringTimer);
+      this.ringTimer = setTimeout(() => {
+        if (!this.awaitingAccept) return;
+        this.awaitingAccept = false;
+        WT.send({ type: 'voice_cancel' });
+        this.setStatus('Друг не отвечает', 'err');
+        this._updateButtons();
+      }, this.RING_TIMEOUT_MS);
+    },
+
+    onIncomingRequest() {
+      if (this.active) { WT.send({ type: 'voice_declined' }); return; }
+      if (this.awaitingAccept) {
+        // оба одновременно позвонили друг другу — считаем это взаимным согласием
+        clearTimeout(this.ringTimer);
+        this.awaitingAccept = false;
+        this.pendingRequest = true;
+        this.accept();
+        return;
+      }
+      if (this.pendingRequest) { WT.send({ type: 'voice_declined' }); return; }
+      this.pendingRequest = true;
+      $('wtIncomingCall').classList.add('show');
+      WT.showSide();
+      this._updateButtons();
+      clearTimeout(this.pendingTimer);
+      this.pendingTimer = setTimeout(() => {
+        if (!this.pendingRequest) return;
+        this.decline();
+      }, this.RING_TIMEOUT_MS);
+    },
+    _resetIncoming() {
+      clearTimeout(this.pendingTimer);
+      $('wtIncomingCall').classList.remove('show');
+      this.pendingRequest = false;
+      this._updateButtons();
+    },
+
+    async accept() {
+      if (!this.pendingRequest) return;
+      this._resetIncoming();
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.setStatus('Микрофон недоступен (нужен HTTPS)', 'err');
+        WT.send({ type: 'voice_declined' });
+        return;
+      }
+      this.setStatus('Запрашиваем доступ к микрофону...', '');
+      try {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+      } catch (e) {
+        this.setStatus('Доступ к микрофону отклонён — разреши его в настройках сайта', 'err');
+        WT.send({ type: 'voice_declined' });
+        return;
+      }
+      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, { target: WT.peerId });
+      this.stopMeterLocal = attachVoiceMeter(this.localStream, (lvl) => this._onLevel(lvl, true));
+      this._markActive();
+      WT.send({ type: 'voice_accept' });
+    },
+
+    decline() {
+      this._resetIncoming();
+      WT.send({ type: 'voice_declined' });
+    },
+
+    async onAccepted() {
+      if (!this.awaitingAccept) return;
+      clearTimeout(this.ringTimer);
+      this.awaitingAccept = false;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.setStatus('Микрофон недоступен (нужен HTTPS)', 'err');
+        this._updateButtons();
+        return;
+      }
+      this.setStatus('Запрашиваем доступ к микрофону...', '');
+      try {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+      } catch (e) {
+        this.setStatus('Доступ к микрофону отклонён — разреши его в настройках сайта', 'err');
+        this._updateButtons();
+        return;
+      }
+      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, { target: WT.peerId });
+      this.stopMeterLocal = attachVoiceMeter(this.localStream, (lvl) => this._onLevel(lvl, true));
+      this._markActive();
+    },
+
+    onDeclined() {
+      clearTimeout(this.ringTimer);
+      this.awaitingAccept = false;
+      WT.addSysMsg('📞 Друг отклонил звонок.');
+      this.setStatus('', '');
+      this._updateButtons();
+    },
+
+    onCancelled() {
+      if (!this.pendingRequest) return;
+      this._resetIncoming();
+      WT.addSysMsg('📞 Друг отменил вызов.');
+    },
+
+    _onStream(stream) {
+      const audio = $('wtRemoteAudio');
+      audio.srcObject = stream;
+      audio.muted = this.deafened;
+      audio.play().catch(() => {});
+      this.stopMeterRemote = attachVoiceMeter(stream, (lvl) => this._onLevel(lvl, false));
+      this._markActive();
+    },
+
+    // Помечает звонок активным ровно один раз, откуда бы событие ни пришло
+    // (свой addStream, чужой stream, взаимный вызов) — и запускает таймер длительности.
+    _markActive() {
+      if (this.active) return;
+      this.active = true;
+      this._updateButtons();
+      this._startCallTimer();
+    },
+
+    _startCallTimer() {
+      this.callStartTime = Date.now();
+      const tick = () => {
+        const sec = Math.floor((Date.now() - this.callStartTime) / 1000);
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        this.setStatus(`🎙️ ${m}:${s}`, 'ok');
+      };
+      tick();
+      clearInterval(this.callTimerInterval);
+      this.callTimerInterval = setInterval(tick, 1000);
+    },
+    _stopCallTimer() {
+      clearInterval(this.callTimerInterval);
+      this.callTimerInterval = null;
+      this.callStartTime = null;
+    },
+
+    _onLevel(level, isLocal) {
+      const threshold = 14;
+      const btn = isLocal ? $('wtMicBtn') : $('wtToggleBtn');
+      if (!btn || level <= threshold) return;
+      btn.classList.add('talking');
+      clearTimeout(isLocal ? this.talkTimeoutLocal : this.talkTimeoutRemote);
+      const t = setTimeout(() => btn.classList.remove('talking'), 500);
+      if (isLocal) this.talkTimeoutLocal = t; else this.talkTimeoutRemote = t;
+    },
+
+    toggleMute() {
+      if (!this.localStream) return;
+      this.muted = !this.muted;
+      this.localStream.getAudioTracks().forEach(t => t.enabled = !this.muted);
+      const btn = $('wtMicBtn');
+      btn.classList.toggle('muted', this.muted);
+      btn.textContent = this.muted ? '🔇' : '🎤';
+    },
+    toggleDeafen() {
+      this.deafened = !this.deafened;
+      $('wtRemoteAudio').muted = this.deafened;
+      const btn = $('wtDeafenBtn');
+      btn.classList.toggle('muted', this.deafened);
+      btn.textContent = this.deafened ? '🔇' : '🔊';
+    },
+
+    hangup() {
+      if (this.active) {
+        WT.send({ type: 'voice_hangup' });
+      } else if (this.awaitingAccept) {
+        WT.send({ type: 'voice_cancel' });
+      }
+      this.stop(true);
+    },
+    onRemoteHangup() {
+      WT.addSysMsg('📞 Друг завершил звонок.');
+      this.stop(false);
+    },
+
+    stop(silent) {
+      clearTimeout(this.ringTimer);
+      this._stopCallTimer();
+      if (this.stopMeterLocal) { this.stopMeterLocal(); this.stopMeterLocal = null; }
+      if (this.stopMeterRemote) { this.stopMeterRemote(); this.stopMeterRemote = null; }
+      if (this.localStream) {
+        if (WT.room && WT.peerId) { try { WT.room.removeStream(this.localStream, { target: WT.peerId }); } catch (e) {} }
+        this.localStream.getTracks().forEach(t => t.stop());
+        this.localStream = null;
+      }
+      const audio = $('wtRemoteAudio');
+      if (audio) audio.srcObject = null;
+      const wasActive = this.active;
+      this.active = false; this.muted = false; this.deafened = false; this.awaitingAccept = false;
+      this._resetIncoming();
+      $('wtMicBtn').classList.remove('talking', 'muted'); $('wtMicBtn').textContent = '🎤';
+      $('wtDeafenBtn').classList.remove('muted'); $('wtDeafenBtn').textContent = '🔊';
+      $('wtToggleBtn').classList.remove('talking');
+      this._updateButtons();
+      if (wasActive && !silent) this.setStatus('Звонок завершён', '');
+      if (!wasActive) this.setStatus('', '');
+    },
+    setStatus(text, type) {
+      const el = $('wtVoiceStatus');
+      el.textContent = text;
+      el.className = 'wt-voice-status' + (type ? ' ' + type : '');
+    },
+    _updateButtons() {
+      const ringing = this.active || this.awaitingAccept;
+      const busy = ringing || this.pendingRequest;
+      $('wtVoiceJoinBtn').style.display = busy ? 'none' : '';
+      $('wtVoiceJoinBtn').disabled = false;
+      $('wtVoiceJoinBtn').textContent = '🎙️ Войти в голосовой чат';
+      $('wtMicBtn').style.display = this.active ? '' : 'none';
+      $('wtDeafenBtn').style.display = this.active ? '' : 'none';
+      $('wtHangupBtn').style.display = ringing ? '' : 'none';
+    }
   }
 };
 window.WT = WT;
@@ -1379,12 +1875,12 @@ function switchWTTab(mode) {
 }
 $$('.wt-tab').forEach(t => t.addEventListener('click', () => switchWTTab(t.dataset.mode)));
 
-// Create room (host)
 $('wtCreateBtn').addEventListener('click', async () => {
   $('wtCreateBtn').disabled = true;
   $('wtCreateBtn').textContent = '⏳ Создаём...';
+  $('wtHostError').style.display = 'none';
   try {
-    const id = await WT.init('host');
+    const id = await WT.createRoom();
     $('wtHostResult').style.display = 'flex';
     const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}`;
     $('wtShareLink').textContent = shareUrl;
@@ -1393,7 +1889,10 @@ $('wtCreateBtn').addEventListener('click', async () => {
     WT.updateBadge(false);
     WT.addSysMsg('Комната создана. Ждём друга...');
   } catch (e) {
-    alert('Ошибка создания комнаты: ' + e.message);
+    $('wtHostError').style.display = '';
+    $('wtHostError').innerHTML = `<span>❌</span><span>Не удалось создать комнату (${escapeHtml(e.message || 'сбой сети')}). <a href="#" id="wtRetryCreate" style="color:var(--danger); text-decoration:underline;">Попробовать снова</a>.</span>`;
+    const link = document.getElementById('wtRetryCreate');
+    if (link) link.addEventListener('click', (e2) => { e2.preventDefault(); $('wtCreateBtn').click(); });
   }
   $('wtCreateBtn').disabled = false;
   $('wtCreateBtn').textContent = '🚀 Создать комнату';
@@ -1443,7 +1942,9 @@ $('wtJoinBtn').addEventListener('click', async () => {
     closeWTModal();
   } catch (e) {
     statusEl.className = 'wt-status err';
-    statusEl.innerHTML = `<span>❌</span><span>Ошибка: ${escapeHtml(e.message || e.type || 'не удалось подключиться')}</span>`;
+    statusEl.innerHTML = `<span>❌</span><span>Ошибка: ${escapeHtml(e.message || 'не удалось подключиться')}. Проверь код комнаты или <a href="#" id="wtRetryJoin" style="color:var(--danger); text-decoration:underline;">попробуй снова</a>.</span>`;
+    const link = document.getElementById('wtRetryJoin');
+    if (link) link.addEventListener('click', (e2) => { e2.preventDefault(); $('wtJoinBtn').click(); });
   }
   $('wtJoinBtn').disabled = false;
   $('wtJoinBtn').textContent = '🔗 Присоединиться';
@@ -1462,7 +1963,30 @@ $('wtGuestDisconnectBtn').addEventListener('click', () => {
   $('wtGuestDisconnectBtn').style.display = 'none';
   $('wtToggleBtn').classList.remove('show');
   $('wtSide').classList.remove('open');
+  WT.addSysMsg('Вы вышли из комнаты.');
 });
+
+// Native share (mobile) — рядом с копированием ссылки
+if (navigator.share) {
+  $('wtShareBtn').style.display = '';
+  $('wtShareBtn').addEventListener('click', async () => {
+    try {
+      await navigator.share({
+        title: 'Смотрим аниме вместе 🎬',
+        text: 'Присоединяйся к моей комнате — смотрим аниме вместе с чатом и голосовой связью!',
+        url: $('wtShareLink').textContent
+      });
+    } catch (e) {}
+  });
+}
+
+// ---------- Голосовой чат: привязка кнопок ----------
+$('wtVoiceJoinBtn').addEventListener('click', () => WT.voice.start());
+$('wtMicBtn').addEventListener('click', () => WT.voice.toggleMute());
+$('wtDeafenBtn').addEventListener('click', () => WT.voice.toggleDeafen());
+$('wtHangupBtn').addEventListener('click', () => WT.voice.hangup());
+$('wtAcceptCallBtn').addEventListener('click', () => WT.voice.accept());
+$('wtDeclineCallBtn').addEventListener('click', () => WT.voice.decline());
 
 // Chat side panel
 $('wtToggleBtn').addEventListener('click', () => {
