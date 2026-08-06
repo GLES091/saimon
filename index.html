@@ -1984,7 +1984,7 @@ async function rollGacha() {
   state.inventory.unshift(obj);
   Storage.set('inventory', state.inventory);
   resCont.style.display = 'block';
-  resCont.innerHTML = '<div class="gacha-card"><div class="rarity" style="'+rClass+'">'+rarity+'</div><img src="'+obj.img+'" alt="'+escapeHtml(obj.name)+'" onerror="this.src='https://cdn-icons-png.flaticon.com/512/742/742751.png'"><div class="name">'+escapeHtml(obj.name)+'</div></div>';
+  resCont.innerHTML = '<div class="gacha-card"><div class="rarity" style="'+rClass+'">'+rarity+'</div><img src="'+obj.img+'" alt="'+escapeHtml(obj.name)+'" onerror="this.src=&#39;https://cdn-icons-png.flaticon.com/512/742/742751.png&#39;"><div class="name">'+escapeHtml(obj.name)+'</div></div>';
   renderInventory();
   showToast('Призван: '+char.name+' '+rarity, 'success');
 
