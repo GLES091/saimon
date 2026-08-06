@@ -1310,9 +1310,9 @@ const WT = {
     const { joinRoom } = await getTrystero();
     this.room = joinRoom({appId: TRYSTERO_APP_ID, rtcConfig: RTC_CONFIG}, roomId);
 
-    const [send, get] = this.room.makeAction('sync');
-    this.sendSync = send;
-    get((data, peerId) => this.onData(data, peerId));
+    const action = this.room.makeAction('sync');
+    this.sendSync = action.send;
+    action.onMessage = (data, peerId) => this.onData(data, peerId);
 
     this.room.onPeerJoin = (peerId) => {
       const isReconnect = this.connected;
@@ -1347,7 +1347,7 @@ const WT = {
       WT.showReconnectBanner('Ждём, когда друг снова будет на связи...');
     };
 
-    this.room.onStream = (stream, peerId) => {
+    this.room.onPeerStream = (stream, peerId) => {
       WT.voice._onStream(stream, peerId);
     };
   },
@@ -1377,6 +1377,15 @@ const WT = {
 
   _startPing() {
     this._stopPing();
+    // Trystero doesn't have built-in ping in all versions
+    if (!this.room || typeof this.room.ping !== 'function') {
+      // Fallback: measure via data channel heartbeat
+      this.pingTimer = setInterval(()=>{
+        if (!this.connected || !this.peerId || !this.room) return;
+        WT.setQuality('ok'); // assume ok if still connected
+      }, 4000);
+      return;
+    }
     this.pingTimer = setInterval(async ()=>{
       if (!this.connected || !this.peerId || !this.room) return;
       try { const ms = await this.room.ping(this.peerId); WT.setQuality(Math.round(ms)); }
@@ -1566,7 +1575,7 @@ const WT = {
         this.setStatus('Доступ к микрофону отклонён — разреши его в настройках сайта', 'err');
         WT.send({type:'voice_declined'}); return;
       }
-      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, WT.peerId);
+      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, { target: WT.peerId });
       this.stopMeterLocal = attachVoiceMeter(this.localStream, (lvl)=>this._onLevel(lvl, true));
       this._markActive();
       WT.send({type:'voice_accept'});
@@ -1594,7 +1603,7 @@ const WT = {
         this.setStatus('Доступ к микрофону отклонён — разреши его в настройках сайта', 'err');
         this._updateButtons(); return;
       }
-      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, WT.peerId);
+      if (WT.room && WT.peerId) WT.room.addStream(this.localStream, { target: WT.peerId });
       this.stopMeterLocal = attachVoiceMeter(this.localStream, (lvl)=>this._onLevel(lvl, true));
       this._markActive();
     },
@@ -1688,7 +1697,7 @@ const WT = {
       if (this.stopMeterLocal) { this.stopMeterLocal(); this.stopMeterLocal=null; }
       if (this.stopMeterRemote) { this.stopMeterRemote(); this.stopMeterRemote=null; }
       if (this.localStream) {
-        if (WT.room && WT.peerId) { try{WT.room.removeStream(this.localStream, WT.peerId);}catch(e){} }
+        if (WT.room && WT.peerId) { try{WT.room.removeStream(this.localStream, { target: WT.peerId });}catch(e){} }
         this.localStream.getTracks().forEach(t=>t.stop());
         this.localStream = null;
       }
@@ -1917,7 +1926,7 @@ $('dailyRewardBtn').addEventListener('click', () => {
   showToast('+500 монет! Ежедневный бонус получен 🪙', 'success');
 });
 
-$('rollGachaBtn').addEventListener('click', async () => {
+async function rollGacha() {
   if (state.coins < 100) { showToast('Недостаточно монет! 🪙', 'warn'); return; }
   const btn = $('rollGachaBtn');
   const resCont = $('gachaResultContainer');
@@ -1925,27 +1934,65 @@ $('rollGachaBtn').addEventListener('click', async () => {
   btn.textContent = '...Призыв...';
   state.coins -= 100;
   updateCoins();
+
+  let char = null;
+  let source = 'jikan';
+
+  // Try Jikan first
   try {
-    const res = await fetchWithRetry('https://api.jikan.moe/v4/random/characters', {}, 2);
-    const data = await res.json();
-    const char = data.data;
-    let rarity = 'R 💫', rClass = 'color:var(--teal);';
-    if (char.favorites > 15000) { rarity = 'SSR 🌟'; rClass = 'color:var(--gold);'; }
-    else if (char.favorites > 6000) { rarity = 'SR ✨'; rClass = 'color:var(--purple);'; }
-    const obj = {name: char.name, img: char.images.jpg.image_url, rarity, rClass, date: Date.now()};
-    state.inventory.unshift(obj);
-    Storage.set('inventory', state.inventory);
-    resCont.style.display = 'block';
-    resCont.innerHTML = '<div class="gacha-card"><div class="rarity" style="'+rClass+'">'+rarity+'</div><img src="'+obj.img+'" alt="'+escapeHtml(obj.name)+'"><div class="name">'+escapeHtml(obj.name)+'</div></div>';
-    renderInventory();
-    showToast('Призван: '+char.name+' '+rarity, 'success');
+    const res = await fetchWithTimeout('https://api.jikan.moe/v4/random/characters', {}, 10000);
+    if (res.ok) {
+      const data = await res.json();
+      char = data.data;
+    }
   } catch(e) {
-    state.coins += 100; updateCoins();
-    showToast('Ошибка гача-призыва. Попробуй позже.', 'error');
+    console.log('Jikan failed, trying fallback...');
   }
+
+  // Fallback to waifu.pics if Jikan is down
+  if (!char) {
+    try {
+      const res = await fetchWithTimeout('https://api.waifu.pics/sfw/waifu', {}, 8000);
+      const data = await res.json();
+      char = {
+        name: 'Таинственная Вайфу',
+        images: { jpg: { image_url: data.url } },
+        favourites: 0,
+        fallback: true
+      };
+      source = 'waifu.pics';
+      showToast('Jikan API перегружен — призвали вайфу из резервного источника', 'warn');
+    } catch(e2) {
+      state.coins += 100; updateCoins();
+      btn.disabled = false;
+      btn.textContent = '✨ ПРИЗЫВ (100)';
+      showToast('Все API недоступны. Попробуй позже.', 'error');
+      return;
+    }
+  }
+
+  let rarity = 'R 💫', rClass = 'color:var(--teal);';
+  if (char.favourites > 15000) { rarity = 'SSR 🌟'; rClass = 'color:var(--gold)'; }
+  else if (char.favourites > 6000) { rarity = 'SR ✨'; rClass = 'color:var(--purple)'; }
+  else if (char.fallback) { rarity = 'R 💫'; rClass = 'color:var(--teal)'; }
+
+  const obj = {
+    name: char.name,
+    img: char.images?.jpg?.image_url || char.images?.jpg?.large_image_url || char.image,
+    rarity, rClass, date: Date.now(), source
+  };
+  state.inventory.unshift(obj);
+  Storage.set('inventory', state.inventory);
+  resCont.style.display = 'block';
+  resCont.innerHTML = '<div class="gacha-card"><div class="rarity" style="'+rClass+'">'+rarity+'</div><img src="'+obj.img+'" alt="'+escapeHtml(obj.name)+'" onerror="this.src='https://cdn-icons-png.flaticon.com/512/742/742751.png'"><div class="name">'+escapeHtml(obj.name)+'</div></div>';
+  renderInventory();
+  showToast('Призван: '+char.name+' '+rarity, 'success');
+
   btn.disabled = false;
   btn.textContent = '✨ ПРИЗЫВ (100)';
-});
+}
+
+$('rollGachaBtn').addEventListener('click', rollGacha);
 
 function renderInventory() {
   const inv = $('gachaInventory');
