@@ -1,4 +1,4 @@
-const CACHE_NAME = 'god-ae86-v2';
+const CACHE_NAME = 'god-ae86-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -21,30 +21,16 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
-function isSameOrigin(url) {
-  try { return new URL(url).origin === self.location.origin; }
-  catch { return false; }
-}
-
 self.addEventListener('fetch', (e) => {
-  if (e.request.method !== 'GET') return;
-
-  // Skip non-GET and range requests (video)
-  if (e.request.headers.get('range')) return;
-
-  // For cross-origin API calls: network first, no cache write (CORS issues)
-  if (!isSameOrigin(e.request.url)) {
-    e.respondWith(
-      fetch(e.request).catch(() => 
-        caches.match(e.request).then(c => c || new Response(JSON.stringify({error:'offline'}), {
-          headers: {'Content-Type':'application/json'}
-        }))
-      )
-    );
-    return;
+  // NEVER intercept cross-origin requests (CDN, APIs, etc.)
+  const url = new URL(e.request.url);
+  if (url.origin !== self.location.origin) {
+    return; // Let browser handle it normally
   }
 
-  // For same-origin: cache first, then network
+  if (e.request.method !== 'GET') return;
+  if (e.request.headers.get('range')) return;
+
   e.respondWith(
     caches.match(e.request).then(cached => {
       const fetchPromise = fetch(e.request).then(networkResponse => {
@@ -54,7 +40,7 @@ self.addEventListener('fetch', (e) => {
         }
         return networkResponse;
       }).catch(() => cached);
-      return cached || fetchPromise || new Response('Offline', {status: 200});
+      return cached || fetchPromise;
     })
   );
 });
