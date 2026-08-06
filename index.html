@@ -898,7 +898,7 @@ function preloadImg(url) {
 
 /* Neko Corner */
 const NEKO_SOURCES = [
-  {url:'https://api.waifu.im/search?included_tags=neko', extract:d=>d.images?.[0]?.url}
+  {url:'https://nekos.life/api/v2/img/neko', extract:d=>d.url}
 ];
 async function fetchNeko() {
   const corner = $('nekoCorner');
@@ -916,7 +916,7 @@ fetchNeko();
 /* Avatar */
 const avatarEl = $('avatarImg').closest('.avatar');
 const AVATAR_SOURCES = [
-  {url:'https://api.waifu.im/search?included_tags=waifu', extract:d=>d.images?.[0]?.url}
+  {url:'https://nekos.life/api/v2/img/waifu', extract:d=>d.url}
 ];
 async function fetchAvatar() {
   avatarEl.classList.remove('is-fallback'); avatarEl.classList.add('is-loading');
@@ -953,26 +953,29 @@ let currentGalCat = 'waifu';
 async function fetchGallery(cat) {
   currentGalCat = cat;
   const grid = $('galleryGrid');
-  const tagMap = {waifu:'waifu', neko:'neko', kitsune:'awoo', husbando:'shinobu'};
-  const tag = tagMap[cat] || 'waifu';
   $$('#galCats button').forEach(b => { b.className = b.dataset.cat===cat?'btn btn-primary':'btn btn-outline'; });
   grid.innerHTML = '';
   for (let i=0;i<8;i++) { const s=document.createElement('div'); s.className='skeleton'; s.style.aspectRatio='1'; grid.appendChild(s); }
   try {
-    const res = await fetchWithRetry('https://api.waifu.im/search?included_tags='+tag+'&limit=8', {}, 1);
-    const data = await res.json();
+    // Fetch 8 images in parallel from nekos.life
+    const requests = Array(8).fill().map(() => fetchWithTimeout('https://nekos.life/api/v2/img/'+cat, {}, 8000));
+    const responses = await Promise.allSettled(requests);
+    const images = [];
+    for (const r of responses) {
+      if (r.status === 'fulfilled') {
+        try { const d = await r.value.json(); if (d.url) images.push(d.url); } catch(e) {}
+      }
+    }
     grid.innerHTML = '';
     const frag = document.createDocumentFragment();
-    if (data.images) {
-      data.images.forEach(img => {
-        const cap = img.artist?.name ? 'Автор: '+img.artist.name : (img.source || cat);
-        const d = document.createElement('div');
-        d.className = 'gal-item';
-        d.innerHTML = '<img src="'+img.url+'" loading="lazy" alt="'+escapeHtml(cap)+'" onerror="this.parentElement.style.display=\'none\'"><div class="gal-cap">'+escapeHtml(cap)+'</div>';
-        d.addEventListener('click', () => { $('lightboxImg').src=img.url; $('lightbox').classList.add('open'); });
-        frag.appendChild(d);
-      });
-    }
+    if (images.length === 0) throw new Error('no images');
+    images.forEach(url => {
+      const d = document.createElement('div');
+      d.className = 'gal-item';
+      d.innerHTML = '<img src="'+url+'" loading="lazy" alt="'+escapeHtml(cat)+'" onerror="this.parentElement.style.display=\'none\'"><div class="gal-cap">'+escapeHtml(cat)+'</div>';
+      d.addEventListener('click', () => { $('lightboxImg').src=url; $('lightbox').classList.add('open'); });
+      frag.appendChild(d);
+    });
     grid.appendChild(frag);
   } catch(e) {
     grid.innerHTML = '<div style="color:var(--danger); grid-column:1/-1; text-align:center; padding:var(--sp-5);">Ошибка получения артов. <button class="btn btn-outline" onclick="fetchGallery(currentGalCat)">Повторить</button></div>';
@@ -1248,8 +1251,8 @@ let trysteroMod = null;
 async function getTrystero() {
   if (trysteroMod) return trysteroMod;
   const urls = [
-    'https://esm.sh/@trystero/torrent',
-    'https://esm.sh/@trystero/nostr'
+    'https://cdn.jsdelivr.net/npm/@trystero-p2p/torrent@latest/+esm',
+    'https://cdn.jsdelivr.net/npm/@trystero-p2p/nostr@latest/+esm'
   ];
   for (const url of urls) {
     try {
