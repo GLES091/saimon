@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://god-ae86.vercel.app/sitemap.xml
