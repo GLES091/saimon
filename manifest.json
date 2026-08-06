@@ -1,0 +1,15 @@
+{
+  "name": "GOD_AE86 ✦ Аниме-плеер",
+  "short_name": "GOD_AE86",
+  "description": "Персональная страница GOD_AE86. Аниме-вайб, совместный просмотр, галерея и гача.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#160c24",
+  "theme_color": "#ff9bb3",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "https://cdn-icons-png.flaticon.com/512/742/742751.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "https://cdn-icons-png.flaticon.com/256/742/742751.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "https://cdn-icons-png.flaticon.com/128/742/742751.png", "sizes": "128x128", "type": "image/png" }
+  ]
+}
