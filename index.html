@@ -1243,24 +1243,7 @@ const TRYSTERO_APP_ID = 'god-ae86-anime-watch-together-v1';
 const RTC_CONFIG = {
   iceServers: [
     {urls:'stun:stun.l.google.com:19302'},
-    {urls:'stun:stun1.l.google.com:19302'},
-    {urls:'stun:stun2.l.google.com:19302'},
-    {urls:'stun:stun3.l.google.com:19302'},
-    {urls:'stun:stun4.l.google.com:19302'},
-    {urls:'stun:stun01.sipphone.com'},
-    {urls:'stun:stun.ekiga.net'},
-    {urls:'stun:stun.fwdnet.net'},
-    {urls:'stun:stun.ideasip.com'},
-    {urls:'stun:stun.iptel.org'},
-    {urls:'stun:stun.rixtelecom.se'},
-    {urls:'stun:stun.schlund.de'},
-    {urls:'stun:stunserver.org'},
-    {urls:'stun:stun.softjoys.com'},
-    {urls:'stun:stun.voiparound.com'},
-    {urls:'stun:stun.voipbuster.com'},
-    {urls:'stun:stun.voipstunt.com'},
-    {urls:'stun:stun.voxgratia.org'},
-    {urls:'stun:stun.xten.com'}
+    {urls:'stun:stun1.l.google.com:19302'}
   ]
 };
 
@@ -1325,7 +1308,8 @@ const WT = {
     let firstFired = false;
 
     const { joinRoom } = await getTrystero();
-    this.room = joinRoom({appId: TRYSTERO_APP_ID, rtcConfig: RTC_CONFIG}, roomId);
+    // Trystero config: use relay strategy if P2P fails (no TURN server available)
+    this.room = joinRoom({appId: TRYSTERO_APP_ID, rtcConfig: RTC_CONFIG, relay: true}, roomId);
 
     const action = this.room.makeAction('sync');
     this.sendSync = action.send;
@@ -1789,7 +1773,11 @@ $('wtCreateBtn').addEventListener('click', async () => {
     showToast('Комната создана!', 'success');
   } catch(e) {
     $('wtHostError').style.display = '';
-    $('wtHostError').innerHTML = '<span>❌</span><span>Не удалось создать комнату ('+escapeHtml(e.message||'сбой сети')+'). <a href="#" id="wtRetryCreate" style="color:var(--danger); text-decoration:underline;">Попробовать снова</a>.</span>';
+    const isP2P = e.message && (e.message.includes('ICE') || e.message.includes('peer') || e.message.includes('connection'));
+    const msg = isP2P 
+      ? 'P2P-соединение не удалось. Без TURN-сервера (платная услуга) соединение работает только при прямом доступе к интернету. Попробуйте: 1) VPN 2) Мобильный интернет 3) Другой браузер (Chrome)'
+      : 'Не удалось создать комнату ('+escapeHtml(e.message||'сбой сети')+').';
+    $('wtHostError').innerHTML = '<span>❌</span><span>'+msg+' <a href="#" id="wtRetryCreate" style="color:var(--danger); text-decoration:underline;">Попробовать снова</a>.</span>';
     const link = document.getElementById('wtRetryCreate');
     if (link) link.addEventListener('click', (e2)=>{ e2.preventDefault(); $('wtCreateBtn').click(); });
     showToast('Ошибка создания комнаты', 'error');
@@ -1840,7 +1828,11 @@ $('wtJoinBtn').addEventListener('click', async () => {
     showToast('Подключено к комнате!', 'success');
   } catch(e) {
     statusEl.className = 'wt-status err';
-    statusEl.innerHTML = '<span>❌</span><span>Ошибка: '+escapeHtml(e.message||'не удалось подключиться')+'. <a href="#" id="wtRetryJoin" style="color:var(--danger); text-decoration:underline;">попробуй снова</a>.</span>';
+    const isP2P = e.message && (e.message.includes('ICE') || e.message.includes('peer') || e.message.includes('connection'));
+    const msg = isP2P 
+      ? 'P2P-соединение не удалось. Без TURN-сервера соединение работает только при прямом доступе к интернету. Попробуйте VPN, мобильный интернет или Chrome.'
+      : 'Ошибка: '+escapeHtml(e.message||'не удалось подключиться')+'.';
+    statusEl.innerHTML = '<span>❌</span><span>'+msg+' <a href="#" id="wtRetryJoin" style="color:var(--danger); text-decoration:underline;">попробуй снова</a>.</span>';
     const link = document.getElementById('wtRetryJoin');
     if (link) link.addEventListener('click', (e2)=>{ e2.preventDefault(); $('wtJoinBtn').click(); });
     showToast('Ошибка подключения', 'error');
