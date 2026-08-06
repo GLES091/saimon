@@ -1243,7 +1243,24 @@ const TRYSTERO_APP_ID = 'god-ae86-anime-watch-together-v1';
 const RTC_CONFIG = {
   iceServers: [
     {urls:'stun:stun.l.google.com:19302'},
-    {urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'], username:'openrelayproject', credential:'openrelayproject'}
+    {urls:'stun:stun1.l.google.com:19302'},
+    {urls:'stun:stun2.l.google.com:19302'},
+    {urls:'stun:stun3.l.google.com:19302'},
+    {urls:'stun:stun4.l.google.com:19302'},
+    {urls:'stun:stun01.sipphone.com'},
+    {urls:'stun:stun.ekiga.net'},
+    {urls:'stun:stun.fwdnet.net'},
+    {urls:'stun:stun.ideasip.com'},
+    {urls:'stun:stun.iptel.org'},
+    {urls:'stun:stun.rixtelecom.se'},
+    {urls:'stun:stun.schlund.de'},
+    {urls:'stun:stunserver.org'},
+    {urls:'stun:stun.softjoys.com'},
+    {urls:'stun:stun.voiparound.com'},
+    {urls:'stun:stun.voipbuster.com'},
+    {urls:'stun:stun.voipstunt.com'},
+    {urls:'stun:stun.voxgratia.org'},
+    {urls:'stun:stun.xten.com'}
   ]
 };
 
@@ -1251,8 +1268,8 @@ let trysteroMod = null;
 async function getTrystero() {
   if (trysteroMod) return trysteroMod;
   const urls = [
-    'https://cdn.jsdelivr.net/npm/@trystero-p2p/torrent@latest/+esm',
-    'https://cdn.jsdelivr.net/npm/@trystero-p2p/nostr@latest/+esm'
+    'https://cdn.jsdelivr.net/npm/@trystero-p2p/nostr@latest/+esm',
+    'https://cdn.jsdelivr.net/npm/@trystero-p2p/torrent@latest/+esm'
   ];
   for (const url of urls) {
     try {
