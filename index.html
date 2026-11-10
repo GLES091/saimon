@@ -1318,8 +1318,10 @@ label { color: var(--muted); font: 600 .75rem/1.4 var(--fb); letter-spacing: 0; 
 </div>
 
 <div class="fixed-top">
-  <button type="button" class="icon-btn" id="themeToggle" aria-label="Сменить тему">🌸</button>
-  <button type="button" class="icon-btn" id="animeModeBtn" aria-label="Аниме-режим">✨</button>
+  <button type="button" class="icon-btn" id="themeToggle" aria-label="Сменить тему" title="Сменить тему">🌸</button>
+  <button type="button" class="icon-btn" id="animeModeBtn" aria-label="Аниме-режим" title="Аниме-режим">✨</button>
+  <button type="button" class="icon-btn command-open" id="commandOpen" aria-label="Быстрые команды" title="Быстрые команды · Ctrl K">⌘</button>
+  <button type="button" class="icon-btn favorite-open" id="favoritesOpen" aria-label="Избранное" title="Избранное">♡<span class="favorite-count" id="favoritesCount">0</span></button>
 </div>
 
 <div class="neko-wrap">
@@ -1380,7 +1382,7 @@ label { color: var(--muted); font: 600 .75rem/1.4 var(--fb); letter-spacing: 0; 
     <section class="reader-source-panel source-hub-panel">
       <header class="reader-source-head">
         <div>
-          <div class="reader-source-kicker">Источники чтения</div>
+          
           <h2 id="rdAltTitle">Каталог источников</h2>
         </div>
         <button class="btn btn-outline btn-sm" id="rdAltClose" type="button" aria-label="Закрыть">✕</button>
@@ -1415,22 +1417,22 @@ label { color: var(--muted); font: 600 .75rem/1.4 var(--fb); letter-spacing: 0; 
   <div class="brand">
     <div class="brand-main">
       <div class="name">slashed_</div>
-      <div class="sub">@xvsci — anime, manga and Tor</div>
+      <div class="sub">@xvsci</div>
       <div class="brand-tools">
-        <span class="system-pill"><i></i> personal website</span>
-        <span class="system-pill system-pill-soft">Tor tools</span>
+        
+        
       </div>
     </div>
     <img class="brand-butterfly retro-gif" src="https://cdn.myemotes.io/9w42f3ig6gpcqj5r2w34oijbg4rr" alt="" aria-hidden="true" loading="lazy" decoding="async">
   </div>
 
   <div class="tabs-wrapper"><div class="tablist" id="tablist" role="tablist">
-    <button type="button" class="tab-btn active" data-tab="bio">🌸 Био</button>
-    <button type="button" class="tab-btn" data-tab="anime">🎌 Аниме</button>
-    <button type="button" class="tab-btn" data-tab="manga">📖 Манга</button>
-    <button type="button" class="tab-btn" data-tab="bridges">🧅 Мосты</button>
-    <button type="button" class="tab-btn" data-tab="gallery">🎴 Галерея</button>
-    <button type="button" class="tab-btn" data-tab="gacha">✨ Гача</button>
+    <button type="button" class="tab-btn active" data-tab="bio">Профиль</button>
+    <button type="button" class="tab-btn" data-tab="anime">Аниме</button>
+    <button type="button" class="tab-btn" data-tab="manga">Манга</button>
+    <button type="button" class="tab-btn" data-tab="bridges">Tor</button>
+    <button type="button" class="tab-btn" data-tab="gallery">Галерея</button>
+    <button type="button" class="tab-btn" data-tab="gacha">Гача</button>
   </div></div>
 
   <!-- BIO -->
@@ -1454,7 +1456,7 @@ label { color: var(--muted); font: 600 .75rem/1.4 var(--fb); letter-spacing: 0; 
       <button type="button" class="quick" data-go="gacha"><div class="ic">✨</div><b>Гача</b><span id="qkGacha">Призыв персонажей</span></button>
     </div>
     <div class="retro-gif-shelf" aria-label="Y2K web decorations">
-      <span class="gif-shelf-label">Web stickers <b>✦</b></span>
+      
       <img class="retro-gif gif-butterfly" src="https://cdn.myemotes.io/3akmstz9rwrtjarxc8z4w4ofqjb6" alt="Анимированная голубая бабочка" loading="lazy" decoding="async">
       <img class="retro-gif gif-sparkles" src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGJ0NXJsb3RkanZ4MDd0bXppMzIweXpvMWFtNWtqOG81dHd0aWV4aSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/10Bb1Bq7BMi9Co/source.gif" alt="Мерцающие пиксельные звёзды" loading="lazy" decoding="async">
       <a class="blinkie-link" href="https://www.gigaglitters.com/blinkie-maker" target="_blank" rel="noopener noreferrer" aria-label="Y2K Forever blinkie source">
@@ -1463,7 +1465,7 @@ label { color: var(--muted); font: 600 .75rem/1.4 var(--fb); letter-spacing: 0; 
       <a class="blinkie-link blinkie-mobile-hide" href="https://www.gigaglitters.com/blinkie-maker" target="_blank" rel="noopener noreferrer" aria-label="Online now blinkie source">
         <img class="retro-blinkie" src="https://www.gigaglitters.com/blinkies/online-now.gif" alt="Online now animated blinkie" loading="lazy" decoding="async">
       </a>
-      <span class="gif-shelf-note">лучше смотреть после полуночи</span>
+      
     </div>
   </div></div>
 
@@ -1671,6 +1673,33 @@ label { color: var(--muted); font: 600 .75rem/1.4 var(--fb); letter-spacing: 0; 
       </div>
     </div>
   </div>
+</div>
+
+
+<!-- Quick actions and saved titles -->
+<div class="utility-overlay" id="commandOverlay" hidden>
+  <section class="utility-panel command-panel" role="dialog" aria-modal="true" aria-labelledby="commandTitle">
+    <div class="utility-panel-head">
+      <span class="window-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+      <strong id="commandTitle">Быстрый переход</strong>
+      <button type="button" class="utility-close" data-close-utility="commandOverlay" aria-label="Закрыть">×</button>
+    </div>
+    <input id="commandSearch" class="utility-search" type="search" placeholder="Раздел, действие или поиск…" autocomplete="off">
+    <div class="command-results" id="commandResults"></div>
+    <div class="utility-hint"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>↵</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </section>
+</div>
+<div class="utility-overlay" id="favoritesOverlay" hidden>
+  <section class="utility-panel favorites-panel" role="dialog" aria-modal="true" aria-labelledby="favoritesTitle">
+    <div class="utility-panel-head">
+      <span class="window-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+      <strong id="favoritesTitle">Сохранённое</strong>
+      <button type="button" class="utility-close" data-close-utility="favoritesOverlay" aria-label="Закрыть">×</button>
+    </div>
+    <input id="favoritesFilter" class="utility-search" type="search" placeholder="Фильтр сохранённого…" autocomplete="off">
+    <div class="favorites-list" id="favoritesList"></div>
+    <div class="utility-hint">Список хранится в этом браузере</div>
+  </section>
 </div>
 
 <script type="module">
@@ -2031,6 +2060,7 @@ function renderAnimeCards(list) {
     const eps = item.episodes_total ? item.episodes_total + ' эп' : '';
     card.innerHTML = `<div class="poster">${prog[item.id] ? '<div class="badge">▶ смотрел</div><div class="bar"></div>' : ''}<img src="${escapeHtml(imgOf(item.poster))}" loading="lazy" decoding="async" alt=""></div><div class="info"><div class="title" title="${escapeHtml(title)}">${escapeHtml(title)}</div><div class="meta">${item.year || 'TBA'} • ${escapeHtml(type)}${eps ? ' • ' + eps : ''}</div></div>`;
     card.querySelector('img').onerror = function () { this.style.opacity = .2; };
+    addFavoriteControl(card, {kind: 'anime', source: 'anilibria', id: item.id, title, cover: imgOf(item.poster)});
     card.addEventListener('click', () => openAnimePlayer(item));
     frag.appendChild(card);
   });
@@ -2330,6 +2360,7 @@ async function loadMangaPDFCatalogFallback(query, page, token, signal, append = 
     const image = card.querySelector('img');
     if (cover) image.src = cover;
     image.onerror = () => { image.style.visibility = 'hidden'; };
+    addFavoriteControl(card, {kind: 'manga', source: 'mangapdf', id, title, cover});
     card.addEventListener('click', () => openMangaPDFInDetail(item));
     fragment.appendChild(card);
   });
@@ -2476,6 +2507,7 @@ async function loadMangaCatalog(query = '', append = false) {
       card.innerHTML = `<div class="poster">${progress[dir] ? '<div class="badge">📖 читаю</div>' : ''}<img src="${escapeHtml(cover)}" loading="lazy" decoding="async" fetchpriority="low" alt="Обложка: ${escapeHtml(title)}"></div><div class="info"><div class="title" title="${escapeHtml(title)}">${escapeHtml(title)}</div><div class="meta">${escapeHtml(meta)}</div></div>`;
       const image = card.querySelector('img');
       image.onerror = function () { this.style.display = 'none'; };
+      addFavoriteControl(card, {kind: 'manga', source: 'remanga', id: dir, title, cover});
       card.addEventListener('click', () => openManga(item));
       fragment.appendChild(card);
     });
@@ -4369,6 +4401,196 @@ $('installBtn').addEventListener('click', async () => {
 $('dismissInstall').addEventListener('click', () => { $('installPrompt').classList.remove('show'); Storage.set('installDismissed', Date.now()); });
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
 
+
+/* ---------- Personal interactions: saved titles + command palette ---------- */
+const SITE_FAV_KEY = 'slashed_saved_titles_v1';
+function readSiteFavorites() {
+  const list = Storage.get(SITE_FAV_KEY, []);
+  return Array.isArray(list) ? list.filter(x => x && x.id && x.title) : [];
+}
+function favoriteKey(item) { return [item.kind, item.source || 'default', String(item.id)].join(':'); }
+function isSiteFavorite(item) {
+  const key = favoriteKey(item);
+  return readSiteFavorites().some(entry => favoriteKey(entry) === key);
+}
+function updateFavoriteCount() {
+  const count = readSiteFavorites().length;
+  const badge = $('favoritesCount');
+  if (badge) { badge.textContent = count > 99 ? '99+' : String(count); badge.classList.toggle('has-items', count > 0); }
+}
+function addFavoriteControl(card, item) {
+  const poster = card.querySelector('.poster');
+  if (!poster || !item?.id) return;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'card-save';
+  button.textContent = isSiteFavorite(item) ? '♥' : '♡';
+  button.setAttribute('aria-label', isSiteFavorite(item) ? 'Убрать из сохранённого' : 'Сохранить');
+  button.setAttribute('aria-pressed', String(isSiteFavorite(item)));
+  button.title = button.getAttribute('aria-label');
+  button.addEventListener('click', event => {
+    event.preventDefault(); event.stopPropagation();
+    const favorites = readSiteFavorites();
+    const key = favoriteKey(item);
+    const index = favorites.findIndex(entry => favoriteKey(entry) === key);
+    if (index >= 0) {
+      favorites.splice(index, 1);
+      button.textContent = '♡'; button.setAttribute('aria-pressed', 'false');
+      button.setAttribute('aria-label', 'Сохранить'); button.title = 'Сохранить';
+      showToast('Удалено из сохранённого', 'info');
+    } else {
+      favorites.unshift({...item, savedAt: Date.now()});
+      button.textContent = '♥'; button.setAttribute('aria-pressed', 'true');
+      button.setAttribute('aria-label', 'Убрать из сохранённого'); button.title = 'Убрать из сохранённого';
+      showToast('Добавлено в сохранённое', 'success');
+    }
+    Storage.set(SITE_FAV_KEY, favorites.slice(0, 150));
+    updateFavoriteCount();
+    if (!$('favoritesOverlay').hidden) renderSiteFavorites($('favoritesFilter').value);
+  });
+  poster.appendChild(button);
+}
+function closeUtility(id) {
+  const overlay = $(id);
+  if (!overlay) return;
+  overlay.hidden = true;
+  if (id === 'commandOverlay') $('commandOpen')?.focus({preventScroll:true});
+  if (id === 'favoritesOverlay') $('favoritesOpen')?.focus({preventScroll:true});
+}
+function openUtility(id) {
+  const overlay = $(id);
+  if (!overlay) return;
+  $('commandOverlay').hidden = id !== 'commandOverlay';
+  $('favoritesOverlay').hidden = id !== 'favoritesOverlay';
+  overlay.hidden = false;
+  if (id === 'commandOverlay') {
+    $('commandSearch').value = '';
+    renderCommandResults('');
+    requestAnimationFrame(() => $('commandSearch').focus());
+  } else {
+    $('favoritesFilter').value = '';
+    renderSiteFavorites('');
+    requestAnimationFrame(() => $('favoritesFilter').focus());
+  }
+}
+const quickCommands = [
+  {label:'Профиль', detail:'Главная страница', icon:'⌂', run:()=>openTab('bio')},
+  {label:'Аниме', detail:'Каталог и плеер', icon:'◈', run:()=>openTab('anime')},
+  {label:'Манга', detail:'Каталог и читалка', icon:'▤', run:()=>openTab('manga')},
+  {label:'Мосты Tor', detail:'Список мостов', icon:'◉', run:()=>openTab('bridges')},
+  {label:'Галерея', detail:'Изображения', icon:'▧', run:()=>openTab('gallery')},
+  {label:'Гача', detail:'Призыв и коллекция', icon:'✧', run:()=>openTab('gacha')},
+  {label:'Поиск аниме', detail:'Перейти к поиску', icon:'⌕', run:()=>{openTab('anime'); setTimeout(()=>$('animeSearch').focus(),80);}},
+  {label:'Поиск манги', detail:'Перейти к поиску', icon:'⌕', run:()=>{openTab('manga'); setTimeout(()=>$('mangaSearch').focus(),80);}},
+  {label:'Избранное', detail:'Сохранённые тайтлы', icon:'♥', run:()=>openUtility('favoritesOverlay')},
+  {label:'Сменить тему', detail:'Светлая / тёмная', icon:'◐', run:()=>$('themeToggle').click()},
+  {label:'Аниме-режим', detail:'Сменить акцент', icon:'✦', run:()=>$('animeModeBtn').click()},
+  {label:'Ежедневный бонус', detail:'Получить монеты', icon:'＋', run:()=>{openTab('gacha'); $('dailyRewardBtn').click();}},
+  {label:'Источники читалки', detail:'Альтернативные каталоги', icon:'⇄', run:()=>{if ($('reader').classList.contains('open')) $('rdAltSource').click(); else {openTab('manga'); showToast('Открой главу, чтобы сменить источник', 'info');}}}
+];
+let commandCursor = 0, filteredCommands = quickCommands;
+function renderCommandResults(query) {
+  const q = String(query || '').trim().toLocaleLowerCase('ru');
+  filteredCommands = quickCommands.filter(item => (item.label + ' ' + item.detail).toLocaleLowerCase('ru').includes(q));
+  commandCursor = Math.min(commandCursor, Math.max(0, filteredCommands.length - 1));
+  const host = $('commandResults'); host.replaceChildren();
+  if (!filteredCommands.length) {
+    const empty = document.createElement('div'); empty.className = 'utility-empty'; empty.textContent = 'Ничего не найдено'; host.appendChild(empty); return;
+  }
+  filteredCommands.forEach((item, index) => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'command-item' + (index === commandCursor ? ' selected' : '');
+    const symbol = document.createElement('span'); symbol.className = 'command-symbol'; symbol.textContent = item.icon;
+    const copy = document.createElement('span'); copy.className = 'command-copy';
+    const title = document.createElement('strong'); title.textContent = item.label;
+    const detail = document.createElement('small'); detail.textContent = item.detail;
+    copy.append(title, detail);
+    const enter = document.createElement('span'); enter.className = 'command-enter'; enter.textContent = '↵';
+    button.append(symbol, copy, enter);
+    button.addEventListener('mouseenter', () => {
+      commandCursor = index;
+      host.querySelectorAll('.command-item').forEach((el, i) => el.classList.toggle('selected', i === index));
+    });
+    button.addEventListener('click', () => runCommand(item));
+    host.appendChild(button);
+  });
+}
+function runCommand(item) {
+  closeUtility('commandOverlay');
+  try { item.run(); } catch (error) { showToast('Не удалось выполнить действие', 'error'); }
+}
+function renderSiteFavorites(query = '') {
+  const host = $('favoritesList'); host.replaceChildren();
+  const q = String(query || '').trim().toLocaleLowerCase('ru');
+  const items = readSiteFavorites().filter(item => !q || item.title.toLocaleLowerCase('ru').includes(q));
+  if (!items.length) {
+    const empty = document.createElement('div'); empty.className = 'utility-empty';
+    empty.textContent = readSiteFavorites().length ? 'По этому запросу ничего нет' : 'Здесь будут тайтлы, которые ты сохранишь звёздочкой на обложке.';
+    host.appendChild(empty); return;
+  }
+  items.forEach(item => {
+    const row = document.createElement('article'); row.className = 'favorite-row';
+    const img = document.createElement('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = ''; img.src = item.cover || '';
+    img.onerror = () => { img.style.visibility = 'hidden'; };
+    const info = document.createElement('div'); info.className = 'favorite-row-info';
+    const name = document.createElement('strong'); name.textContent = item.title;
+    const meta = document.createElement('small'); meta.textContent = item.kind === 'anime' ? 'Аниме' : (item.source === 'mangapdf' ? 'Манга · MangaPDF' : 'Манга · ReManga');
+    info.append(name, meta);
+    const open = document.createElement('button'); open.type = 'button'; open.className = 'favorite-open-item'; open.textContent = 'Открыть';
+    open.addEventListener('click', () => {
+      closeUtility('favoritesOverlay');
+      if (item.kind === 'anime') {
+        openTab('anime'); $('animeSearch').value = item.title; searchAnime(item.title);
+      } else if (item.source === 'mangapdf') {
+        openTab('manga'); openMangaPDFInDetail({id:item.id, title:item.title, thumbnail_url:item.cover || ''});
+      } else {
+        openTab('manga'); openManga({id:item.id, dir:item.id, main_name:item.title, _title:item.title, _cover:item.cover || ''});
+      }
+    });
+    const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'favorite-remove'; remove.textContent = '×'; remove.title = 'Убрать'; remove.setAttribute('aria-label', 'Убрать из сохранённого');
+    remove.addEventListener('click', () => {
+      Storage.set(SITE_FAV_KEY, readSiteFavorites().filter(entry => favoriteKey(entry) !== favoriteKey(item)));
+      updateFavoriteCount(); renderSiteFavorites($('favoritesFilter').value);
+    });
+    row.append(img, info, open, remove); host.appendChild(row);
+  });
+}
+$('commandOpen').addEventListener('click', () => openUtility('commandOverlay'));
+$('favoritesOpen').addEventListener('click', () => openUtility('favoritesOverlay'));
+$('commandSearch').addEventListener('input', e => renderCommandResults(e.target.value));
+$('favoritesFilter').addEventListener('input', e => renderSiteFavorites(e.target.value));
+document.querySelectorAll('[data-close-utility]').forEach(button => button.addEventListener('click', () => closeUtility(button.dataset.closeUtility)));
+['commandOverlay','favoritesOverlay'].forEach(id => $(id).addEventListener('click', event => { if (event.target === $(id)) closeUtility(id); }));
+document.addEventListener('keydown', event => {
+  const target = event.target;
+  const typing = target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault(); openUtility('commandOverlay'); return;
+  }
+  if (event.key === 'Escape') {
+    if (!$('commandOverlay').hidden) closeUtility('commandOverlay');
+    if (!$('favoritesOverlay').hidden) closeUtility('favoritesOverlay');
+    return;
+  }
+  if (!$('commandOverlay').hidden) {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      commandCursor = Math.max(0, Math.min(filteredCommands.length - 1, commandCursor + (event.key === 'ArrowDown' ? 1 : -1)));
+      $('commandResults').querySelectorAll('.command-item').forEach((el, i) => el.classList.toggle('selected', i === commandCursor));
+    } else if (event.key === 'Enter' && filteredCommands.length) {
+      event.preventDefault(); runCommand(filteredCommands[commandCursor]);
+    }
+    return;
+  }
+  if (!typing && event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault(); openUtility('commandOverlay');
+  }
+});
+updateFavoriteCount();
+
+/* Quiet top-level copy; leave live feedback and actual control labels intact. */
+document.querySelectorAll('.brand-tools').forEach(el => el.remove());
+
 /* ---------- Init ---------- */
 updateCoins(); updateDailyButton(); updateContinueChip(); updateMangaContinue();
 (function init() {
@@ -4379,5 +4601,294 @@ updateCoins(); updateDailyButton(); updateContinueChip(); updateMangaContinue();
   else if (valid.includes(hash) && hash !== 'bio') openTab(hash);
 })();
 </script>
+
+<style id="slashed-interaction-polish">
+:root {
+  --bg: #101926;
+  --bg2: #19283a;
+  --card: #1a2b3e;
+  --card-solid: #22384d;
+  --text: #edf4f3;
+  --muted: #b4c3c9;
+  --muted-2: #8296a2;
+  --accent: #a8dfe1;
+  --accent-2: #d0edef;
+  --purple: #c7b7e0;
+  --border: rgba(191, 220, 227, .15);
+  --border-strong: rgba(191, 220, 227, .28);
+  --shadow-sm: 0 3px 12px rgba(4, 13, 23, .18);
+  --shadow: 0 12px 32px rgba(4, 13, 23, .24);
+  --shadow-lg: 0 24px 70px rgba(1, 8, 16, .46);
+  --radius-sm: 10px;
+  --radius: 15px;
+  --radius-lg: 21px;
+}
+[data-theme="light"] {
+  --bg: #e8f0ef;
+  --bg2: #dce8e8;
+  --card: #f5f8f6;
+  --card-solid: #fbfcfa;
+  --text: #263c45;
+  --muted: #647a82;
+  --muted-2: #83989e;
+  --accent: #4e8e99;
+  --accent-2: #2c6d7b;
+  --purple: #85769e;
+  --border: rgba(43, 86, 98, .14);
+  --border-strong: rgba(43, 86, 98, .25);
+  --shadow-sm: 0 3px 12px rgba(35, 69, 78, .06);
+  --shadow: 0 12px 32px rgba(35, 69, 78, .08);
+  --shadow-lg: 0 24px 60px rgba(35, 69, 78, .18);
+}
+body {
+  background:
+    radial-gradient(ellipse at 9% 2%, rgba(105, 172, 190, .12), transparent 37%),
+    radial-gradient(ellipse at 93% 88%, rgba(161, 137, 190, .10), transparent 34%),
+    var(--bg);
+}
+body::before { opacity: .045; background-size: 28px 28px; }
+.page-wrap { padding-top: 22px; padding-bottom: 54px; }
+.container { gap: 14px 17px; }
+.brand {
+  min-height: 88px;
+  padding: 13px 150px 12px 21px;
+  border-radius: 21px;
+  border: 1px solid rgba(190, 222, 229, .19);
+  background:
+    linear-gradient(105deg, rgba(42, 70, 91, .97), rgba(36, 54, 77, .96) 62%, rgba(54, 57, 82, .94)),
+    var(--card);
+  box-shadow: 0 9px 28px rgba(2, 12, 22, .19), inset 0 1px rgba(255,255,255,.11);
+}
+.brand .name { font-size: clamp(2.05rem, 3.4vw, 2.55rem); letter-spacing: -.045em; }
+.brand .sub { margin-top: 2px; color: rgba(221, 237, 238, .7); font-size: .68rem; }
+.brand-butterfly { right: 30px; top: 10px; opacity: .78; }
+.brand::before { left: 20px; right: 20px; opacity: .45; }
+.brand-tools { display: none !important; }
+.fixed-top { top: 16px; gap: 7px; }
+.icon-btn {
+  position: relative;
+  width: 37px; height: 37px;
+  border-radius: 12px;
+  border: 1px solid rgba(205, 230, 233, .19);
+  color: #e5f1f1;
+  background: rgba(20, 39, 55, .78);
+  box-shadow: inset 0 1px rgba(255,255,255,.1), 0 3px 9px rgba(4,12,22,.1);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.icon-btn:hover { transform: translateY(-2px); background: rgba(64, 91, 111, .9); border-color: rgba(195, 235, 238, .45); }
+.icon-btn:active { transform: translateY(0) scale(.96); }
+.favorite-count {
+  position: absolute; top: -5px; right: -5px; min-width: 16px; height: 16px; padding: 0 4px;
+  display: grid; place-items: center; border-radius: 20px; color: #213744; background: #c1e4df;
+  border: 2px solid #20374a; font: 700 9px/1 var(--fb); opacity: .76;
+}
+.favorite-count:not(.has-items) { display: none; }
+.tabs-wrapper {
+  top: 12px; padding: 7px; border-radius: 16px;
+  background: rgba(25, 41, 59, .92);
+  border-color: rgba(184, 214, 222, .14);
+  box-shadow: 0 8px 24px rgba(1, 8, 17, .18), inset 0 1px rgba(255,255,255,.035);
+}
+.tabs-wrapper::before { display: none; }
+.tablist { gap: 4px; }
+.tab-btn {
+  position: relative; min-height: 43px; padding: 10px 12px; border-radius: 11px;
+  color: #b7c9d0; font-size: .84rem; font-weight: 650;
+  transition: color .17s ease, background .17s ease, transform .17s ease, border-color .17s ease;
+}
+.tab-btn::before {
+  content: ''; width: 3px; height: 17px; border-radius: 3px; position: absolute; left: 0; top: 50%;
+  transform: translate(-4px,-50%) scaleY(.4); opacity: 0; background: #e2f6f2; transition: .17s ease;
+}
+.tab-btn:hover { background: rgba(177, 221, 226, .09); transform: translateX(2px); color: #eff8f7; }
+.tab-btn.active {
+  color: #183341; background: linear-gradient(115deg, #b4e4df, #c4c5df);
+  border: 1px solid rgba(236, 255, 251, .48);
+  box-shadow: inset 0 1px rgba(255,255,255,.48), 0 4px 13px rgba(3, 11, 19, .14);
+}
+.tab-btn.active::before { transform: translate(0,-50%) scaleY(1); opacity: 0; }
+.card {
+  border-radius: 21px;
+  padding: 43px clamp(18px, 2.6vw, 31px) clamp(19px, 2.6vw, 30px);
+  background: linear-gradient(145deg, rgba(33, 52, 72, .98), rgba(24, 41, 59, .98));
+  border: 1px solid rgba(189, 220, 226, .14);
+  border-top-color: rgba(221, 243, 243, .22);
+  box-shadow: 0 13px 35px rgba(2, 10, 19, .2), inset 0 1px rgba(255,255,255,.03);
+}
+[data-theme="light"] .card { background: linear-gradient(145deg, #f7faf8, #edf3f2); }
+.tab-panel > .card::before { top: 18px; left: 20px; width: 8px; height: 8px; box-shadow: 14px 0 #e2be83, 28px 0 #8ebaa4; }
+.tab-panel > .card::after { left: 20px; right: 20px; top: 36px; opacity: .65; }
+.sec-head { border-color: rgba(190, 219, 224, .13); margin-bottom: 18px; padding-bottom: 12px; }
+.card h2 { color: #e8f3f2; font-family: Georgia, 'Times New Roman', serif; font-size: 1.35rem; }
+[data-theme="light"] .card h2, [data-theme="light"] .card h3 { color: var(--text); }
+.card h3 { color: #d3e8e5; }
+.profile {
+  padding: 24px 21px; gap: 24px; border-radius: 17px;
+  border: 1px solid rgba(202, 229, 231, .17);
+  background: linear-gradient(110deg, rgba(48, 76, 94, .93), rgba(38, 54, 78, .96));
+  box-shadow: inset 0 1px rgba(255,255,255,.055);
+}
+[data-theme="light"] .profile { background: linear-gradient(110deg, #e2eeee, #e9e6f0); }
+.avatar-wrap { width: 124px; height: 124px; }
+.avatar { border-radius: 21px; border-color: rgba(220, 244, 242, .42); box-shadow: 0 10px 26px rgba(2, 12, 20, .22); transition: transform .2s ease, box-shadow .2s ease; }
+.avatar:hover { transform: rotate(-1.2deg) scale(1.025); box-shadow: 0 14px 30px rgba(2, 12, 20, .28); }
+.bio-name { font-size: clamp(1.95rem, 3.8vw, 2.35rem); letter-spacing: -.05em; }
+.bio-handle { color: #a9dce0; font-weight: 700; }
+.bio-tag { color: #d0e0e2; }
+.profile .tag-row { margin-top: 12px; gap: 6px; }
+.profile .chip { padding: 5px 9px; border-radius: 9px; font-size: .7rem; color: #d5e9e8; background: rgba(9, 27, 40, .22); }
+.quick-grid { gap: 11px; margin-top: 17px; }
+.quick {
+  position: relative; min-height: 106px; overflow: hidden; padding: 15px 14px;
+  border-radius: 14px; border-color: rgba(187, 218, 224, .14);
+  background: linear-gradient(145deg, rgba(42, 62, 82, .92), rgba(28, 46, 65, .92));
+  box-shadow: inset 0 1px rgba(255,255,255,.045);
+  transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.quick::after { content: '↗'; position: absolute; top: 12px; right: 13px; color: rgba(186, 220, 224, .55); font: 600 .9rem/1 var(--fb); transition: transform .2s ease, color .2s ease; }
+.quick::before { content: ''; position: absolute; width: 85px; height: 85px; right: -43px; bottom: -44px; border-radius: 50%; background: rgba(162, 211, 216, .06); transition: transform .25s ease; }
+.quick:hover { transform: translateY(-4px); border-color: rgba(174, 222, 226, .37); background: linear-gradient(145deg, rgba(52, 78, 98, .98), rgba(33, 53, 74, .98)); box-shadow: 0 10px 22px rgba(1, 10, 19, .16), inset 0 1px rgba(255,255,255,.08); }
+.quick:hover::after { color: var(--accent); transform: translate(2px,-2px); }
+.quick:hover::before { transform: scale(1.5); }
+.quick:active { transform: translateY(-1px) scale(.985); }
+.quick .ic { position: relative; z-index: 1; color: #b9e5e3; font-size: 1.35rem; margin-bottom: 8px; }
+.quick b { position: relative; z-index: 1; color: #e5f0ef; font-size: .88rem; font-weight: 700; }
+.quick span { position: relative; z-index: 1; display: block; margin-top: 4px; color: #aabdc4; font-size: .68rem; }
+.retro-gif-shelf { border: 1px solid rgba(183, 215, 221, .13); border-radius: 13px; background: rgba(13, 27, 42, .32); min-height: 62px; align-items: center; }
+.retro-gif { opacity: .9; transition: transform .2s ease, opacity .2s ease; }
+.retro-gif:hover { transform: translateY(-2px) scale(1.04); opacity: 1; }
+/* Content cards feel clickable but avoid the floaty template look. */
+.anime-grid { gap: 19px 15px; }
+.anime-card { position: relative; border-radius: 12px; cursor: pointer; transition: transform .2s ease, opacity .2s ease; }
+.anime-card:hover { transform: translateY(-4px); opacity: 1; }
+.anime-card .poster { position: relative; overflow: hidden; border: 1px solid rgba(195, 221, 224, .14); border-radius: 12px; background: #142333; box-shadow: 0 5px 15px rgba(2, 9, 16, .12); transition: border-color .2s ease, box-shadow .2s ease; }
+.anime-card:hover .poster { border-color: rgba(171, 222, 225, .42); box-shadow: 0 11px 23px rgba(1, 10, 19, .24); }
+.anime-card .poster img { transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .25s ease; }
+.anime-card:hover .poster img { transform: scale(1.035); }
+.anime-card .info { padding: 9px 3px 0; }
+.anime-card .title { color: #e5efef; font-size: .87rem; line-height: 1.3; }
+.anime-card .meta { color: #8ea5ae; font-size: .68rem; }
+[data-theme="light"] .anime-card .title { color: #263c45; }
+.card-save {
+  position: absolute; z-index: 4; top: 8px; right: 8px; width: 32px; height: 32px;
+  display: grid; place-items: center; border: 1px solid rgba(235, 250, 248, .29); border-radius: 11px;
+  color: #f1fbf8; background: rgba(13, 28, 41, .72); box-shadow: 0 3px 10px rgba(0,0,0,.2);
+  font: 700 1rem/1 var(--fb); cursor: pointer; opacity: 0; transform: translateY(-3px);
+  transition: opacity .18s ease, transform .18s ease, background .18s ease, color .18s ease;
+}
+.anime-card:hover .card-save, .card-save:focus-visible, .card-save[aria-pressed="true"] { opacity: 1; transform: none; }
+.card-save[aria-pressed="true"] { color: #f5d7e3; background: rgba(105, 46, 76, .83); }
+.card-save:hover { background: rgba(28, 57, 74, .95); color: #fff; }
+@media (hover:none) { .card-save { opacity: .92; transform: none; } }
+.btn, .icon-btn, .tab-btn, .source-provider, .ep-btn, .chapter-list .btn { -webkit-tap-highlight-color: transparent; }
+.btn { transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.btn:hover:not(:disabled) { transform: translateY(-2px); }
+.btn:active:not(:disabled) { transform: translateY(0) scale(.98); }
+.btn-primary { background: linear-gradient(120deg, #a9e0dc, #bcb7d9); color: #1b3440; box-shadow: 0 4px 12px rgba(3, 12, 22, .15), inset 0 1px rgba(255,255,255,.46); }
+.btn-primary:hover:not(:disabled) { background: linear-gradient(120deg, #c1efeb, #d0c7e8); box-shadow: 0 7px 17px rgba(2, 11, 20, .19); }
+.btn-outline { border-color: rgba(187, 218, 224, .24); background: rgba(14, 29, 44, .17); color: var(--muted); }
+.btn-outline:hover:not(:disabled), .btn-outline.on { border-color: var(--accent); color: var(--accent-2); background: rgba(161, 216, 220, .09); }
+input[type="text"], input[type="number"], input[type="search"], textarea, select.field { border-radius: 11px; border-color: rgba(181, 211, 219, .2); background: rgba(12, 25, 39, .43); color: var(--text); }
+input:focus, textarea:focus, select.field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(160, 220, 222, .09); }
+[data-theme="light"] input[type="text"], [data-theme="light"] input[type="number"], [data-theme="light"] input[type="search"], [data-theme="light"] textarea, [data-theme="light"] select.field { background: #fff; }
+/* The labels below repeat nearby controls or describe implementation, so keep the interface quiet. */
+.tabs-wrapper::before, .brand-tools, .gif-shelf-label, .gif-shelf-note, .neko-tip,
+.reader-source-note, .reader-source-credit, .reader-source-kicker, .source-auto-pill,
+.site-credit, #animePlayerView > .note, #mangaCatalogView > .note { display: none !important; }
+.quick-grid .quick > span { display: none; }
+.neko-corner { border-radius: 16px; border: 1px solid rgba(200, 227, 231, .28); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
+.gal-item { border-radius: 13px; border-color: rgba(187, 218, 224, .16); overflow: hidden; }
+.gal-item img { transition: transform .3s ease, filter .3s ease; }
+.gal-item:hover img { transform: scale(1.04); filter: saturate(1.08); }
+.reader-bar { background: rgba(17, 31, 46, .97); border-bottom-color: rgba(189, 218, 225, .15); }
+.reader-foot { background: rgba(17, 31, 46, .97); }
+/* Utility windows */
+.utility-overlay[hidden] { display: none !important; }
+.utility-overlay {
+  position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-start; justify-content: center;
+  padding: min(17vh, 130px) 14px 24px; background: rgba(5, 12, 21, .68);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.utility-panel {
+  width: min(100%, 560px); max-height: min(74vh, 680px); display: flex; flex-direction: column;
+  padding: 13px; border: 1px solid rgba(196, 224, 228, .24); border-radius: 19px;
+  color: var(--text); background: linear-gradient(145deg, #253d52, #1a2c40);
+  box-shadow: 0 24px 80px rgba(0,0,0,.48), inset 0 1px rgba(255,255,255,.09);
+  animation: utilityIn .16s ease-out;
+}
+[data-theme="light"] .utility-panel { background: linear-gradient(145deg, #f9fcfa, #e7f0f0); }
+@keyframes utilityIn { from { opacity: 0; transform: translateY(-8px) scale(.99); } to { opacity: 1; transform: none; } }
+.utility-panel-head { display: flex; align-items: center; gap: 11px; padding: 2px 2px 11px; border-bottom: 1px solid var(--border); }
+.utility-panel-head strong { flex: 1; font: 700 1rem/1.2 Georgia, serif; }
+.window-lights { display: inline-flex; gap: 5px; }
+.window-lights i { width: 8px; height: 8px; display: block; border-radius: 50%; background: #cb8588; }
+.window-lights i:nth-child(2) { background: #d1b27b; }
+.window-lights i:nth-child(3) { background: #82b59a; }
+.utility-close { width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 9px; color: var(--muted); background: transparent; cursor: pointer; font-size: 1.15rem; }
+.utility-close:hover { color: var(--text); background: var(--card-2); }
+.utility-search { width: 100%; min-height: 46px; margin: 12px 0 9px; padding: 11px 13px !important; border-radius: 12px !important; font-size: .95rem !important; }
+.command-results, .favorites-list { overflow: auto; display: grid; gap: 5px; overscroll-behavior: contain; padding: 2px; }
+.command-item { display: grid; grid-template-columns: 36px minmax(0,1fr) 20px; gap: 10px; align-items: center; width: 100%; padding: 9px; border: 1px solid transparent; border-radius: 12px; text-align: left; color: var(--text); background: transparent; cursor: pointer; }
+.command-item:hover, .command-item.selected { border-color: rgba(174, 219, 224, .19); background: rgba(163, 209, 216, .095); }
+.command-symbol { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 10px; color: var(--accent); background: rgba(9, 24, 38, .22); font-size: 1rem; }
+.command-copy { min-width: 0; }
+.command-copy strong, .command-copy small { display: block; }
+.command-copy strong { font-size: .85rem; font-weight: 700; }
+.command-copy small { margin-top: 2px; color: var(--muted-2); font-size: .69rem; }
+.command-enter { color: var(--muted-2); opacity: .7; }
+.utility-hint { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding: 9px 3px 0; border-top: 1px solid var(--border); color: var(--muted-2); font-size: .67rem; }
+.utility-hint kbd { min-width: 19px; padding: 3px 5px; border: 1px solid var(--border-strong); border-radius: 5px; color: var(--muted); background: rgba(5,17,28,.18); text-align: center; font: 600 .65rem/1 var(--fb); }
+.utility-empty { padding: 26px 12px; color: var(--muted); text-align: center; font-size: .8rem; }
+.favorite-row { display: grid; grid-template-columns: 44px minmax(0,1fr) auto 28px; gap: 9px; align-items: center; padding: 7px; border: 1px solid var(--border); border-radius: 12px; background: rgba(10, 23, 36, .17); }
+.favorite-row img { width: 44px; height: 57px; border-radius: 7px; object-fit: cover; background: var(--bg2); }
+.favorite-row-info { min-width: 0; }
+.favorite-row-info strong, .favorite-row-info small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.favorite-row-info strong { color: var(--text); font-size: .78rem; }
+.favorite-row-info small { margin-top: 4px; color: var(--muted-2); font-size: .65rem; }
+.favorite-open-item { padding: 7px 9px; border: 1px solid var(--border-strong); border-radius: 8px; color: var(--accent); background: transparent; cursor: pointer; font: 650 .7rem/1 var(--fb); }
+.favorite-open-item:hover { background: var(--card-2); border-color: var(--accent); }
+.favorite-remove { width: 27px; height: 27px; border: 0; border-radius: 8px; color: var(--muted-2); background: transparent; cursor: pointer; font-size: 1.15rem; }
+.favorite-remove:hover { color: #f0bacb; background: rgba(215, 119, 156, .12); }
+@media (max-width: 700px) {
+  .page-wrap { padding: 10px 10px calc(28px + env(safe-area-inset-bottom)); }
+  .brand { min-height: 78px; padding: 10px 158px 10px 13px; border-radius: 15px; }
+  .brand .name { font-size: 1.7rem; }
+  .brand .sub { font-size: .62rem; }
+  .brand-butterfly { width: 43px; height: 43px; right: 12px; top: 17px; }
+  .fixed-top { top: 8px; right: 8px; gap: 4px; }
+  .icon-btn { width: 31px; height: 31px; border-radius: 9px; font-size: .85rem; }
+  .container { gap: 9px; }
+  .tabs-wrapper { top: 4px; padding: 4px; border-radius: 12px; }
+  .tab-btn { min-height: 38px; padding: 8px 10px; border-radius: 9px; font-size: .72rem; }
+  .card { padding: 40px 13px 14px; border-radius: 15px; }
+  .profile { padding: 14px 12px; gap: 12px; }
+  .avatar-wrap { width: 83px; height: 83px; }
+  .avatar { border-radius: 14px; }
+  .bio-name { font-size: 1.55rem; }
+  .bio-tag { font-size: .72rem; }
+  .quick-grid { gap: 7px; margin-top: 10px; }
+  .quick { min-height: 84px; padding: 10px; border-radius: 11px; }
+  .quick .ic { margin-bottom: 4px; font-size: 1.15rem; }
+  .quick b { font-size: .78rem; }
+  .anime-grid { gap: 14px 9px; }
+  .utility-overlay { padding: 8vh 9px 16px; }
+  .utility-panel { max-height: 84vh; border-radius: 15px; padding: 10px; }
+  .favorite-row { grid-template-columns: 38px minmax(0,1fr) auto 25px; gap: 7px; }
+  .favorite-row img { width: 38px; height: 50px; }
+}
+@media (max-width: 390px) {
+  .brand { padding-right: 142px; }
+  .fixed-top { gap: 3px; }
+  .icon-btn { width: 29px; height: 29px; }
+  .brand-butterfly { display: none; }
+  .tab-btn { padding: 7px 8px; font-size: .68rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quick, .anime-card, .anime-card .poster img, .avatar, .retro-gif { transition: none !important; }
+  .utility-panel { animation: none !important; }
+}
+</style>
 </body>
 </html>
